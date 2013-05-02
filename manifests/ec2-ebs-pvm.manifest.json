@@ -1,0 +1,36 @@
+{
+	"provider"      : "ec2",
+	"virtualization": "pvm",
+	"credentials"   : {
+		"access-key": null,
+		"secret-key": null
+	},
+
+	"bootstrapdir"  : "/target",
+	"image": {
+		"name"       : "debian-{release}-{architecture}-{virt}-{year}{month}{day}",
+		"description": "Debian {release} {architecture} AMI ({virt})"
+	},
+	"system": {
+		"architecture": "amd64", 
+		"release"     : "wheezy",
+		"timezone"    : "UTC",
+		"locale"      : "en_US",
+		"charmap"     : "UTF-8",
+		"packages"    : []
+	},
+	"volume": {
+		"backing"   : "ebs",
+		"filesystem": "ext4",
+		"size"      : "1G"   
+	},
+	"plugins": {
+		"admin-user": {
+			"enabled": true
+		},
+		"build-metadata": {
+			"enabled": false,
+			"path": "/root/build-metadata-{ami_name}"
+		}
+	}
+}
