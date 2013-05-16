@@ -4,27 +4,20 @@ from common import Task
 class HostPackages(Task):
 	def run(self, info):
 		super(HostPackages, self).run(info)
-		info.host_pkg = self.get_host_packages(info.manifest)
-		return info
-
-	def get_host_packages(self, manifest):
 		packages = set(['debootstrap',
 		                # To make sure a volume is not busy before unmounting we need lsof
 		                'lsof',
 		                ])
-		if manifest.volume['filesystem'] == 'xfs':
+		if info.manifest.volume['filesystem'] == 'xfs':
 			packages.add('xfsprogs')
 
-		return packages
+		info.host_packages = packages
 
 
 class ImagePackages(Task):
 	def run(self, info):
 		super(ImagePackages, self).run(info)
-		info.image_pkg_include, info.image_pkg_exclude = self.get_image_packages(info.manifest)
-		return info
-
-	def get_image_packages(self, manifest):
+		manifest = info.manifest
 		# Add some basic packages we are going to need
 		include = set(['udev',
 		               'openssh-server',
@@ -52,4 +45,4 @@ class ImagePackages(Task):
 		
 		include = include.union(manifest.system['packages'])
 		
-		return include, exclude
+		info.img_packages = include, exclude

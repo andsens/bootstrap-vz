@@ -5,7 +5,6 @@ class GetCredentials(Task):
 	def run(self, info):
 		super(GetCredentials, self).run(info)
 		info.ec2_credentials = self.get_ec2_credentials(info.args, info.manifest)
-		return info
 
 	def get_ec2_credentials(self, args, manifest):
 		from os import getenv
@@ -37,4 +36,4 @@ class Connect(Task):
 		# info.ec2_connection = boto.ec2.connect_to_region(info.host['region'],
 		#                                                  aws_access_key_id=info.ec2_credentials['access_key'],
 		#                                                  aws_secret_access_key=info.ec2_credentials['secret_key'])
-		return info
+		# return 'ec2_connection', ec2_connection

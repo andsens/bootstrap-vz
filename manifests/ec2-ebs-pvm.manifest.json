@@ -25,12 +25,12 @@
 		"size"      : "1G"   
 	},
 	"plugins": {
-		"admin-user": {
+		"admin_user": {
 			"enabled": true
 		},
-		"build-metadata": {
-			"enabled": false,
-			"path": "/root/build-metadata-{ami_name}"
+		"build_metadata": {
+			"enabled": true,
+			"path"   : "/root/build-metadata-{ami_name}"
 		}
 	}
 }
