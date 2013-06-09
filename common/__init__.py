@@ -1,5 +1,4 @@
-__all__ = ['Manifest', 'Task', 'TaskList', 'main']
+__all__ = ['Manifest', 'Task', 'main']
 from manifest import Manifest
 from task import Task
-from tasklist import TaskList
 from main import main

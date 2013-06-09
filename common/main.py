@@ -22,7 +22,9 @@ def run(args):
 	manifest.validate()
 	manifest.load_plugins()
 
-	tasklist = provider.tasklist(manifest)
+	from tasklist import TaskList
+	tasklist = TaskList()
+	provider.modify_tasklist(tasklist, manifest)
 	tasklist.plugins(manifest)
 
 	from bootstrapinfo import BootstrapInformation
