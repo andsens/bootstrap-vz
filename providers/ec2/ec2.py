@@ -4,14 +4,11 @@ from common import Task
 class GetCredentials(Task):
 	def run(self, info):
 		super(GetCredentials, self).run(info)
-		info.ec2_credentials = self.get_ec2_credentials(info.args, info.manifest)
+		info.ec2_credentials = self.get_ec2_credentials(info.manifest)
 
-	def get_ec2_credentials(self, args, manifest):
+	def get_ec2_credentials(self, manifest):
 		from os import getenv
-		# args override manifest override environment
-		if(args.access_key and args.secret_key):
-			return {'access_key': args.access_key,
-			        'secret_key': args.secret_key}
+		# manifest overrides environment
 		if(manifest.credentials['access-key'] and manifest.credentials['secret-key']):
 			return {'access_key': manifest.credentials['access-key'],
 			        'secret_key': manifest.credentials['secret-key']}
@@ -19,8 +16,6 @@ class GetCredentials(Task):
 			return {'access_key': getenv('EC2_ACCESS_KEY'),
 			        'secret_key': getenv('EC2_SECRET_KEY')}
 
-		if(bool(args.access_key) != bool(args.secret_key)):
-			raise RuntimeError('Both the access key and secret key must be specified as arguments.')
 		if(bool(manifest.credentials['access-key']) != bool(manifest.credentials['secret-key'])):
 			raise RuntimeError('Both the access key and secret key must be specified in the manifest.')
 		if(bool(getenv('EC2_ACCESS_KEY')) != bool(getenv('EC2_SECRET_KEY'))):

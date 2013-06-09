@@ -1,6 +1,6 @@
 
 
 class BootstrapInformation(object):
-	def __init__(self, manifest=None, args=None):
+	def __init__(self, manifest=None, debug=False):
 		self.manifest = manifest
-		self.args     = args
+		self.debug    = debug

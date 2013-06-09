@@ -1,15 +1,25 @@
-import json
+
+
+def load_manifest(path):
+	import json
+	return json.load(open(path))
+
+
+def get_provider(data):
+	provider = __import__('providers.%s' % data['provider'], fromlist=['providers'])
+	return provider
 
 
 class Manifest(object):
-	def __init__(self, path):
+	def __init__(self, path, data):
 		self.path = path
-		self.parse(json.load(open(self.path)))
+		self.parse(data)
 
 	def parse(self, data):
-		self.volume  = data['volume']
-		self.system  = data['system']
-		self.plugins = data['plugins']
+		self.provider = data['provider']
+		self.volume   = data['volume']
+		self.system   = data['system']
+		self.plugins  = data['plugins']
 
 	def validate(self):
 		pass
