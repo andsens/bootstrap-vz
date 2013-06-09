@@ -3,9 +3,9 @@ from manifest import Manifest
 
 def tasklist(manifest):
 	from common import TaskList
-	import packages
-	import ec2
-	import host
+	from tasks import packages
+	from tasks import ec2
+	from tasks import host
 	task_list = TaskList()
 	task_list.extend([packages.HostPackages(),
 	                  packages.ImagePackages(),

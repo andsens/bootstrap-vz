@@ -15,10 +15,10 @@ def main():
 def run(args):
 	from manifest import load_manifest
 	from manifest import get_provider
-	data = load_manifest(args.manifest)
+	data     = load_manifest(args.manifest)
 	provider = get_provider(data)
-
 	manifest = provider.Manifest(args.manifest, data)
+	
 	manifest.validate()
 	manifest.load_plugins()
 
