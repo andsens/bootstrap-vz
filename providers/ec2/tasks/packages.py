@@ -2,6 +2,8 @@ from base import Task
 
 
 class HostPackages(Task):
+	description = 'Determining required host packages'
+
 	def run(self, info):
 		super(HostPackages, self).run(info)
 		packages = set(['debootstrap',
@@ -15,6 +17,8 @@ class HostPackages(Task):
 
 
 class ImagePackages(Task):
+	description = 'Determining required image packages'
+
 	def run(self, info):
 		super(ImagePackages, self).run(info)
 		manifest = info.manifest

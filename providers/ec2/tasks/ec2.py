@@ -2,6 +2,8 @@ from base import Task
 
 
 class GetCredentials(Task):
+	description = 'Getting AWS credentials'
+
 	def run(self, info):
 		super(GetCredentials, self).run(info)
 		info.ec2_credentials = self.get_ec2_credentials(info.manifest)
@@ -25,6 +27,8 @@ class GetCredentials(Task):
 
 
 class Connect(Task):
+	description = 'Connecting to EC2'
+	
 	def run(self, info):
 		super(Connect, self).run(info)
 		# import boto.ec2

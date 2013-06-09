@@ -2,6 +2,8 @@ from base import Task
 
 
 class GetInfo(Task):
+	description = 'Retrieving host information'
+
 	def run(self, info):
 		super(GetInfo, self).run(info)
 		# import urllib2
@@ -12,6 +14,8 @@ class GetInfo(Task):
 
 
 class InstallPackages(Task):
+	description = 'Installing host packages'
+
 	def run(self, info):
 		# Check if packages are installed with
 		# /usr/bin/dpkg -s ${name} | grep -q 'Status: install'

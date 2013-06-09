@@ -1,3 +1,5 @@
+import logging
+log = logging.getLogger(__name__)
 
 
 def load_manifest(path):
@@ -28,5 +30,7 @@ class Manifest(object):
 		self.loaded_plugins = []
 		for modname in self.plugins.keys():
 			if self.plugins[modname]['enabled']:
-				plugin = __import__('plugins.{module}'.format(module=modname), fromlist=['plugins'])
+				plugin_name = 'plugins.{module}'.format(module=modname)
+				plugin = __import__(plugin_name, fromlist=['plugins'])
+				log.debug('Loaded plugin %s', plugin_name)
 				self.loaded_plugins.append(plugin)
