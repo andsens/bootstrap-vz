@@ -1,7 +1,7 @@
-import common
+import base
 
 
-class Manifest(common.Manifest):
+class Manifest(base.Manifest):
 	def parse(self, data):
 		super(Manifest, self).parse(data)
 		self.credentials    = data["credentials"]

@@ -1,4 +1,4 @@
-from common import Task
+from base import Task
 
 
 class GetCredentials(Task):

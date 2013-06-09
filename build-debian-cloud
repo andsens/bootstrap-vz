@@ -2,5 +2,5 @@
 
 
 if __name__ == '__main__' and __package__ is None:
-	from common import main
+	from base import main
 	main()
