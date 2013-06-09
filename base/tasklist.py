@@ -8,6 +8,7 @@ class TaskList(list):
 
 	def run(self, bootstrap_info):
 		for task in self:
+			print('Running {taskname}'.format(taskname=task))
 			task.run(bootstrap_info)
 
 	def before(self, ref, task):

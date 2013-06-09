@@ -7,4 +7,10 @@ class Task(object):
 		pass
 
 	def run(self, info):
-		print 'Running ' + self.__module__ + "." + self.__class__.__name__
+		pass
+
+	def __str__(self):
+		if self.name is None:
+			return '{module}.{task}'.format(module=self.__module__, task=self.__class__.__name__)
+		else:
+			return self.name
