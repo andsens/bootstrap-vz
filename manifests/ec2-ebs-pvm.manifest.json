@@ -8,8 +8,8 @@
 
 	"bootstrapdir"  : "/target",
 	"image": {
-		"name"       : "debian-{release}-{architecture}-{virt}-{year}{month}{day}",
-		"description": "Debian {release} {architecture} AMI ({virt})"
+		"name"       : "debian-{release}-{architecture}-{virtualization}-{year}{month}{day}",
+		"description": "Debian {release} {architecture} AMI ({virtualization})"
 	},
 	"system": {
 		"architecture": "amd64", 
