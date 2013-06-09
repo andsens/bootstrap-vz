@@ -1,5 +1,4 @@
-__all__ = ['BootstrapInformation', 'Manifest', 'Task', 'TaskList', 'main']
-from bootstrapinfo import BootstrapInformation
+__all__ = ['Manifest', 'Task', 'TaskList', 'main']
 from manifest import Manifest
 from task import Task
 from tasklist import TaskList

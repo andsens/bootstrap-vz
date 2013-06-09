@@ -18,13 +18,13 @@ def run(args):
 	data     = load_manifest(args.manifest)
 	provider = get_provider(data)
 	manifest = provider.Manifest(args.manifest, data)
-	
+
 	manifest.validate()
 	manifest.load_plugins()
 
 	tasklist = provider.tasklist(manifest)
 	tasklist.plugins(manifest)
 
-	from common import BootstrapInformation
+	from bootstrapinfo import BootstrapInformation
 	bootstrap_info = BootstrapInformation(manifest=manifest, debug=args.debug)
 	tasklist.run(bootstrap_info)
