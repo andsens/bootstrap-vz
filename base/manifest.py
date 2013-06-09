@@ -6,7 +6,7 @@ def load_manifest(path):
 
 
 def get_provider(data):
-	provider = __import__('providers.%s' % data['provider'], fromlist=['providers'])
+	provider = __import__('providers.{module}'.format(module=data['provider']), fromlist=['providers'])
 	return provider
 
 
@@ -28,5 +28,5 @@ class Manifest(object):
 		self.loaded_plugins = []
 		for modname in self.plugins.keys():
 			if self.plugins[modname]['enabled']:
-				plugin = __import__('plugins.%s' % modname, fromlist=['plugins'])
+				plugin = __import__('plugins.{module}'.format(module=modname), fromlist=['plugins'])
 				self.loaded_plugins.append(plugin)
