@@ -1,8 +1,11 @@
 from base import Task
-
+from common import phases
+from providers.ec2.tasks import packages
 
 class CheckPackages(Task):
 	description = 'Checking installed host packages'
+	phase = phases.Preparation
+	after = [packages.HostPackages, packages.ImagePackages]
 
 	def run(self, info):
 		import subprocess
@@ -18,6 +21,7 @@ class CheckPackages(Task):
 
 class GetInfo(Task):
 	description = 'Retrieving instance metadata'
+	phase = phases.Preparation
 
 	def run(self, info):
 		super(GetInfo, self).run(info)

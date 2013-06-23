@@ -1,8 +1,10 @@
 from base import Task
+from common import phases
 
 
 class HostPackages(Task):
 	description = 'Determining required host packages'
+	phase = phases.Preparation
 
 	def run(self, info):
 		super(HostPackages, self).run(info)
@@ -18,6 +20,7 @@ class HostPackages(Task):
 
 class ImagePackages(Task):
 	description = 'Determining required image packages'
+	phase = phases.Preparation
 
 	def run(self, info):
 		super(ImagePackages, self).run(info)

@@ -1,8 +1,11 @@
 from base import Task
-
+from common import phases
+from connection import Connect
 
 class CreateVolume(Task):
 	description = 'Creating an EBS volume for bootstrapping'
+	phase = phases.VolumeCreation
+	after = [Connect]
 
 	def run(self, info):
 		# info.conn.create_volume(50, "us-west-2")

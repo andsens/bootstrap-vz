@@ -48,8 +48,9 @@ def run(args):
 
 	from tasklist import TaskList
 	tasklist = TaskList()
-	provider.modify_tasklist(tasklist, manifest)
-	tasklist.plugins(manifest)
+	provider.tasks(tasklist, manifest)
+	for plugin in manifest.loaded_plugins:
+		plugin.tasks(tasklist, manifest)
 
 	from bootstrapinfo import BootstrapInformation
 	bootstrap_info = BootstrapInformation(manifest=manifest, debug=args.debug)

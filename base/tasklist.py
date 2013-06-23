@@ -2,33 +2,29 @@ import logging
 log = logging.getLogger(__name__)
 
 
-class TaskList(list):
+class TaskList(object):
 
-	def plugins(self, manifest):
-		for plugin in manifest.loaded_plugins:
-			plugin.modify_tasklist(self, manifest)
+	def __init__(self):
+		self.tasks = set()
+
+	def add(self, *args):
+		self.tasks.update(args)
+
+	def remove(self, task):
+		self.tasks.discard(self.get(task))
+
+	def replace(self, task, replacement):
+		self.remove(task)
+		self.add(replacement)
+
+	def get(self, task):
+		return next(task for task in self.tasks if type(task) is ref)
 
 	def run(self, bootstrap_info):
-		for task in self:
+		log.debug('Tasklist before:\n{list}'.format(list=',\n'.join(str(task) for task in self.tasks) ))
+		task_list = sorted(self.tasks)
+		log.debug('Tasklist:\n{list}'.format(list=',\n'.join(str(task) for task in task_list) ))
+		return
+		for task in tasks:
 			log.info(task)
 			task.run(bootstrap_info)
-
-	def before(self, ref, task):
-		log.debug('Inserting %s before %s.%s', task, ref.__module__, ref.__name__)
-		i = next(i for i, task in enumerate(self) if type(task) is ref)
-		self.insert(i, task)
-
-	def replace(self, ref, task):
-		log.debug('Replacing %s.%s with %s', ref.__module__, ref.__name__, task)
-		i = next(i for i, task in enumerate(self) if type(task) is ref)
-		self.pop(i)
-		self.insert(i, task)
-
-	def after(self, ref, task):
-		log.debug('Inserting %s after %s.%s', task, ref.__module__, ref.__name__)
-		i = next(i for i, task in enumerate(self) if type(task) is ref)
-		self.insert(i+1, task)
-
-	def append(self, task):
-		super(TaskList, self).append(task)
-		log.debug('Appending %s', task)

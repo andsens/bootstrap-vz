@@ -1,5 +1,5 @@
 
 
-def modify_tasklist(tasklist, manifest):
+def tasks(tasklist, manifest):
 	from buildmetadata import PrintInfo
-	tasklist.append(PrintInfo())
+	tasklist.add(PrintInfo())

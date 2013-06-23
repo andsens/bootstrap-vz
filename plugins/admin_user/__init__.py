@@ -1,6 +1,5 @@
 
 
-def modify_tasklist(tasklist, manifest):
-	from providers.ec2.tasks.packages import ImagePackages
+def tasks(tasklist, manifest):
 	from adminuser import AddSudoPackage
-	tasklist.after(ImagePackages, AddSudoPackage())
+	tasklist.add(AddSudoPackage())
