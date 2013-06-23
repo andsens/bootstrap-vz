@@ -1,0 +1,25 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "Generic manifest",
+	"type": "object",
+	"properties": {
+		"provider": {
+			"type": "string"
+		},
+		"plugins": {
+			"type": "object",
+			"patternProperties": {
+				"^\\w+$": {
+					"type": "object",
+					"properties": {
+						"enabled": {
+							"type": "boolean"
+						}
+					},
+					"required": ["enabled"]
+				}
+			},
+			"additionalProperties": false
+		}
+	}
+}

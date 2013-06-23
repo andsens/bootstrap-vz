@@ -23,17 +23,19 @@ class Manifest(object):
 	def __init__(self, path):
 		self.path = path
 
-	def validate(self, data, schema_path=None):
-		if schema_path is not None:
-			from json_schema_validator.validator import Validator
-			from json_schema_validator.schema import Schema
-			from json_schema_validator.errors import ValidationError
-			schema = Schema(load_json(schema_path))
-			try:
-				Validator.validate(schema, data)
-			except ValidationError as e:
-				from common.exceptions import ManifestError
-				raise ManifestError(e.message, self)
+	def validate(self, data):
+		from os import path
+		schema_path = path.normpath(path.join(path.dirname(__file__), 'manifest-schema.json'))
+		self.schema_validate(data, schema_path)
+
+	def schema_validate(self, data, schema_path):
+		import jsonschema
+		schema = load_json(schema_path)
+		try:
+			jsonschema.validate(data, schema)
+		except jsonschema.ValidationError as e:
+			from common.exceptions import ManifestError
+			raise ManifestError(e.message, self, e.path)
 
 	def parse(self, data):
 		self.provider = data['provider']

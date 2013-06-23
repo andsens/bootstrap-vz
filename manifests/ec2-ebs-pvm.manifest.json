@@ -6,7 +6,7 @@
 		"secret-key": null
 	},
 
-	"bootstrapdir"  : "/target",
+	"bootstrapdir": "/target",
 	"image": {
 		"name"       : "debian-{release}-{architecture}-{virtualization}-{year}{month}{day}",
 		"description": "Debian {release} {architecture} AMI ({virtualization})"
@@ -29,7 +29,7 @@
 			"enabled": true
 		},
 		"build_metadata": {
-			"enabled": true,
+			"enabled": false,
 			"path"   : "/root/build-metadata-{ami_name}"
 		}
 	}

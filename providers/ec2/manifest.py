@@ -5,7 +5,8 @@ class Manifest(base.Manifest):
 	def validate(self, data):
 		from os import path
 		schema_path = path.normpath(path.join(path.dirname(__file__), 'manifest-schema.json'))
-		super(Manifest, self).validate(data, schema_path)
+		self.schema_validate(data, schema_path)
+		super(Manifest, self).validate(data)
 
 	def parse(self, data):
 		super(Manifest, self).parse(data)
