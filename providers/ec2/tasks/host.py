@@ -1,6 +1,6 @@
 from base import Task
 from common import phases
-from providers.ec2.tasks import packages
+import packages
 
 class CheckPackages(Task):
 	description = 'Checking installed host packages'
