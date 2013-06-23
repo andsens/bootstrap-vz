@@ -1,44 +1,24 @@
 from base import Phase
 
+preparation = Phase('Initializing connections, fetching data etc.')
+volume_creation = Phase('Creating the volume to bootstrap onto')
+volume_preparation = Phase('Formatting the bootstrap volume')
+volume_mounting = Phase('Mounting bootstrap volume')
+install_os = Phase('Installing the operating system')
+modify_system = Phase('Installing software, modifying configuration files etc.')
+clean_system = Phase('Removing sensitive data, temporary files and other leftovers')
+unmount_volume = Phase('Unmounting the bootstrap volume')
+register_image = Phase('Uploading/Registering with the provider')
+cleanup = Phase('Removing temporary files')
 
-class Preparation(Phase):
-	description = 'Initializing connections, fetching data etc.'
-
-class VolumeCreation(Phase):
-	description = 'Creating the volume to bootstrap onto'
-
-class VolumePreparation(Phase):
-	description = 'Formatting the bootstrap volume'
-
-class VolumeMounting(Phase):
-	description = 'Mounting bootstrap volume'
-
-class InstallOS(Phase):
-	description = 'Installing the operating system'
-
-class ModifySystem(Phase):
-	description = 'Installing software, modifying configuration files etc.'
-
-class CleanSystem(Phase):
-	description = 'Removing sensitive data, temporary files and other leftovers'
-
-class UnmountVolume(Phase):
-	description = 'Unmounting the bootstrap volume'
-
-class RegisterImage(Phase):
-	description = 'Uploading/Registering with the provider'
-
-class Cleanup(Phase):
-	description = 'Removing temporary files'
-
-order = [Preparation,
-         VolumeCreation,
-         VolumePreparation,
-         VolumeMounting,
-         InstallOS,
-         ModifySystem,
-         CleanSystem,
-         UnmountVolume,
-         RegisterImage,
-         Cleanup
+order = [preparation
+        ,volume_creation
+        ,volume_preparation
+        ,volume_mounting
+        ,install_os
+        ,modify_system
+        ,clean_system
+        ,unmount_volume
+        ,register_image
+        ,cleanup
         ]

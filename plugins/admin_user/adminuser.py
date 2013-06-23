@@ -6,7 +6,7 @@ from providers.ec2.tasks.host import CheckPackages
 
 class AddSudoPackage(Task):
 	description = 'Adding ``sudo\'\' to the image packages'
-	phase = phases.Preparation
+	phase = phases.preparation
 	after = [ImagePackages]
 	before = [CheckPackages]
 

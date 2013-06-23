@@ -5,7 +5,7 @@ from providers.ec2.tasks.host import GetInfo
 
 class PrintInfo(Task):
 	description = 'Printing `info\' to the console'
-	phase = phases.InstallOS
+	phase = phases.install_os
 	after = [GetInfo]
 
 	def run(self, info):

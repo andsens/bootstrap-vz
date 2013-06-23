@@ -4,7 +4,7 @@ import packages
 
 class CheckPackages(Task):
 	description = 'Checking installed host packages'
-	phase = phases.Preparation
+	phase = phases.preparation
 	after = [packages.HostPackages, packages.ImagePackages]
 
 	def run(self, info):
@@ -21,7 +21,7 @@ class CheckPackages(Task):
 
 class GetInfo(Task):
 	description = 'Retrieving instance metadata'
-	phase = phases.Preparation
+	phase = phases.preparation
 
 	def run(self, info):
 		super(GetInfo, self).run(info)

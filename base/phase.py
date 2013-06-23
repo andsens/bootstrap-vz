@@ -1,18 +1,15 @@
-from functools import total_ordering
 
-@total_ordering
+
 class Phase(object):
-	description = None
+	def __init__(self, description):
+		self.description = description
 
-	def __init__(self):
-		pass
-
-	def __lt__(self, other):
+	def pos(self):
 		from common.phases import order
-		return order.index(self) < order.index(other)
+		return (i for i, phase in enumerate(order) if phase is self).next()
 
-	def __eq__(self, other):
-		return self == other
+	def __cmp__(self, other):
+		return self.pos() - other.pos()
 
 	def __str__(self):
 		return '{name}'.format(name=self.__class__.__name__)

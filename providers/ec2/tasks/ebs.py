@@ -4,7 +4,7 @@ from connection import Connect
 
 class CreateVolume(Task):
 	description = 'Creating an EBS volume for bootstrapping'
-	phase = phases.VolumeCreation
+	phase = phases.volume_creation
 	after = [Connect]
 
 	def run(self, info):
