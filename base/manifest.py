@@ -3,8 +3,7 @@ log = logging.getLogger(__name__)
 
 
 def load_manifest(path):
-	from json import load
-	data = load(open(path))
+	data = load_json(path)
 
 	provider = __import__('providers.{module}'.format(module=data['provider']), fromlist=['providers'])
 	manifest = provider.Manifest(path)
@@ -14,17 +13,22 @@ def load_manifest(path):
 	manifest.load_plugins()
 	return (provider, manifest)
 
+def load_json(path):
+	import json
+	from minify_json import json_minify
+	with open(path) as stream:
+		return json.loads(json_minify(stream.read(), False))
+
 class Manifest(object):
 	def __init__(self, path):
 		self.path = path
 
 	def validate(self, data, schema_path=None):
 		if schema_path is not None:
-			from json import load
 			from json_schema_validator.validator import Validator
 			from json_schema_validator.schema import Schema
 			from json_schema_validator.errors import ValidationError
-			schema = Schema(load(open(schema_path)))
+			schema = Schema(load_json(schema_path))
 			try:
 				Validator.validate(schema, data)
 			except ValidationError as e:
