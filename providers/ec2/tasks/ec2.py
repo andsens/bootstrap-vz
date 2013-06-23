@@ -6,9 +6,9 @@ class GetCredentials(Task):
 
 	def run(self, info):
 		super(GetCredentials, self).run(info)
-		info.ec2_credentials = self.get_ec2_credentials(info.manifest)
+		info.credentials = self.get_credentials(info.manifest)
 
-	def get_ec2_credentials(self, manifest):
+	def get_credentials(self, manifest):
 		from os import getenv
 		# manifest overrides environment
 		if(manifest.credentials['access-key'] and manifest.credentials['secret-key']):
@@ -31,8 +31,7 @@ class Connect(Task):
 	
 	def run(self, info):
 		super(Connect, self).run(info)
-		# import boto.ec2
-		# info.ec2_connection = boto.ec2.connect_to_region(info.host['region'],
-		#                                                  aws_access_key_id=info.ec2_credentials['access_key'],
-		#                                                  aws_secret_access_key=info.ec2_credentials['secret_key'])
-		# return 'ec2_connection', ec2_connection
+		from boto.ec2 import connect_to_region
+		info.connection = connect_to_region(info.host['region'],
+		                                    aws_access_key_id=info.credentials['access_key'],
+		                                    aws_secret_access_key=info.credentials['secret_key'])

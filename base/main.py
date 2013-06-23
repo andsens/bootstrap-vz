@@ -44,13 +44,7 @@ def setup_logger(args):
 
 def run(args):
 	from manifest import load_manifest
-	from manifest import get_provider
-	data     = load_manifest(args.manifest)
-	provider = get_provider(data)
-	manifest = provider.Manifest(args.manifest, data)
-
-	manifest.validate()
-	manifest.load_plugins()
+	(provider, manifest) = load_manifest(args.manifest)
 
 	from tasklist import TaskList
 	tasklist = TaskList()

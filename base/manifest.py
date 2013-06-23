@@ -3,28 +3,39 @@ log = logging.getLogger(__name__)
 
 
 def load_manifest(path):
-	import json
-	return json.load(open(path))
+	from json import load
+	data = load(open(path))
 
-
-def get_provider(data):
 	provider = __import__('providers.{module}'.format(module=data['provider']), fromlist=['providers'])
-	return provider
+	manifest = provider.Manifest(path)
 
+	manifest.validate(data)
+	manifest.parse(data)
+	manifest.load_plugins()
+	return (provider, manifest)
 
 class Manifest(object):
-	def __init__(self, path, data):
+	def __init__(self, path):
 		self.path = path
-		self.parse(data)
+
+	def validate(self, data, schema_path=None):
+		if schema_path is not None:
+			from json import load
+			from json_schema_validator.validator import Validator
+			from json_schema_validator.schema import Schema
+			from json_schema_validator.errors import ValidationError
+			schema = Schema(load(open(schema_path)))
+			try:
+				Validator.validate(schema, data)
+			except ValidationError as e:
+				from common.exceptions import ManifestError
+				raise ManifestError(e.message, self)
 
 	def parse(self, data):
 		self.provider = data['provider']
 		self.volume   = data['volume']
 		self.system   = data['system']
 		self.plugins  = data['plugins']
-
-	def validate(self):
-		pass
 
 	def load_plugins(self):
 		self.loaded_plugins = []

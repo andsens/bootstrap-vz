@@ -22,7 +22,7 @@
 	"volume": {
 		"backing"   : "ebs",
 		"filesystem": "ext4",
-		"size"      : "1G"   
+		"size"      : 1
 	},
 	"plugins": {
 		"admin_user": {

@@ -1,22 +1,29 @@
 from base import Task
 
 
+class CheckPackages(Task):
+	description = 'Checking installed host packages'
+
+	def run(self, info):
+		import subprocess
+		from os import devnull
+		for package in info.host_packages:
+			try:
+				with open(devnull, 'w') as dev_null:
+					subprocess.check_call(['/usr/bin/dpkg', '-s', package], stdout=dev_null, stderr=dev_null)
+			except subprocess.CalledProcessError:
+				msg = "The package ``{0}\'\' is not installed".format(package)
+				raise RuntimeError(msg)
+
+
 class GetInfo(Task):
-	description = 'Retrieving host information'
+	description = 'Retrieving instance metadata'
 
 	def run(self, info):
 		super(GetInfo, self).run(info)
-		# import urllib2
-		# import json
-		# response = urllib2.urlopen('http://169.254.169.254/latest/dynamic/instance-identity/document')
-		# info.host = json.load(response.read())
-		# return info
-
-
-class InstallPackages(Task):
-	description = 'Installing host packages'
-
-	def run(self, info):
-		# Check if packages are installed with
-		# /usr/bin/dpkg -s ${name} | grep -q 'Status: install'
-		pass
+		import urllib2
+		import json
+		metadata_url = 'http://169.254.169.254/latest/dynamic/instance-identity/document'
+		response = urllib2.urlopen(url=metadata_url, timeout=5)
+		info.host = json.load(response)
+		return info

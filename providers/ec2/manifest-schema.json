@@ -1,0 +1,20 @@
+{
+	"title": "EC2 manifest",
+	"type": "object",
+	"properties": {
+		"bootstrapdir": {
+			"type": "string"
+		},
+		"volume": {
+			"type": "object",
+			"properties": {
+				"backing": {
+					"type": "string",
+					"enum": ["ebs", "s3"]
+				}
+			},
+			"required": ["backing"]
+		}
+	},
+	"required": ["bootstrapdir", "volume"]
+}
