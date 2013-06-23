@@ -9,9 +9,8 @@ class ManifestError(Exception):
 		return "Error in manifest {0}: {1}".format(self.manifest.path, self.message)
 
 
-class TaskOrderError(Exception):
-	def __init__(self, message, task):
+class TaskListError(Exception):
+	def __init__(self, message):
 		self.message = message
-		self.task = task
 	def __str__(self):
-		return "Error in task order: {1}".format(self.message)
+		return "Error in tasklist: {0}".format(self.message)

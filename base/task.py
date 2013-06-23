@@ -1,7 +1,6 @@
-from functools import total_ordering
+from common.exceptions import TaskListError
 
 
-@total_ordering
 class Task(object):
 	description = None
 	
@@ -42,15 +41,10 @@ class Task(object):
 				msg = ("The task {self} is specified as running before {other}, "
 				       "but its phase {phase} lies after the phase {other_phase}"
 				       .format(self, other, self.phase, other.phase))
-				raise TaskOrderError(msg)
+				raise TaskListError(msg)
 		for task in self.after:
 			if self.phase < task.phase:
 				msg = ("The task {self} is specified as running after {other}, "
 				       "but its phase {phase} lies before the phase {other_phase}"
 				       .format(self=self, other=other, phase=self.phase, other_phase=other.phase))
-				raise TaskOrderError(msg)
-		conflict = next(iter(set(self.before) &  set(self.after)), None)
-		if conflict is not None:
-				msg = ("The task {self} is specified as running both before and after {conflict}"
-				       .format(self=self, conflict=conflict))
-				raise TaskOrderError(msg)
+				raise TaskListError(msg)
