@@ -6,6 +6,15 @@
 		"provider": {
 			"type": "string"
 		},
+		"volume": {
+			"type": "object",
+			"properties": {
+				"size": {
+					"type": "integer"
+				}
+			},
+			"required": ["size"]
+		},
 		"plugins": {
 			"type": "object",
 			"patternProperties": {
