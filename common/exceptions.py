@@ -17,6 +17,3 @@ class TaskListError(Exception):
 		self.message = message
 	def __str__(self):
 		return "Error in tasklist: {0}".format(self.message)
-
-class VolumeError(Exception):
-	pass

@@ -1,5 +1,6 @@
 from base import Task
 from common import phases
+from common.exceptions import TaskException
 from connection import Connect
 
 class CreateVolume(Task):
@@ -35,3 +36,5 @@ class AttachVolume(Task):
 			raise VolumeError('Unable to find a free block device path for mounting the bootstrap volume')
 		info.conn.volume.attach(info.host['instanceId'], info.bootstrap_device['path'])
 
+class VolumeError(TaskException):
+	pass
