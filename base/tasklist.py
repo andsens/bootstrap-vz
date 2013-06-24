@@ -22,21 +22,41 @@ class TaskList(object):
 		return next(task for task in self.tasks if type(task) is ref)
 
 	def run(self, bootstrap_info):
-		task_list = self.create_list()
+		task_list = self.create_list(self.tasks)
 		log.debug('Tasklist:\n\t{list}'.format(list='\n\t'.join(repr(task) for task in task_list)))
-		for task in task_list:
-			log.info(task)
-			task.run(bootstrap_info)
 
-	def create_list(self):
+		tasks_completed = []
+		try:
+			for task in task_list:
+				if hasattr(task, 'description'):
+					log.info(task.description)
+				else:
+					log.info('Running {task}'.format(task=task))
+				task.run(bootstrap_info)
+				tasks_completed.append(task)
+		except Exception, e:
+			log.exception(e)
+			log.error('Rolling back')
+			for task in reversed(tasks_completed):
+				rollback = getattr(task, 'rollback', None)
+				if not callable(rollback):
+					continue
+				if hasattr(task, 'rollback_description'):
+					log.warning(task.rollback_description)
+				else:
+					log.warning('Rolling back {task}'.format(task=task))
+				task.rollback(bootstrap_info)
+			log.info('Successfully completed rollback')
+
+	def create_list(self, tasks):
 		from common.phases import order
 		graph = {}
-		for task in self.tasks:
+		for task in tasks:
 			graph[task] = []
 			graph[task].extend([self.get(succ) for succ in task.before])
-			graph[task].extend([succ for succ in self.tasks if type(task) in succ.after])
+			graph[task].extend([succ for succ in tasks if type(task) in succ.after])
 			succeeding_phases = order[order.index(task.phase)+1:]
-			graph[task].extend([succ for succ in self.tasks if succ.phase in succeeding_phases])
+			graph[task].extend([succ for succ in tasks if succ.phase in succeeding_phases])
 
 
 		components = self.strongly_connected_components(graph)
@@ -72,7 +92,6 @@ class TaskList(object):
 			stack.append(node)
 
 			for successor in graph[node]:
-				# print successor
 				visit(successor)
 				low[node] = min(low[node], low[successor])
 

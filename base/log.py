@@ -32,29 +32,18 @@ def setup_logger(logfile=None, debug=False):
 
 
 class ConsoleFormatter(logging.Formatter):
+	level_colors = {
+		logging.ERROR: 'red',
+		logging.WARNING: 'magenta',
+		logging.INFO: 'blue',
+	}
 	def format(self, record):
-		from task import Task
-		if(isinstance(record.msg, Task)):
-			task = record.msg
-			if(task.description is not None):
-				return '\033[0;34m{description}\033[0m'.format(description=task.description)
-			else:
-				return '\033[0;34mRunning {task}\033[0m'.format(task=task)
+		if(record.levelno in self.level_colors):
+			from termcolor import colored, cprint
+			record.msg = colored(record.msg, self.level_colors[record.levelno])
 		return super(ConsoleFormatter, self).format(record)
 
 
 class FileFormatter(logging.Formatter):
 	def format(self, record):
-		from task import Task
-		from datetime import datetime
-		if(isinstance(record.msg, Task)):
-			task = record.msg
-			if(task.description is not None):
-				record.msg = '{description} (running {task})'.format(task=task, description=task.description)
-			else:
-				record.msg = 'Running {task}'.format(task=task)
-			message = super(FileFormatter, self).format(record)
-			record.msg = task
-		else:
-			message = super(FileFormatter, self).format(record)
-		return message
+		return super(FileFormatter, self).format(record)

@@ -2,7 +2,6 @@ from common.exceptions import TaskListError
 
 
 class Task(object):
-	description = None
 	
 	phase = None
 	before = []

@@ -1,5 +1,6 @@
 from base import Task
 from common import phases
+import host
 
 
 class GetCredentials(Task):
@@ -31,7 +32,7 @@ class GetCredentials(Task):
 class Connect(Task):
 	description = 'Connecting to EC2'
 	phase = phases.preparation
-	after = [GetCredentials]
+	after = [GetCredentials, host.GetInfo]
 	
 	def run(self, info):
 		super(Connect, self).run(info)

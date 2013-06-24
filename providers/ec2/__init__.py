@@ -10,3 +10,6 @@ def tasks(tasklist, manifest):
 	             connection.GetCredentials(), host.GetInfo(), connection.Connect())
 	if manifest.volume['backing'].lower() == 'ebs':
 		tasklist.add(ebs.CreateVolume(), ebs.AttachVolume())
+
+	from common.tasks import TriggerRollback
+	tasklist.add(TriggerRollback())
