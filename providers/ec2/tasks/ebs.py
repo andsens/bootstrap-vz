@@ -8,17 +8,30 @@ class CreateVolume(Task):
 	after = [Connect]
 
 	def run(self, info):
-		# info.conn.create_volume(50, "us-west-2")
-# volume_id=`euca-create-volume --size $volume_size --zone "$availability_zone" | awk '{print $2}'`
-# [ -z "$volume_id" ] && die "Unable to create volume."
-# log "The EBS volume id is $volume_id"
+		volume_size = int(info.manifest.volume['size']/1024)
+		info.volume = info.conn.create_volume(volume_size, info.host['availabilityZone'])
 
-# 		for package in info.host_packages:
-# 			try:
-# 				with open(devnull, 'w') as dev_null:
-# 					subprocess.check_call(['/usr/bin/dpkg', '-s', package], stdout=dev_null, stderr=dev_null)
-# 			except subprocess.CalledProcessError:
-# 				msg = "The package ``{0}\'\' is not installed".format(package)
-# 				raise RuntimeError(msg)
-		pass
+class AttachVolume(Task):
+	description = 'Attaching the EBS volume'
+	phase = phases.volume_creation
+	after = [CreateVolume]
+
+	def run(self, info):
+		def char_range(c1, c2):
+		"""Generates the characters from `c1` to `c2`, inclusive."""
+			for c in xrange(ord(c1), ord(c2)+1):
+				yield chr(c)
+
+		import os.path
+		import os.stat
+		from stat import S_ISBLK
+		for letter in char_range('a', 'z'):
+			dev_path = os.path.join('/dev', 'xvd' + letter)
+			mode = os.stat(dev_path).st_mode
+			if S_ISBLK(mode):
+				info.bootstrap_device = {'path': dev_path}
+				break
+		if 'path' not in info.bootstrap_device:
+			raise VolumeError('Unable to find a free block device path for mounting the bootstrap volume')
+		info.conn.volume.attach(info.host['instanceId'], info.bootstrap_device['path'])
 
