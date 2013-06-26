@@ -21,5 +21,5 @@ class TaskListError(Exception):
 		return "Error in tasklist: {0}".format(self.message)
 
 
-class TaskException(Exception):
+class TaskError(Exception):
 	pass
