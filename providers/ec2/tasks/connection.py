@@ -33,7 +33,7 @@ class Connect(Task):
 	description = 'Connecting to EC2'
 	phase = phases.preparation
 	after = [GetCredentials, host.GetInfo]
-	
+
 	def run(self, info):
 		super(Connect, self).run(info)
 		from boto.ec2 import connect_to_region

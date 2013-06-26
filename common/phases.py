@@ -11,14 +11,14 @@ unmount_volume = Phase('Unmounting the bootstrap volume')
 register_image = Phase('Uploading/Registering with the provider')
 cleanup = Phase('Removing temporary files')
 
-order = [preparation
-        ,volume_creation
-        ,volume_preparation
-        ,volume_mounting
-        ,install_os
-        ,modify_system
-        ,clean_system
-        ,unmount_volume
-        ,register_image
-        ,cleanup
-        ]
+order = [preparation,
+         volume_creation,
+         volume_preparation,
+         volume_mounting,
+         install_os,
+         modify_system,
+         clean_system,
+         unmount_volume,
+         register_image,
+         cleanup,
+         ]

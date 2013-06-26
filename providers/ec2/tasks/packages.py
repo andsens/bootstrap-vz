@@ -38,18 +38,18 @@ class ImagePackages(Task):
 
 		if manifest.virtualization == 'pvm':
 			include.add('grub-pc')
-		
+
 		exclude = set(['isc-dhcp-client',
 		               'isc-dhcp-common',
 		               ])
-		
+
 		# In squeeze, we need a special kernel flavor for xen
 		kernels = {'squeeze': {'amd64': 'linux-image-xen-amd64',
 		                       'i386':  'linux-image-xen-686', },
 		           'wheezy':  {'amd64': 'linux-image-amd64',
 		                       'i386':  'linux-image-686', }, }
 		include.add(kernels.get(manifest.system['release']).get(manifest.system['architecture']))
-		
+
 		include = include.union(manifest.system['packages'])
-		
+
 		info.img_packages = include, exclude

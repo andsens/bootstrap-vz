@@ -2,7 +2,6 @@ import logging
 
 
 def get_logfile_path(manifest_path):
-	import sys
 	import os.path
 	from datetime import datetime
 
@@ -11,6 +10,7 @@ def get_logfile_path(manifest_path):
 	timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
 	filename = "{timestamp}_{name}.log".format(timestamp=timestamp, name=manifest_name)
 	return os.path.normpath(os.path.join(os.path.dirname(__file__), '../logs', filename))
+
 
 def setup_logger(logfile=None, debug=False):
 	root = logging.getLogger()
@@ -32,14 +32,14 @@ def setup_logger(logfile=None, debug=False):
 
 
 class ConsoleFormatter(logging.Formatter):
-	level_colors = {
-		logging.ERROR: 'red',
-		logging.WARNING: 'magenta',
-		logging.INFO: 'blue',
-	}
+	level_colors = {logging.ERROR: 'red',
+	                logging.WARNING: 'magenta',
+	                logging.INFO: 'blue',
+	                }
+
 	def format(self, record):
 		if(record.levelno in self.level_colors):
-			from termcolor import colored, cprint
+			from termcolor import colored
 			record.msg = colored(record.msg, self.level_colors[record.levelno])
 		return super(ConsoleFormatter, self).format(record)
 

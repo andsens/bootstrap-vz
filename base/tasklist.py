@@ -34,7 +34,7 @@ class TaskList(object):
 					log.info('Running {task}'.format(task=task))
 				task.run(bootstrap_info)
 				tasks_completed.append(task)
-		except Exception, e:
+		except Exception as e:
 			log.exception(e)
 			log.error('Rolling back')
 			for task in reversed(tasks_completed):
@@ -58,7 +58,6 @@ class TaskList(object):
 			succeeding_phases = order[order.index(task.phase)+1:]
 			graph[task].extend([succ for succ in tasks if succ.phase in succeeding_phases])
 
-
 		components = self.strongly_connected_components(graph)
 		cycles_found = 0
 		for component in components:
@@ -79,12 +78,13 @@ class TaskList(object):
 		# Find the strongly connected components in a graph using Tarjan's algorithm.
 		# graph should be a dictionary mapping node names to lists of successor nodes.
 
-		result = [ ]
-		stack = [ ]
-		low = { }
+		result = []
+		stack = []
+		low = {}
 
 		def visit(node):
-			if node in low: return
+			if node in low:
+				return
 
 			num = len(low)
 			low[node] = num
@@ -109,16 +109,16 @@ class TaskList(object):
 
 	def topological_sort(self, graph):
 		# Source: http://www.logarithmic.net/pfh-files/blog/01208083168/sort.py
-		count = { }
+		count = {}
 		for node in graph:
 			count[node] = 0
 		for node in graph:
 			for successor in graph[node]:
 				count[successor] += 1
 
-		ready = [ node for node in graph if count[node] == 0 ]
+		ready = [node for node in graph if count[node] == 0]
 
-		result = [ ]
+		result = []
 		while ready:
 			node = ready.pop(-1)
 			result.append(node)

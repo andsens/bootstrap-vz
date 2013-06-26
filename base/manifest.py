@@ -13,11 +13,13 @@ def load_manifest(path):
 	manifest.load_plugins()
 	return (provider, manifest)
 
+
 def load_json(path):
 	import json
 	from minify_json import json_minify
 	with open(path) as stream:
 		return json.loads(json_minify(stream.read(), False))
+
 
 class Manifest(object):
 	def __init__(self, path):

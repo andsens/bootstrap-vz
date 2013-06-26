@@ -7,6 +7,7 @@ def main():
 	log.setup_logger(logfile=logfile, debug=args.debug)
 	run(args)
 
+
 def get_args():
 	from argparse import ArgumentParser
 	parser = ArgumentParser(description='Bootstrap Debian for the cloud.')

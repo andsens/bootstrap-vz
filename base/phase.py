@@ -13,6 +13,6 @@ class Phase(object):
 
 	def __str__(self):
 		return '{name}'.format(name=self.__class__.__name__)
-	
+
 	def __repr__(self):
 		return self.__str__()

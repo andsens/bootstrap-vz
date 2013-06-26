@@ -2,6 +2,7 @@ from base import Task
 from common import phases
 import packages
 
+
 class CheckPackages(Task):
 	description = 'Checking installed host packages'
 	phase = phases.preparation

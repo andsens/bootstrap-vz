@@ -10,6 +10,7 @@ class CreateVolume(Task):
 	after = [Connect]
 
 	description = 'Creating an EBS volume for bootstrapping'
+
 	def run(self, info):
 		volume_size = int(info.manifest.volume['size']/1024)
 
@@ -19,15 +20,18 @@ class CreateVolume(Task):
 			info.volume.update()
 
 	rollback_description = 'Deleting the EBS volume'
+
 	def rollback(self, info):
 		info.volume.delete()
 		del info.volume
+
 
 class AttachVolume(Task):
 	phase = phases.volume_creation
 	after = [CreateVolume]
 
 	description = 'Attaching the EBS volume'
+
 	def run(self, info):
 		def char_range(c1, c2):
 			"""Generates the characters from `c1` to `c2`, inclusive."""
@@ -51,11 +55,13 @@ class AttachVolume(Task):
 			info.volume.update()
 
 	rollback_description = 'Detaching the EBS volume'
+
 	def rollback(self, info):
 		info.volume.detach()
 		while info.volume.attachment_state() is not None:
 			time.sleep(2)
 			info.volume.update()
+
 
 class VolumeError(TaskException):
 	pass
