@@ -8,7 +8,6 @@ class GetCredentials(Task):
 	phase = phases.preparation
 
 	def run(self, info):
-		super(GetCredentials, self).run(info)
 		info.credentials = self.get_credentials(info.manifest)
 
 	def get_credentials(self, manifest):
@@ -35,7 +34,6 @@ class Connect(Task):
 	after = [GetCredentials, host.GetInfo]
 
 	def run(self, info):
-		super(Connect, self).run(info)
 		from boto.ec2 import connect_to_region
 		info.connection = connect_to_region(info.host['region'],
 		                                    aws_access_key_id=info.credentials['access_key'],

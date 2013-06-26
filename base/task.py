@@ -9,9 +9,6 @@ class Task(object):
 	def __init__(self):
 		self._check_ordering()
 
-	def run(self, info):
-		pass
-
 	def __str__(self):
 		return '{module}.{task}'.format(module=self.__module__, task=self.__class__.__name__)
 

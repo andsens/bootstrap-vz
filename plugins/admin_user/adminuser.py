@@ -11,5 +11,4 @@ class AddSudoPackage(Task):
 	before = [CheckPackages]
 
 	def run(self, info):
-		super(AddSudoPackage, self).run(info)
 		info.img_packages[0].add('sudo')

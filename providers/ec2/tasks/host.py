@@ -25,7 +25,6 @@ class GetInfo(Task):
 	phase = phases.preparation
 
 	def run(self, info):
-		super(GetInfo, self).run(info)
 		import urllib2
 		import json
 		metadata_url = 'http://169.254.169.254/latest/dynamic/instance-identity/document'

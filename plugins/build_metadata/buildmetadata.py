@@ -9,5 +9,4 @@ class PrintInfo(Task):
 	after = [GetInfo]
 
 	def run(self, info):
-		super(PrintInfo, self).run(info)
 		print('info')

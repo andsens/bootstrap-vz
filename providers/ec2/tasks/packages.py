@@ -7,7 +7,6 @@ class HostPackages(Task):
 	phase = phases.preparation
 
 	def run(self, info):
-		super(HostPackages, self).run(info)
 		packages = set(['debootstrap',
 		                # To make sure a volume is not busy before unmounting we need lsof
 		                'lsof',
@@ -23,7 +22,6 @@ class ImagePackages(Task):
 	phase = phases.preparation
 
 	def run(self, info):
-		super(ImagePackages, self).run(info)
 		manifest = info.manifest
 		# Add some basic packages we are going to need
 		include = set(['udev',
