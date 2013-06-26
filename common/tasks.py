@@ -3,7 +3,7 @@ import phases
 
 
 class TriggerRollback(Task):
-	phase = phases.cleanup
+	phase = phases.cleaning
 
 	description = 'Triggering a rollback by throwing an exception'
 

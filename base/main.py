@@ -1,3 +1,5 @@
+import logging
+log = logging.getLogger(__name__)
 
 
 def main():
@@ -29,4 +31,17 @@ def run(args):
 
 	from bootstrapinfo import BootstrapInformation
 	bootstrap_info = BootstrapInformation(manifest=manifest, debug=args.debug)
-	tasklist.run(bootstrap_info)
+
+	try:
+		tasklist.run(bootstrap_info)
+	except Exception as e:
+		log.exception(e)
+		log.error('Rolling back')
+		rollback_tasklist = TaskList()
+		provider.rollback_tasks(rollback_tasklist, tasklist.tasks_completed, manifest)
+		for plugin in manifest.loaded_plugins:
+			rollback_tasks = getattr(plugin, 'rollback_tasks', None)
+			if callable(rollback_tasks):
+				plugin.rollback_tasks(rollback_tasklist, tasklist.tasks_completed, manifest)
+		rollback_tasklist.run(bootstrap_info)
+		log.info('Successfully completed rollback')

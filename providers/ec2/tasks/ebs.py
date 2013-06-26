@@ -54,13 +54,29 @@ class AttachVolume(Task):
 			time.sleep(2)
 			info.volume.update()
 
-	rollback_description = 'Detaching the EBS volume'
 
-	def rollback(self, info):
+class DetachVolume(Task):
+	phase = phases.volume_unmounting
+	after = []
+
+	description = 'Detaching the EBS volume'
+
+	def run(self, info):
 		info.volume.detach()
 		while info.volume.attachment_state() is not None:
 			time.sleep(2)
 			info.volume.update()
+
+
+class DeleteVolume(Task):
+	phase = phases.cleaning
+	after = []
+
+	description = 'Deleting the EBS volume'
+
+	def run(self, info):
+		info.volume.delete()
+		del info.volume
 
 
 class VolumeError(TaskException):

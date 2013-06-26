@@ -7,6 +7,7 @@ class TaskList(object):
 
 	def __init__(self):
 		self.tasks = set()
+		self.tasks_completed = []
 
 	def add(self, *args):
 		self.tasks.update(args)
@@ -25,28 +26,13 @@ class TaskList(object):
 		task_list = self.create_list(self.tasks)
 		log.debug('Tasklist:\n\t{list}'.format(list='\n\t'.join(repr(task) for task in task_list)))
 
-		tasks_completed = []
-		try:
-			for task in task_list:
-				if hasattr(task, 'description'):
-					log.info(task.description)
-				else:
-					log.info('Running {task}'.format(task=task))
-				task.run(bootstrap_info)
-				tasks_completed.append(task)
-		except Exception as e:
-			log.exception(e)
-			log.error('Rolling back')
-			for task in reversed(tasks_completed):
-				rollback = getattr(task, 'rollback', None)
-				if not callable(rollback):
-					continue
-				if hasattr(task, 'rollback_description'):
-					log.warning(task.rollback_description)
-				else:
-					log.warning('Rolling back {task}'.format(task=task))
-				task.rollback(bootstrap_info)
-			log.info('Successfully completed rollback')
+		for task in task_list:
+			if hasattr(task, 'description'):
+				log.info(task.description)
+			else:
+				log.info('Running {task}'.format(task=task))
+			task.run(bootstrap_info)
+			self.tasks_completed.append(task)
 
 	def create_list(self, tasks):
 		from common.phases import order
