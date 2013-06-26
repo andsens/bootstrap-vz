@@ -3,6 +3,7 @@ from tasks import packages
 from tasks import connection
 from tasks import host
 from tasks import ebs
+from tasks import filesystem
 
 
 def tasks(tasklist, manifest):
@@ -10,6 +11,12 @@ def tasks(tasklist, manifest):
 	             connection.GetCredentials(), host.GetInfo(), connection.Connect())
 	if manifest.volume['backing'].lower() == 'ebs':
 		tasklist.add(ebs.CreateVolume(), ebs.AttachVolume())
+	tasklist.add(filesystem.FormatVolume())
+	if manifest.volume['filesystem'].lower() == 'xfs':
+		tasklist.add(filesystem.AddXFSProgs())
+	import re
+	if re.search('ext.', manifest.volume['filesystem'].lower()):
+		tasklist.add(filesystem.TuneVolumeFS())
 
 	from common.tasks import TriggerRollback
 	tasklist.add(TriggerRollback())

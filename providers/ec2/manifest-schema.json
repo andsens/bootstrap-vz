@@ -12,9 +12,13 @@
 				"backing": {
 					"type": "string",
 					"enum": ["ebs", "s3"]
+				},
+				"filesystem": {
+					"type": "string",
+					"enum": ["ext2", "ext3", "ext4", "xfs"]
 				}
 			},
-			"required": ["backing"]
+			"required": ["backing", "filesystem"]
 		}
 	},
 	"required": ["bootstrapdir", "volume"]
