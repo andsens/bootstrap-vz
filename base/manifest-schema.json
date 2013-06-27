@@ -6,6 +6,9 @@
 		"provider": {
 			"type": "string"
 		},
+		"bootstrapdir": {
+			"type": "string"
+		},
 		"volume": {
 			"type": "object",
 			"properties": {
@@ -29,6 +32,7 @@
 				}
 			},
 			"additionalProperties": false
-		}
+		},
+		"require": ["provider", "bootstrapdir"]
 	}
 }

@@ -3,9 +3,6 @@
 	"title": "EC2 manifest",
 	"type": "object",
 	"properties": {
-		"bootstrapdir": {
-			"type": "string"
-		},
 		"volume": {
 			"type": "object",
 			"properties": {
@@ -21,5 +18,5 @@
 			"required": ["backing", "filesystem"]
 		}
 	},
-	"required": ["bootstrapdir", "volume"]
+	"required": ["volume"]
 }
