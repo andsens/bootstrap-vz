@@ -45,7 +45,8 @@ class CreateMountDir(Task):
 
 	def run(self, info):
 		import os
-		info.root = '{bs_dir}/{vol_id}'.format(bs_dir=info.manifest.bootstrapdir, vol_id=info.volume.id)
+		mount_dir = info.manifest.bootstrapper['mount_dir']
+		info.root = '{mount_dir}/{vol_id}'.format(mount_dir=mount_dir, vol_id=info.volume.id)
 		# Works recursively, fails if last part exists, which is exaclty what we want.
 		os.makedirs(info.root)
 

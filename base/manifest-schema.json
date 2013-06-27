@@ -6,8 +6,31 @@
 		"provider": {
 			"type": "string"
 		},
-		"bootstrapdir": {
-			"type": "string"
+		"bootstrapper": {
+			"type": "object",
+			"properties": {
+				"mount_dir": { "type": "string" },
+				"tarball": { "type": "boolean" },
+				"tarball_dir": { "type": "string" }
+			},
+			"required": ["mount_dir"]
+		},
+		"system": {
+			"type": "object",
+			"properties": {
+				"release": {
+					"type": "string",
+					"enum": ["wheezy"]
+				},
+				"architecture": {
+					"type": "string",
+					"enum": ["i386", "amd64"]
+				},
+				"timezone": { "type": "string" },
+				"locale":   { "type": "string" },
+				"charmap":  { "type": "string" }
+			},
+			"required": ["release", "architecture", "timezone", "locale", "charmap"]
 		},
 		"volume": {
 			"type": "object",
@@ -32,7 +55,7 @@
 				}
 			},
 			"additionalProperties": false
-		},
-		"require": ["provider", "bootstrapdir"]
-	}
+		}
+	},
+	"required": ["provider", "bootstrapper", "volume", "system"]
 }

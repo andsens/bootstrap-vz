@@ -4,6 +4,7 @@ from tasks import connection
 from tasks import host
 from tasks import ebs
 from tasks import filesystem
+from tasks import bootstrap
 
 
 def tasks(tasklist, manifest):
@@ -18,6 +19,9 @@ def tasks(tasklist, manifest):
 	if re.search('ext.', manifest.volume['filesystem'].lower()):
 		tasklist.add(filesystem.TuneVolumeFS())
 	tasklist.add(filesystem.CreateMountDir(), filesystem.MountVolume())
+	if manifest.bootstrapper['tarball']:
+		tasklist.add(bootstrap.MakeTarball())
+	tasklist.add(bootstrap.Bootstrap())
 
 	from common.tasks import TriggerRollback
 	tasklist.add(TriggerRollback())

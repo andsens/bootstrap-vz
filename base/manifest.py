@@ -41,7 +41,11 @@ class Manifest(object):
 
 	def parse(self, data):
 		self.provider     = data['provider']
-		self.bootstrapdir = data['bootstrapdir']
+		self.bootstrapper = data['bootstrapper']
+		if 'tarball' not in self.bootstrapper:
+			self.bootstrapper['tarball'] = False
+		if 'tarball_dir' not in self.bootstrapper:
+			self.bootstrapper['tarball_dir'] = '/tmp'
 		self.volume       = data['volume']
 		self.system       = data['system']
 		self.plugins      = data['plugins']

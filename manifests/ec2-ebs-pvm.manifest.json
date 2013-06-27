@@ -6,18 +6,20 @@
 		"secret-key": null
 	},
 
-	"bootstrapdir": "/target",
+	"bootstrapper": {
+		"mount_dir": "/target",
+		"tarball": true
+	},
 	"image": {
 		"name"       : "debian-{release}-{architecture}-{virtualization}-{year}{month}{day}",
 		"description": "Debian {release} {architecture} AMI ({virtualization})"
 	},
 	"system": {
-		"architecture": "amd64", 
 		"release"     : "wheezy",
+		"architecture": "amd64",
 		"timezone"    : "UTC",
 		"locale"      : "en_US",
-		"charmap"     : "UTF-8",
-		"packages"    : []
+		"charmap"     : "UTF-8"
 	},
 	"volume": {
 		"backing"   : "ebs",
