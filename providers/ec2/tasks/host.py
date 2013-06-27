@@ -1,5 +1,6 @@
 from base import Task
 from common import phases
+from common.exceptions import TaskError
 import packages
 
 
@@ -17,7 +18,7 @@ class CheckPackages(Task):
 					subprocess.check_call(['/usr/bin/dpkg', '-s', package], stdout=dev_null, stderr=dev_null)
 			except subprocess.CalledProcessError:
 				msg = "The package ``{0}\'\' is not installed".format(package)
-				raise RuntimeError(msg)
+				raise TaskError(msg)
 
 
 class GetInfo(Task):

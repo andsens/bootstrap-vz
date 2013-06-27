@@ -40,10 +40,11 @@ class Manifest(object):
 			raise ManifestError(e.message, self, e.path)
 
 	def parse(self, data):
-		self.provider = data['provider']
-		self.volume   = data['volume']
-		self.system   = data['system']
-		self.plugins  = data['plugins']
+		self.provider     = data['provider']
+		self.bootstrapdir = data['bootstrapdir']
+		self.volume       = data['volume']
+		self.system       = data['system']
+		self.plugins      = data['plugins']
 
 	def load_plugins(self):
 		self.loaded_plugins = []

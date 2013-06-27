@@ -6,18 +6,14 @@ from common.exceptions import TaskError
 class FormatVolume(Task):
 	description = 'Formatting the volume'
 	phase = phases.volume_preparation
-	after = []
 
 	def run(self, info):
 		import subprocess
 		from os import devnull
 		dev_path = info.bootstrap_device['path']
 		mkfs = '/sbin/mkfs.{fs}'.format(fs=info.manifest.volume['filesystem'])
-		try:
-			with open(devnull, 'w') as dev_null:
-				subprocess.check_call([mkfs, dev_path], stdout=dev_null, stderr=dev_null)
-		except subprocess.CalledProcessError:
-			raise TaskError('Unable to format the bootstrap device')
+		with open(devnull, 'w') as dev_null:
+			subprocess.check_call([mkfs, dev_path], stdout=dev_null, stderr=dev_null)
 
 
 class TuneVolumeFS(Task):
@@ -29,18 +25,45 @@ class TuneVolumeFS(Task):
 		import subprocess
 		from os import devnull
 		dev_path = info.bootstrap_device['path']
-		try:
-			with open(devnull, 'w') as dev_null:
-				subprocess.check_call(['/sbin/tune2fs', '-i', '0', dev_path], stdout=dev_null, stderr=dev_null)
-		except subprocess.CalledProcessError:
-			raise TaskError('Unable to disable the time based check interval for the bootstrap volume')
+		# Disable the time based filesystem check
+		with open(devnull, 'w') as dev_null:
+			subprocess.check_call(['/sbin/tune2fs', '-i', '0', dev_path], stdout=dev_null, stderr=dev_null)
 
 
 class AddXFSProgs(Task):
 	description = 'Adding `xfsprogs\' to the image packages'
 	phase = phases.preparation
-	after = []
 
 	def run(self, info):
 		include, exclude = info.img_packages
 		include.add('xfsprogs')
+
+
+class CreateMountDir(Task):
+	description = 'Creating mountpoint for the bootstrap volume'
+	phase = phases.volume_mounting
+
+	def run(self, info):
+		import os
+		info.root = '{bs_dir}/{vol_id}'.format(bs_dir=info.manifest.bootstrapdir, vol_id=info.volume.id)
+		# Works recursively, fails if last part exists, which is exaclty what we want.
+		os.makedirs(info.root)
+
+
+class MountVolume(Task):
+	description = 'Creating mountpoint for the bootstrap volume'
+	phase = phases.volume_mounting
+	after = [CreateMountDir]
+
+	def run(self, info):
+		with open('/proc/mounts') as mounts:
+			for mount in mounts:
+				if info.root in mount:
+					msg = 'Something is already mount at {root}'.format(root=info.root)
+					raise TaskError(msg)
+
+		import subprocess
+		from os import devnull
+		dev_path = info.bootstrap_device['path']
+		with open(devnull, 'w') as dev_null:
+			subprocess.check_call(['mount', dev_path, info.root], stdout=dev_null, stderr=dev_null)

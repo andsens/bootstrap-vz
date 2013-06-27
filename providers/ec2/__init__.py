@@ -17,6 +17,7 @@ def tasks(tasklist, manifest):
 	import re
 	if re.search('ext.', manifest.volume['filesystem'].lower()):
 		tasklist.add(filesystem.TuneVolumeFS())
+	tasklist.add(filesystem.CreateMountDir(), filesystem.MountVolume())
 
 	from common.tasks import TriggerRollback
 	tasklist.add(TriggerRollback())
