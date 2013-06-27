@@ -51,7 +51,7 @@ class CreateMountDir(Task):
 
 
 class MountVolume(Task):
-	description = 'Creating mountpoint for the bootstrap volume'
+	description = 'Mounting the bootstrap volume'
 	phase = phases.volume_mounting
 	after = [CreateMountDir]
 
@@ -67,3 +67,25 @@ class MountVolume(Task):
 		dev_path = info.bootstrap_device['path']
 		with open(devnull, 'w') as dev_null:
 			subprocess.check_call(['mount', dev_path, info.root], stdout=dev_null, stderr=dev_null)
+
+
+class UnmountVolume(Task):
+	description = 'Unmounting the bootstrap volume'
+	phase = phases.volume_unmounting
+
+	def run(self, info):
+		import subprocess
+		from os import devnull
+		with open(devnull, 'w') as dev_null:
+			subprocess.check_call(['umount', info.root], stdout=dev_null, stderr=dev_null)
+
+
+class DeleteMountDir(Task):
+	description = 'Deleting mountpoint for the bootstrap volume'
+	phase = phases.volume_unmounting
+	after = [UnmountVolume]
+
+	def run(self, info):
+		import os
+		os.rmdir(info.root)
+		del info.root

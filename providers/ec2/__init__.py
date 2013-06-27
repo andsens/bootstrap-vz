@@ -25,8 +25,13 @@ def tasks(tasklist, manifest):
 
 def rollback_tasks(tasklist, tasks_completed, manifest):
 	completed = [type(task) for task in tasks_completed]
+
+	def counter_task(task, counter):
+		if task in completed and counter not in completed:
+			tasklist.add(counter())
+
 	if manifest.volume['backing'].lower() == 'ebs':
-		if ebs.CreateVolume in completed and ebs.DeleteVolume not in completed:
-			tasklist.add(ebs.DeleteVolume())
-		if ebs.AttachVolume in completed and ebs.DetachVolume not in completed:
-			tasklist.add(ebs.DetachVolume())
+		counter_task(ebs.CreateVolume, ebs.DeleteVolume)
+		counter_task(ebs.AttachVolume, ebs.DetachVolume)
+	counter_task(filesystem.CreateMountDir, filesystem.DeleteMountDir)
+	counter_task(filesystem.MountVolume, filesystem.UnmountVolume)

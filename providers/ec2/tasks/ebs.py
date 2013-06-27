@@ -2,6 +2,7 @@ from base import Task
 from common import phases
 from common.exceptions import TaskError
 from connection import Connect
+from filesystem import UnmountVolume
 import time
 
 
@@ -57,7 +58,7 @@ class AttachVolume(Task):
 
 class DetachVolume(Task):
 	phase = phases.volume_unmounting
-	after = []
+	after = [UnmountVolume]
 
 	description = 'Detaching the EBS volume'
 
