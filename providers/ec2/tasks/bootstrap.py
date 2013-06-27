@@ -44,7 +44,7 @@ class Bootstrap(Task):
 		executable, options, arguments = get_bootstrap_args(info)
 		if hasattr(info, 'tarball'):
 			options.extend(['--unpack-tarball=' + info.tarball])
+
 		command = executable + options + arguments
-		command = executable + options + ['--make-tarball=' + info.tarball] + arguments
 		if log_command(command, log) != 0:
 			raise TaskError('Unable to bootstrap')

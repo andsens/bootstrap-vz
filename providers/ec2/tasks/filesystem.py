@@ -1,6 +1,8 @@
 from base import Task
 from common import phases
 from common.exceptions import TaskError
+import subprocess
+import os
 
 
 class FormatVolume(Task):
@@ -8,11 +10,9 @@ class FormatVolume(Task):
 	phase = phases.volume_preparation
 
 	def run(self, info):
-		import subprocess
-		from os import devnull
 		dev_path = info.bootstrap_device['path']
 		mkfs = '/sbin/mkfs.{fs}'.format(fs=info.manifest.volume['filesystem'])
-		with open(devnull, 'w') as dev_null:
+		with open(os.devnull, 'w') as dev_null:
 			subprocess.check_call([mkfs, dev_path], stdout=dev_null, stderr=dev_null)
 
 
@@ -22,11 +22,9 @@ class TuneVolumeFS(Task):
 	after = [FormatVolume]
 
 	def run(self, info):
-		import subprocess
-		from os import devnull
 		dev_path = info.bootstrap_device['path']
 		# Disable the time based filesystem check
-		with open(devnull, 'w') as dev_null:
+		with open(os.devnull, 'w') as dev_null:
 			subprocess.check_call(['/sbin/tune2fs', '-i', '0', dev_path], stdout=dev_null, stderr=dev_null)
 
 
@@ -44,7 +42,6 @@ class CreateMountDir(Task):
 	phase = phases.volume_mounting
 
 	def run(self, info):
-		import os
 		mount_dir = info.manifest.bootstrapper['mount_dir']
 		info.root = '{mount_dir}/{vol_id}'.format(mount_dir=mount_dir, vol_id=info.volume.id)
 		# Works recursively, fails if last part exists, which is exaclty what we want.
@@ -63,10 +60,8 @@ class MountVolume(Task):
 					msg = 'Something is already mount at {root}'.format(root=info.root)
 					raise TaskError(msg)
 
-		import subprocess
-		from os import devnull
 		dev_path = info.bootstrap_device['path']
-		with open(devnull, 'w') as dev_null:
+		with open(os.devnull, 'w') as dev_null:
 			subprocess.check_call(['mount', dev_path, info.root], stdout=dev_null, stderr=dev_null)
 
 
@@ -75,9 +70,7 @@ class UnmountVolume(Task):
 	phase = phases.volume_unmounting
 
 	def run(self, info):
-		import subprocess
-		from os import devnull
-		with open(devnull, 'w') as dev_null:
+		with open(os.devnull, 'w') as dev_null:
 			subprocess.check_call(['umount', info.root], stdout=dev_null, stderr=dev_null)
 
 
@@ -87,6 +80,5 @@ class DeleteMountDir(Task):
 	after = [UnmountVolume]
 
 	def run(self, info):
-		import os
 		os.rmdir(info.root)
 		del info.root
