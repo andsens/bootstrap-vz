@@ -48,6 +48,4 @@ class ImagePackages(Task):
 		                       'i386':  'linux-image-686', }, }
 		include.add(kernels.get(manifest.system['release']).get(manifest.system['architecture']))
 
-		include = include.union(manifest.system['packages'])
-
 		info.img_packages = include, exclude
