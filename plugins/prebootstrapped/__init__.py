@@ -1,6 +1,13 @@
 
 
 def tasks(tasklist, manifest):
-	from ebs import CreateVolumeFromSnapshot
-	from providers.ec2.tasks.ebs import CreateVolume
-	tasklist.replace(CreateVolume, CreateVolumeFromSnapshot())
+	from tasks import CreateVolumeFromSnapshot
+	from providers.ec2.tasks import ebs
+	from providers.ec2.tasks import bootstrap
+	from providers.ec2.tasks import filesystem
+	tasklist.replace(ebs.CreateVolume, CreateVolumeFromSnapshot())
+	tasklist.remove(filesystem.FormatVolume,
+	                filesystem.TuneVolumeFS,
+	                filesystem.AddXFSProgs,
+	                bootstrap.MakeTarball,
+	                bootstrap.Bootstrap)
