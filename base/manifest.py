@@ -52,9 +52,9 @@ class Manifest(object):
 
 	def load_plugins(self):
 		self.loaded_plugins = []
-		for modname in self.plugins.keys():
-			if self.plugins[modname]['enabled']:
-				plugin_name = 'plugins.{module}'.format(module=modname)
-				plugin = __import__(plugin_name, fromlist=['plugins'])
+		for plugin_name, plugin_data in self.plugins.iteritems():
+			if plugin_data['enabled']:
+				modname = 'plugins.{plugin_name}'.format(plugin_name=plugin_name)
+				plugin = __import__(modname, fromlist=['plugins'])
 				log.debug('Loaded plugin %s', plugin_name)
 				self.loaded_plugins.append(plugin)
