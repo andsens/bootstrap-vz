@@ -34,7 +34,7 @@ def run(args):
 
 	try:
 		tasklist.run(bootstrap_info)
-	except Exception as e:
+	except (Exception, KeyboardInterrupt) as e:
 		log.exception(e)
 		log.error('Rolling back')
 		rollback_tasklist = TaskList()
