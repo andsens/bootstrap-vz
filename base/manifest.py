@@ -9,8 +9,8 @@ def load_manifest(path):
 	manifest = provider.Manifest(path)
 
 	manifest.validate(data)
+	manifest.load_plugins(data)
 	manifest.parse(data)
-	manifest.load_plugins()
 	return (provider, manifest)
 
 
@@ -40,21 +40,24 @@ class Manifest(object):
 			raise ManifestError(e.message, self, e.path)
 
 	def parse(self, data):
-		self.provider     = data['provider']
+		self.provider = data['provider']
 		self.bootstrapper = data['bootstrapper']
 		if 'tarball' not in self.bootstrapper:
 			self.bootstrapper['tarball'] = False
 		if 'tarball_dir' not in self.bootstrapper:
 			self.bootstrapper['tarball_dir'] = '/tmp'
-		self.volume       = data['volume']
-		self.system       = data['system']
-		self.plugins      = data['plugins']
+		self.volume = data['volume']
+		self.system = data['system']
+		self.plugins = data['plugins']
 
-	def load_plugins(self):
+	def load_plugins(self, data):
 		self.loaded_plugins = []
-		for plugin_name, plugin_data in self.plugins.iteritems():
+		for plugin_name, plugin_data in data['plugins'].iteritems():
 			if plugin_data['enabled']:
 				modname = 'plugins.{plugin_name}'.format(plugin_name=plugin_name)
 				plugin = __import__(modname, fromlist=['plugins'])
 				log.debug('Loaded plugin %s', plugin_name)
 				self.loaded_plugins.append(plugin)
+				validate = getattr(plugin, 'validate_manifest', None)
+				if callable(validate):
+					validate(data, self.schema_validate)
