@@ -20,12 +20,6 @@ class CreateVolume(Task):
 			time.sleep(5)
 			info.volume.update()
 
-	rollback_description = 'Deleting the EBS volume'
-
-	def rollback(self, info):
-		info.volume.delete()
-		del info.volume
-
 
 class AttachVolume(Task):
 	phase = phases.volume_creation
