@@ -12,8 +12,9 @@ class TaskList(object):
 	def add(self, *args):
 		self.tasks.update(args)
 
-	def remove(self, task):
-		self.tasks.discard(self.get(task))
+	def remove(self, *args):
+		for task in args:
+			self.tasks.discard(self.get(task))
 
 	def replace(self, task, replacement):
 		self.remove(task)
