@@ -13,15 +13,17 @@ class TaskList(object):
 		self.tasks.update(args)
 
 	def remove(self, *args):
-		for task in args:
-			self.tasks.discard(self.get(task))
+		for task_type in args:
+			task = self.get(task_type)
+			if task is not None:
+				self.tasks.discard(task)
 
 	def replace(self, task, replacement):
 		self.remove(task)
 		self.add(replacement)
 
 	def get(self, ref):
-		return next(task for task in self.tasks if type(task) is ref)
+		return next((task for task in self.tasks if type(task) is ref), None)
 
 	def run(self, bootstrap_info):
 		task_list = self.create_list(self.tasks)
