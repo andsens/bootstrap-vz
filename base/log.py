@@ -17,7 +17,7 @@ def setup_logger(logfile=None, debug=False):
 	root.setLevel(logging.NOTSET)
 
 	file_handler = logging.FileHandler(logfile)
-	file_handler.setFormatter(FileFormatter('[%(asctime)s] %(message)s'))
+	file_handler.setFormatter(FileFormatter('[%(relativeCreated)s] %(levelname)s: %(message)s'))
 	file_handler.setLevel(logging.DEBUG)
 	root.addHandler(file_handler)
 
