@@ -11,11 +11,11 @@ def log_command(command, logger):
 			if fd == process.stdout.fileno():
 				line = process.stdout.readline()
 				if line != '':
-					logger.debug(line)
+					logger.debug(line.strip())
 			if fd == process.stderr.fileno():
 				line = process.stderr.readline()
 				if line != '':
-					logger.error(line)
+					logger.error(line.strip())
 		if process.poll() is not None:
 			break
 	return process.returncode
