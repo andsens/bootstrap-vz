@@ -29,8 +29,7 @@ def tasks(tasklist, manifest):
 	tasklist.add(filesystem.FormatVolume())
 	if manifest.volume['filesystem'].lower() == 'xfs':
 		tasklist.add(filesystem.AddXFSProgs())
-	import re
-	if re.search('ext.', manifest.volume['filesystem'].lower()):
+	if manifest.volume['filesystem'].lower() in ['ext2', 'ext3', 'ext4']:
 		tasklist.add(filesystem.TuneVolumeFS())
 	tasklist.add(filesystem.CreateMountDir(), filesystem.MountVolume())
 	if manifest.bootstrapper['tarball']:
@@ -41,7 +40,8 @@ def tasks(tasklist, manifest):
 	             locale.SetTimezone(),
 	             apt.AptSources(),
 	             apt.AptUpgrade(),
-	             boot.ConfigureGrub())
+	             boot.ConfigureGrub(),
+	             boot.ModifyFstab())
 
 	from common.tasks import TriggerRollback
 	tasklist.add(TriggerRollback())

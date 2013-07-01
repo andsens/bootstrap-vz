@@ -33,3 +33,20 @@ class ConfigureGrub(Task):
 		from common.tools import log_check_call
 		log_check_call(['chroot', info.root, 'update-grub'])
 		log_check_call(['chroot', info.root, 'ln', '-s', '/boot/grub/grub.cfg', '/boot/grub/menu.lst'])
+
+
+class ModifyFstab(Task):
+	description = 'Add root volume to the fstab'
+	phase = phases.system_modification
+
+	def run(self, info):
+		fstab_path = os.path.join(info.root, 'etc/fstab')
+		mount_opts = ['defaults']
+		if info.manifest.volume['filesystem'].lower() in ['ext2', 'ext3', 'ext4']:
+			mount_opts.append('barrier=0')
+		if info.manifest.volume['filesystem'].lower() == 'xfs':
+			mount_opts.append('nobarrier')
+		with open(fstab_path, 'a') as fstab:
+			fstab.write(('/dev/xvda1 /     {filesystem}    {mount_opts} 1 1'
+			             .format(filesystem=info.manifest.volume['filesystem'].lower(),
+			                     mount_opts=','.join(mount_opts))))
