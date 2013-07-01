@@ -6,6 +6,7 @@ from tasks import host
 from tasks import ebs
 from tasks import filesystem
 from tasks import bootstrap
+from tasks import config
 
 
 def initialize():
@@ -29,6 +30,8 @@ def tasks(tasklist, manifest):
 		tasklist.add(bootstrap.MakeTarball())
 	tasklist.add(bootstrap.Bootstrap())
 	tasklist.add(filesystem.MountSpecials())
+	tasklist.add(config.GenerateLocale())
+	tasklist.add(config.SetTimezone())
 
 	from common.tasks import TriggerRollback
 	tasklist.add(TriggerRollback())
