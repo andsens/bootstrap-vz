@@ -5,7 +5,12 @@ log = logging.getLogger(__name__)
 def load_manifest(path):
 	data = load_json(path)
 
-	provider = __import__('providers.{module}'.format(module=data['provider']), fromlist=['providers'])
+	provider_name = data['provider']
+	provider = __import__('providers.{module}'.format(module=provider_name), fromlist=['providers'])
+	init = getattr(provider, 'initialize', None)
+	if callable(init):
+		init()
+	log.debug('Loaded provider `%s\'', provider_name)
 	manifest = provider.Manifest(path)
 
 	manifest.validate(data)
@@ -56,7 +61,10 @@ class Manifest(object):
 			if plugin_data['enabled']:
 				modname = 'plugins.{plugin_name}'.format(plugin_name=plugin_name)
 				plugin = __import__(modname, fromlist=['plugins'])
-				log.debug('Loaded plugin %s', plugin_name)
+				init = getattr(plugin, 'initialize', None)
+				if callable(init):
+					init()
+				log.debug('Loaded plugin `%s\'', plugin_name)
 				self.loaded_plugins.append(plugin)
 				validate = getattr(plugin, 'validate_manifest', None)
 				if callable(validate):
