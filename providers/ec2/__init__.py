@@ -9,6 +9,7 @@ from tasks import bootstrap
 from tasks import locale
 from tasks import apt
 from tasks import boot
+from tasks import security
 
 
 def initialize():
@@ -43,7 +44,10 @@ def tasks(tasklist, manifest):
 	             boot.ConfigureGrub(),
 	             boot.ModifyFstab(),
 	             boot.BlackListModules(),
-	             boot.DisableGetTTYs())
+	             boot.DisableGetTTYs(),
+	             security.EnableShadowConfig(),
+	             security.DisableSSHPasswordAuthentication(),
+	             security.DisableSSHDNSLookup())
 
 	from common.tasks import TriggerRollback
 	tasklist.add(TriggerRollback())
