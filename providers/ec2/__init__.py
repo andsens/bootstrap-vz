@@ -42,7 +42,8 @@ def tasks(tasklist, manifest):
 	             apt.AptUpgrade(),
 	             boot.ConfigureGrub(),
 	             boot.ModifyFstab(),
-	             boot.BlackListModules())
+	             boot.BlackListModules(),
+	             boot.DisableGetTTYs())
 
 	from common.tasks import TriggerRollback
 	tasklist.add(TriggerRollback())
