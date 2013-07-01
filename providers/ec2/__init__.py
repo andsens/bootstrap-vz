@@ -22,6 +22,7 @@ def tasks(tasklist, manifest):
 	if manifest.bootstrapper['tarball']:
 		tasklist.add(bootstrap.MakeTarball())
 	tasklist.add(bootstrap.Bootstrap())
+	tasklist.add(filesystem.MountSpecials())
 
 	from common.tasks import TriggerRollback
 	tasklist.add(TriggerRollback())
@@ -39,3 +40,4 @@ def rollback_tasks(tasklist, tasks_completed, manifest):
 		counter_task(ebs.AttachVolume, ebs.DetachVolume)
 	counter_task(filesystem.CreateMountDir, filesystem.DeleteMountDir)
 	counter_task(filesystem.MountVolume, filesystem.UnmountVolume)
+	counter_task(filesystem.MountSpecials, filesystem.UnmountSpecials)
