@@ -1,7 +1,10 @@
 from base import Task
 from common import phases
 from common.exceptions import TaskError
+from common.tools import log_check_call
 import packages
+import logging
+log = logging.getLogger(__name__)
 
 
 class CheckPackages(Task):
@@ -11,11 +14,9 @@ class CheckPackages(Task):
 
 	def run(self, info):
 		import subprocess
-		from os import devnull
 		for package in info.host_packages:
 			try:
-				with open(devnull, 'w') as dev_null:
-					subprocess.check_call(['/usr/bin/dpkg', '-s', package], stdout=dev_null, stderr=dev_null)
+				log_check_call(['/usr/bin/dpkg', '-s', package], log)
 			except subprocess.CalledProcessError:
 				msg = "The package ``{0}\'\' is not installed".format(package)
 				raise TaskError(msg)

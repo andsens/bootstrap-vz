@@ -1,7 +1,6 @@
 from base import Task
 from common import phases
-from common.exceptions import TaskError
-from common.tools import log_command
+from common.tools import log_check_call
 import logging
 log = logging.getLogger(__name__)
 
@@ -31,8 +30,7 @@ class MakeTarball(Task):
 		info.tarball = os.path.join(info.manifest.bootstrapper['tarball_dir'], tarball_filename)
 
 		command = executable + options + ['--make-tarball=' + info.tarball] + arguments
-		if log_command(command, log) != 0:
-			raise TaskError('Unable to create bootstrap tarball')
+		log_check_call(command, log)
 
 
 class Bootstrap(Task):
@@ -46,5 +44,4 @@ class Bootstrap(Task):
 			options.extend(['--unpack-tarball=' + info.tarball])
 
 		command = executable + options + arguments
-		if log_command(command, log) != 0:
-			raise TaskError('Unable to bootstrap')
+		log_check_call(command, log)

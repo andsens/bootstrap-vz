@@ -1,7 +1,6 @@
 from base import Task
 from common import phases
-from common.exceptions import TaskError
-from common.tools import log_command
+from common.tools import log_check_call
 import os.path
 import logging
 log = logging.getLogger(__name__)
@@ -18,8 +17,9 @@ class GenerateLocale(Task):
 		                                                   charmap=info.manifest.system['charmap'])
 		search = '# ' + locale_str
 		sed_i(locale_gen, search, locale_str)
-		if log_command(['chroot', info.root, 'dpkg-reconfigure', '--priority=critical', 'locales'], log) != 0:
-			raise TaskError('Failed to regenerate locales')
+
+		command = ['chroot', info.root, 'dpkg-reconfigure', '--priority=critical', 'locales']
+		log_check_call(command, log)
 
 
 class SetTimezone(Task):
