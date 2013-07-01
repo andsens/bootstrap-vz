@@ -32,7 +32,7 @@ class Manifest(object):
 
 	def validate(self, data):
 		from os import path
-		schema_path = path.normpath(path.join(path.dirname(__file__), 'manifest-schema.json'))
+		schema_path = path.join(path.dirname(__file__), 'manifest-schema.json')
 		self.schema_validate(data, schema_path)
 
 	def schema_validate(self, data, schema_path):
