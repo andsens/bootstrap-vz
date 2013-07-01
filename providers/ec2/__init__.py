@@ -10,6 +10,7 @@ from tasks import locale
 from tasks import apt
 from tasks import boot
 from tasks import security
+from tasks import network
 
 
 def initialize():
@@ -47,7 +48,10 @@ def tasks(tasklist, manifest):
 	             boot.DisableGetTTYs(),
 	             security.EnableShadowConfig(),
 	             security.DisableSSHPasswordAuthentication(),
-	             security.DisableSSHDNSLookup())
+	             security.DisableSSHDNSLookup(),
+	             network.RemoveDNSInfo(),
+	             network.ConfigureNetworkIF(),
+	             network.ConfigureDHCP())
 
 	from common.tasks import TriggerRollback
 	tasklist.add(TriggerRollback())
