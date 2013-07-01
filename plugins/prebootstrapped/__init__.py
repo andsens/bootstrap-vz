@@ -20,4 +20,10 @@ def rollback_tasks(tasklist, tasks_completed, manifest):
 		if task in completed and counter not in completed:
 			tasklist.add(counter())
 
-	counter_task(ebs.CreateVolumeFromSnapshot, ebs.DeleteVolume)
+	counter_task(CreateVolumeFromSnapshot, ebs.DeleteVolume)
+
+
+def validate_manifest(data, schema_validate):
+	from os import path
+	schema_path = path.normpath(path.join(path.dirname(__file__), 'manifest-schema.json'))
+	schema_validate(data, schema_path)

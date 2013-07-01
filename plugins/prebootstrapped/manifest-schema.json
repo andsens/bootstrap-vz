@@ -1,0 +1,23 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "Prebootstrapped plugin manifest",
+	"type": "object",
+	"properties": {
+		"plugins": {
+			"type": "object",
+			"properties": {
+				"prebootstrapped": {
+					"type": "object",
+					"properties": {
+						"snapshot": {
+							"type": "string"
+						}
+					},
+					"required": ["snapshot"]
+				}
+			},
+			"required": ["prebootstrapped"]
+		}
+	},
+	"required": ["plugins"]
+}
