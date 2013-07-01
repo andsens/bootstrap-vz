@@ -6,7 +6,7 @@ from tasks import host
 from tasks import ebs
 from tasks import filesystem
 from tasks import bootstrap
-from tasks import config
+from tasks import locale
 from tasks import apt
 
 
@@ -36,9 +36,9 @@ def tasks(tasklist, manifest):
 		tasklist.add(bootstrap.MakeTarball())
 	tasklist.add(bootstrap.Bootstrap(),
 	             filesystem.MountSpecials(),
-	             config.GenerateLocale(),
-	             config.SetTimezone(),
-	             config.AptSources(),
+	             locale.GenerateLocale(),
+	             locale.SetTimezone(),
+	             apt.AptSources(),
 	             apt.AptUpgrade())
 
 	from common.tasks import TriggerRollback

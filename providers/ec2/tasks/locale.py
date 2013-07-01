@@ -33,20 +33,3 @@ class SetTimezone(Task):
 		zoneinfo_path = os.path.join(info.root, '/usr/share/zoneinfo', timezone)
 		localtime_path = os.path.join(info.root, 'etc/localtime')
 		copy(zoneinfo_path, localtime_path)
-
-
-class AptSources(Task):
-	description = 'Adding aptitude sources'
-	phase = phases.system_modification
-
-	def run(self, info):
-		sources_path = os.path.join(info.root, 'etc/apt/sources.list')
-		with open(sources_path, 'w') as apt_sources:
-			apt_sources.write(('deb     {apt_mirror} {release} main\n'
-			                   'deb-src {apt_mirror} {release} main\n'.
-			                   format(apt_mirror='http://http.debian.net/debian',
-			                          release=info.manifest.system['release'])))
-			apt_sources.write(('deb     {apt_mirror} {release}/updates main\n'
-			                   'deb-src {apt_mirror} {release}/updates main\n'.
-			                   format(apt_mirror='http://security.debian.org/',
-			                          release=info.manifest.system['release'])))
