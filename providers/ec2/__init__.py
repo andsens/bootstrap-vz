@@ -32,6 +32,7 @@ def tasks(tasklist, manifest):
 	tasklist.add(filesystem.MountSpecials())
 	tasklist.add(config.GenerateLocale())
 	tasklist.add(config.SetTimezone())
+	tasklist.add(config.AptSources())
 
 	from common.tasks import TriggerRollback
 	tasklist.add(TriggerRollback())
