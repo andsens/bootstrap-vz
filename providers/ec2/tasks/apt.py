@@ -2,6 +2,7 @@ from base import Task
 from common import phases
 from common.tools import log_check_call
 import os
+from locale import GenerateLocale
 
 
 class AptSources(Task):
@@ -24,7 +25,7 @@ class AptSources(Task):
 class AptUpgrade(Task):
 	description = 'Upgrading packages and fixing broken dependencies'
 	phase = phases.system_modification
-	after = [AptSources]
+	after = [GenerateLocale, AptSources]
 
 	def run(self, info):
 		rc_policy_path = os.path.join(info.root, 'usr/sbin/policy-rc.d')
