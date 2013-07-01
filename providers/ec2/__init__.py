@@ -8,6 +8,7 @@ from tasks import filesystem
 from tasks import bootstrap
 from tasks import locale
 from tasks import apt
+from tasks import boot
 
 
 def initialize():
@@ -39,7 +40,8 @@ def tasks(tasklist, manifest):
 	             locale.GenerateLocale(),
 	             locale.SetTimezone(),
 	             apt.AptSources(),
-	             apt.AptUpgrade())
+	             apt.AptUpgrade(),
+	             boot.ConfigureGrub())
 
 	from common.tasks import TriggerRollback
 	tasklist.add(TriggerRollback())
