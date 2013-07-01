@@ -7,6 +7,7 @@ from tasks import ebs
 from tasks import filesystem
 from tasks import bootstrap
 from tasks import config
+from tasks import apt
 
 
 def initialize():
@@ -37,7 +38,8 @@ def tasks(tasklist, manifest):
 	             filesystem.MountSpecials(),
 	             config.GenerateLocale(),
 	             config.SetTimezone(),
-	             config.AptSources())
+	             config.AptSources(),
+	             apt.AptUpgrade())
 
 	from common.tasks import TriggerRollback
 	tasklist.add(TriggerRollback())
