@@ -3,8 +3,6 @@ from common import phases
 from common.exceptions import TaskError
 from common.tools import log_check_call
 from bootstrap import Bootstrap
-import logging
-log = logging.getLogger(__name__)
 
 
 class FormatVolume(Task):
@@ -14,7 +12,7 @@ class FormatVolume(Task):
 	def run(self, info):
 		dev_path = info.bootstrap_device['path']
 		mkfs = '/sbin/mkfs.{fs}'.format(fs=info.manifest.volume['filesystem'])
-		log_check_call([mkfs, dev_path], log)
+		log_check_call([mkfs, dev_path])
 
 
 class TuneVolumeFS(Task):
@@ -26,7 +24,7 @@ class TuneVolumeFS(Task):
 		dev_path = info.bootstrap_device['path']
 		# Disable the time based filesystem check
 		command = ['/sbin/tune2fs', '-i', '0', dev_path]
-		log_check_call(command, log)
+		log_check_call(command)
 
 
 class AddXFSProgs(Task):
@@ -63,7 +61,7 @@ class MountVolume(Task):
 					raise TaskError(msg)
 
 		command = ['mount', info.bootstrap_device['path'], info.root]
-		log_check_call(command, log)
+		log_check_call(command)
 
 
 class MountSpecials(Task):
@@ -72,10 +70,10 @@ class MountSpecials(Task):
 	after = [Bootstrap]
 
 	def run(self, info):
-		log_check_call(['mount', '--bind', '/dev', '{root}/dev'.format(root=info.root)], log)
-		log_check_call(['chroot', info.root, 'mount', '-t', 'proc', 'none', '/proc'], log)
-		log_check_call(['chroot', info.root, 'mount', '-t', 'sysfs', 'none', '/sys'], log)
-		log_check_call(['chroot', info.root, 'mount', '-t', 'devpts', 'none', '/dev/pts'], log)
+		log_check_call(['mount', '--bind', '/dev', '{root}/dev'.format(root=info.root)])
+		log_check_call(['chroot', info.root, 'mount', '-t', 'proc', 'none', '/proc'])
+		log_check_call(['chroot', info.root, 'mount', '-t', 'sysfs', 'none', '/sys'])
+		log_check_call(['chroot', info.root, 'mount', '-t', 'devpts', 'none', '/dev/pts'])
 
 
 class UnmountSpecials(Task):
@@ -83,10 +81,10 @@ class UnmountSpecials(Task):
 	phase = phases.volume_unmounting
 
 	def run(self, info):
-		log_check_call(['chroot', info.root, 'umount', '/dev/pts'], log)
-		log_check_call(['chroot', info.root, 'umount', '/sys'], log)
-		log_check_call(['chroot', info.root, 'umount', '/proc'], log)
-		log_check_call(['umount', '{root}/dev'.format(root=info.root)], log)
+		log_check_call(['chroot', info.root, 'umount', '/dev/pts'])
+		log_check_call(['chroot', info.root, 'umount', '/sys'])
+		log_check_call(['chroot', info.root, 'umount', '/proc'])
+		log_check_call(['umount', '{root}/dev'.format(root=info.root)])
 
 
 class UnmountVolume(Task):
@@ -95,7 +93,7 @@ class UnmountVolume(Task):
 	after = [UnmountSpecials]
 
 	def run(self, info):
-		log_check_call(['umount', info.root], log)
+		log_check_call(['umount', info.root])
 
 
 class DeleteMountDir(Task):

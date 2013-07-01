@@ -1,7 +1,7 @@
 
 
-def log_check_call(command, logger):
-	status = log_call(command, logger)
+def log_check_call(command):
+	status = log_call(command)
 	if status != 0:
 		from subprocess import CalledProcessError
 		msg = ('Command \'{command}\' returned non-zero exit status '
@@ -9,9 +9,13 @@ def log_check_call(command, logger):
 		raise CalledProcessError(msg)
 
 
-def log_call(command, logger):
+def log_call(command):
 	import subprocess
 	import select
+
+	import logging
+	command_log = command[0].replace('/', '.')
+	log = logging.getLogger(__name__ + command_log)
 
 	process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	while True:
@@ -21,11 +25,11 @@ def log_call(command, logger):
 			if fd == process.stdout.fileno():
 				line = process.stdout.readline()
 				if line != '':
-					logger.debug(line.strip())
+					log.debug(line.strip())
 			if fd == process.stderr.fileno():
 				line = process.stderr.readline()
 				if line != '':
-					logger.error(line.strip())
+					log.error(line.strip())
 		if process.poll() is not None:
 			return process.returncode
 

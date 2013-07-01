@@ -1,9 +1,6 @@
 from base import Task
 from common import phases
-from common.tools import log_check_call
 import os.path
-import logging
-log = logging.getLogger(__name__)
 
 
 class GenerateLocale(Task):
@@ -12,6 +9,7 @@ class GenerateLocale(Task):
 
 	def run(self, info):
 		from common.tools import sed_i
+		from common.tools import log_check_call
 		locale_gen = os.path.join(info.root, 'etc/locale.gen')
 		locale_str = '{locale}.{charmap} {charmap}'.format(locale=info.manifest.system['locale'],
 		                                                   charmap=info.manifest.system['charmap'])
@@ -19,7 +17,7 @@ class GenerateLocale(Task):
 		sed_i(locale_gen, search, locale_str)
 
 		command = ['chroot', info.root, 'dpkg-reconfigure', '--priority=critical', 'locales']
-		log_check_call(command, log)
+		log_check_call(command)
 
 
 class SetTimezone(Task):

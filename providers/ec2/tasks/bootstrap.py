@@ -1,8 +1,6 @@
 from base import Task
 from common import phases
 from common.tools import log_check_call
-import logging
-log = logging.getLogger(__name__)
 
 
 def get_bootstrap_args(info):
@@ -30,7 +28,7 @@ class MakeTarball(Task):
 		info.tarball = os.path.join(info.manifest.bootstrapper['tarball_dir'], tarball_filename)
 
 		command = executable + options + ['--make-tarball=' + info.tarball] + arguments
-		log_check_call(command, log)
+		log_check_call(command)
 
 
 class Bootstrap(Task):
@@ -44,4 +42,4 @@ class Bootstrap(Task):
 			options.extend(['--unpack-tarball=' + info.tarball])
 
 		command = executable + options + arguments
-		log_check_call(command, log)
+		log_check_call(command)
