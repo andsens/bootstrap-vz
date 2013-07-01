@@ -15,10 +15,15 @@ def initialize():
 
 
 def tasks(tasklist, manifest):
-	tasklist.add(packages.HostPackages(), packages.ImagePackages(), host.CheckPackages(),
-	             connection.GetCredentials(), host.GetInfo(), connection.Connect())
+	tasklist.add(packages.HostPackages(),
+	             packages.ImagePackages(),
+	             host.CheckPackages(),
+	             connection.GetCredentials(),
+	             host.GetInfo(),
+	             connection.Connect())
 	if manifest.volume['backing'].lower() == 'ebs':
-		tasklist.add(ebs.CreateVolume(), ebs.AttachVolume())
+		tasklist.add(ebs.CreateVolume(),
+		             ebs.AttachVolume())
 	tasklist.add(filesystem.FormatVolume())
 	if manifest.volume['filesystem'].lower() == 'xfs':
 		tasklist.add(filesystem.AddXFSProgs())
@@ -28,11 +33,11 @@ def tasks(tasklist, manifest):
 	tasklist.add(filesystem.CreateMountDir(), filesystem.MountVolume())
 	if manifest.bootstrapper['tarball']:
 		tasklist.add(bootstrap.MakeTarball())
-	tasklist.add(bootstrap.Bootstrap())
-	tasklist.add(filesystem.MountSpecials())
-	tasklist.add(config.GenerateLocale())
-	tasklist.add(config.SetTimezone())
-	tasklist.add(config.AptSources())
+	tasklist.add(bootstrap.Bootstrap(),
+	             filesystem.MountSpecials(),
+	             config.GenerateLocale(),
+	             config.SetTimezone(),
+	             config.AptSources())
 
 	from common.tasks import TriggerRollback
 	tasklist.add(TriggerRollback())
