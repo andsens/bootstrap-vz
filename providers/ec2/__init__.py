@@ -62,7 +62,11 @@ def tasks(tasklist, manifest):
 	             cleanup.CleanTMP(),
 	             apt.PurgeUnusedPackages(),
 	             apt.AptClean(),
-	             apt.EnableDaemonAutostart())
+	             apt.EnableDaemonAutostart(),
+	             filesystem.UnmountSpecials(),
+	             filesystem.UnmountVolume(),
+	             ebs.DetachVolume(),
+	             filesystem.DeleteMountDir())
 
 	from common.tasks import TriggerRollback
 	tasklist.add(TriggerRollback())
