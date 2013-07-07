@@ -65,9 +65,10 @@ def tasks(tasklist, manifest):
 	             apt.EnableDaemonAutostart(),
 	             filesystem.UnmountSpecials(),
 	             filesystem.UnmountVolume(),
-	             ebs.DetachVolume(),
-	             filesystem.DeleteMountDir(),
-	             ebs.CreateSnapshot())
+	             filesystem.DeleteMountDir())
+	if manifest.volume['backing'].lower() == 'ebs':
+		tasklist.add(ebs.DetachVolume(),
+		             ebs.CreateSnapshot())
 
 	from common.tasks import TriggerRollback
 	tasklist.add(TriggerRollback())
