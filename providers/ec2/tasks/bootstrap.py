@@ -1,6 +1,6 @@
 from base import Task
 from common import phases
-from common.tools import log_check_call
+from common.exceptions import TaskError
 import logging
 log = logging.getLogger(__name__)
 
@@ -31,7 +31,11 @@ class MakeTarball(Task):
 		if os.path.isfile(info.tarball):
 			log.debug('Found matching tarball, skipping download')
 		else:
-			log_check_call(executable + options + ['--make-tarball=' + info.tarball] + arguments)
+			from common.tools import log_call
+			status, out, err = log_call(executable + options + ['--make-tarball=' + info.tarball] + arguments)
+			if status != 1:
+				msg = 'debootstrap exited with status {status}, it should exit with status 1'.format(status=status)
+				raise TaskError(msg)
 
 
 class Bootstrap(Task):
@@ -44,4 +48,5 @@ class Bootstrap(Task):
 		if hasattr(info, 'tarball'):
 			options.extend(['--unpack-tarball=' + info.tarball])
 
+		from common.tools import log_check_call
 		log_check_call(executable + options + arguments)
