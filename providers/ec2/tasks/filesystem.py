@@ -120,6 +120,6 @@ class ModifyFstab(Task):
 			mount_opts.append('nobarrier')
 		fstab_path = os.path.join(info.root, 'etc/fstab')
 		with open(fstab_path, 'a') as fstab:
-			fstab.write(('/dev/xvda1 /     {filesystem}    {mount_opts} 1 1'
+			fstab.write(('/dev/xvda1 /     {filesystem}    {mount_opts} 1 1\n'
 			             .format(filesystem=info.manifest.volume['filesystem'].lower(),
 			                     mount_opts=','.join(mount_opts))))

@@ -30,7 +30,8 @@ class AptUpgrade(Task):
 	def run(self, info):
 		rc_policy_path = os.path.join(info.root, 'usr/sbin/policy-rc.d')
 		with open(rc_policy_path, 'w') as rc_policy:
-			rc_policy.write('#!/bin/sh\nexit 101')
+			rc_policy.write(('#!/bin/sh\n'
+			                 'exit 101'))
 		import stat
 		os.chmod(rc_policy_path,
 		         stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR |

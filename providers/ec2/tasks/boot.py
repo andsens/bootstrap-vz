@@ -28,7 +28,8 @@ class ConfigureGrub(Task):
 
 		from common.tools import sed_i
 		grub_def = os.path.join(info.root, 'etc/default/grub')
-		sed_i(grub_def, '^GRUB_TIMEOUT=[0-9]+', 'GRUB_TIMEOUT=0\nGRUB_HIDDEN_TIMEOUT=true')
+		sed_i(grub_def, '^GRUB_TIMEOUT=[0-9]+', 'GRUB_TIMEOUT=0\n'
+		                                        'GRUB_HIDDEN_TIMEOUT=true')
 
 		from common.tools import log_check_call
 		log_check_call(['chroot', info.root, 'update-grub'])
@@ -42,7 +43,8 @@ class BlackListModules(Task):
 	def run(self, info):
 		blacklist_path = os.path.join(info.root, 'etc/modprobe.d/blacklist.conf')
 		with open(blacklist_path, 'a') as blacklist:
-			blacklist.write('# disable pc speaker\nblacklist pcspkr')
+			blacklist.write(('# disable pc speaker\n'
+			                 'blacklist pcspkr'))
 
 
 class DisableGetTTYs(Task):
