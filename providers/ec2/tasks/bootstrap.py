@@ -25,7 +25,9 @@ class MakeTarball(Task):
 		from hashlib import sha1
 		import os.path
 		executable, options, arguments = get_bootstrap_args(info)
-		tarball_id = sha1(repr(frozenset(options + arguments))).hexdigest()[0:8]
+		# Filter info.root which points at /target/volume-id, we won't ever hit anything with that in there.
+		hash_args = [arg for arg in arguments if arg != info.root]
+		tarball_id = sha1(repr(frozenset(options + hash_args))).hexdigest()[0:8]
 		tarball_filename = 'debootstrap-{id}.tar'.format(id=tarball_id)
 		info.tarball = os.path.join(info.manifest.bootstrapper['tarball_dir'], tarball_filename)
 		if os.path.isfile(info.tarball):
