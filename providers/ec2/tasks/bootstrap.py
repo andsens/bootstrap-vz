@@ -1,6 +1,8 @@
 from base import Task
 from common import phases
 from common.tools import log_check_call
+import logging
+log = logging.getLogger(__name__)
 
 
 def get_bootstrap_args(info):
@@ -26,9 +28,10 @@ class MakeTarball(Task):
 		tarball_id = sha1(repr(frozenset(options + arguments))).hexdigest()[0:8]
 		tarball_filename = 'debootstrap-{id}.tar'.format(id=tarball_id)
 		info.tarball = os.path.join(info.manifest.bootstrapper['tarball_dir'], tarball_filename)
-
-		command = executable + options + ['--make-tarball=' + info.tarball] + arguments
-		log_check_call(command)
+		if os.path.isfile(info.tarball):
+			log.debug('Found matching tarball, skipping download')
+		else:
+			log_check_call(executable + options + ['--make-tarball=' + info.tarball] + arguments)
 
 
 class Bootstrap(Task):
@@ -41,5 +44,4 @@ class Bootstrap(Task):
 		if hasattr(info, 'tarball'):
 			options.extend(['--unpack-tarball=' + info.tarball])
 
-		command = executable + options + arguments
-		log_check_call(command)
+		log_check_call(executable + options + arguments)
