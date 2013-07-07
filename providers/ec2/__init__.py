@@ -42,6 +42,7 @@ def tasks(tasklist, manifest):
 	             filesystem.MountSpecials(),
 	             locale.GenerateLocale(),
 	             locale.SetTimezone(),
+	             apt.DisableDaemonAutostart(),
 	             apt.AptSources(),
 	             apt.AptUpgrade(),
 	             boot.ConfigureGrub(),

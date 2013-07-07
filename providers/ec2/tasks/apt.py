@@ -22,10 +22,9 @@ class AptSources(Task):
 			                           release=info.manifest.system['release'])))
 
 
-class AptUpgrade(Task):
-	description = 'Upgrading packages and fixing broken dependencies'
+class DisableDaemonAutostart(Task):
+	description = 'Disabling daemon autostart'
 	phase = phases.system_modification
-	after = [GenerateLocale, AptSources]
 
 	def run(self, info):
 		rc_policy_path = os.path.join(info.root, 'usr/sbin/policy-rc.d')
@@ -37,6 +36,14 @@ class AptUpgrade(Task):
 		         stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR |
 		         stat.S_IRGRP                | stat.S_IXGRP |
 		         stat.S_IROTH                | stat.S_IXOTH)
+
+
+class AptUpgrade(Task):
+	description = 'Upgrading packages and fixing broken dependencies'
+	phase = phases.system_modification
+	after = [GenerateLocale, AptSources, DisableDaemonAutostart]
+
+	def run(self, info):
 		log_check_call(['chroot', info.root, 'apt-get', 'update'])
 		log_check_call(['chroot', info.root, 'apt-get', '-f', '-y', 'install'])
 		log_check_call(['chroot', info.root, 'apt-get', '-y', 'upgrade'])
