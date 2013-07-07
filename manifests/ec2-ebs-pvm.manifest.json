@@ -11,7 +11,7 @@
 		"tarball": true
 	},
 	"image": {
-		"name"       : "debian-{release}-{architecture}-{virtualization}-{year}{month}{day}",
+		"name"       : "debian-{release}-{architecture}-{virtualization}-{%y}{%M}{%d}",
 		"description": "Debian {release} {architecture} AMI ({virtualization})"
 	},
 	"system": {
@@ -28,7 +28,7 @@
 	},
 	"plugins": {
 		"admin_user": {
-			"enabled": true
+			"enabled": false
 		},
 		"build_metadata": {
 			"enabled": false,

@@ -3,6 +3,7 @@ import logging
 from tasks import packages
 from tasks import connection
 from tasks import host
+from tasks import ami
 from tasks import ebs
 from tasks import filesystem
 from tasks import bootstrap
@@ -26,6 +27,7 @@ def tasks(tasklist, manifest):
 	             host.CheckPackages(),
 	             connection.GetCredentials(),
 	             host.GetInfo(),
+	             ami.AMIName(),
 	             connection.Connect())
 	if manifest.volume['backing'].lower() == 'ebs':
 		tasklist.add(ebs.CreateVolume(),
@@ -35,7 +37,8 @@ def tasks(tasklist, manifest):
 		tasklist.add(filesystem.AddXFSProgs())
 	if manifest.volume['filesystem'].lower() in ['ext2', 'ext3', 'ext4']:
 		tasklist.add(filesystem.TuneVolumeFS())
-	tasklist.add(filesystem.CreateMountDir(), filesystem.MountVolume())
+	tasklist.add(filesystem.CreateMountDir(),
+	             filesystem.MountVolume())
 	if manifest.bootstrapper['tarball']:
 		tasklist.add(bootstrap.MakeTarball())
 	tasklist.add(bootstrap.Bootstrap(),
@@ -68,10 +71,9 @@ def tasks(tasklist, manifest):
 	             filesystem.DeleteMountDir())
 	if manifest.volume['backing'].lower() == 'ebs':
 		tasklist.add(ebs.DetachVolume(),
-		             ebs.CreateSnapshot())
-
-	from common.tasks import TriggerRollback
-	tasklist.add(TriggerRollback())
+		             ebs.CreateSnapshot(),
+		             ebs.DeleteVolume())
+	tasklist.add(ami.RegisterAMI())
 
 
 def rollback_tasks(tasklist, tasks_completed, manifest):

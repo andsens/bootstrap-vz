@@ -12,3 +12,4 @@ class Manifest(base.Manifest):
 		super(Manifest, self).parse(data)
 		self.credentials    = data['credentials']
 		self.virtualization = data['virtualization']
+		self.image          = data['image']
