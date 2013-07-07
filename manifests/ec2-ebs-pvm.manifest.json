@@ -11,7 +11,7 @@
 		"tarball": true
 	},
 	"image": {
-		"name"       : "debian-{release}-{architecture}-{virtualization}-{%y}{%M}{%d}",
+		"name"       : "debian-{release}-{architecture}-{virtualization}-{%y}{%m}{%d}",
 		"description": "Debian {release} {architecture} AMI ({virtualization})"
 	},
 	"system": {
