@@ -12,6 +12,7 @@ from tasks import boot
 from tasks import security
 from tasks import network
 from tasks import initd
+from tasks import cleanup
 
 
 def initialize():
@@ -54,7 +55,10 @@ def tasks(tasklist, manifest):
 	             network.ConfigureNetworkIF(),
 	             network.ConfigureDHCP(),
 	             initd.ResolveInitScripts(),
-	             initd.InstallInitScripts())
+	             initd.InstallInitScripts(),
+	             cleanup.ClearMOTD(),
+	             cleanup.ShredHostkeys(),
+	             cleanup.CleanTMP())
 
 	from common.tasks import TriggerRollback
 	tasklist.add(TriggerRollback())
