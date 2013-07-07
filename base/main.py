@@ -34,6 +34,7 @@ def run(args):
 
 	try:
 		tasklist.run(bootstrap_info)
+		log.info('Successfully completed bootstrapping')
 	except (Exception, KeyboardInterrupt) as e:
 		log.exception(e)
 		log.error('Rolling back')
