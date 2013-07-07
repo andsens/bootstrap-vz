@@ -66,7 +66,8 @@ def tasks(tasklist, manifest):
 	             filesystem.UnmountSpecials(),
 	             filesystem.UnmountVolume(),
 	             ebs.DetachVolume(),
-	             filesystem.DeleteMountDir())
+	             filesystem.DeleteMountDir(),
+	             ebs.CreateSnapshot())
 
 	from common.tasks import TriggerRollback
 	tasklist.add(TriggerRollback())

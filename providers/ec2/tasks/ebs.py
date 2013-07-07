@@ -63,6 +63,17 @@ class DetachVolume(Task):
 			info.volume.update()
 
 
+class CreateSnapshot(Task):
+	description = 'Creating a snapshot of the EBS volume'
+	phase = phases.image_registration
+
+	def run(self, info):
+		info.snapshot = info.volume.create_snapshot()
+		while info.snapshot.status != 'completed':
+			time.sleep(2)
+			info.snapshot.update()
+
+
 class DeleteVolume(Task):
 	phase = phases.cleaning
 	after = []
