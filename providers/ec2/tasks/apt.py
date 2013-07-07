@@ -64,9 +64,8 @@ class AptClean(Task):
 	def run(self, info):
 		log_check_call(['chroot', info.root, 'apt-get', 'clean'])
 
-		import glob
-		lists = glob.glob(os.path.join(info.root, 'var/lib/apt/lists/*'))
-		for list_file in lists:
+		lists = os.path.join(info.root, 'var/lib/apt/lists')
+		for list_file in [os.path.join(lists, f) for f in os.listdir(lists)]:
 			if os.path.isfile(list_file):
 				os.remove(list_file)
 

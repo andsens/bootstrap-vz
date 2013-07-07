@@ -1,6 +1,6 @@
 from base import Task
 from common import phases
-import os.path
+import os
 
 
 class ConfigureGrub(Task):
@@ -14,10 +14,8 @@ class ConfigureGrub(Task):
 		             stat.S_IROTH                | stat.S_IXOTH)
 		x_all = stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH
 
-		import os
-		import glob
-		grub2_cfgs = glob.glob(os.path.join(info.root, 'etc/grub.d/*'))
-		for cfg in grub2_cfgs:
+		grubd = os.path.join(info.root, 'etc/grub.d')
+		for cfg in [os.path.join(grubd, f) for f in os.listdir(grubd)]:
 			os.chmod(cfg, os.stat(cfg).st_mode & ~ x_all)
 
 		from shutil import copy

@@ -34,11 +34,10 @@ class CleanTMP(Task):
 	phase = phases.system_cleaning
 
 	def run(self, info):
-		import glob
-		tmp_files = glob.glob(os.path.join(info.root, 'tmp/*'))
-		for tmp_file in tmp_files:
+		tmp = os.path.join(info.root, 'tmp')
+		for tmp_file in [os.path.join(tmp, f) for f in os.listdir(tmp)]:
 			os.remove(tmp_file)
 
-		log_files = glob.glob(os.path.join(info.root, 'var/log/{bootstrap,dpkg}.log'))
-		for log_file in log_files:
-			os.remove(log_file)
+		log = os.path.join(info.root, 'var/log/')
+		os.remove(os.path.join(log, 'bootstrap.log'))
+		os.remove(os.path.join(log, 'dpkg.log'))
