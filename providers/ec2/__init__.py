@@ -59,7 +59,10 @@ def tasks(tasklist, manifest):
 	             initd.InstallInitScripts(),
 	             cleanup.ClearMOTD(),
 	             cleanup.ShredHostkeys(),
-	             cleanup.CleanTMP())
+	             cleanup.CleanTMP(),
+	             apt.PurgeUnusedPackages(),
+	             apt.AptClean(),
+	             apt.EnableDaemonAutostart())
 
 	from common.tasks import TriggerRollback
 	tasklist.add(TriggerRollback())

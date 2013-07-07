@@ -47,3 +47,33 @@ class AptUpgrade(Task):
 		log_check_call(['chroot', info.root, 'apt-get', 'update'])
 		log_check_call(['chroot', info.root, 'apt-get', '-f', '-y', 'install'])
 		log_check_call(['chroot', info.root, 'apt-get', '-y', 'upgrade'])
+
+
+class PurgeUnusedPackages(Task):
+	description = 'Removing unused packages'
+	phase = phases.system_cleaning
+
+	def run(self, info):
+		log_check_call(['chroot', info.root, 'apt-get', 'autoremove', '--purge'])
+
+
+class AptClean(Task):
+	description = 'Clearing the aptitude cache'
+	phase = phases.system_cleaning
+
+	def run(self, info):
+		log_check_call(['chroot', info.root, 'apt-get', 'clean'])
+
+		import glob
+		lists = glob.glob(os.path.join(info.root, 'var/lib/apt/lists/*'))
+		for list_file in lists:
+			if os.path.isfile(list_file):
+				os.remove(list_file)
+
+
+class EnableDaemonAutostart(Task):
+	description = 'Re-enabling daemon autostart after installation'
+	phase = phases.system_cleaning
+
+	def run(self, info):
+		os.remove(os.path.join(info.root, 'usr/sbin/policy-rc.d'))
