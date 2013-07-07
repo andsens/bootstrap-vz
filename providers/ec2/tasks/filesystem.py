@@ -23,8 +23,7 @@ class TuneVolumeFS(Task):
 	def run(self, info):
 		dev_path = info.bootstrap_device['path']
 		# Disable the time based filesystem check
-		command = ['/sbin/tune2fs', '-i', '0', dev_path]
-		log_check_call(command)
+		log_check_call(['/sbin/tune2fs', '-i', '0', dev_path])
 
 
 class AddXFSProgs(Task):
@@ -60,8 +59,7 @@ class MountVolume(Task):
 					msg = 'Something is already mounted at {root}'.format(root=info.root)
 					raise TaskError(msg)
 
-		command = ['mount', info.bootstrap_device['path'], info.root]
-		log_check_call(command)
+		log_check_call(['/bin/mount', info.bootstrap_device['path'], info.root])
 
 
 class MountSpecials(Task):
@@ -70,10 +68,10 @@ class MountSpecials(Task):
 	after = [Bootstrap]
 
 	def run(self, info):
-		log_check_call(['mount', '--bind', '/dev', '{root}/dev'.format(root=info.root)])
-		log_check_call(['chroot', info.root, 'mount', '-t', 'proc', 'none', '/proc'])
-		log_check_call(['chroot', info.root, 'mount', '-t', 'sysfs', 'none', '/sys'])
-		log_check_call(['chroot', info.root, 'mount', '-t', 'devpts', 'none', '/dev/pts'])
+		log_check_call(['/bin/mount', '--bind', '/dev', '{root}/dev'.format(root=info.root)])
+		log_check_call(['/usr/sbin/chroot', info.root, '/bin/mount', '-t', 'proc', 'none', '/proc'])
+		log_check_call(['/usr/sbin/chroot', info.root, '/bin/mount', '-t', 'sysfs', 'none', '/sys'])
+		log_check_call(['/usr/sbin/chroot', info.root, '/bin/mount', '-t', 'devpts', 'none', '/dev/pts'])
 
 
 class UnmountSpecials(Task):
@@ -81,10 +79,10 @@ class UnmountSpecials(Task):
 	phase = phases.volume_unmounting
 
 	def run(self, info):
-		log_check_call(['chroot', info.root, 'umount', '/dev/pts'])
-		log_check_call(['chroot', info.root, 'umount', '/sys'])
-		log_check_call(['chroot', info.root, 'umount', '/proc'])
-		log_check_call(['umount', '{root}/dev'.format(root=info.root)])
+		log_check_call(['/usr/sbin/chroot', info.root, '/bin/umount', '/dev/pts'])
+		log_check_call(['/usr/sbin/chroot', info.root, '/bin/umount', '/sys'])
+		log_check_call(['/usr/sbin/chroot', info.root, '/bin/umount', '/proc'])
+		log_check_call(['/bin/umount', '{root}/dev'.format(root=info.root)])
 
 
 class UnmountVolume(Task):
@@ -93,7 +91,7 @@ class UnmountVolume(Task):
 	after = [UnmountSpecials]
 
 	def run(self, info):
-		log_check_call(['umount', info.root])
+		log_check_call(['/bin/umount', info.root])
 
 
 class DeleteMountDir(Task):

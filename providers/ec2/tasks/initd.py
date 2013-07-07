@@ -43,7 +43,7 @@ class InstallInitScripts(Task):
 			dst = os.path.join(info.root, 'etc/init.d', name)
 			copy(src, dst)
 			os.chmod(dst, rwxr_xr_x)
-			log_check_call(['chroot', info.root, '/sbin/insserv', '-d', name])
+			log_check_call(['/usr/sbin/chroot', info.root, '/sbin/insserv', '-d', name])
 
 		for name in info.initd['disable']:
-			log_check_call(['chroot', info.root, '/sbin/insserv', '-r', name])
+			log_check_call(['/usr/sbin/chroot', info.root, '/sbin/insserv', '-r', name])

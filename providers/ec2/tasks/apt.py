@@ -44,9 +44,9 @@ class AptUpgrade(Task):
 	after = [GenerateLocale, AptSources, DisableDaemonAutostart]
 
 	def run(self, info):
-		log_check_call(['chroot', info.root, 'apt-get', 'update'])
-		log_check_call(['chroot', info.root, 'apt-get', '-f', '-y', 'install'])
-		log_check_call(['chroot', info.root, 'apt-get', '-y', 'upgrade'])
+		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get', 'update'])
+		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get', '-f', '-y', 'install'])
+		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get', '-y', 'upgrade'])
 
 
 class PurgeUnusedPackages(Task):
@@ -54,7 +54,7 @@ class PurgeUnusedPackages(Task):
 	phase = phases.system_cleaning
 
 	def run(self, info):
-		log_check_call(['chroot', info.root, 'apt-get', 'autoremove', '--purge'])
+		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get', 'autoremove', '--purge'])
 
 
 class AptClean(Task):
@@ -62,7 +62,7 @@ class AptClean(Task):
 	phase = phases.system_cleaning
 
 	def run(self, info):
-		log_check_call(['chroot', info.root, 'apt-get', 'clean'])
+		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get', 'clean'])
 
 		lists = os.path.join(info.root, 'var/lib/apt/lists')
 		for list_file in [os.path.join(lists, f) for f in os.listdir(lists)]:
