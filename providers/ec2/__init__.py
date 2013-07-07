@@ -11,6 +11,7 @@ from tasks import apt
 from tasks import boot
 from tasks import security
 from tasks import network
+from tasks import initd
 
 
 def initialize():
@@ -51,7 +52,9 @@ def tasks(tasklist, manifest):
 	             security.DisableSSHDNSLookup(),
 	             network.RemoveDNSInfo(),
 	             network.ConfigureNetworkIF(),
-	             network.ConfigureDHCP())
+	             network.ConfigureDHCP(),
+	             initd.ResolveInitScripts(),
+	             initd.InstallInitScripts())
 
 	from common.tasks import TriggerRollback
 	tasklist.add(TriggerRollback())
