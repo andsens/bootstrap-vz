@@ -1,12 +1,10 @@
 
 
 def log_check_call(command):
-	status = log_call(command)
+	status, stdout, stderr = log_call(command)
 	if status != 0:
 		from subprocess import CalledProcessError
-		msg = ('Command \'{command}\' returned non-zero exit status '
-		       '{status}'.format(command=command, status=status))
-		raise CalledProcessError(msg)
+		raise CalledProcessError(status, ' '.join(command), '\n'.join(stderr))
 
 
 def log_call(command):
@@ -14,10 +12,13 @@ def log_call(command):
 	import select
 
 	import logging
-	command_log = command[0].replace('/', '.')
+	from os.path import realpath
+	command_log = realpath(command[0]).replace('/', '.')
 	log = logging.getLogger(__name__ + command_log)
 
 	process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	stdout = []
+	stderr = []
 	while True:
 		reads = [process.stdout.fileno(), process.stderr.fileno()]
 		ret = select.select(reads, [], [])
@@ -26,12 +27,14 @@ def log_call(command):
 				line = process.stdout.readline()
 				if line != '':
 					log.debug(line.strip())
+					stdout.append(line.strip())
 			if fd == process.stderr.fileno():
 				line = process.stderr.readline()
 				if line != '':
 					log.error(line.strip())
+					stderr.append(line.strip())
 		if process.poll() is not None:
-			return process.returncode
+			return process.returncode, stdout, stderr
 
 
 def sed_i(file_path, pattern, subst):
