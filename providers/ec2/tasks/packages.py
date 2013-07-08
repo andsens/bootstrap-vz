@@ -7,10 +7,7 @@ class HostPackages(Task):
 	phase = phases.preparation
 
 	def run(self, info):
-		packages = set(['debootstrap',
-		                # To make sure a volume is not busy before unmounting we need lsof
-		                'lsof',
-		                ])
+		packages = set(['debootstrap'])
 		if info.manifest.volume['filesystem'] == 'xfs':
 			packages.add('xfsprogs')
 
