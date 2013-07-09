@@ -6,9 +6,8 @@ import time
 
 
 class CreateVolume(Task):
-	phase = phases.volume_creation
-
 	description = 'Creating an EBS volume for bootstrapping'
+	phase = phases.volume_creation
 
 	def run(self, info):
 		volume_size = int(info.manifest.volume['size']/1024)
@@ -20,10 +19,9 @@ class CreateVolume(Task):
 
 
 class AttachVolume(Task):
+	description = 'Attaching the EBS volume'
 	phase = phases.volume_creation
 	after = [CreateVolume]
-
-	description = 'Attaching the EBS volume'
 
 	def run(self, info):
 		def char_range(c1, c2):
@@ -49,10 +47,9 @@ class AttachVolume(Task):
 
 
 class DetachVolume(Task):
+	description = 'Detaching the EBS volume'
 	phase = phases.volume_unmounting
 	after = [UnmountVolume]
-
-	description = 'Detaching the EBS volume'
 
 	def run(self, info):
 		info.volume.detach()
@@ -73,10 +70,9 @@ class CreateSnapshot(Task):
 
 
 class DeleteVolume(Task):
+	description = 'Deleting the EBS volume'
 	phase = phases.cleaning
 	after = []
-
-	description = 'Deleting the EBS volume'
 
 	def run(self, info):
 		info.volume.delete()

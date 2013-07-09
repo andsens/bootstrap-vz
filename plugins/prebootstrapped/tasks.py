@@ -6,11 +6,10 @@ import time
 
 
 class CreateVolumeFromSnapshot(Task):
+	description = 'Creating EBS volume from a snapshot'
 	phase = phases.volume_creation
 	after = [connection.Connect]
 	before = [ebs.AttachVolume]
-
-	description = 'Creating EBS volume from a snapshot'
 
 	def run(self, info):
 		volume_size = int(info.manifest.volume['size']/1024)
