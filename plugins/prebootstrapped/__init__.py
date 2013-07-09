@@ -1,3 +1,4 @@
+from tasks import CreateSnapshot
 from tasks import CreateVolumeFromSnapshot
 from providers.ec2.tasks import ebs
 
@@ -5,12 +6,15 @@ from providers.ec2.tasks import ebs
 def tasks(tasklist, manifest):
 	from providers.ec2.tasks import bootstrap
 	from providers.ec2.tasks import filesystem
-	tasklist.replace(ebs.CreateVolume, CreateVolumeFromSnapshot())
-	tasklist.remove(filesystem.FormatVolume,
-	                filesystem.TuneVolumeFS,
-	                filesystem.AddXFSProgs,
-	                bootstrap.MakeTarball,
-	                bootstrap.Bootstrap)
+	if manifest.plugins['prebootstrapped']['snapshot'] == "":
+		tasklist.add(CreateSnapshot())
+	else:
+		tasklist.replace(ebs.CreateVolume, CreateVolumeFromSnapshot())
+		tasklist.remove(filesystem.FormatVolume,
+		                filesystem.TuneVolumeFS,
+		                filesystem.AddXFSProgs,
+		                bootstrap.MakeTarball,
+		                bootstrap.Bootstrap)
 
 
 def rollback_tasks(tasklist, tasks_completed, manifest):
