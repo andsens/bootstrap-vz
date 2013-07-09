@@ -10,9 +10,8 @@ class CreateVolume(Task):
 	phase = phases.volume_creation
 
 	def run(self, info):
-		volume_size = int(info.manifest.volume['size']/1024)
-
-		info.volume = info.connection.create_volume(volume_size, info.host['availabilityZone'])
+		info.volume = info.connection.create_volume(info.manifest.ebs_volume_size,
+		                                            info.host['availabilityZone'])
 		while info.volume.volume_state() != 'available':
 			time.sleep(5)
 			info.volume.update()

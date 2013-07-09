@@ -66,7 +66,7 @@ class RegisterAMI(Task):
 		from boto.ec2.blockdevicemapping import BlockDeviceType
 		from boto.ec2.blockdevicemapping import BlockDeviceMapping
 		block_device = BlockDeviceType(snapshot_id=info.snapshot.id, delete_on_termination=True,
-		                               size=int(info.manifest.volume['size']/1024))
+		                               size=info.manifest.ebs_volume_size)
 		block_device_map = BlockDeviceMapping()
 		block_device_map['/dev/sda1'] = block_device
 
