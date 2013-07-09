@@ -1,14 +1,12 @@
 from base import Task
 from common import phases
 from common.exceptions import TaskError
-from connection import Connect
 from filesystem import UnmountVolume
 import time
 
 
 class CreateVolume(Task):
 	phase = phases.volume_creation
-	after = [Connect]
 
 	description = 'Creating an EBS volume for bootstrapping'
 
