@@ -36,7 +36,8 @@
 			"type": "object",
 			"properties": {
 				"size": {
-					"type": "integer"
+					"type": "integer",
+					"minimum": 1
 				}
 			},
 			"required": ["size"]
