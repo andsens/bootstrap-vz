@@ -1,6 +1,6 @@
 {
 	"$schema": "http://json-schema.org/draft-04/schema#",
-	"title": "EC2 manifest",
+	"title": "OpenNebula manifest",
 	"type": "object",
 	"properties": {
 		"volume": {

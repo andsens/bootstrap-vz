@@ -11,6 +11,13 @@ class EnableShadowConfig(Task):
 		from common.tools import log_check_call
 		log_check_call(['/usr/sbin/chroot', info.root, '/sbin/shadowconfig', 'on'])
 
+class SetRootPassword(Task):
+	description = 'Set password for root'
+	phase = phases.system_modification
+
+	def run(self, info):
+		from common.tools import log_check_call
+		log_check_call(['/usr/sbin/chpasswd'], 'root:'+info.manifest.credentials['root'])
 
 class DisableSSHPasswordAuthentication(Task):
 	description = 'Disabling SSH password authentication'
