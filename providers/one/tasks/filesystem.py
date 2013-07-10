@@ -10,7 +10,9 @@ class FormatVolume(Task):
 	phase = phases.volume_preparation
 
 	def run(self, info):
-		dev_path = info.manifest.bootstrapper['device']
+                mkmount = 'create -f raw "'+info.manifest.bootstrapper['mount_dir']+'" "'+str(info.manifest.volume['size'])+'"'
+                log_check_call(['/usr/bin/qemu-img',mkmount])
+		dev_path = info.manifest.bootstrapper['mount_dir']
 		mkfs = '/sbin/mkfs.{fs}'.format(fs=info.manifest.volume['filesystem'])
 		log_check_call([mkfs, dev_path])
 
