@@ -10,11 +10,14 @@ class AptSources(Task):
 	phase = phases.system_modification
 
 	def run(self, info):
+		mirror = 'http://http.debian.net/debian'
+                if info.manifest.system['mirror']:
+			mirror = info.manifest.system['mirror']
 		sources_path = os.path.join(info.root, 'etc/apt/sources.list')
 		with open(sources_path, 'w') as apt_sources:
 			apt_sources.write(('deb     {apt_mirror} {release} main\n'
 			                   'deb-src {apt_mirror} {release} main\n'
-			                   .format(apt_mirror='http://http.debian.net/debian',
+			                   .format(apt_mirror=mirror,
 			                           release=info.manifest.system['release'])))
 			apt_sources.write(('deb     {apt_mirror} {release}/updates main\n'
 			                   'deb-src {apt_mirror} {release}/updates main\n'

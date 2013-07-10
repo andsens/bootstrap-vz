@@ -6,6 +6,10 @@ log = logging.getLogger(__name__)
 
 
 def get_bootstrap_args(info):
+        mirror = 'http://http.debian.net/debian'
+        if info.manifest.system['mirror']:
+	        mirror = info.manifest.system['mirror']
+
 	executable = ['/usr/sbin/debootstrap']
 	options = ['--arch=' + info.manifest.system['architecture']]
 	include, exclude = info.img_packages
@@ -13,7 +17,7 @@ def get_bootstrap_args(info):
 		options.append('--include=' + ','.join(include))
 	if len(exclude) > 0:
 		options.append('--exclude=' + ','.join(exclude))
-	arguments = [info.manifest.system['release'], info.root, 'http://http.debian.net/debian']
+	arguments = [info.manifest.system['release'], info.root, mirror]
 	return executable, options, arguments
 
 
