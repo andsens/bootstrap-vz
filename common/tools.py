@@ -1,13 +1,13 @@
 
 
-def log_check_call(command):
-	status, stdout, stderr = log_call(command)
+def log_check_call(command, input=None):
+	status, stdout, stderr = log_call(command, input)
 	if status != 0:
 		from subprocess import CalledProcessError
 		raise CalledProcessError(status, ' '.join(command), '\n'.join(stderr))
 
 
-def log_call(command):
+def log_call(command, input=None):
 	import subprocess
 	import select
 
@@ -16,7 +16,15 @@ def log_call(command):
 	command_log = realpath(command[0]).replace('/', '.')
 	log = logging.getLogger(__name__ + command_log)
 
-	process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	if input is not None:
+		process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		process.stdin.write(input+"\n")
+		process.stdin.flush()
+		process.stdin.close()
+		# (stdout,stderr) = process.communicate(input+"\n")
+		# return process.returncode, stdout, stderr
+	else:
+		process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	stdout = []
 	stderr = []
 	while True:
