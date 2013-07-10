@@ -1,0 +1,22 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "EC2 manifest",
+	"type": "object",
+	"properties": {
+		"volume": {
+			"type": "object",
+			"properties": {
+				"backing": {
+					"type": "string",
+					"enum": ["raw", "qcow2"]
+				},
+				"filesystem": {
+					"type": "string",
+					"enum": ["ext2", "ext3", "ext4", "xfs"]
+				}
+			},
+			"required": ["backing", "filesystem"]
+		}
+	},
+	"required": ["volume"]
+}
