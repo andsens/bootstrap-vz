@@ -3,7 +3,8 @@
 	"virtualization": "virtio",
 	"credentials"   : {
 		"access-key": null,
-		"secret-key": null
+		"secret-key": null,
+		"root": "test"
 	},
 
 	"bootstrapper": {
@@ -21,7 +22,8 @@
 		"architecture": "amd64",
 		"timezone"    : "UTC",
 		"locale"      : "en_US",
-		"charmap"     : "UTF-8"
+		"charmap"     : "UTF-8",
+		"mirror"      : "ftp://ftp.fr.debian.org/debian/"
 	},
 	"volume": {
 		"backing"   : "raw",
