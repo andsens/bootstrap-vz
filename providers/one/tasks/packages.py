@@ -7,7 +7,7 @@ class HostPackages(Task):
 	phase = phases.preparation
 
 	def run(self, info):
-		packages = set(['debootstrap'])
+		packages = set(['debootstrap', 'qemu-utils'])
 		if info.manifest.volume['filesystem'] == 'xfs':
 			packages.add('xfsprogs')
 

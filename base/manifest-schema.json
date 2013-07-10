@@ -10,8 +10,10 @@
 			"type": "object",
 			"properties": {
 				"mount_dir": { "type": "string" },
+                                "image_file": { "type": "string" },
 				"tarball": { "type": "boolean" },
-				"tarball_dir": { "type": "string" }
+				"tarball_dir": { "type": "string" },
+				"device" : { "type" : "string" }
 			},
 			"required": ["mount_dir"]
 		},

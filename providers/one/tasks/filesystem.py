@@ -3,18 +3,22 @@ from common import phases
 from common.exceptions import TaskError
 from common.tools import log_check_call
 from bootstrap import Bootstrap
-
+import os
 
 class FormatVolume(Task):
 	description = 'Formatting the volume'
 	phase = phases.volume_preparation
 
 	def run(self, info):
-                mkmount = 'create -f raw "'+info.manifest.bootstrapper['mount_dir']+'" "'+str(info.manifest.volume['size'])+'"'
-                log_check_call(['/usr/bin/qemu-img',mkmount])
-		dev_path = info.manifest.bootstrapper['mount_dir']
-		mkfs = '/sbin/mkfs.{fs}'.format(fs=info.manifest.volume['filesystem'])
-		log_check_call([mkfs, dev_path])
+                mkmount = ['/usr/bin/qemu-img', 'create', '-f', 'raw', info.manifest.bootstrapper['image_file'], str(info.manifest.volume['size'])+'M']
+                log_check_call(mkmount)
+                ddcmd = ['/bin/dd', 'if=/dev/zero', 'bs=1024', 'conv=notrunc', 'count='+str(info.manifest.volume['size']), 'of='+info.manifest.bootstrapper['image_file']]
+		log_check_call(ddcmd)
+		loopcmd = ['/sbin/losetup', '/dev/loop0', info.manifest.bootstrapper['image_file']]
+		log_check_call(loopcmd)
+		mkfs = [ '/sbin/mkfs.{fs}'.format(fs=info.manifest.volume['filesystem']), '-m', '1', '-v', '/dev/loop0']
+		log_check_call(mkfs)
+
 
 
 class TuneVolumeFS(Task):
@@ -23,7 +27,8 @@ class TuneVolumeFS(Task):
 	after = [FormatVolume]
 
 	def run(self, info):
-		dev_path = info.bootstrap_device['path']
+		#dev_path = info.bootstrap_device['path']
+                dev_path = info.manifest.bootstrapper['image_file']
 		# Disable the time based filesystem check
 		log_check_call(['/sbin/tune2fs', '-i', '0', dev_path])
 
@@ -44,9 +49,9 @@ class CreateMountDir(Task):
 	def run(self, info):
 		import os
 		mount_dir = info.manifest.bootstrapper['mount_dir']
-		info.root = '{mount_dir}/{vol_id}'.format(mount_dir=mount_dir, vol_id=info.volume.id)
+		info.root = mount_dir
 		# Works recursively, fails if last part exists, which is exaclty what we want.
-		os.makedirs(info.root)
+		os.makedirs(mount_dir)
 
 
 class MountVolume(Task):
@@ -61,7 +66,7 @@ class MountVolume(Task):
 					msg = 'Something is already mounted at {root}'.format(root=info.root)
 					raise TaskError(msg)
 
-		log_check_call(['/bin/mount', info.bootstrap_device['path'], info.root])
+		log_check_call(['/bin/mount', '-t', info.manifest.volume['filesystem'], '/dev/loop0', info.root])
 
 
 class MountSpecials(Task):
@@ -94,6 +99,8 @@ class UnmountVolume(Task):
 
 	def run(self, info):
 		log_check_call(['/bin/umount', info.root])
+                log_check_call(['/sbin/losetup', '-d', '/dev/loop0'])
+
 
 
 class DeleteMountDir(Task):

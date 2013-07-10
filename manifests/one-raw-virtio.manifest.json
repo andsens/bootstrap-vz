@@ -7,7 +7,8 @@
 	},
 
 	"bootstrapper": {
-		"mount_dir": "/tmp/target",
+		"mount_dir": "/mnt/target",
+		"image_file": "/tmp/target",
 		"tarball": true,
 		"device": "/dev/sda"	
 	},
