@@ -17,7 +17,8 @@ class SetRootPassword(Task):
 
 	def run(self, info):
 		from common.tools import log_check_call
-		log_check_call(['/usr/sbin/chpasswd'], 'root:'+info.manifest.credentials['root'])
+		if info.manifest.credentials['root']:
+			log_check_call(['/usr/sbin/chpasswd'], 'root:'+info.manifest.credentials['root'])
 
 class DisableSSHPasswordAuthentication(Task):
 	description = 'Disabling SSH password authentication'
