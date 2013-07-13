@@ -16,7 +16,7 @@ Dependencies
 You will need to run debian wheezy with python 2.7 and debootstrap installed.
 Also the following python libraries are required:
 * boto
-* jsomschema
+* jsomschema (version 4, only available through pip)
 * termcolor
 
 Highlights
