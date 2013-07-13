@@ -49,7 +49,7 @@ class Manifest(object):
 		self.bootstrapper = data['bootstrapper']
 		if 'tarball' not in self.bootstrapper:
 			self.bootstrapper['tarball'] = False
-		if 'tarball_dir' not in self.bootstrapper:
+		if 'tarball_dir' not in self.bootstrapper and self.bootstrapper['tarball']:
 			self.bootstrapper['tarball_dir'] = '/tmp'
 		self.volume = data['volume']
 		self.system = data['system']
