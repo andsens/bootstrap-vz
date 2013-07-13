@@ -40,28 +40,28 @@ class RegisterAMI(Task):
 	phase = phases.image_registration
 	after = [CreateSnapshot]
 
+	kernel_mapping = {'us-east-1':      {'amd64': 'aki-88aa75e1',
+	                                     'i386':  'aki-b6aa75df'},
+	                  'us-west-1':      {'amd64': 'aki-f77e26b2',
+	                                     'i386':  'aki-f57e26b0'},
+	                  'us-west-2':      {'amd64': 'aki-fc37bacc',
+	                                     'i386':  'aki-fa37baca'},
+	                  'eu-west-1':      {'amd64': 'aki-71665e05',
+	                                     'i386':  'aki-75665e01'},
+	                  'ap-southeast-1': {'amd64': 'aki-fe1354ac',
+	                                     'i386':  'aki-f81354aa'},
+	                  'ap-southeast-2': {'amd64': 'aki-31990e0b',
+	                                     'i386':  'aki-33990e09'},
+	                  'ap-northeast-1': {'amd64': 'aki-44992845',
+	                                     'i386':  'aki-42992843'},
+	                  'sa-east-1':      {'amd64': 'aki-c48f51d9',
+	                                     'i386':  'aki-ca8f51d7'},
+	                  'us-gov-west-1':  {'amd64': 'aki-79a4c05a',
+	                                     'i386':  'aki-7ba4c058'}}
+
 	def run(self, info):
-		arch = {'i386': 'i386',
-		        'amd64': 'x86_64'}.get(info.manifest.system['architecture'])
-		kernel_mapping = {'us-east-1':      {'amd64': 'aki-88aa75e1',
-		                                     'i386':  'aki-b6aa75df'},
-		                  'us-west-1':      {'amd64': 'aki-f77e26b2',
-		                                     'i386':  'aki-f57e26b0'},
-		                  'us-west-2':      {'amd64': 'aki-fc37bacc',
-		                                     'i386':  'aki-fa37baca'},
-		                  'eu-west-1':      {'amd64': 'aki-71665e05',
-		                                     'i386':  'aki-75665e01'},
-		                  'ap-southeast-1': {'amd64': 'aki-fe1354ac',
-		                                     'i386':  'aki-f81354aa'},
-		                  'ap-southeast-2': {'amd64': 'aki-31990e0b',
-		                                     'i386':  'aki-33990e09'},
-		                  'ap-northeast-1': {'amd64': 'aki-44992845',
-		                                     'i386':  'aki-42992843'},
-		                  'sa-east-1':      {'amd64': 'aki-c48f51d9',
-		                                     'i386':  'aki-ca8f51d7'},
-		                  'us-gov-west-1':  {'amd64': 'aki-79a4c05a',
-		                                     'i386':  'aki-7ba4c058'}}
-		kernel_id = kernel_mapping.get(info.host['region']).get(info.manifest.system['architecture'])
+		arch = {'i386': 'i386', 'amd64': 'x86_64'}.get(info.manifest.system['architecture'])
+		kernel_id = self.kernel_mapping.get(info.host['region']).get(info.manifest.system['architecture'])
 
 		from boto.ec2.blockdevicemapping import BlockDeviceType
 		from boto.ec2.blockdevicemapping import BlockDeviceMapping
