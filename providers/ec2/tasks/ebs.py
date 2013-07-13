@@ -5,7 +5,7 @@ from filesystem import UnmountVolume
 import time
 
 
-class CreateVolume(Task):
+class Create(Task):
 	description = 'Creating an EBS volume for bootstrapping'
 	phase = phases.volume_creation
 
@@ -17,10 +17,10 @@ class CreateVolume(Task):
 			info.volume.update()
 
 
-class AttachVolume(Task):
+class Attach(Task):
 	description = 'Attaching the EBS volume'
 	phase = phases.volume_creation
-	after = [CreateVolume]
+	after = [Create]
 
 	def run(self, info):
 		def char_range(c1, c2):
@@ -45,7 +45,7 @@ class AttachVolume(Task):
 			info.volume.update()
 
 
-class DetachVolume(Task):
+class Detach(Task):
 	description = 'Detaching the EBS volume'
 	phase = phases.volume_unmounting
 	after = [UnmountVolume]
@@ -57,7 +57,7 @@ class DetachVolume(Task):
 			info.volume.update()
 
 
-class CreateSnapshot(Task):
+class Snapshot(Task):
 	description = 'Creating a snapshot of the EBS volume'
 	phase = phases.image_registration
 
@@ -68,10 +68,9 @@ class CreateSnapshot(Task):
 			info.snapshot.update()
 
 
-class DeleteVolume(Task):
+class Delete(Task):
 	description = 'Deleting the EBS volume'
 	phase = phases.cleaning
-	after = []
 
 	def run(self, info):
 		info.volume.delete()

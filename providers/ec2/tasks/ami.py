@@ -1,6 +1,6 @@
 from base import Task
 from common import phases
-from ebs import CreateSnapshot
+from ebs import Snapshot
 from connection import Connect
 from common.exceptions import TaskError
 
@@ -38,7 +38,7 @@ class AMIName(Task):
 class RegisterAMI(Task):
 	description = 'Registering the image as an AMI'
 	phase = phases.image_registration
-	after = [CreateSnapshot]
+	after = [Snapshot]
 
 	kernel_mapping = {'us-east-1':      {'amd64': 'aki-88aa75e1',
 	                                     'i386':  'aki-b6aa75df'},

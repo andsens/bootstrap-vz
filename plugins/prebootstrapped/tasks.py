@@ -8,11 +8,11 @@ import logging
 log = logging.getLogger(__name__)
 
 
-class CreateVolumeFromSnapshot(Task):
+class CreateFromSnapshot(Task):
 	description = 'Creating EBS volume from a snapshot'
 	phase = phases.volume_creation
 	after = [connection.Connect]
-	before = [ebs.AttachVolume]
+	before = [ebs.Attach]
 
 	def run(self, info):
 		volume_size = int(info.manifest.volume['size']/1024)
@@ -25,12 +25,12 @@ class CreateVolumeFromSnapshot(Task):
 			info.volume.update()
 
 
-class CreateSnapshot(ebs.CreateSnapshot):
+class Snapshot(ebs.Snapshot):
 	description = 'Creating a snapshot of the bootstrapped volume'
 	phase = phases.os_installation
 	after = [bootstrap.Bootstrap]
 
 	def run(self, info):
-		super(CreateSnapshot, self).run(info)
+		super(Snapshot, self).run(info)
 		msg = 'A snapshot of the bootstrapped volume was created. ID: {id}'.format(id=info.snapshot.id)
 		log.info(msg)

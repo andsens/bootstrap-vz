@@ -30,8 +30,8 @@ def tasks(tasklist, manifest):
 	             ami.AMIName(),
 	             connection.Connect())
 	if manifest.volume['backing'].lower() == 'ebs':
-		tasklist.add(ebs.CreateVolume(),
-		             ebs.AttachVolume())
+		tasklist.add(ebs.Create(),
+		             ebs.Attach())
 	tasklist.add(filesystem.FormatVolume())
 	if manifest.volume['filesystem'].lower() == 'xfs':
 		tasklist.add(filesystem.AddXFSProgs())
@@ -70,9 +70,9 @@ def tasks(tasklist, manifest):
 	             filesystem.UnmountVolume(),
 	             filesystem.DeleteMountDir())
 	if manifest.volume['backing'].lower() == 'ebs':
-		tasklist.add(ebs.DetachVolume(),
-		             ebs.CreateSnapshot(),
-		             ebs.DeleteVolume())
+		tasklist.add(ebs.Detach(),
+		             ebs.Snapshot(),
+		             ebs.Delete())
 	tasklist.add(ami.RegisterAMI())
 
 
@@ -84,8 +84,8 @@ def rollback_tasks(tasklist, tasks_completed, manifest):
 			tasklist.add(counter())
 
 	if manifest.volume['backing'].lower() == 'ebs':
-		counter_task(ebs.CreateVolume, ebs.DeleteVolume)
-		counter_task(ebs.AttachVolume, ebs.DetachVolume)
+		counter_task(ebs.Create, ebs.Delete)
+		counter_task(ebs.Attach, ebs.Detach)
 	counter_task(filesystem.CreateMountDir, filesystem.DeleteMountDir)
 	counter_task(filesystem.MountVolume, filesystem.UnmountVolume)
 	counter_task(filesystem.MountSpecials, filesystem.UnmountSpecials)

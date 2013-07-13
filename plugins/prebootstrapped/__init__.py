@@ -1,5 +1,5 @@
-from tasks import CreateSnapshot
-from tasks import CreateVolumeFromSnapshot
+from tasks import Snapshot
+from tasks import CreateFromSnapshot
 from providers.ec2.tasks import ebs
 
 
@@ -7,9 +7,9 @@ def tasks(tasklist, manifest):
 	from providers.ec2.tasks import bootstrap
 	from providers.ec2.tasks import filesystem
 	if manifest.plugins['prebootstrapped']['snapshot'] == "":
-		tasklist.add(CreateSnapshot())
+		tasklist.add(Snapshot())
 	else:
-		tasklist.replace(ebs.CreateVolume, CreateVolumeFromSnapshot())
+		tasklist.replace(ebs.Create, CreateFromSnapshot())
 		tasklist.remove(filesystem.FormatVolume,
 		                filesystem.TuneVolumeFS,
 		                filesystem.AddXFSProgs,
@@ -24,7 +24,7 @@ def rollback_tasks(tasklist, tasks_completed, manifest):
 		if task in completed and counter not in completed:
 			tasklist.add(counter())
 
-	counter_task(CreateVolumeFromSnapshot, ebs.DeleteVolume)
+	counter_task(CreateFromSnapshot, ebs.Delete)
 
 
 def validate_manifest(data, schema_validate):
