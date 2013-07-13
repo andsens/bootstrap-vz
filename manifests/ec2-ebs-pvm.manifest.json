@@ -1,7 +1,7 @@
 {
-	"provider"      : "ec2",
+	"provider":       "ec2",
 	"virtualization": "pvm",
-	"credentials"   : {
+	"credentials":    {
 		"access-key": null,
 		"secret-key": null
 	},
@@ -10,20 +10,20 @@
 		"mount_dir": "/target"
 	},
 	"image": {
-		"name"       : "debian-{release}-{architecture}-{virtualization}-{%y}{%m}{%d}",
+		"name":        "debian-{release}-{architecture}-{virtualization}-{%y}{%m}{%d}",
 		"description": "Debian {release} {architecture} AMI ({virtualization})"
 	},
 	"system": {
-		"release"     : "wheezy",
+		"release":      "wheezy",
 		"architecture": "amd64",
-		"timezone"    : "UTC",
-		"locale"      : "en_US",
-		"charmap"     : "UTF-8"
+		"timezone":     "UTC",
+		"locale":       "en_US",
+		"charmap":      "UTF-8"
 	},
 	"volume": {
-		"backing"   : "ebs",
+		"backing":    "ebs",
 		"filesystem": "ext4",
-		"size"      : 1024
+		"size":       1024
 	},
 	"plugins": {
 		"admin_user": {
@@ -31,10 +31,10 @@
 		},
 		"build_metadata": {
 			"enabled": false,
-			"path"   : "/root/build-metadata-{ami_name}"
+			"path":    "/root/build-metadata-{ami_name}"
 		},
 		"prebootstrapped": {
-			"enabled": false,
+			"enabled":  false,
 			"snapshot": ""
 		}
 	}
