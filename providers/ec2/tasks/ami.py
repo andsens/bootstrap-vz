@@ -35,6 +35,31 @@ class AMIName(Task):
 		info.ami_description = ami_description
 
 
+class BundleImage(Task):
+	description = 'Bundling the image'
+	phase = phases.image_registration
+
+	def run(self, info):
+		import os.path
+		bundle_name = 'bundle-{id:x}'.format(id=info.run_id)
+		info.bundle_dir = os.path.join(info.manifest.image['bundle_dir'], bundle_name)
+		# from euca2ools.commands.bundle.bundleimage import BundleImage
+		# bundler = BundleImage()
+		# bundler.
+		# euca-upload-bundle -b "${S3_BUCKET}" -m "${bundledir}/${ami_name}.manifest.xml"
+		pass
+
+
+class RemoveBundle(Task):
+	description = 'Removing the bundle files'
+	phase = phases.cleaning
+
+	def run(self, info):
+		from shutil import rmtree
+		rmtree(info.bundle_dir)
+		del info.bundle_dir
+
+
 class RegisterAMI(Task):
 	description = 'Registering the image as an AMI'
 	phase = phases.image_registration

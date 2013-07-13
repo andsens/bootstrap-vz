@@ -5,6 +5,7 @@ from tasks import connection
 from tasks import host
 from tasks import ami
 from tasks import ebs
+from tasks import loopback
 from tasks import filesystem
 from tasks import bootstrap
 from tasks import locale
@@ -28,20 +29,13 @@ def tasks(tasklist, manifest):
 	             connection.GetCredentials(),
 	             host.GetInfo(),
 	             ami.AMIName(),
-	             connection.Connect())
-	if manifest.volume['backing'].lower() == 'ebs':
-		tasklist.add(ebs.Create(),
-		             ebs.Attach())
-	tasklist.add(filesystem.FormatVolume())
-	if manifest.volume['filesystem'].lower() == 'xfs':
-		tasklist.add(filesystem.AddXFSProgs())
-	if manifest.volume['filesystem'].lower() in ['ext2', 'ext3', 'ext4']:
-		tasklist.add(filesystem.TuneVolumeFS())
-	tasklist.add(filesystem.CreateMountDir(),
-	             filesystem.MountVolume())
-	if manifest.bootstrapper['tarball']:
-		tasklist.add(bootstrap.MakeTarball())
-	tasklist.add(bootstrap.Bootstrap(),
+	             connection.Connect(),
+
+	             filesystem.FormatVolume(),
+	             filesystem.CreateMountDir(),
+	             filesystem.MountVolume(),
+
+	             bootstrap.Bootstrap(),
 	             filesystem.MountSpecials(),
 	             locale.GenerateLocale(),
 	             locale.SetTimezone(),
@@ -69,11 +63,27 @@ def tasks(tasklist, manifest):
 	             filesystem.UnmountSpecials(),
 	             filesystem.UnmountVolume(),
 	             filesystem.DeleteMountDir())
-	if manifest.volume['backing'].lower() == 'ebs':
-		tasklist.add(ebs.Detach(),
-		             ebs.Snapshot(),
-		             ebs.Delete())
-	tasklist.add(ami.RegisterAMI())
+
+	if manifest.bootstrapper['tarball']:
+		tasklist.add(bootstrap.MakeTarball())
+
+	backing_specific_tasks = {'ebs': [ebs.Create(),
+	                                  ebs.Attach(),
+	                                  ebs.Detach(),
+	                                  ebs.Snapshot(),
+	                                  ami.RegisterAMI(),
+	                                  ebs.Delete()],
+	                          's3': [loopback.Create(),
+	                                 loopback.Attach(),
+	                                 loopback.Detach(),
+	                                 loopback.Delete()]}
+	tasklist.add(*backing_specific_tasks.get(manifest.volume['backing'].lower()))
+
+	filesystem_specific_tasks = {'xfs': [filesystem.AddXFSProgs()],
+	                             'ext2': [filesystem.TuneVolumeFS()],
+	                             'ext3': [filesystem.TuneVolumeFS()],
+	                             'ext4': [filesystem.TuneVolumeFS()]}
+	tasklist.add(*filesystem_specific_tasks.get(manifest.volume['filesystem'].lower()))
 
 
 def rollback_tasks(tasklist, tasks_completed, manifest):
