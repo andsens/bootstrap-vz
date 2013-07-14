@@ -8,24 +8,24 @@ class GetCredentials(Task):
 	phase = phases.preparation
 
 	def run(self, info):
-		info.credentials = self.get_credentials(info.manifest)
+		keys = ['access-key', 'secret-key']
+		if info.manifest.volume['backing'] == 's3':
+			keys.extend(['certificate', 'private-key', 'user-id'])
+		info.credentials = self.get_credentials(info.manifest, keys)
 
-	def get_credentials(self, manifest):
+	def get_credentials(self, manifest, keys):
 		from os import getenv
-		# manifest overrides environment
-		if(manifest.credentials['access-key'] and manifest.credentials['secret-key']):
-			return {'access_key': manifest.credentials['access-key'],
-			        'secret_key': manifest.credentials['secret-key']}
-		if(getenv('EC2_ACCESS_KEY') and getenv('EC2_SECRET_KEY')):
-			return {'access_key': getenv('EC2_ACCESS_KEY'),
-			        'secret_key': getenv('EC2_SECRET_KEY')}
-
-		if(bool(manifest.credentials['access-key']) != bool(manifest.credentials['secret-key'])):
-			raise RuntimeError('Both the access key and secret key must be specified in the manifest.')
-		if(bool(getenv('EC2_ACCESS_KEY')) != bool(getenv('EC2_SECRET_KEY'))):
-			raise RuntimeError('Both the access key and secret key must be specified as environment variables.')
-
-		raise RuntimeError('No ec2 credentials found.')
+		creds = {}
+		if all(key in manifest.credentials for key in keys):
+			for key in keys:
+				creds[key] = manifest.credentials[key]
+			return creds
+		if all(getenv(key) is not None for key in keys):
+			for key in keys:
+				creds[key] = getenv(key)
+			return creds
+		raise RuntimeError(('No ec2 credentials found, they must all be specified '
+		                    'exclusively via environment variables or through the manifest.'))
 
 
 class Connect(Task):
@@ -36,5 +36,5 @@ class Connect(Task):
 	def run(self, info):
 		from boto.ec2 import connect_to_region
 		info.connection = connect_to_region(info.host['region'],
-		                                    aws_access_key_id=info.credentials['access_key'],
-		                                    aws_secret_access_key=info.credentials['secret_key'])
+		                                    aws_access_key_id=info.credentials['access-key'],
+		                                    aws_secret_access_key=info.credentials['secret-key'])

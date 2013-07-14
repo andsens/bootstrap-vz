@@ -62,7 +62,8 @@ def tasks(tasklist, manifest):
 	             apt.EnableDaemonAutostart(),
 	             filesystem.UnmountSpecials(),
 	             filesystem.UnmountVolume(),
-	             filesystem.DeleteMountDir())
+	             filesystem.DeleteMountDir(),
+	             ami.RegisterAMI())
 
 	if manifest.bootstrapper['tarball']:
 		tasklist.add(bootstrap.MakeTarball())
@@ -71,12 +72,14 @@ def tasks(tasklist, manifest):
 	                                  ebs.Attach(),
 	                                  ebs.Detach(),
 	                                  ebs.Snapshot(),
-	                                  ami.RegisterAMI(),
 	                                  ebs.Delete()],
 	                          's3': [loopback.Create(),
 	                                 loopback.Attach(),
 	                                 loopback.Detach(),
-	                                 loopback.Delete()]}
+	                                 ami.BundleImage(),
+	                                 ami.UploadImage(),
+	                                 loopback.Delete(),
+	                                 ami.RemoveBundle()]}
 	tasklist.add(*backing_specific_tasks.get(manifest.volume['backing'].lower()))
 
 	filesystem_specific_tasks = {'xfs': [filesystem.AddXFSProgs()],
@@ -96,6 +99,9 @@ def rollback_tasks(tasklist, tasks_completed, manifest):
 	if manifest.volume['backing'].lower() == 'ebs':
 		counter_task(ebs.Create, ebs.Delete)
 		counter_task(ebs.Attach, ebs.Detach)
+	if manifest.volume['backing'].lower() == 's3':
+		counter_task(loopback.Create, loopback.Delete)
+		counter_task(loopback.Attach, loopback.Detach)
 	counter_task(filesystem.CreateMountDir, filesystem.DeleteMountDir)
 	counter_task(filesystem.MountVolume, filesystem.UnmountVolume)
 	counter_task(filesystem.MountSpecials, filesystem.UnmountSpecials)

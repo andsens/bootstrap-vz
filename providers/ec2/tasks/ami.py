@@ -1,8 +1,12 @@
 from base import Task
 from common import phases
+from common.exceptions import TaskError
+from common.tools import log_check_call
 from ebs import Snapshot
 from connection import Connect
-from common.exceptions import TaskError
+import os.path
+
+cert_ec2 = os.path.normpath(os.path.join(os.path.dirname(__file__), '../assets/certs/cert-ec2.pem'))
 
 
 class AMIName(Task):
@@ -40,14 +44,37 @@ class BundleImage(Task):
 	phase = phases.image_registration
 
 	def run(self, info):
-		import os.path
 		bundle_name = 'bundle-{id:x}'.format(id=info.run_id)
-		info.bundle_dir = os.path.join(info.manifest.image['bundle_dir'], bundle_name)
-		# from euca2ools.commands.bundle.bundleimage import BundleImage
-		# bundler = BundleImage()
-		# bundler.
-		# euca-upload-bundle -b "${S3_BUCKET}" -m "${bundledir}/${ami_name}.manifest.xml"
-		pass
+		info.bundle_path = os.path.join(info.manifest.image['bundle_dir'], bundle_name)
+		log_check_call(['/usr/bin/euca-bundle-image',
+		                '--image', info.loopback_file,
+		                '--user', info.credentials['user-id'],
+		                '--privatekey', info.credentials['private-key'],
+		                '--cert', info.credentials['certificate'],
+		                '--ec2cert', cert_ec2,
+		                '--destination', info.bundle_path,
+		                '--prefix', info.ami_name])
+
+
+class UploadImage(Task):
+	description = 'Uploading the image bundle'
+	phase = phases.image_registration
+	after = [BundleImage]
+
+	def run(self, info):
+		manifest_file = os.path.join(info.bundle_path, info.ami_name + '.manifest.xml')
+		if info.host['region'] == 'us-east-1':
+			s3_url = 'https://s3.amazonaws.com/'
+		else:
+			s3_url = 'https://s3-{region}.amazonaws.com/'.format(region=info.host['region'])
+		log_check_call(['/usr/bin/euca-upload-bundle',
+		                '--bucket', info.manifest.image['bucket'],
+		                '--manifest', manifest_file,
+		                '--access-key', info.credentials['access-key'],
+		                '--secret-key', info.credentials['secret-key'],
+		                '--url', s3_url,
+		                '--region', info.host['region'],
+		                '--ec2cert', cert_ec2])
 
 
 class RemoveBundle(Task):
@@ -56,14 +83,14 @@ class RemoveBundle(Task):
 
 	def run(self, info):
 		from shutil import rmtree
-		rmtree(info.bundle_dir)
-		del info.bundle_dir
+		rmtree(info.bundle_path)
+		del info.bundle_path
 
 
 class RegisterAMI(Task):
 	description = 'Registering the image as an AMI'
 	phase = phases.image_registration
-	after = [Snapshot]
+	after = [Snapshot, UploadImage]
 
 	kernel_mapping = {'us-east-1':      {'amd64': 'aki-88aa75e1',
 	                                     'i386':  'aki-b6aa75df'},
@@ -88,14 +115,23 @@ class RegisterAMI(Task):
 		arch = {'i386': 'i386', 'amd64': 'x86_64'}.get(info.manifest.system['architecture'])
 		kernel_id = self.kernel_mapping.get(info.host['region']).get(info.manifest.system['architecture'])
 
-		from boto.ec2.blockdevicemapping import BlockDeviceType
-		from boto.ec2.blockdevicemapping import BlockDeviceMapping
-		block_device = BlockDeviceType(snapshot_id=info.snapshot.id, delete_on_termination=True,
-		                               size=info.manifest.ebs_volume_size)
-		block_device_map = BlockDeviceMapping()
-		block_device_map['/dev/sda1'] = block_device
+		if info.manifest.volume['backing'] == 'ebs':
+			from boto.ec2.blockdevicemapping import BlockDeviceType
+			from boto.ec2.blockdevicemapping import BlockDeviceMapping
+			block_device = BlockDeviceType(snapshot_id=info.snapshot.id, delete_on_termination=True,
+			                               size=info.manifest.ebs_volume_size)
+			block_device_map = BlockDeviceMapping()
+			block_device_map['/dev/sda1'] = block_device
 
-		info.image = info.connection.register_image(name=info.ami_name, description=info.ami_description,
-		                                            architecture=arch, kernel_id=kernel_id,
-		                                            root_device_name='/dev/sda1',
-		                                            block_device_map=block_device_map)
+			info.image = info.connection.register_image(name=info.ami_name, description=info.ami_description,
+			                                            architecture=arch, kernel_id=kernel_id,
+			                                            root_device_name='/dev/sda1',
+			                                            block_device_map=block_device_map)
+		if info.manifest.volume['backing'] == 's3':
+			image_location = ('{bucket}/{ami_name}.manifest.xml'
+			                  .format(bucket=info.manifest.image['bucket'],
+			                          ami_name=info.ami_name))
+			info.image = info.connection.register_image(description=info.ami_description,
+			                                            architecture=arch, kernel_id=kernel_id,
+			                                            root_device_name='/dev/sda1',
+			                                            image_location=image_location)

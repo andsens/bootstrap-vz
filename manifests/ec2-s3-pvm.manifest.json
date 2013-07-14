@@ -2,8 +2,11 @@
 	"provider":       "ec2",
 	"virtualization": "pvm",
 	"credentials":    {
-		"access-key": null,
-		"secret-key": null
+		"access-key":  null,
+		"secret-key":  null,
+		"certificate": null,
+		"private-key": null,
+		"user-id":     null
 	},
 
 	"bootstrapper": {
@@ -25,5 +28,11 @@
 		"backing":      "s3",
 		"filesystem":   "ext4",
 		"size":         1024
+	},
+	"plugins": {
+		"prebootstrapped": {
+			"enabled":  false,
+			"image": null
+		}
 	}
 }

@@ -11,9 +11,11 @@
 					"properties": {
 						"snapshot": {
 							"type": "string"
+						},
+						"image": {
+							"type": "string"
 						}
-					},
-					"required": ["snapshot"]
+					}
 				}
 			},
 			"required": ["prebootstrapped"]

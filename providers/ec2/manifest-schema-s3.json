@@ -3,6 +3,20 @@
 	"title": "EC2 manifest for instance store AMIs",
 	"type": "object",
 	"properties": {
+		"credentials": {
+			"type": "object",
+			"properties": {
+				"certificate": {
+					"type": "string"
+				},
+				"private-key": {
+					"type": "string"
+				},
+				"user-id": {
+					"type": "string"
+				}
+			}
+		},
 		"image": {
 			"type": "object",
 			"properties": {
