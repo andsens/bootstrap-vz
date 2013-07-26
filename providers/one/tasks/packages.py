@@ -23,6 +23,7 @@ class ImagePackages(Task):
 		# Add some basic packages we are going to need
 		include = set(['udev',
                                'mbr',
+			       'parted',
 		               'openssh-server',
 		               # We could bootstrap without locales, but things just suck without them, error messages etc.
 		               'locales',
