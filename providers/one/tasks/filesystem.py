@@ -12,8 +12,8 @@ class FormatVolume(Task):
 	def run(self, info):
                 mkmount = ['/usr/bin/qemu-img', 'create', '-f', 'raw', info.manifest.bootstrapper['image_file'], str(info.manifest.volume['size'])+'M']
                 log_check_call(mkmount)
-                ddcmd = ['/bin/dd', 'if=/dev/zero', 'bs=1024', 'conv=notrunc', 'count='+str(info.manifest.volume['size']), 'of='+info.manifest.bootstrapper['image_file']]
-		log_check_call(ddcmd)
+                #ddcmd = ['/bin/dd', 'if=/dev/zero', 'bs=1024', 'conv=notrunc', 'count='+str(info.manifest.volume['size']), 'of='+info.manifest.bootstrapper['image_file']]
+		#log_check_call(ddcmd)
 		loopcmd = ['/sbin/losetup', '/dev/loop0', info.manifest.bootstrapper['image_file']]
 		log_check_call(loopcmd)
 		mkfs = [ '/sbin/mkfs.{fs}'.format(fs=info.manifest.volume['filesystem']), '-m', '1', '-v', '/dev/loop0']
@@ -127,6 +127,14 @@ class ModifyFstab(Task):
 			mount_opts.append('nobarrier')
 		fstab_path = os.path.join(info.root, 'etc/fstab')
 		with open(fstab_path, 'a') as fstab:
-			fstab.write(('/dev/xvda1 /     {filesystem}    {mount_opts} 1 1\n'
+			fstab.write(('/dev/sda1 /     {filesystem}    {mount_opts} 1 1\n'
 			             .format(filesystem=info.manifest.volume['filesystem'].lower(),
 			                     mount_opts=','.join(mount_opts))))
+                log_check_call(['/usr/sbin/chroot', info.root, 'cat', '/etc/fstab'])
+
+class InstallMbr(Task):
+	description = 'Install MBR'
+	phase = phases.system_modification
+
+	def run(self, info):
+		log_check_call(['/usr/sbin/chroot', info.root, 'install-mbr', '/dev/sda'])

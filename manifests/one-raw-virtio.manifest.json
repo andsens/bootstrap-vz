@@ -15,7 +15,7 @@
 	},
 	"image": {
 		"name"       : "debian-{release}-{architecture}-{virtualization}-{%y}{%m}{%d}",
-		"description": "Debian {release} {architecture} AMI ({virtualization})"
+		"description": "Debian {release} {architecture} Open Nebula ({virtualization})"
 	},
 	"system": {
 		"release"     : "wheezy",

@@ -14,6 +14,7 @@ from tasks import security
 from tasks import network
 from tasks import initd
 from tasks import cleanup
+from tasks import fake
 
 
 def initialize():
@@ -55,6 +56,7 @@ def tasks(tasklist, manifest):
 	             network.RemoveDNSInfo(),
 	             network.ConfigureNetworkIF(),
 	             network.ConfigureDHCP(),
+                     fake.Fake(),
 	             initd.ResolveInitScripts(),
 	             initd.InstallInitScripts(),
 	             cleanup.ClearMOTD(),
