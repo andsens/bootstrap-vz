@@ -46,7 +46,7 @@ def tasks(tasklist, manifest):
 	             #apt.AptUpgrade(),
 	             boot.ConfigureGrub(),
 	             filesystem.ModifyFstab(),
-		     #filesystem.InstallMbr(),
+		     filesystem.InstallMbr(),
 	             boot.BlackListModules(),
 	             boot.DisableGetTTYs(),
 	             security.EnableShadowConfig(),

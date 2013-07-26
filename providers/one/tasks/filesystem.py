@@ -145,5 +145,4 @@ class InstallMbr(Task):
 	phase = phases.system_modification
 
 	def run(self, info):
-		log_check_call(['/usr/sbin/chroot', info.root, 'install-mbr', '/dev/sda'])
-		log_check_call(['/usr/sbin/chroot', info.root, 'fdisk', '-l', '/dev/sda'])
+		log_check_call(['install-mbr', info.manifest.bootstrapper['image_file']])

@@ -17,14 +17,8 @@ GRUB_DEVICE=/dev/sda1
 
 
 cat << EOF
-set default ${GRUB_DEFAULT}
-set timeout ${GRUB_TIMEOUT}
-insmod part_msdos
-insmod ext4
-insmod gettext
-set menu_color_normal=cyan/blue
-set meu_color_highlight=white/blue
-set root='(hd0,msdos1)'
+default ${GRUB_DEFAULT}
+timeout ${GRUB_TIMEOUT}
 EOF
 
 if ${GRUB_HIDDEN_TIMEOUT:-false}; then
@@ -40,15 +34,10 @@ linux_entry ()
 	title="$(gettext_quoted "%s, with Linux %s")"
 
 	cat << EOF
-menuentry 'Debian GNU/Linux, ${version}' --class debian --class gnu-linux --class os {
-        insmod part_msdos
-        insmod ext4
-	set root='(hd0,msdos1)'
-        echo 'Loading Linux ${version}'
-	linux ${rel_dirname}/${basename} root=${GRUB_DEVICE} ro ${args}
-        echo 'Loading initial ramdisk ...'
+title ${version}
+	root (hd0)
+	kernel ${rel_dirname}/${basename} root=${GRUB_DEVICE} ro ${args}
 	initrd ${rel_dirname}/${initrd}
-}
 EOF
 }
 
