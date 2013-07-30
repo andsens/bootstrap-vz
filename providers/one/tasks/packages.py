@@ -7,7 +7,7 @@ class HostPackages(Task):
 	phase = phases.preparation
 
 	def run(self, info):
-		packages = set(['debootstrap', 'qemu-utils'])
+		packages = set(['debootstrap', 'qemu-utils', 'parted', 'grub2'])
 		if info.manifest.volume['filesystem'] == 'xfs':
 			packages.add('xfsprogs')
 
@@ -22,7 +22,6 @@ class ImagePackages(Task):
 		manifest = info.manifest
 		# Add some basic packages we are going to need
 		include = set(['udev',
-                               'mbr',
 			       'parted',
 		               'openssh-server',
 		               # We could bootstrap without locales, but things just suck without them, error messages etc.
@@ -34,16 +33,13 @@ class ImagePackages(Task):
 			       'grub2',
 		               ])
 
-		if manifest.virtualization == 'pvm':
-			include.add('grub-pc')
-
 		exclude = set(['isc-dhcp-client',
 		               'isc-dhcp-common',
 		               ])
 
 		# In squeeze, we need a special kernel flavor for xen
-		kernels = {'squeeze': {'amd64': 'linux-image-xen-amd64',
-		                       'i386':  'linux-image-xen-686', },
+		kernels = {'squeeze': {'amd64': 'linux-image-amd64',
+		                       'i386':  'linux-image-686', },
 		           'wheezy':  {'amd64': 'linux-image-amd64',
 		                       'i386':  'linux-image-686', }, }
 		include.add(kernels.get(manifest.system['release']).get(manifest.system['architecture']))

@@ -15,6 +15,7 @@ from tasks import network
 from tasks import initd
 from tasks import cleanup
 from tasks import fake
+from tasks import one
 
 
 def initialize():
@@ -57,9 +58,9 @@ def tasks(tasklist, manifest):
 	             network.RemoveDNSInfo(),
 	             network.ConfigureNetworkIF(),
 	             network.ConfigureDHCP(),
-                     fake.Fake(),
 	             initd.ResolveInitScripts(),
 	             initd.InstallInitScripts(),
+		     one.OpenNebulaContext(),
 	             cleanup.ClearMOTD(),
 	             cleanup.ShredHostkeys(),
 	             cleanup.CleanTMP(),
