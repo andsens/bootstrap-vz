@@ -17,13 +17,13 @@ GRUB_DEVICE=/dev/sda1
 
 
 cat << EOF
-set default ${GRUB_DEFAULT}
-set timeout ${GRUB_TIMEOUT}
+set default=${GRUB_DEFAULT}
+set timeout=${GRUB_TIMEOUT}
 insmod part_msdos
 insmod ext2
 insmod gettext
 set menu_color_normal=cyan/blue
-set meu_color_highlight=white/blue
+set menu_color_highlight=white/blue
 set root='(hd0,msdos1)'
 EOF
 
@@ -40,10 +40,10 @@ linux_entry ()
 	title="$(gettext_quoted "%s, with Linux %s")"
 
 	cat << EOF
-menuentry 'Debian GNU/Linux, ${version}' --class debian --class gnu-linux --class os {
+menuentry 'Debian GNU/Linux for OpenNebula, ${version}' --class debian --class gnu-linux --class os {
         insmod part_msdos
         insmod ext2
-	set timeout ${GRUB_TIMEOUT}
+	set timeout=${GRUB_TIMEOUT}
 	set root='(hd0,msdos1)'
         echo 'Loading Linux ${version}'
 	linux ${rel_dirname}/${basename} root=${GRUB_DEVICE} ro ${args}

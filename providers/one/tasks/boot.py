@@ -30,16 +30,14 @@ class ConfigureGrub(Task):
 		#                                        'GRUB_HIDDEN_TIMEOUT=true')
 
 		from common.tools import log_check_call
-		log_check_call(['/usr/sbin/chroot', info.root, '/usr/sbin/update-grub'])
-		log_check_call(['/usr/sbin/chroot', info.root, 'cat', '/boot/grub/grub.cfg'])
-		log_check_call(['/usr/sbin/chroot', info.root, 'cat', '/boot/grub/device.map'])
+		#log_check_call(['/usr/sbin/chroot', info.root, '/usr/sbin/update-grub'])
+		#log_check_call(['/usr/sbin/chroot', info.root, 'cat', '/boot/grub/grub.cfg'])
+		#log_check_call(['/usr/sbin/chroot', info.root, 'cat', '/boot/grub/device.map'])
 		log_check_call(['/usr/sbin/chroot', info.root, 'ln', '-s', '/boot/grub/grub.cfg', '/boot/grub/menu.lst'])
 
 		log_check_call(['/usr/sbin/chroot', info.root, 'update-initramfs', '-u'])
-		log_check_call(['/usr/sbin/chroot', info.root, 'ls', '-l', '/boot/'])
-		#sed_i(info.root+'/boot/grub/device.map','/dev/sda','/dev/mapper/loop0p1;')
 		log_check_call(['grub-install', '--boot-directory='+info.root+"/boot/", '/dev/loop0'])
-		#sed_i(info.root+'/boot/grub/device.map','/dev/mapper/loop0p1;','/dev/sda')
+		log_check_call(['/usr/sbin/chroot', info.root, '/usr/sbin/update-grub'])
 
 class BlackListModules(Task):
 	description = 'Blacklisting kernel modules'
