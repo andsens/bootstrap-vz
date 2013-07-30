@@ -13,15 +13,17 @@ class FormatVolume(Task):
                 mkmount = ['/usr/bin/qemu-img', 'create', '-f', 'raw', info.manifest.bootstrapper['image_file'], str(info.manifest.volume['size'])+'M']
                 log_check_call(mkmount)
 
+                loopcmd = ['/sbin/losetup', '/dev/loop0', info.manifest.bootstrapper['image_file']]
+                log_check_call(loopcmd)
+
 		# parted
-		log_check_call(['parted','-a', 'optimal', '-s', info.manifest.bootstrapper['image_file'], "mklabel", "msdos"])
-                log_check_call(['parted', '-a', 'optimal', '-s', info.manifest.bootstrapper['image_file'], "--", "mkpart", "primary", "ext4", "1", "-1"])
-		log_check_call(['parted','-a', 'optimal', '-s', info.manifest.bootstrapper['image_file'], "--", "set", "1", "boot", "on"])
-		log_check_call(['kpartx','-a','-v', info.manifest.bootstrapper['image_file']])
+		log_check_call(['parted','-a', 'optimal', '-s', '/dev/loop0', "mklabel", "msdos"])
+                log_check_call(['parted', '-a', 'optimal', '-s', '/dev/loop0', "--", "mkpart", "primary", "ext4", "32k", "-1"])
+		log_check_call(['parted','-s', '/dev/loop0', "--", "set", "1", "boot", "on"])
 
 
-		#loopcmd = ['/sbin/losetup', '/dev/loop0', info.manifest.bootstrapper['image_file']]
-		#log_check_call(loopcmd)
+                #log_check_call(['kpartx','-a','-v', info.manifest.bootstrapper['image_file']])
+		log_check_call(['kpartx','-a', '-v', '/dev/loop0'])
                 mkfs = [ '/sbin/mkfs.{fs}'.format(fs=info.manifest.volume['filesystem']), '-m', '1', '-v', '/dev/mapper/loop0p1']
                 log_check_call(mkfs)
 
@@ -106,6 +108,7 @@ class UnmountVolume(Task):
 
 	def run(self, info):
 		log_check_call(['/bin/umount', info.root])
+		#log_check_call(['partx','-d','/dev/loop0'])
                 #log_check_call(['/sbin/losetup', '-d', '/dev/loop0'])
 		log_check_call(['kpartx','-d', info.manifest.bootstrapper['image_file']])
 
@@ -145,4 +148,4 @@ class InstallMbr(Task):
 	phase = phases.system_modification
 
 	def run(self, info):
-		log_check_call(['install-mbr', info.manifest.bootstrapper['image_file']])
+		log_check_call(['install-mbr', '-v', info.manifest.bootstrapper['image_file']])

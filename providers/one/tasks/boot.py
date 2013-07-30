@@ -35,6 +35,11 @@ class ConfigureGrub(Task):
 		log_check_call(['/usr/sbin/chroot', info.root, 'cat', '/boot/grub/device.map'])
 		log_check_call(['/usr/sbin/chroot', info.root, 'ln', '-s', '/boot/grub/grub.cfg', '/boot/grub/menu.lst'])
 
+		log_check_call(['/usr/sbin/chroot', info.root, 'update-initramfs', '-u'])
+		log_check_call(['/usr/sbin/chroot', info.root, 'ls', '-l', '/boot/'])
+		#sed_i(info.root+'/boot/grub/device.map','/dev/sda','/dev/mapper/loop0p1;')
+		log_check_call(['grub-install', '--boot-directory='+info.root+"/boot/", '/dev/loop0'])
+		#sed_i(info.root+'/boot/grub/device.map','/dev/mapper/loop0p1;','/dev/sda')
 
 class BlackListModules(Task):
 	description = 'Blacklisting kernel modules'

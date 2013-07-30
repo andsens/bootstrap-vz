@@ -34,6 +34,7 @@ def tasks(tasklist, manifest):
 		tasklist.add(filesystem.TuneVolumeFS())
 	tasklist.add(filesystem.CreateMountDir(),
 	             filesystem.MountVolume())
+        #tasklist.add(filesystem.InstallMbr())
 	if manifest.bootstrapper['tarball']:
 		tasklist.add(bootstrap.MakeTarball())
 	tasklist.add(bootstrap.Bootstrap(),
@@ -46,7 +47,6 @@ def tasks(tasklist, manifest):
 	             #apt.AptUpgrade(),
 	             boot.ConfigureGrub(),
 	             filesystem.ModifyFstab(),
-		     filesystem.InstallMbr(),
 	             boot.BlackListModules(),
 	             boot.DisableGetTTYs(),
 	             security.EnableShadowConfig(),
