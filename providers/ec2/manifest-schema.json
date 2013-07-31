@@ -3,6 +3,17 @@
 	"title": "EC2 manifest",
 	"type": "object",
 	"properties": {
+		"credentials": {
+			"type": "object",
+			"properties": {
+				"access-key": {
+					"type": "string"
+				},
+				"secret-key": {
+					"type": "string"
+				}
+			}
+		},
 		"volume": {
 			"type": "object",
 			"properties": {

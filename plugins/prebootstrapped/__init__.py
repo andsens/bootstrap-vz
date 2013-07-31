@@ -1,20 +1,35 @@
-from tasks import CreateSnapshot
-from tasks import CreateVolumeFromSnapshot
+from tasks import Snapshot
+from tasks import CopyImage
+from tasks import CreateFromSnapshot
+from tasks import CreateFromImage
 from providers.ec2.tasks import ebs
+from providers.ec2.tasks import loopback
 
 
 def tasks(tasklist, manifest):
 	from providers.ec2.tasks import bootstrap
 	from providers.ec2.tasks import filesystem
-	if manifest.plugins['prebootstrapped']['snapshot'] == "":
-		tasklist.add(CreateSnapshot())
+	settings = manifest.plugins['prebootstrapped']
+	if manifest.volume['backing'] == 'ebs':
+		if 'snapshot' in settings and settings['snapshot'] is not None:
+			tasklist.replace(ebs.Create, CreateFromSnapshot())
+			tasklist.remove(filesystem.FormatVolume,
+			                filesystem.TuneVolumeFS,
+			                filesystem.AddXFSProgs,
+			                bootstrap.MakeTarball,
+			                bootstrap.Bootstrap)
+		else:
+			tasklist.add(Snapshot())
 	else:
-		tasklist.replace(ebs.CreateVolume, CreateVolumeFromSnapshot())
-		tasklist.remove(filesystem.FormatVolume,
-		                filesystem.TuneVolumeFS,
-		                filesystem.AddXFSProgs,
-		                bootstrap.MakeTarball,
-		                bootstrap.Bootstrap)
+		if 'image' in settings and settings['image'] is not None:
+			tasklist.replace(loopback.Create, CreateFromImage())
+			tasklist.remove(filesystem.FormatVolume,
+			                filesystem.TuneVolumeFS,
+			                filesystem.AddXFSProgs,
+			                bootstrap.MakeTarball,
+			                bootstrap.Bootstrap)
+		else:
+			tasklist.add(CopyImage())
 
 
 def rollback_tasks(tasklist, tasks_completed, manifest):
@@ -24,7 +39,10 @@ def rollback_tasks(tasklist, tasks_completed, manifest):
 		if task in completed and counter not in completed:
 			tasklist.add(counter())
 
-	counter_task(CreateVolumeFromSnapshot, ebs.DeleteVolume)
+	if manifest.volume['backing'] == 'ebs':
+		counter_task(CreateFromSnapshot, ebs.Delete)
+	else:
+		counter_task(CreateFromImage, loopback.Delete)
 
 
 def validate_manifest(data, schema_validate):

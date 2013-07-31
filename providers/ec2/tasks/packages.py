@@ -10,6 +10,8 @@ class HostPackages(Task):
 		packages = set(['debootstrap'])
 		if info.manifest.volume['filesystem'] == 'xfs':
 			packages.add('xfsprogs')
+		if info.manifest.volume['backing'] == 's3':
+			packages.add('euca2ools')
 
 		info.host_packages = packages
 

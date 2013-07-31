@@ -2,8 +2,11 @@
 	"provider":       "ec2",
 	"virtualization": "pvm",
 	"credentials":    {
-		"access-key": null,
-		"secret-key": null
+		"access-key":  null,
+		"secret-key":  null,
+		"certificate": null,
+		"private-key": null,
+		"user-id":     null
 	},
 
 	"bootstrapper": {
@@ -12,6 +15,7 @@
 	"image": {
 		"name":        "debian-{release}-{architecture}-{virtualization}-{%y}{%m}{%d}",
 		"description": "Debian {release} {architecture} AMI ({virtualization})"
+		"bucket":      ""
 	},
 	"system": {
 		"release":      "wheezy",
@@ -21,21 +25,14 @@
 		"charmap":      "UTF-8"
 	},
 	"volume": {
-		"backing":    "ebs",
-		"filesystem": "ext4",
-		"size":       1024
+		"backing":      "s3",
+		"filesystem":   "ext4",
+		"size":         1024
 	},
 	"plugins": {
-		"admin_user": {
-			"enabled": false
-		},
-		"build_metadata": {
-			"enabled": false,
-			"path":    "/root/build-metadata-{ami_name}"
-		},
 		"prebootstrapped": {
 			"enabled":  false,
-			"snapshot": ""
+			"image": null
 		}
 	}
 }

@@ -13,11 +13,13 @@ Pull requests are also welcome!
 
 Dependencies
 ------------
-You will need to run debian wheezy with python 2.7 and debootstrap installed.
+You will need to run debian wheezy with **python 2.7** and **debootstrap** installed.
 Also the following python libraries are required:
-* boto
-* jsomschema
-* termcolor
+* **boto**
+* **jsomschema** ([version 2.0.0](https://pypi.python.org/pypi/jsonschema), only available through pip)
+* **termcolor**
+
+Bootstrapping instance store AMIs requires **euca2ools** to be installed.
 
 Highlights
 ----------

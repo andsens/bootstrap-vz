@@ -5,6 +5,7 @@ def log_check_call(command, input=None):
 	if status != 0:
 		from subprocess import CalledProcessError
 		raise CalledProcessError(status, ' '.join(command), '\n'.join(stderr))
+	return stdout
 
 
 def log_call(command, input=None):

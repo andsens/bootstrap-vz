@@ -16,7 +16,7 @@ class GenerateLocale(Task):
 		search = '# ' + locale_str
 		sed_i(locale_gen, search, locale_str)
 
-		command = ['/usr/sbin/chroot', info.root, '/usr/sbin/dpkg-reconfigure', '--priority=critical', 'locales']
+		command = ['/usr/sbin/chroot', info.root, '/usr/sbin/locale-gen']
 		log_check_call(command)
 
 
