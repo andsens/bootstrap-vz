@@ -41,6 +41,12 @@
 		"prebootstrapped": {
 			"enabled": false,
 			"snapshot": ""
-		}
+		},
+                "user_packages": {
+                        "enabled": true,
+                        "repo": [ "apache2" ],
+                        "local": []
+                }
+
 	}
 }

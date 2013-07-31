@@ -52,8 +52,7 @@ def tasks(tasklist, manifest):
 	             boot.DisableGetTTYs(),
 	             security.EnableShadowConfig(),
 		     security.SetRootPassword(),
-                     # Disable for the time of debugging
-	             #security.DisableSSHPasswordAuthentication(),
+	             security.DisableSSHPasswordAuthentication(),
 	             security.DisableSSHDNSLookup(),
 	             network.RemoveDNSInfo(),
 	             network.ConfigureNetworkIF(),

@@ -26,8 +26,10 @@ class DisableSSHPasswordAuthentication(Task):
 
 	def run(self, info):
 		from common.tools import sed_i
-		sshd_config_path = os.path.join(info.root, 'etc/ssh/sshd_config')
-		sed_i(sshd_config_path, '^#PasswordAuthentication yes', 'PasswordAuthentication no')
+		if 'root' not in info.manifest.credentials:
+			# If no password set for root
+			sshd_config_path = os.path.join(info.root, 'etc/ssh/sshd_config')
+			sed_i(sshd_config_path, '^#PasswordAuthentication yes', 'PasswordAuthentication no')
 
 
 class DisableSSHDNSLookup(Task):

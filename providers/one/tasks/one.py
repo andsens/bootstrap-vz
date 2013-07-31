@@ -1,11 +1,13 @@
 from base import Task
 from common import phases
 import os
+from providers.one.tasks.locale import GenerateLocale
 
 
 class OpenNebulaContext(Task):
 	description = 'Setup OpenNebula init context'
 	phase = phases.system_modification
+        after = [GenerateLocale]
 
 	def run(self, info):
 		import stat
