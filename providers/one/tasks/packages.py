@@ -7,7 +7,7 @@ class HostPackages(Task):
 	phase = phases.preparation
 
 	def run(self, info):
-		packages = set(['debootstrap', 'qemu-utils', 'parted', 'grub2'])
+		packages = set(['debootstrap', 'qemu-utils', 'parted', 'grub2', 'sysv-rc'])
 		if info.manifest.volume['filesystem'] == 'xfs':
 			packages.add('xfsprogs')
 
@@ -31,6 +31,8 @@ class ImagePackages(Task):
 		               # isc-dhcp-client doesn't work properly with ec2
 		               'dhcpcd',
 			       'grub2',
+			       'chkconfig',
+			       'openssh-client'
 		               ])
 
 		exclude = set(['isc-dhcp-client',

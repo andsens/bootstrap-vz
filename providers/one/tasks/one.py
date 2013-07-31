@@ -21,6 +21,12 @@ class OpenNebulaContext(Task):
 
                 from common.tools import log_check_call
 		log_check_call(['/usr/sbin/chroot', info.root, 'dpkg', '-i', '/tmp/one-context_3.8.1.deb'])
+		# Fix start
+                from common.tools import sed_i
+                vmcontext_def = os.path.join(info.root, 'etc/init.d/vmcontext')
+                sed_i(vmcontext_def, '# Default-Start:', '# Default-Start: 2 3 4 5')
+		os.chmod(vmcontext_def, rwxr_xr_x)
+		log_check_call(['/usr/sbin/chroot', info.root, 'update-rc.d', 'vmcontext', 'start', '90', '2', '3', '4', '5', 'stop', '90', '0', '6'])
 
                 script_src = os.path.normpath(os.path.join(os.path.dirname(__file__), '../assets/one-pubkey.sh'))
                 script_dst = os.path.join(info.root, 'etc/one-context.d/one-pubkey.sh')
