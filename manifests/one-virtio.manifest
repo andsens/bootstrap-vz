@@ -1,6 +1,6 @@
 {
 	"provider"      : "raw",
-	"virtualization": "ide",
+	"virtualization": "virtio",
 	"credentials"   : {
 		"access-key": null,
 		"secret-key": null,
