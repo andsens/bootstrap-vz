@@ -1,10 +1,7 @@
 from manifest import Manifest
 import logging
 from tasks import packages
-from tasks import connection
 from tasks import host
-from tasks import ami
-from tasks import ebs
 from tasks import filesystem
 from tasks import bootstrap
 from tasks import locale
@@ -15,7 +12,6 @@ from tasks import network
 from tasks import initd
 from tasks import cleanup
 from tasks import fake
-from tasks import one
 
 
 def initialize():
@@ -35,7 +31,6 @@ def tasks(tasklist, manifest):
 		tasklist.add(filesystem.TuneVolumeFS())
 	tasklist.add(filesystem.CreateMountDir(),
 	             filesystem.MountVolume())
-        #tasklist.add(filesystem.InstallMbr())
 	if manifest.bootstrapper['tarball']:
 		tasklist.add(bootstrap.MakeTarball())
 	tasklist.add(bootstrap.Bootstrap(),
@@ -59,7 +54,6 @@ def tasks(tasklist, manifest):
 	             network.ConfigureDHCP(),
 	             initd.ResolveInitScripts(),
 	             initd.InstallInitScripts(),
-		     one.OpenNebulaContext(),
 	             cleanup.ClearMOTD(),
 	             cleanup.ShredHostkeys(),
 	             cleanup.CleanTMP(),

@@ -1,9 +1,9 @@
 from base import Task
 from common import phases
 import os
-from providers.one.tasks.packages import ImagePackages
-from providers.one.tasks.host import CheckPackages
-from providers.one.tasks.filesystem import MountVolume
+from providers.raw.tasks.packages import ImagePackages
+from providers.raw.tasks.host import CheckPackages
+from providers.raw.tasks.filesystem import MountVolume
 
 
 class AddUserPackages(Task):

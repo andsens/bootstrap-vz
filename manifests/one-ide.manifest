@@ -1,6 +1,6 @@
 {
-	"provider"      : "one",
-	"virtualization": "virtio",
+	"provider"      : "raw",
+	"virtualization": "ide",
 	"credentials"   : {
 		"access-key": null,
 		"secret-key": null,
@@ -9,13 +9,13 @@
 
 	"bootstrapper": {
 		"mount_dir": "/mnt/target",
-		"image_file": "/tmp/target",
+		"image_file": "/tmp/one.img",
 		"tarball": true,
 		"device": "/dev/sda"	
 	},
 	"image": {
 		"name"       : "debian-{release}-{architecture}-{virtualization}-{%y}{%m}{%d}",
-		"description": "Debian {release} {architecture} Open Nebula ({virtualization})"
+		"description": "Debian {release} {architecture} ({virtualization})"
 	},
 	"system": {
 		"release"     : "wheezy",
@@ -41,6 +41,9 @@
 		"prebootstrapped": {
 			"enabled": false,
 			"snapshot": ""
+		},
+		"opennebula": {
+			"enabled": true
 		},
                 "user_packages": {
                         "enabled": true,

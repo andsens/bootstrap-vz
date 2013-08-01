@@ -1,7 +1,7 @@
 from base import Task
 from common import phases
 import os
-from providers.one.tasks.locale import GenerateLocale
+from providers.raw.tasks.locale import GenerateLocale
 
 
 class OpenNebulaContext(Task):
