@@ -1,0 +1,26 @@
+#!/bin/bash
+### BEGIN INIT INFO
+# Provides:       expand-volume
+# Required-Start: 
+# Required-Stop:  
+# Should-Start:   
+# Should-Stop:    
+# Default-Start:  2 3 4 5
+# Default-Stop:   
+# Description:    Expand the filesystem of the mounted root volume to its maximum possible size
+### END INIT INFO
+
+prog=$(basename $0)
+logger="logger -t $prog"
+
+device_path="/dev/xvda1"
+
+filesystem=`blkid | grep $device_path | sed 's#\(.*\):.*TYPE="\(.*\)".*#\2#'`
+
+case $filesystem in
+	xfs)  xfs_growfs / ;;
+	ext2) resize2fs $device_path ;;
+	ext3) resize2fs $device_path ;;
+	ext4) resize2fs $device_path ;;
+	*)    $logger "The filesystem $filesystem was not recognized. Unable to expand size." ;;
+esac
