@@ -3,6 +3,7 @@ import logging
 from tasks import packages
 from tasks import connection
 from tasks import host
+from common.tasks import host as common_host
 from tasks import ami
 from tasks import ebs
 from common.tasks import loopback
@@ -27,7 +28,7 @@ def initialize():
 def tasks(tasklist, manifest):
 	tasklist.add(packages.HostPackages(),
 	             packages.ImagePackages(),
-	             host.CheckPackages(),
+	             common_host.CheckPackages(),
 	             connection.GetCredentials(),
 	             host.GetInfo(),
 	             ami.AMIName(),

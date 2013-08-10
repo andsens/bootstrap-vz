@@ -20,8 +20,7 @@ def initialize():
 def tasks(tasklist, manifest):
 	tasklist.add(packages.HostPackages(),
 	             packages.ImagePackages(),
-	             host.CheckPackages(),
-	             host.GetInfo())
+	             host.CheckPackages())
 	tasklist.add(filesystem.FormatVolume())
 	if manifest.volume['filesystem'].lower() == 'xfs':
 		tasklist.add(filesystem.AddXFSProgs())

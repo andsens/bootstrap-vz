@@ -18,12 +18,3 @@ class CheckPackages(Task):
 			except CalledProcessError:
 				msg = "The package ``{0}\'\' is not installed".format(package)
 				raise TaskError(msg)
-
-
-class GetInfo(Task):
-	description = 'Retrieving instance metadata'
-	phase = phases.preparation
-
-	def run(self, info):
-		info.host = {}
-		return info
