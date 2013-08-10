@@ -2,7 +2,7 @@ from base import Task
 from common import phases
 from common.exceptions import TaskError
 from common.tools import log_check_call
-from bootstrap import Bootstrap
+from common.bootstrap import Bootstrap
 
 
 class FormatVolume(Task):
