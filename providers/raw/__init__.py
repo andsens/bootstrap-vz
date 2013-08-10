@@ -11,7 +11,6 @@ from tasks import security
 from tasks import network
 from tasks import initd
 from tasks import cleanup
-from tasks import fake
 
 def initialize():
 	# Regardless of of loglevel, we don't want boto debug stuff, it's very noisy
