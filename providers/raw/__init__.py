@@ -1,5 +1,4 @@
 from manifest import Manifest
-import logging
 from tasks import packages
 from tasks import host
 from tasks import filesystem
@@ -15,8 +14,7 @@ from common.tasks import cleanup
 
 
 def initialize():
-	# Regardless of of loglevel, we don't want boto debug stuff, it's very noisy
-	logging.getLogger('boto').setLevel(logging.INFO)
+	pass
 
 
 def tasks(tasklist, manifest):
