@@ -8,6 +8,7 @@ from common.tasks import locale
 from common.tasks import apt
 from tasks import boot
 from common.tasks import boot as common_boot
+from tasks import context
 from common.tasks import security
 from common.tasks import network
 from common.tasks import initd
@@ -61,6 +62,7 @@ def tasks(tasklist, manifest):
 	             common_filesystem.UnmountSpecials(),
 	             filesystem.UnmountVolume(),
 	             common_filesystem.DeleteMountDir())
+	tasklist.add(context.OpenNebulaContext())
 
 
 def rollback_tasks(tasklist, tasks_completed, manifest):
