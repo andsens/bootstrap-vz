@@ -7,10 +7,12 @@ from tasks import bootstrap
 from tasks import locale
 from common.tasks import apt
 from tasks import boot
+from common.tasks import boot as common_boot
 from tasks import security
 from tasks import network
 from tasks import initd
 from tasks import cleanup
+
 
 def initialize():
 	# Regardless of of loglevel, we don't want boto debug stuff, it's very noisy
@@ -41,8 +43,8 @@ def tasks(tasklist, manifest):
 	             #apt.AptUpgrade(),
 	             boot.ConfigureGrub(),
 	             filesystem.ModifyFstab(),
-	             boot.BlackListModules(),
-	             boot.DisableGetTTYs(),
+	             common_boot.BlackListModules(),
+	             common_boot.DisableGetTTYs(),
 	             security.EnableShadowConfig(),
 	             security.SetRootPassword(),
 	             security.DisableSSHPasswordAuthentication(),
