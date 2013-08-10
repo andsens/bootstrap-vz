@@ -9,7 +9,6 @@ from common.tasks import locale
 from common.tasks import apt
 from tasks import boot
 from common.tasks import boot as common_boot
-from tasks import context
 from common.tasks import security
 from common.tasks import network
 from common.tasks import initd
@@ -36,7 +35,6 @@ def tasks(tasklist, manifest):
 	             bootstrap.Bootstrap(),
 	             filesystem.MountSpecials(),
 	             locale.GenerateLocale(),
-	             context.OpenNebulaContext(),
 	             locale.SetTimezone(),
 	             apt.DisableDaemonAutostart(),
 	             apt.AptSources(),
