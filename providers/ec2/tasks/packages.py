@@ -1,44 +1,37 @@
 from base import Task
 from common import phases
+from common.tasks import packages
+from common.tasks.host import CheckPackages
 
 
 class HostPackages(Task):
-	description = 'Determining required host packages'
+	description = 'Adding more required host packages'
 	phase = phases.preparation
+	before = [CheckPackages]
+	after = [packages.HostPackages]
 
 	def run(self, info):
-		packages = set(['debootstrap'])
 		if info.manifest.volume['filesystem'] == 'xfs':
-			packages.add('xfsprogs')
+			info.host_packages.add('xfsprogs')
 		if info.manifest.volume['backing'] == 's3':
-			packages.add('euca2ools')
-
-		info.host_packages = packages
+			info.host_packages.add('euca2ools')
 
 
 class ImagePackages(Task):
-	description = 'Determining required image packages'
+	description = 'Adding more required image packages'
 	phase = phases.preparation
+	after = [packages.ImagePackages]
 
 	def run(self, info):
 		manifest = info.manifest
-		# Add some basic packages we are going to need
-		include = set(['udev',
-		               'openssh-server',
-		               # We could bootstrap without locales, but things just suck without them, error messages etc.
-		               'locales',
-		               # Needed for the init scripts
-		               'file',
-		               # isc-dhcp-client doesn't work properly with ec2
-		               'dhcpcd',
-		               ])
-
+		include, exclude = info.img_packages
+		include.add('file')  # Needed for the init scripts
+		include.add('dhcpcd')  # isc-dhcp-client doesn't work properly with ec2
 		if manifest.virtualization == 'pvm':
 			include.add('grub-pc')
 
-		exclude = set(['isc-dhcp-client',
-		               'isc-dhcp-common',
-		               ])
+		exclude.add('isc-dhcp-client')
+		exclude.add('isc-dhcp-common')
 
 		# In squeeze, we need a special kernel flavor for xen
 		kernels = {'squeeze': {'amd64': 'linux-image-xen-amd64',
@@ -46,5 +39,3 @@ class ImagePackages(Task):
 		           'wheezy':  {'amd64': 'linux-image-amd64',
 		                       'i386':  'linux-image-686', }, }
 		include.add(kernels.get(manifest.system['release']).get(manifest.system['architecture']))
-
-		info.img_packages = include, exclude

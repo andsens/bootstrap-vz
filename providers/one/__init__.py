@@ -1,5 +1,6 @@
 from manifest import Manifest
 from tasks import packages
+from common.tasks import packages as common_packages
 from tasks import host
 from tasks import filesystem
 from common.tasks import filesystem as common_filesystem
@@ -21,7 +22,9 @@ def initialize():
 
 def tasks(tasklist, manifest):
 	tasklist.add(packages.HostPackages(),
+	             common_packages.HostPackages(),
 	             packages.ImagePackages(),
+	             common_packages.ImagePackages(),
 	             host.CheckPackages(),
 
 	             filesystem.FormatVolume(),

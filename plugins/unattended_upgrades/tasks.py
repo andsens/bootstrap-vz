@@ -1,6 +1,6 @@
 from base import Task
 from common import phases
-from providers.ec2.tasks.packages import ImagePackages
+from common.tasks.packages import ImagePackages
 from common.tasks.host import CheckPackages
 
 

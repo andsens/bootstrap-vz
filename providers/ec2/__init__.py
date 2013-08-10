@@ -1,6 +1,7 @@
 from manifest import Manifest
 import logging
 from tasks import packages
+from common.tasks import packages as common_packages
 from tasks import connection
 from tasks import host
 from common.tasks import host as common_host
@@ -27,7 +28,9 @@ def initialize():
 
 def tasks(tasklist, manifest):
 	tasklist.add(packages.HostPackages(),
+	             common_packages.HostPackages(),
 	             packages.ImagePackages(),
+	             common_packages.ImagePackages(),
 	             common_host.CheckPackages(),
 	             connection.GetCredentials(),
 	             host.GetInfo(),
