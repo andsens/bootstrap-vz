@@ -5,8 +5,8 @@ from tasks import connection
 from tasks import host
 from tasks import ami
 from tasks import ebs
-from tasks import loopback
-from tasks import filesystem
+from common.tasks import loopback
+from common.tasks import filesystem
 from common.tasks import bootstrap
 from common.tasks import locale
 from common.tasks import apt
