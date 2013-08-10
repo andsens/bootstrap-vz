@@ -22,7 +22,7 @@ class ImagePackages(Task):
 		manifest = info.manifest
 		# Add some basic packages we are going to need
 		include = set(['udev',
-			       'parted',
+		               'parted',
 		               'openssh-server',
 		               # We could bootstrap without locales, but things just suck without them, error messages etc.
 		               'locales',
@@ -30,9 +30,9 @@ class ImagePackages(Task):
 		               'file',
 		               # isc-dhcp-client doesn't work properly with ec2
 		               'dhcpcd',
-			       'grub2',
-			       'chkconfig',
-			       'openssh-client'
+		               'grub2',
+		               'chkconfig',
+		               'openssh-client'
 		               ])
 
 		exclude = set(['isc-dhcp-client',
