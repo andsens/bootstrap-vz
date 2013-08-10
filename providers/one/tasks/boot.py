@@ -33,7 +33,9 @@ class ConfigureGrub(Task):
 		log_check_call(['/usr/sbin/chroot', info.root, 'ln', '-s', '/boot/grub/grub.cfg', '/boot/grub/menu.lst'])
 
 		log_check_call(['/usr/sbin/chroot', info.root, 'update-initramfs', '-u'])
-		log_check_call(['grub-install', '--boot-directory='+info.root+"/boot/", '/dev/loop0'])
+		log_check_call(['grub-install',
+		                '--boot-directory='+info.root+"/boot/",
+		                info.bootstrap_device['partitions']['root_path']])
 
 		log_check_call(['/usr/sbin/chroot', info.root, '/usr/sbin/update-grub'])
 
