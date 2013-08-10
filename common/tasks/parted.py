@@ -24,7 +24,7 @@ class PartitionVolume(Task):
 class MapPartitions(Task):
 	description = 'Mapping volume partitions'
 	phase = phases.volume_preparation
-	after = [Partition]
+	after = [PartitionVolume]
 
 	def run(self, info):
 		log_check_call(['kpartx', '-a', '-v', info.bootstrap_device['path']])
