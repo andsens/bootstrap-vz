@@ -9,7 +9,7 @@ from tasks import loopback
 from tasks import filesystem
 from tasks import bootstrap
 from tasks import locale
-from tasks import apt
+from common.tasks import apt
 from tasks import boot
 from tasks import security
 from tasks import network

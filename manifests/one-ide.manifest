@@ -21,8 +21,7 @@
 		"architecture": "amd64",
 		"timezone"    : "UTC",
 		"locale"      : "en_US",
-		"charmap"     : "UTF-8",
-		"mirror"      : "ftp://ftp.fr.debian.org/debian/"
+		"charmap"     : "UTF-8"
 	},
 	"volume": {
 		"backing"   : "raw",

@@ -5,14 +5,13 @@ from tasks import host
 from tasks import filesystem
 from tasks import bootstrap
 from tasks import locale
-from tasks import apt
+from common.tasks import apt
 from tasks import boot
 from tasks import security
 from tasks import network
 from tasks import initd
 from tasks import cleanup
 from tasks import fake
-
 
 def initialize():
 	# Regardless of of loglevel, we don't want boto debug stuff, it's very noisy
@@ -39,14 +38,14 @@ def tasks(tasklist, manifest):
 	             locale.SetTimezone(),
 	             apt.DisableDaemonAutostart(),
 	             apt.AptSources(),
-		     #No network for the moment, skip
+	             #No network for the moment, skip
 	             #apt.AptUpgrade(),
 	             boot.ConfigureGrub(),
 	             filesystem.ModifyFstab(),
 	             boot.BlackListModules(),
 	             boot.DisableGetTTYs(),
 	             security.EnableShadowConfig(),
-		     security.SetRootPassword(),
+	             security.SetRootPassword(),
 	             security.DisableSSHPasswordAuthentication(),
 	             security.DisableSSHDNSLookup(),
 	             network.RemoveDNSInfo(),
