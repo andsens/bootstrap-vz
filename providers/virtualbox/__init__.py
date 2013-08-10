@@ -38,8 +38,7 @@ def tasks(tasklist, manifest):
 	             locale.SetTimezone(),
 	             apt.DisableDaemonAutostart(),
 	             apt.AptSources(),
-	             #No network for the moment, skip
-	             #apt.AptUpgrade(),
+	             apt.AptUpgrade(),
 	             boot.ConfigureGrub(),
 	             filesystem.ModifyFstab(),
 	             common_boot.BlackListModules(),
