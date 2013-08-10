@@ -1,5 +1,5 @@
 {
-	"provider"      : "raw",
+	"provider"      : "one",
 	"virtualization": "virtio",
 	"credentials"   : {
 		"access-key": null,
@@ -28,25 +28,10 @@
 		"size"      : 1024
 	},
 	"plugins": {
-		"admin_user": {
-			"enabled": false
-		},
-		"build_metadata": {
-			"enabled": false,
-			"path"   : "/root/build-metadata-{ami_name}"
-		},
-		"prebootstrapped": {
-			"enabled": false,
-			"snapshot": ""
-		},
-		"opennebula": {
-			"enabled": true
-		},
-                "user_packages": {
-                        "enabled": true,
-                        "repo": [ "apache2" ],
-                        "local": []
-                }
-
+		"user_packages": {
+			"enabled": true,
+			"repo": [ "apache2" ],
+			"local": []
+		}
 	}
 }
