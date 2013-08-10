@@ -59,7 +59,10 @@ class MountVolume(Task):
 					msg = 'Something is already mounted at {root}'.format(root=info.root)
 					raise TaskError(msg)
 
-		log_check_call(['/bin/mount', info.bootstrap_device['path'], info.root])
+		log_check_call(['/bin/mount',
+		                '-t', info.manifest.volume['filesystem'],
+		                info.bootstrap_device['path'],
+		                info.root])
 
 
 class MountSpecials(Task):
