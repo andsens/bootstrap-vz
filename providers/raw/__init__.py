@@ -4,12 +4,12 @@ from tasks import packages
 from tasks import host
 from tasks import filesystem
 from common.tasks import bootstrap
-from tasks import locale
+from common.tasks import locale
 from common.tasks import apt
 from tasks import boot
 from common.tasks import boot as common_boot
 from tasks import security
-from tasks import network
+from common.tasks import network
 from tasks import initd
 from common.tasks import cleanup
 
