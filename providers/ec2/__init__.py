@@ -15,7 +15,7 @@ from common.tasks import boot as common_boot
 from tasks import security
 from tasks import network
 from tasks import initd
-from tasks import cleanup
+from common.tasks import cleanup
 
 
 def initialize():
