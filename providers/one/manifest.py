@@ -13,3 +13,5 @@ class Manifest(base.Manifest):
 		self.credentials    = data['credentials']
 		self.virtualization = data['virtualization']
 		self.image          = data['image']
+		if 'loopback_dir' not in self.volume and self.volume['backing'].lower() == 's3':
+			self.volume['loopback_dir'] = '/tmp'

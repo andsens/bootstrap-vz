@@ -13,6 +13,7 @@ class FormatVolume(Task):
 		dev_path = info.bootstrap_device['path']
 		mkfs = '/sbin/mkfs.{fs}'.format(fs=info.manifest.volume['filesystem'])
 		log_check_call([mkfs, dev_path])
+		info.bootstrap_device['partitions'] = {'root_path': info.bootstrap_device['path']}
 
 
 class TuneVolumeFS(Task):
@@ -21,9 +22,8 @@ class TuneVolumeFS(Task):
 	after = [FormatVolume]
 
 	def run(self, info):
-		dev_path = info.bootstrap_device['path']
 		# Disable the time based filesystem check
-		log_check_call(['/sbin/tune2fs', '-i', '0', dev_path])
+		log_check_call(['/sbin/tune2fs', '-i', '0', info.bootstrap_device['partitions']['root_path']])
 
 
 class AddXFSProgs(Task):
@@ -61,7 +61,7 @@ class MountVolume(Task):
 
 		log_check_call(['/bin/mount',
 		                '-t', info.manifest.volume['filesystem'],
-		                info.bootstrap_device['path'],
+		                info.bootstrap_device['partitions']['root_path'],
 		                info.root])
 
 
@@ -120,7 +120,14 @@ class ModifyFstab(Task):
 		if info.manifest.volume['filesystem'].lower() == 'xfs':
 			mount_opts.append('nobarrier')
 		fstab_path = os.path.join(info.root, 'etc/fstab')
+
+		device = '/dev/sda1'
+		if info.manifest.virtualization == 'virtio':
+			device = '/dev/vda1'
+		if info.manifest.virtualization == 'pvm':
+			device = '/dev/xvda1'
 		with open(fstab_path, 'a') as fstab:
-			fstab.write(('/dev/xvda1 /     {filesystem}    {mount_opts} 1 1\n'
-			             .format(filesystem=info.manifest.volume['filesystem'].lower(),
-			                     mount_opts=','.join(mount_opts))))
+			fstab.write('{device} /     {filesystem}    {mount_opts} 1 1\n'
+			            .format(device=device,
+			                    filesystem=info.manifest.volume['filesystem'].lower(),
+			                    mount_opts=','.join(mount_opts)))

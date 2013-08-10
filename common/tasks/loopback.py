@@ -17,6 +17,18 @@ class Create(Task):
 		                'bs=1M', 'seek='+str(info.manifest.volume['size']), 'count=0'])
 
 
+class CreateQemuImg(Task):
+	description = 'Creating a loopback volume with qemu'
+	phase = phases.volume_preparation
+
+	def run(self, info):
+		loopback_filename = 'loopback-{id:x}.img'.format(id=info.run_id)
+		import os.path
+		info.loopback_file = os.path.join(info.manifest.volume['loopback_dir'], loopback_filename)
+		log_check_call(['/usr/bin/qemu-img', 'create', '-f', 'raw',
+		                info.loopback_file, str(info.manifest.volume['size'])+'M'])
+
+
 class Attach(Task):
 	description = 'Attaching the loopback volume'
 	phase = phases.volume_creation

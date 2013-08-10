@@ -7,9 +7,7 @@
 	},
 
 	"bootstrapper": {
-		"mount_dir": "/mnt/target",
-		"image_file": "/tmp/one.img",
-		"tarball": true
+		"mount_dir": "/target"
 	},
 	"image": {
 		"name"       : "debian-{release}-{architecture}-{virtualization}-{%y}{%m}{%d}",

@@ -2,8 +2,8 @@ from manifest import Manifest
 from tasks import packages
 from common.tasks import packages as common_packages
 from tasks import host
-from tasks import filesystem
-from common.tasks import filesystem as common_filesystem
+from common.tasks import parted
+from common.tasks import filesystem
 from common.tasks import bootstrap
 from common.tasks import locale
 from common.tasks import apt
@@ -27,12 +27,14 @@ def tasks(tasklist, manifest):
 	             common_packages.ImagePackages(),
 	             host.CheckPackages(),
 
-	             filesystem.FormatVolume(),
-	             common_filesystem.CreateMountDir(),
+	             parted.PartitionVolume(),
+	             parted.MapPartitions(),
+	             parted.FormatPartitions(),
+	             filesystem.CreateMountDir(),
 	             filesystem.MountVolume(),
 
 	             bootstrap.Bootstrap(),
-	             common_filesystem.MountSpecials(),
+	             filesystem.MountSpecials(),
 	             locale.GenerateLocale(),
 	             context.OpenNebulaContext(),
 	             locale.SetTimezone(),
@@ -59,10 +61,11 @@ def tasks(tasklist, manifest):
 	             apt.PurgeUnusedPackages(),
 	             apt.AptClean(),
 	             apt.EnableDaemonAutostart(),
-	             common_filesystem.UnmountSpecials(),
+	             filesystem.UnmountSpecials(),
 
 	             filesystem.UnmountVolume(),
-	             common_filesystem.DeleteMountDir())
+	             filesystem.UnmapPartitions(),
+	             filesystem.DeleteMountDir())
 
 	if manifest.bootstrapper['tarball']:
 		tasklist.add(bootstrap.MakeTarball())
@@ -81,6 +84,7 @@ def rollback_tasks(tasklist, tasks_completed, manifest):
 		if task in completed and counter not in completed:
 			tasklist.add(counter())
 
-	counter_task(common_filesystem.CreateMountDir, common_filesystem.DeleteMountDir)
+	counter_task(filesystem.CreateMountDir, filesystem.DeleteMountDir)
+	counter_task(filesystem.MapPartitions, filesystem.UnmapPartitions)
 	counter_task(filesystem.MountVolume, filesystem.UnmountVolume)
-	counter_task(common_filesystem.MountSpecials, common_filesystem.UnmountSpecials)
+	counter_task(filesystem.MountSpecials, filesystem.UnmountSpecials)
