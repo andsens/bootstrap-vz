@@ -1,5 +1,5 @@
 
 
 def tasks(tasklist, manifest):
-	from buildmetadata import PrintInfo
-	tasklist.add(PrintInfo())
+	from tasks import WriteMetadata
+	tasklist.add(WriteMetadata())
