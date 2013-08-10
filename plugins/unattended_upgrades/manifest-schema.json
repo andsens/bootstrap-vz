@@ -1,0 +1,29 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "Unattended upgrades plugin manifest",
+	"type": "object",
+	"properties": {
+		"plugins": {
+			"type": "object",
+			"properties": {
+				"unattended_upgrades": {
+					"type": "object",
+					"properties": {
+						"update_interval": {
+							"type": "integer"
+						},
+						"download_interval": {
+							"type": "integer"
+						},
+						"upgrade_interval": {
+							"type": "integer"
+						}
+					},
+					"required": ["update_interval", "download_interval", "upgrade_interval"]
+				}
+			},
+			"required": ["unattended_upgrades"]
+		}
+	},
+	"required": ["plugins"]
+}
