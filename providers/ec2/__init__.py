@@ -65,6 +65,7 @@ def tasks(tasklist, manifest):
 	             apt.AptClean(),
 	             apt.EnableDaemonAutostart(),
 	             filesystem.UnmountSpecials(),
+
 	             filesystem.UnmountVolume(),
 	             filesystem.DeleteMountDir(),
 	             ami.RegisterAMI())

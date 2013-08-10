@@ -22,19 +22,16 @@ def initialize():
 def tasks(tasklist, manifest):
 	tasklist.add(packages.HostPackages(),
 	             packages.ImagePackages(),
-	             host.CheckPackages())
-	tasklist.add(filesystem.FormatVolume())
-	if manifest.volume['filesystem'].lower() == 'xfs':
-		tasklist.add(common_filesystem.AddXFSProgs())
-	if manifest.volume['filesystem'].lower() in ['ext2', 'ext3', 'ext4']:
-		tasklist.add(filesystem.TuneVolumeFS())
-	tasklist.add(common_filesystem.CreateMountDir(),
-	             filesystem.MountVolume())
-	if manifest.bootstrapper['tarball']:
-		tasklist.add(bootstrap.MakeTarball())
-	tasklist.add(bootstrap.Bootstrap(),
+	             host.CheckPackages(),
+
+	             filesystem.FormatVolume(),
+	             common_filesystem.CreateMountDir(),
+	             filesystem.MountVolume(),
+
+	             bootstrap.Bootstrap(),
 	             common_filesystem.MountSpecials(),
 	             locale.GenerateLocale(),
+	             context.OpenNebulaContext(),
 	             locale.SetTimezone(),
 	             apt.DisableDaemonAutostart(),
 	             apt.AptSources(),
@@ -60,9 +57,18 @@ def tasks(tasklist, manifest):
 	             apt.AptClean(),
 	             apt.EnableDaemonAutostart(),
 	             common_filesystem.UnmountSpecials(),
+
 	             filesystem.UnmountVolume(),
 	             common_filesystem.DeleteMountDir())
-	tasklist.add(context.OpenNebulaContext())
+
+	if manifest.bootstrapper['tarball']:
+		tasklist.add(bootstrap.MakeTarball())
+
+	filesystem_specific_tasks = {'xfs': [filesystem.AddXFSProgs()],
+	                             'ext2': [filesystem.TuneVolumeFS()],
+	                             'ext3': [filesystem.TuneVolumeFS()],
+	                             'ext4': [filesystem.TuneVolumeFS()]}
+	tasklist.add(*filesystem_specific_tasks.get(manifest.volume['filesystem'].lower()))
 
 
 def rollback_tasks(tasklist, tasks_completed, manifest):
