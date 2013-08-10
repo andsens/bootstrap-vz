@@ -3,7 +3,7 @@ import logging
 from tasks import packages
 from tasks import host
 from tasks import filesystem
-from tasks import bootstrap
+from common.tasks import bootstrap
 from tasks import locale
 from common.tasks import apt
 from tasks import boot
