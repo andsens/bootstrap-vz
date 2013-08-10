@@ -15,6 +15,7 @@ from common.tasks import boot as common_boot
 from tasks import security
 from common.tasks import network
 from tasks import initd
+from common.tasks import initd as common_initd
 from common.tasks import cleanup
 
 
@@ -53,8 +54,9 @@ def tasks(tasklist, manifest):
 	             network.RemoveDNSInfo(),
 	             network.ConfigureNetworkIF(),
 	             network.ConfigureDHCP(),
-	             initd.ResolveInitScripts(),
-	             initd.InstallInitScripts(),
+	             common_initd.ResolveInitScripts(),
+	             initd.AddEC2InitScripts(),
+	             common_initd.InstallInitScripts(),
 	             cleanup.ClearMOTD(),
 	             cleanup.ShredHostkeys(),
 	             cleanup.CleanTMP(),
