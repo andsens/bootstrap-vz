@@ -12,7 +12,7 @@ from common.tasks import locale
 from common.tasks import apt
 from tasks import boot
 from common.tasks import boot as common_boot
-from tasks import security
+from common.tasks import security
 from common.tasks import network
 from tasks import initd
 from common.tasks import initd as common_initd

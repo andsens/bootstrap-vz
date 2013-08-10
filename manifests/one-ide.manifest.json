@@ -3,8 +3,7 @@
 	"virtualization": "ide",
 	"credentials"   : {
 		"access-key": null,
-		"secret-key": null,
-		"root": "test"
+		"secret-key": null
 	},
 
 	"bootstrapper": {

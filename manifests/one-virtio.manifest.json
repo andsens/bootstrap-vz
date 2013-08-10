@@ -3,8 +3,7 @@
 	"virtualization": "virtio",
 	"credentials"   : {
 		"access-key": null,
-		"secret-key": null,
-		"root": "test"
+		"secret-key": null
 	},
 
 	"bootstrapper": {
