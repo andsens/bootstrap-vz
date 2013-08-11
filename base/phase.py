@@ -1,7 +1,8 @@
 
 
 class Phase(object):
-	def __init__(self, description):
+	def __init__(self, name, description):
+		self.name = name
 		self.description = description
 
 	def pos(self):
@@ -12,7 +13,4 @@ class Phase(object):
 		return self.pos() - other.pos()
 
 	def __str__(self):
-		return '{name}'.format(name=self.__class__.__name__)
-
-	def __repr__(self):
-		return self.__str__()
+		return self.name

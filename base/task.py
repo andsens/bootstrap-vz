@@ -21,12 +21,12 @@ class Task(object):
 		for task in self.before:
 			if self.phase > task.phase:
 				msg = ("The task {self} is specified as running before {other}, "
-				       "but its phase {phase} lies after the phase {other_phase}"
+				       "but its phase '{phase}' lies after the phase '{other_phase}'"
 				       .format(self=type(self), other=task, phase=self.phase, other_phase=task.phase))
 				raise TaskListError(msg)
 		for task in self.after:
 			if self.phase < task.phase:
 				msg = ("The task {self} is specified as running after {other}, "
-				       "but its phase {phase} lies before the phase {other_phase}"
+				       "but its phase '{phase}' lies before the phase '{other_phase}'"
 				       .format(self=type(self), other=task, phase=self.phase, other_phase=task.phase))
 				raise TaskListError(msg)
