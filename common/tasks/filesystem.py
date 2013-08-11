@@ -122,8 +122,6 @@ class ModifyFstab(Task):
 		fstab_path = os.path.join(info.root, 'etc/fstab')
 
 		device = '/dev/sda1'
-		if info.manifest.virtualization == 'virtio':
-			device = '/dev/vda1'
 		if info.manifest.virtualization == 'pvm':
 			device = '/dev/xvda1'
 		with open(fstab_path, 'a') as fstab:
