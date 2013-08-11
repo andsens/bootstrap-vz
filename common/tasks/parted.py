@@ -2,6 +2,7 @@ from base import Task
 from common import phases
 from common.tools import log_check_call
 import filesystem
+import loopback
 
 
 class PartitionVolume(Task):
@@ -10,14 +11,11 @@ class PartitionVolume(Task):
 
 	def run(self, info):
 		# parted
-		log_check_call(['parted', '-a', 'optimal',
-		                '-s', info.bootstrap_device['path'],
-		                'mklabel', 'msdos'])
-		log_check_call(['parted', '-a', 'optimal',
-		                '-s', info.bootstrap_device['path'],
+		log_check_call(['parted', '-a', 'optimal', '-s', info.bootstrap_device['path'],
+		                '--', 'mklabel', 'msdos'])
+		log_check_call(['parted', '-a', 'optimal', '-s', info.bootstrap_device['path'],
 		                '--', 'mkpart', 'primary', 'ext4', '32k', '-1'])
-		log_check_call(['parted',
-		                '-s', info.bootstrap_device['path'],
+		log_check_call(['parted', '-s', info.bootstrap_device['path'],
 		                '--', 'set', '1', 'boot', 'on'])
 
 
@@ -29,7 +27,11 @@ class MapPartitions(Task):
 	def run(self, info):
 		log_check_call(['kpartx', '-a', '-v', info.bootstrap_device['path']])
 		root_partition_path = info.bootstrap_device['path'].replace('/dev', '/dev/mapper')+'p1'
-		info.bootstrap_device['partitions'] = {'root_path': root_partition_path}
+
+		[root_loopback_path] = log_check_call(['/sbin/losetup', '--find'])
+		log_check_call(['/sbin/losetup', root_loopback_path, root_partition_path])
+
+		info.bootstrap_device['partitions'] = {'root_path': root_loopback_path}
 
 
 class FormatPartitions(Task):
@@ -46,8 +48,11 @@ class FormatPartitions(Task):
 class UnmapPartitions(Task):
 	description = 'Removing volume partitions mapping'
 	phase = phases.volume_unmounting
+	before = [loopback.Detach]
 	after = [filesystem.UnmountVolume]
 
 	def run(self, info):
-		log_check_call(['kpartx', '-d', info.loopback_file])
+		log_check_call(['/sbin/losetup', '-d', info.bootstrap_device['partitions']['root_path']])
 		del info.bootstrap_device['partitions']['root_path']
+
+		log_check_call(['kpartx', '-d', info.bootstrap_device['path']])
