@@ -26,6 +26,7 @@ class ImagePackages(Task):
 		include, exclude = info.img_packages
 		# Add some basic packages we are going to need
 		include.update(['parted',
+		                'kpartx',
 		               # Needed for the init scripts
 		               'file',
 		               # isc-dhcp-client doesn't work properly with ec2
