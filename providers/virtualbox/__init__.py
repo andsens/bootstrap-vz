@@ -1,7 +1,7 @@
 from manifest import Manifest
 from tasks import packages
 from common.tasks import packages as common_packages
-from tasks import host
+from common.tasks import host
 from common.tasks import loopback
 from common.tasks import parted
 from common.tasks import filesystem

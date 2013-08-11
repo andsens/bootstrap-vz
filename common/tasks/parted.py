@@ -1,7 +1,7 @@
 from base import Task
 from common import phases
 from common.tools import log_check_call
-from common.tasks import UnmountVolume
+from filesystem import UnmountVolume
 
 
 class PartitionVolume(Task):
