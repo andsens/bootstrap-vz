@@ -2,6 +2,7 @@ from manifest import Manifest
 from tasks import packages
 from common.tasks import packages as common_packages
 from tasks import host
+from common.tasks import loopback
 from common.tasks import parted
 from common.tasks import filesystem
 from common.tasks import bootstrap
@@ -26,6 +27,8 @@ def tasks(tasklist, manifest):
 	             common_packages.ImagePackages(),
 	             host.CheckPackages(),
 
+	             loopback.CreateQemuImg(),
+	             loopback.Attach(),
 	             parted.PartitionVolume(),
 	             parted.MapPartitions(),
 	             parted.FormatPartitions(),
@@ -62,6 +65,7 @@ def tasks(tasklist, manifest):
 
 	             filesystem.UnmountVolume(),
 	             filesystem.UnmapPartitions(),
+	             loopback.Detach(),
 	             filesystem.DeleteMountDir())
 
 	if manifest.bootstrapper['tarball']:
