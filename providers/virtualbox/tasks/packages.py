@@ -31,7 +31,6 @@ class ImagePackages(Task):
 		               'file',
 		               # isc-dhcp-client doesn't work properly with ec2
 		               'dhcpcd',
-		               'grub2',
 		               'chkconfig',
 		               'openssh-client'
 		                ])
