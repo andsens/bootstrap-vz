@@ -47,7 +47,6 @@ def tasks(tasklist, manifest):
 	             common_boot.BlackListModules(),
 	             common_boot.DisableGetTTYs(),
 	             security.EnableShadowConfig(),
-	             security.SetRootPassword(),
 	             security.DisableSSHPasswordAuthentication(),
 	             security.DisableSSHDNSLookup(),
 	             network.RemoveDNSInfo(),
@@ -64,7 +63,7 @@ def tasks(tasklist, manifest):
 	             filesystem.UnmountSpecials(),
 
 	             filesystem.UnmountVolume(),
-	             filesystem.UnmapPartitions(),
+	             parted.UnmapPartitions(),
 	             loopback.Detach(),
 	             filesystem.DeleteMountDir())
 
@@ -86,6 +85,6 @@ def rollback_tasks(tasklist, tasks_completed, manifest):
 			tasklist.add(counter())
 
 	counter_task(filesystem.CreateMountDir, filesystem.DeleteMountDir)
-	counter_task(filesystem.MapPartitions, filesystem.UnmapPartitions)
+	counter_task(parted.MapPartitions, parted.UnmapPartitions)
 	counter_task(filesystem.MountVolume, filesystem.UnmountVolume)
 	counter_task(filesystem.MountSpecials, filesystem.UnmountSpecials)
