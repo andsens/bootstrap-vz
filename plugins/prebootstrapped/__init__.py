@@ -3,12 +3,13 @@ from tasks import CopyImage
 from tasks import CreateFromSnapshot
 from tasks import CreateFromImage
 from providers.ec2.tasks import ebs
-from providers.ec2.tasks import loopback
+from common.tasks import loopback
+from common.tasks import bootstrap
+from common.tasks import filesystem
+from common.tasks import parted
 
 
 def tasks(tasklist, manifest):
-	from providers.ec2.tasks import bootstrap
-	from providers.ec2.tasks import filesystem
 	settings = manifest.plugins['prebootstrapped']
 	if manifest.volume['backing'] == 'ebs':
 		if 'snapshot' in settings and settings['snapshot'] is not None:
@@ -22,8 +23,12 @@ def tasks(tasklist, manifest):
 			tasklist.add(Snapshot())
 	else:
 		if 'image' in settings and settings['image'] is not None:
-			tasklist.replace(loopback.Create, CreateFromImage())
-			tasklist.remove(filesystem.FormatVolume,
+			tasklist.add(CreateFromImage())
+			tasklist.remove(loopback.Create,
+			                loopback.CreateQemuImg,
+			                parted.PartitionVolume,
+			                parted.FormatPartitions,
+			                filesystem.FormatVolume,
 			                filesystem.TuneVolumeFS,
 			                filesystem.AddXFSProgs,
 			                bootstrap.MakeTarball,

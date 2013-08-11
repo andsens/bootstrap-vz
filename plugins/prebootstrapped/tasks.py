@@ -1,8 +1,8 @@
 from base import Task
 from common import phases
 from providers.ec2.tasks import ebs
-from providers.ec2.tasks import loopback
-from providers.ec2.tasks import bootstrap
+from common.tasks import loopback
+from common.tasks import bootstrap
 import time
 import logging
 log = logging.getLogger(__name__)
