@@ -1,7 +1,7 @@
 from base import Task
 from common import phases
 from common.tools import log_check_call
-from filesystem import UnmountVolume
+import filesystem
 
 
 class PartitionVolume(Task):
@@ -35,6 +35,7 @@ class MapPartitions(Task):
 class FormatPartitions(Task):
 	description = 'Formatting the partitions'
 	phase = phases.volume_preparation
+	before = [filesystem.TuneVolumeFS]
 	after = [MapPartitions]
 
 	def run(self, info):
@@ -45,7 +46,7 @@ class FormatPartitions(Task):
 class UnmapPartitions(Task):
 	description = 'Removing volume partitions mapping'
 	phase = phases.volume_unmounting
-	after = [UnmountVolume]
+	after = [filesystem.UnmountVolume]
 
 	def run(self, info):
 		log_check_call(['kpartx', '-d', info.loopback_file])
