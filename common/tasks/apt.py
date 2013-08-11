@@ -1,8 +1,9 @@
 from base import Task
 from common import phases
 from common.tools import log_check_call
+import network
+import locale
 import os
-from locale import GenerateLocale
 
 
 class AptSources(Task):
@@ -41,7 +42,8 @@ class DisableDaemonAutostart(Task):
 class AptUpgrade(Task):
 	description = 'Upgrading packages and fixing broken dependencies'
 	phase = phases.system_modification
-	after = [GenerateLocale, AptSources, DisableDaemonAutostart]
+	before = [network.RemoveDNSInfo]
+	after = [locale.GenerateLocale, AptSources, DisableDaemonAutostart]
 
 	def run(self, info):
 		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get', 'update'])
