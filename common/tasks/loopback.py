@@ -19,7 +19,7 @@ class Create(Task):
 
 class CreateQemuImg(Task):
 	description = 'Creating a loopback volume with qemu'
-	phase = phases.volume_preparation
+	phase = phases.volume_creation
 
 	def run(self, info):
 		loopback_filename = 'loopback-{id:x}.img'.format(id=info.run_id)
@@ -32,7 +32,7 @@ class CreateQemuImg(Task):
 class Attach(Task):
 	description = 'Attaching the loopback volume'
 	phase = phases.volume_creation
-	after = [Create]
+	after = [Create, CreateQemuImg]
 
 	def run(self, info):
 		info.bootstrap_device = {}
