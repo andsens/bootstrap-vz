@@ -1,10 +1,6 @@
 {
 	"provider"      : "one",
 	"virtualization": "ide",
-	"credentials"   : {
-		"access-key": null,
-		"secret-key": null
-	},
 
 	"bootstrapper": {
 		"mount_dir": "/target"

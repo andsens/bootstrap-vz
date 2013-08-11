@@ -1,10 +1,6 @@
 {
 	"provider"      : "one",
 	"virtualization": "virtio",
-	"credentials"   : {
-		"access-key": null,
-		"secret-key": null
-	},
 
 	"bootstrapper": {
 		"mount_dir": "/target"
