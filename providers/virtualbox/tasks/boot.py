@@ -38,10 +38,3 @@ class ConfigureGrub(Task):
 		                info.bootstrap_device['partitions']['root_path']])
 
 		log_check_call(['/usr/sbin/chroot', info.root, '/usr/sbin/update-grub'])
-
-		from common.tools import sed_i
-		if info.manifest.virtualization == 'virtio':
-			grub_cfg = os.path.join(info.root, 'boot/grub/grub.cfg')
-			sed_i(grub_cfg, 'sda', 'vda')
-			device_map = os.path.join(info.root, 'boot/grub/device.map')
-			sed_i(device_map, 'sda', 'vda')

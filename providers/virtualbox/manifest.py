@@ -10,7 +10,6 @@ class Manifest(base.Manifest):
 
 	def parse(self, data):
 		super(Manifest, self).parse(data)
-		self.virtualization = data['virtualization']
 		self.image          = data['image']
 		if 'loopback_dir' not in self.volume and self.volume['backing'].lower() == 's3':
 			self.volume['loopback_dir'] = '/tmp'
