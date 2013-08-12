@@ -3,7 +3,7 @@ from common import phases
 import os
 from common.tasks.packages import ImagePackages
 from common.tasks.host import CheckPackages
-from providers.raw.tasks.filesystem import MountVolume
+from common.tasks.filesystem import MountVolume
 
 
 class AddUserPackages(Task):
