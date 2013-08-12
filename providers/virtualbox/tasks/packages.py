@@ -32,7 +32,8 @@ class ImagePackages(Task):
 		               # isc-dhcp-client doesn't work properly with ec2
 		               'dhcpcd',
 		               'chkconfig',
-		               'openssh-client'
+		               'openssh-client',
+			       'grub2'
 		                ])
 
 		exclude.update(['isc-dhcp-client',
