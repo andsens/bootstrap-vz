@@ -1,7 +1,7 @@
 
 
 def tasks(tasklist, manifest):
-	from common.tasks import DisableSSHPasswordAuthentication
+	from common.tasks.security import DisableSSHPasswordAuthentication
 	from tasks import SetRootPassword
 	tasklist.replace(DisableSSHPasswordAuthentication, SetRootPassword())
 
