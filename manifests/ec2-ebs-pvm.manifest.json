@@ -8,6 +8,7 @@
 
 	"bootstrapper": {
 		"mount_dir": "/target"
+		"mirror": "http://http.debian.net/"
 	},
 	"image": {
 		"name":        "debian-{release}-{architecture}-{virtualization}-{%y}{%m}{%d}",
@@ -23,7 +24,7 @@
 	"volume": {
 		"backing":    "ebs",
 		"filesystem": "ext4",
-		"size":       1024
+		"size":       8192
 	},
 	"plugins": {
 		"admin_user": {

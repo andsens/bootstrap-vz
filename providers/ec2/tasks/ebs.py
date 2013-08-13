@@ -1,7 +1,7 @@
 from base import Task
 from common import phases
 from common.exceptions import TaskError
-from filesystem import UnmountVolume
+from common.tasks.filesystem import UnmountVolume
 import time
 
 
