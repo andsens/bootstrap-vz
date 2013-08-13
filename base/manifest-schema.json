@@ -16,7 +16,7 @@
 				"device" : { "type" : "string" },
 				"mirror":   { "type": "string" }
 			},
-			"required": ["mount_dir"]
+			"required": ["mount_dir", "mirror"]
 		},
 		"system": {
 			"type": "object",
