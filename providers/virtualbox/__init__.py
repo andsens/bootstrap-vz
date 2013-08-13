@@ -14,6 +14,7 @@ from common.tasks import security
 from common.tasks import network
 from common.tasks import initd
 from common.tasks import cleanup
+from common.tasks import loopback
 
 
 def initialize():
@@ -88,3 +89,4 @@ def rollback_tasks(tasklist, tasks_completed, manifest):
 	counter_task(parted.MapPartitions, parted.UnmapPartitions)
 	counter_task(filesystem.MountVolume, filesystem.UnmountVolume)
 	counter_task(filesystem.MountSpecials, filesystem.UnmountSpecials)
+	counter_task(loopback.Attach, loopback.Detach)

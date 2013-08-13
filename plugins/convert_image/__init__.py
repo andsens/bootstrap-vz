@@ -1,9 +1,8 @@
 
 
 def tasks(tasklist, manifest):
-	from common.tasks.security import DisableSSHPasswordAuthentication
-	from tasks import SetRootPassword
-	tasklist.replace(DisableSSHPasswordAuthentication, SetRootPassword())
+	from tasks import ConvertImage
+	tasklist.add(ConvertImage())
 
 
 def validate_manifest(data, schema_validate):

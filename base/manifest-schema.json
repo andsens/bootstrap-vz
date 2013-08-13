@@ -13,9 +13,10 @@
                                 "image_file": { "type": "string" },
 				"tarball": { "type": "boolean" },
 				"tarball_dir": { "type": "string" },
-				"device" : { "type" : "string" }
+				"device" : { "type" : "string" },
+				"mirror":   { "type": "string" }
 			},
-			"required": ["mount_dir"]
+			"required": ["mount_dir", "mirror"]
 		},
 		"system": {
 			"type": "object",
@@ -30,8 +31,7 @@
 				},
 				"timezone": { "type": "string" },
 				"locale":   { "type": "string" },
-				"charmap":  { "type": "string" },
-				"mirror":   { "type": "string" }
+				"charmap":  { "type": "string" }
 			},
 			"required": ["release", "architecture", "timezone", "locale", "charmap"]
 		},
