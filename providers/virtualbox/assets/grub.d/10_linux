@@ -40,7 +40,7 @@ linux_entry ()
 	title="$(gettext_quoted "%s, with Linux %s")"
 
 	cat << EOF
-menuentry 'Debian GNU/Linux for OpenNebula, ${version}' --class debian --class gnu-linux --class os {
+menuentry 'Debian GNU/Linux, ${version}' --class debian --class gnu-linux --class os {
         insmod part_msdos
         insmod ext2
 	set timeout=${GRUB_TIMEOUT}
