@@ -3,7 +3,8 @@
 	"virtualization": "ide",
 
 	"bootstrapper": {
-		"mount_dir": "/mnt/target"
+		"mount_dir": "/mnt/target",
+		"mirror"      : "http://ftp.fr.debian.org/debian/"
 	},
 	"image": {
 		"name"       : "debian-{release}-{architecture}-{virtualization}-{%y}{%m}{%d}",
@@ -14,8 +15,7 @@
 		"architecture": "amd64",
 		"timezone"    : "UTC",
 		"locale"      : "en_US",
-		"charmap"     : "UTF-8",
-		"mirror"      : "http://ftp.fr.debian.org/debian/"
+		"charmap"     : "UTF-8"
 	},
 	"volume": {
 		"backing"   : "raw",
@@ -32,6 +32,10 @@
 		"root_password": {
 			"enabled": true,
 			"password": "test"
-                }
+                },
+		"convert_image": {
+			"enabled": true,
+			"format": "vdi"
+		}
 	}
 }

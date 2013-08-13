@@ -13,8 +13,8 @@ def get_bootstrap_args(info):
 		options.append('--include=' + ','.join(include))
 	if len(exclude) > 0:
 		options.append('--exclude=' + ','.join(exclude))
-        if info.manifest.system['mirror']:
-		mirror =  info.manifest.system['mirror']
+        if info.manifest.bootstrapper['mirror']:
+		mirror =  info.manifest.bootstrapper['mirror']
 	else:
 		mirror = 'http://http.debian.net/debian'
 	arguments = [info.manifest.system['release'], info.root, mirror]
