@@ -1,0 +1,37 @@
+{
+	"provider"      : "virtualbox",
+	"virtualization": "ide",
+
+	"bootstrapper": {
+		"mount_dir": "/mnt/target"
+	},
+	"image": {
+		"name"       : "debian-{release}-{architecture}-{virtualization}-{%y}{%m}{%d}",
+		"description": "Debian {release} {architecture} ({virtualization})"
+	},
+	"system": {
+		"release"     : "wheezy",
+		"architecture": "amd64",
+		"timezone"    : "UTC",
+		"locale"      : "en_US",
+		"charmap"     : "UTF-8",
+		"mirror"      : "http://ftp.fr.debian.org/debian/"
+	},
+	"volume": {
+		"backing"   : "raw",
+		"filesystem": "ext4",
+		"size"      : 1024,
+		"loopback_dir" : "/tmp"
+	},
+	"plugins": {
+		"user_packages": {
+			"enabled": true,
+			"repo": [ "apache2" ],
+			"local": []
+		},
+		"root_password": {
+			"enabled": true,
+			"password": "test"
+                }
+	}
+}
