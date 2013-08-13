@@ -25,13 +25,9 @@ class MapPartitions(Task):
 	after = [PartitionVolume]
 
 	def run(self, info):
-		log_check_call(['kpartx', '-a', '-v', info.bootstrap_device['path']])
-		root_partition_path = info.bootstrap_device['path'].replace('/dev', '/dev/mapper')+'p1'
-
-		[root_loopback_path] = log_check_call(['/sbin/losetup', '--find'])
-		log_check_call(['/sbin/losetup', root_loopback_path, root_partition_path])
-
-		info.bootstrap_device['partitions'] = {'root_path': root_loopback_path}
+		root_partition_path =  info.bootstrap_device['path'].replace('/dev', '/dev/mapper')+'p1'
+                log_check_call(['kpartx', '-a', '-v', info.bootstrap_device['path']])
+		info.bootstrap_device['partitions'] = {'root_path': root_partition_path}
 
 
 class FormatPartitions(Task):
@@ -52,7 +48,5 @@ class UnmapPartitions(Task):
 	after = [filesystem.UnmountVolume]
 
 	def run(self, info):
-		log_check_call(['/sbin/losetup', '-d', info.bootstrap_device['partitions']['root_path']])
-		del info.bootstrap_device['partitions']['root_path']
-
 		log_check_call(['kpartx', '-d', info.bootstrap_device['path']])
+		del info.bootstrap_device['partitions']['root_path']
