@@ -33,7 +33,7 @@ class ImagePackages(Task):
 		               'dhcpcd',
 		               'chkconfig',
 		               'openssh-client',
-			       'grub2'
+		               'grub2'
 		                ])
 
 		exclude.update(['isc-dhcp-client',
