@@ -7,7 +7,7 @@
 	},
 
 	"bootstrapper": {
-		"mount_dir": "/target"
+		"mount_dir": "/target",
 		"mirror": "http://http.debian.net/"
 	},
 	"image": {
