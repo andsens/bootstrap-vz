@@ -47,6 +47,8 @@ class Manifest(object):
 	def parse(self, data):
 		self.provider = data['provider']
 		self.bootstrapper = data['bootstrapper']
+		if 'mirror' not in self.bootstrapper:
+			self.bootstrapper['mirror'] = 'http://http.debian.net/debian'
 		if 'tarball' not in self.bootstrapper:
 			self.bootstrapper['tarball'] = False
 		if 'tarball_dir' not in self.bootstrapper and self.bootstrapper['tarball']:

@@ -10,11 +10,11 @@
 			"type": "object",
 			"properties": {
 				"mount_dir": { "type": "string" },
+				"mirror":   { "type": "string" },
 				"tarball": { "type": "boolean" },
-				"tarball_dir": { "type": "string" },
-				"mirror":   { "type": "string" }
+				"tarball_dir": { "type": "string" }
 			},
-			"required": ["mount_dir", "mirror"]
+			"required": ["mount_dir"]
 		},
 		"system": {
 			"type": "object",

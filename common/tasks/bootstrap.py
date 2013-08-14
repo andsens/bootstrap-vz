@@ -13,8 +13,7 @@ def get_bootstrap_args(info):
 		options.append('--include=' + ','.join(include))
 	if len(exclude) > 0:
 		options.append('--exclude=' + ','.join(exclude))
-	mirror =  info.manifest.bootstrapper['mirror']
-	arguments = [info.manifest.system['release'], info.root, mirror]
+	arguments = [info.manifest.system['release'], info.root, info.manifest.bootstrapper['mirror']]
 	return executable, options, arguments
 
 
