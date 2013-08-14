@@ -13,7 +13,6 @@
                                 "image_file": { "type": "string" },
 				"tarball": { "type": "boolean" },
 				"tarball_dir": { "type": "string" },
-				"device" : { "type" : "string" },
 				"mirror":   { "type": "string" }
 			},
 			"required": ["mount_dir", "mirror"]
