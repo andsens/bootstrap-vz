@@ -10,10 +10,11 @@
 	},
 
 	"bootstrapper": {
-		"mount_dir": "/target"
+		"mount_dir": "/target",
+		"mirror": "http://http.debian.net/debian"
 	},
 	"image": {
-		"name":        "debian-{release}-{architecture}-{virtualization}-{%y}{%m}{%d}",
+		"name":        "debian-{release}-{architecture}-{virtualization}-{%Y}{%m}{%d}",
 		"description": "Debian {release} {architecture} AMI ({virtualization})"
 		"bucket":      ""
 	},
@@ -30,6 +31,10 @@
 		"size":         1024
 	},
 	"plugins": {
+		"admin_user": {
+			"enabled": true,
+			"username": "admin"
+		},
 		"prebootstrapped": {
 			"enabled":  false,
 			"image": null

@@ -8,10 +8,10 @@
 
 	"bootstrapper": {
 		"mount_dir": "/target",
-		"mirror": "http://http.debian.net/"
+		"mirror": "http://http.debian.net/debian"
 	},
 	"image": {
-		"name":        "debian-{release}-{architecture}-{virtualization}-{%y}{%m}{%d}",
+		"name":        "debian-{release}-{architecture}-{virtualization}-{%Y}{%m}{%d}",
 		"description": "Debian {release} {architecture} AMI ({virtualization})"
 	},
 	"system": {
@@ -28,7 +28,8 @@
 	},
 	"plugins": {
 		"admin_user": {
-			"enabled": false
+			"enabled": true,
+			"username": "admin"
 		},
 		"build_metadata": {
 			"enabled": false,
