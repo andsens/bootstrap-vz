@@ -8,31 +8,29 @@ import os
 
 
 class AptSourcesBackports(Task):
-        description = 'Adding backports to sources.list'
-        phase = phases.system_modification
+	description = 'Adding backports to sources.list'
+	phase = phases.system_modification
 	after = [AptSources]
 	before = [AptUpgrade]
-        def run(self, info):
-                sources_path = os.path.join(info.root, 'etc/apt/sources.list')
-                with open(sources_path, 'a') as apt_sources:
-                        apt_sources.write(('deb     {apt_mirror} {release}-backports main\n'
-                                           'deb-src {apt_mirror} {release}-backports main\n'
-                                          .format(apt_mirror='http://http.debian.net/debian',
-                                                release=info.manifest.system['release'])))
+
+	def run(self, info):
+		sources_path = os.path.join(info.root, 'etc/apt/sources.list')
+		with open(sources_path, 'a') as apt_sources:
+			apt_sources.write(('deb     {apt_mirror} {release}-backports main\n'
+			                   'deb-src {apt_mirror} {release}-backports main\n'
+			                   .format(apt_mirror='http://http.debian.net/debian',
+			                           release=info.manifest.system['release'])))
 
 
 class AddBackportsPackages(Task):
-        description = 'Adding backport packages to the image'
-        phase = phases.system_modification
-        after = [AptUpgrade]
+	description = 'Adding backport packages to the image'
+	phase = phases.system_modification
+	after = [AptUpgrade]
 
+	def run(self, info):
+		if 'packages' not in info.manifest.plugins['backports']:
+			return
 
-        def run(self, info):
-                if 'packages' not in info.manifest.plugins['backports']:
-                        return
-
-                from shutil import copy
-                from common.tools import log_check_call
-
-                for pkg in info.manifest.plugins['backports']['packages']:
-                        log_check_call(['/usr/sbin/chroot', info.root, 'apt-get', 'install', '-y', '-t', info.manifest.system['release'] + '-backports', pkg])
+		from common.tools import log_check_call
+		for pkg in info.manifest.plugins['backports']['packages']:
+			log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get', 'install', '-y', '-t', info.manifest.system['release'] + '-backports', pkg])
