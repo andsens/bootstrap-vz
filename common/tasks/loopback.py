@@ -36,8 +36,8 @@ class Attach(Task):
 
 	def run(self, info):
 		info.bootstrap_device = {}
-		[info.bootstrap_device['path']] = log_check_call(['/sbin/losetup', '--find'])
-		log_check_call(['/sbin/losetup', info.bootstrap_device['path'], info.loopback_file])
+		command = ['/sbin/losetup', '--show', '--find', info.loopback_file]
+		[info.bootstrap_device['path']] = log_check_call(command)
 
 
 class Detach(Task):
