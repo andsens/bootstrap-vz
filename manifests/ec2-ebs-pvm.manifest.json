@@ -31,6 +31,10 @@
 			"enabled": true,
 			"username": "admin"
 		},
+		"backports": {
+			"enabled": true,
+			"packages": [ "cloud-init" ]
+		},
 		"build_metadata": {
 			"enabled": false,
 			"path":    "/root/build-metadata-{ami_name}"
