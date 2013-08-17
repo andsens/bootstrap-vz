@@ -42,4 +42,4 @@ class AddLocalUserPackages(Task):
 			copy(script_src, script_dst)
 			os.chmod(script_dst, rwxr_xr_x)
 
-			log_check_call(['/usr/sbin/chroot', info.root, 'dpkg', '-i', '/tmp/'+os.path.basename(script_src)])
+			log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/dpkg', '-i', '/tmp/'+os.path.basename(script_src)])

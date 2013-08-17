@@ -23,7 +23,7 @@ class OpenNebulaContext(Task):
 		os.chmod(script_dst, rwxr_xr_x)
 
 		from common.tools import log_check_call
-		log_check_call(['/usr/sbin/chroot', info.root, 'dpkg', '-i', '/tmp/one-context_3.8.1.deb'])
+		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/dpkg', '-i', '/tmp/one-context_3.8.1.deb'])
 		# Fix start
 		from common.tools import sed_i
 		vmcontext_def = os.path.join(info.root, 'etc/init.d/vmcontext')

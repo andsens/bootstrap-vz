@@ -28,7 +28,7 @@ class ConfigureGrub(Task):
                 script_dst = os.path.join(info.root, 'etc/grub.d/00_header')
                 copy(script_src, script_dst)
                 os.chmod(script_dst, rwxr_xr_x)
-		log_check_call(['/usr/sbin/chroot', info.root, 'update-initramfs', '-u'])
+		log_check_call(['/usr/sbin/chroot', info.root, '/usr/sbin/update-initramfs', '-u'])
 		# Install grub in mbr
 		log_check_call(['/usr/sbin/grub-install', '--boot-directory='+info.root+"/boot/", info.bootstrap_device['path']])
 

@@ -36,7 +36,7 @@ class ConfigureGrub(Task):
                         with open(modules_path, 'a') as modules:
                                 modules.write("\nvirtio_pci\nvirtio_blk\n")
 
-		log_check_call(['/usr/sbin/chroot', info.root, 'update-initramfs', '-u'])
+		log_check_call(['/usr/sbin/chroot', info.root, '/usr/sbin/update-initramfs', '-u'])
 		# Install grub in mbr
 		log_check_call(['/usr/sbin/grub-install', '--boot-directory='+info.root+"/boot/", info.bootstrap_device['path']])
 
