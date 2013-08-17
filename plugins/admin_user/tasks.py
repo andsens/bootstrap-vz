@@ -52,11 +52,6 @@ class AdminUserCredentials(Task):
 		getcreds_path = os.path.join(info.root, 'etc/init.d/ec2-get-credentials')
 		username = info.manifest.plugins['admin_user']['username']
 		sed_i(getcreds_path, 'username=\'root\'', 'username=\'{username}\''.format(username=username))
-		import stat
-		rwxr_xr_x = (stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR |
-                             stat.S_IRGRP                | stat.S_IXGRP |
-                             stat.S_IROTH                | stat.S_IXOTH)
-		os.chmod(getcreds_path, rwxr_xr_x)
 
 
 class DisableRootLogin(Task):
