@@ -46,7 +46,7 @@ class Detach(Task):
 	after = [UnmountVolume]
 
 	def run(self, info):
-		log_check_call(['/sbin/losetup', '-d', info.bootstrap_device['path']])
+		log_check_call(['/sbin/losetup', '--detach', info.bootstrap_device['path']])
 		del info.bootstrap_device
 
 

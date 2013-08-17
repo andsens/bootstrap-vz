@@ -47,8 +47,11 @@ class AptUpgrade(Task):
 
 	def run(self, info):
 		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get', 'update'])
-		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get', '-f', '-y', 'install'])
-		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get', '-y', 'upgrade'])
+		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get',
+		                                               '--fix-broken',
+		                                               '--assume-yes',
+		                                               'install'])
+		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get', '--assume-yes', 'upgrade'])
 
 
 class PurgeUnusedPackages(Task):

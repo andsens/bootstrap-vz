@@ -33,4 +33,6 @@ class AddBackportsPackages(Task):
 
 		from common.tools import log_check_call
 		for pkg in info.manifest.plugins['backports']['packages']:
-			log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get', 'install', '-y', '-t', info.manifest.system['release'] + '-backports', pkg])
+			log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get', 'install',
+			                '--assume-yes', '--target-release', info.manifest.system['release'] + '-backports',
+			                pkg])

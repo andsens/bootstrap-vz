@@ -11,11 +11,11 @@ class PartitionVolume(Task):
 
 	def run(self, info):
 		# parted
-		log_check_call(['parted', '-a', 'optimal', '-s', info.bootstrap_device['path'],
+		log_check_call(['parted', '--align', 'optimal', '--script', info.bootstrap_device['path'],
 		                '--', 'mklabel', 'msdos'])
-		log_check_call(['parted', '-a', 'optimal', '-s', info.bootstrap_device['path'],
+		log_check_call(['parted', '--align', 'optimal', '--script', info.bootstrap_device['path'],
 		                '--', 'mkpart', 'primary', 'ext4', '32k', '-1'])
-		log_check_call(['parted', '-s', info.bootstrap_device['path'],
+		log_check_call(['parted', '--script', info.bootstrap_device['path'],
 		                '--', 'set', '1', 'boot', 'on'])
 
 
@@ -25,8 +25,8 @@ class MapPartitions(Task):
 	after = [PartitionVolume]
 
 	def run(self, info):
-		root_partition_path =  info.bootstrap_device['path'].replace('/dev', '/dev/mapper')+'p1'
-                log_check_call(['kpartx', '-a', '-v', info.bootstrap_device['path']])
+		root_partition_path = info.bootstrap_device['path'].replace('/dev', '/dev/mapper')+'p1'
+		log_check_call(['kpartx', '-a', '-v', info.bootstrap_device['path']])
 		info.bootstrap_device['partitions'] = {'root_path': root_partition_path}
 
 
@@ -37,6 +37,7 @@ class FormatPartitions(Task):
 	after = [MapPartitions]
 
 	def run(self, info):
+		# These params will fail for mkfs.xfs
 		log_check_call(['/sbin/mkfs.{fs}'.format(fs=info.manifest.volume['filesystem']),
 		                '-m', '1', '-v', info.bootstrap_device['partitions']['root_path']])
 

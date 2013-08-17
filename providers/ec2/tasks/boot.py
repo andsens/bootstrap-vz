@@ -31,4 +31,5 @@ class ConfigureGrub(Task):
 
 		from common.tools import log_check_call
 		log_check_call(['/usr/sbin/chroot', info.root, '/usr/sbin/update-grub'])
-		log_check_call(['/usr/sbin/chroot', info.root, '/bin/ln', '-s', '/boot/grub/grub.cfg', '/boot/grub/menu.lst'])
+		log_check_call(['/usr/sbin/chroot', info.root,
+		                '/bin/ln', '--symbolic', '/boot/grub/grub.cfg', '/boot/grub/menu.lst'])

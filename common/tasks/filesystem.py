@@ -60,7 +60,7 @@ class MountVolume(Task):
 					raise TaskError(msg)
 
 		log_check_call(['/bin/mount',
-		                '-t', info.manifest.volume['filesystem'],
+		                '--types', info.manifest.volume['filesystem'],
 		                info.bootstrap_device['partitions']['root_path'],
 		                info.root])
 
@@ -72,9 +72,9 @@ class MountSpecials(Task):
 
 	def run(self, info):
 		log_check_call(['/bin/mount', '--bind', '/dev', '{root}/dev'.format(root=info.root)])
-		log_check_call(['/usr/sbin/chroot', info.root, '/bin/mount', '-t', 'proc', 'none', '/proc'])
-		log_check_call(['/usr/sbin/chroot', info.root, '/bin/mount', '-t', 'sysfs', 'none', '/sys'])
-		log_check_call(['/usr/sbin/chroot', info.root, '/bin/mount', '-t', 'devpts', 'none', '/dev/pts'])
+		log_check_call(['/usr/sbin/chroot', info.root, '/bin/mount', '--types', 'proc', 'none', '/proc'])
+		log_check_call(['/usr/sbin/chroot', info.root, '/bin/mount', '--types', 'sysfs', 'none', '/sys'])
+		log_check_call(['/usr/sbin/chroot', info.root, '/bin/mount', '--types', 'devpts', 'none', '/dev/pts'])
 
 
 class UnmountSpecials(Task):
