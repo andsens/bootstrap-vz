@@ -19,7 +19,7 @@ def log_call(command, stdin=None):
 
 	if stdin is not None:
 		process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-		process.stdin.write(stdin+"\n")
+		process.stdin.write(stdin + "\n")
 		process.stdin.flush()
 		process.stdin.close()
 	else:

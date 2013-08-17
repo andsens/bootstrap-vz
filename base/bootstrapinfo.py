@@ -5,4 +5,4 @@ class BootstrapInformation(object):
 		self.manifest = manifest
 		self.debug = debug
 		import random
-		self.run_id = random.randrange(16**8)
+		self.run_id = random.randrange(16 ** 8)

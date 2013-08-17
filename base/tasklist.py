@@ -44,7 +44,7 @@ class TaskList(object):
 			successors = []
 			successors.extend([self.get(succ) for succ in task.before])
 			successors.extend(filter(lambda succ: type(task) in succ.after, tasks))
-			succeeding_phases = order[order.index(task.phase)+1:]
+			succeeding_phases = order[order.index(task.phase) + 1:]
 			successors.extend(filter(lambda succ: succ.phase in succeeding_phases, tasks))
 			graph[task] = filter(lambda succ: succ in self.tasks, successors)
 

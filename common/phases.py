@@ -21,6 +21,6 @@ order = [preparation,
          system_cleaning,
          volume_unmounting,
          image_registration,
-	 image_conversion,
+         image_conversion,
          cleaning,
          ]

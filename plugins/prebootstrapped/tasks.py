@@ -25,7 +25,7 @@ class CreateFromSnapshot(Task):
 	before = [ebs.Attach]
 
 	def run(self, info):
-		volume_size = int(info.manifest.volume['size']/1024)
+		volume_size = int(info.manifest.volume['size'] / 1024)
 		snapshot = info.manifest.plugins['prebootstrapped']['snapshot']
 		info.volume = info.connection.create_volume(volume_size,
 		                                            info.host['availabilityZone'],

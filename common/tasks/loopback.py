@@ -13,8 +13,8 @@ class Create(Task):
 		import os.path
 		info.loopback_file = os.path.join(info.manifest.volume['loopback_dir'], loopback_filename)
 		log_check_call(['/bin/dd',
-		                'if=/dev/zero', 'of='+info.loopback_file,
-		                'bs=1M', 'seek='+str(info.manifest.volume['size']), 'count=0'])
+		                'if=/dev/zero', 'of=' + info.loopback_file,
+		                'bs=1M', 'seek=' + str(info.manifest.volume['size']), 'count=0'])
 
 
 class CreateQemuImg(Task):
@@ -26,7 +26,7 @@ class CreateQemuImg(Task):
 		import os.path
 		info.loopback_file = os.path.join(info.manifest.volume['loopback_dir'], loopback_filename)
 		log_check_call(['/usr/bin/qemu-img', 'create', '-f', 'raw',
-		                info.loopback_file, str(info.manifest.volume['size'])+'M'])
+		                info.loopback_file, str(info.manifest.volume['size']) + 'M'])
 
 
 class Attach(Task):

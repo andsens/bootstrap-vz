@@ -25,7 +25,7 @@ class MapPartitions(Task):
 	after = [PartitionVolume]
 
 	def run(self, info):
-		root_partition_path = info.bootstrap_device['path'].replace('/dev', '/dev/mapper')+'p1'
+		root_partition_path = info.bootstrap_device['path'].replace('/dev', '/dev/mapper') + 'p1'
 		log_check_call(['kpartx', '-a', '-v', info.bootstrap_device['path']])
 		info.bootstrap_device['partitions'] = {'root_path': root_partition_path}
 
