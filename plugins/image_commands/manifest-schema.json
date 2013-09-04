@@ -1,0 +1,29 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "Image commands plugin manifest",
+	"type": "object",
+	"properties": {
+		"plugins": {
+			"type": "object",
+			"properties": {
+				"image_commands": {
+					"type": "object",
+					"properties": {
+						"commands": {
+							"type": "array",
+							"items": {
+								"type": "array",
+								"items": {
+									"type": "string"
+									}
+							}
+						}
+					},
+					"required": ["commands"]
+				}
+			},
+			"required": ["image_commands"]
+		}
+	},
+	"required": ["plugins"]
+}
