@@ -31,13 +31,11 @@ def log_call(command, stdin=None):
 		ret = select.select(reads, [], [])
 		for fd in ret[0]:
 			if fd == process.stdout.fileno():
-				line = process.stdout.readline()
-				if line != '':
+				for line in iter(process.stdout.readline, ''):
 					log.debug(line.strip())
 					stdout.append(line.strip())
 			if fd == process.stderr.fileno():
-				line = process.stderr.readline()
-				if line != '':
+				for line in iter(process.stderr.readline, ''):
 					log.error(line.strip())
 					stderr.append(line.strip())
 		if process.poll() is not None:
