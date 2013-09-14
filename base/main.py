@@ -15,6 +15,8 @@ def get_args():
 	parser = ArgumentParser(description='Bootstrap Debian for the cloud.')
 	parser.add_argument('--debug', action='store_true',
 	                    help='Print debugging information')
+	parser.add_argument('--pause-on-error', action='store_true',
+	                    help='Pause on error, before rollback')
 	parser.add_argument('manifest', help='Manifest file to use for bootstrapping', metavar='MANIFEST')
 	return parser.parse_args()
 
@@ -37,6 +39,8 @@ def run(args):
 		log.info('Successfully completed bootstrapping')
 	except (Exception, KeyboardInterrupt) as e:
 		log.exception(e)
+		if args.pause_on_error:
+			raw_input("Press Enter to commence rollback")
 		log.error('Rolling back')
 		rollback_tasklist = TaskList()
 		provider.rollback_tasks(rollback_tasklist, tasklist.tasks_completed, manifest)
