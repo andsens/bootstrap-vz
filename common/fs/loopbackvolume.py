@@ -48,8 +48,8 @@ class LoopbackVolume(Volume):
 		self.device_path = self.loop_device_path
 
 	def _link_dm_node(self, e):
-		import re
-		loop_device_name = re.match('^/dev/(?P<name>.*)$', self.loop_device_path).group('name')
+		import os.path
+		loop_device_name = os.path.basename(self.loop_device_path)
 		from . import get_major_minor_dev_num
 		major, minor = get_major_minor_dev_num(loop_device_name)
 		sectors = self.size*1024*1024/512
