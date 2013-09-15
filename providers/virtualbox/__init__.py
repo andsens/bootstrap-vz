@@ -67,7 +67,7 @@ def tasks(tasklist, manifest):
 	             partitioning.UnmapPartitions(),
 	             volume_tasks.Detach(),
 	             filesystem.DeleteMountDir(),
-	             volume_tasks.Delete())
+	             loopback.MoveImage())
 
 	if manifest.bootstrapper['tarball']:
 		tasklist.add(bootstrap.MakeTarball())

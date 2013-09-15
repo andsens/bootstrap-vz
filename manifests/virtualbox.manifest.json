@@ -3,7 +3,7 @@
 	"virtualization": "ide",
 
 	"bootstrapper": {
-		"mount_dir": "/mnt/target",
+		"workspace": "/mnt/target",
 		"mirror":    "http://http.debian.net/debian/"
 	},
 	"image": {

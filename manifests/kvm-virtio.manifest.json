@@ -3,7 +3,7 @@
 	"virtualization": "virtio",
 
 	"bootstrapper": {
-		"mount_dir": "/mnt/target",
+		"workspace": "/mnt/target",
 		"mirror"      : "http://ftp.fr.debian.org/debian/"
 	},
 	"image": {

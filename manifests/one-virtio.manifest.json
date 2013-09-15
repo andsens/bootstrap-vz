@@ -3,7 +3,7 @@
 	"virtualization": "virtio",
 
 	"bootstrapper": {
-		"mount_dir": "/target"
+		"workspace": "/target"
 	},
 	"image": {
 		"name"       : "debian-{release}-{architecture}-{virtualization}-{%y}{%m}{%d}",
