@@ -8,3 +8,6 @@ class BootstrapInformation(object):
 		self.debug = debug
 		import random
 		self.run_id = random.randrange(16 ** 8)
+		import os.path
+		workspace_dirname = '{id:x}'.format(id=self.run_id)
+		self.workspace = os.path.join(manifest.bootstrapper['workspace'], workspace_dirname)

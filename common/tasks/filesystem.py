@@ -41,9 +41,7 @@ class CreateMountDir(Task):
 
 	def run(self, info):
 		import os
-		workspace = info.manifest.bootstrapper['workspace']
-		info.root = '{workspace}/{id:x}'.format(workspace=workspace, id=info.run_id)
-		# Works recursively, fails if last part exists, which is exactly what we want.
+		info.root = os.path.join(info.workspace, 'root')
 		os.makedirs(info.root)
 
 

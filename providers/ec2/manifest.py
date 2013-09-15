@@ -23,7 +23,3 @@ class Manifest(base.Manifest):
 		self.image          = data['image']
 		if data['volume']['backing'] == 'ebs':
 			self.ebs_volume_size = data['volume']['size'] / 1024
-		if 'loopback_dir' not in self.volume and self.volume['backing'].lower() == 's3':
-			self.volume['loopback_dir'] = '/tmp'
-		if 'bundle_dir' not in self.image and self.volume['backing'].lower() == 's3':
-			self.image['bundle_dir'] = '/tmp'

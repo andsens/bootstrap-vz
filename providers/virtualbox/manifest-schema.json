@@ -8,7 +8,7 @@
 			"properties": {
 				"backing": {
 					"type": "string",
-					"enum": ["raw", "qcow2"]
+					"enum": ["raw", "vdi", "qcow2"]
 				}
 				// "filesystem": {
 				// 	"type": "string",

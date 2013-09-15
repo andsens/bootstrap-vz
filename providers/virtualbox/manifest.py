@@ -12,5 +12,3 @@ class Manifest(base.Manifest):
 		super(Manifest, self).parse(data)
 		self.virtualization = None
 		self.image          = data['image']
-		if 'loopback_dir' not in self.volume:
-			self.volume['loopback_dir'] = '/tmp'

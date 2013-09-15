@@ -11,8 +11,7 @@
 			"properties": {
 				"workspace": { "type": "string" },
 				"mirror":   { "type": "string" },
-				"tarball": { "type": "boolean" },
-				"tarball_dir": { "type": "string" }
+				"tarball": { "type": "boolean" }
 			},
 			"required": ["workspace"]
 		},

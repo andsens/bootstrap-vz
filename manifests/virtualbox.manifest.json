@@ -19,7 +19,6 @@
 	},
 	"volume": {
 		"backing":         "raw",
-		"loopback_dir":    "/tmp",
 		"partitions": {
 			"boot": {
 				"size":       12,

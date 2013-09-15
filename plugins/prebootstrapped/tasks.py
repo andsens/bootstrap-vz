@@ -51,9 +51,9 @@ class CopyImage(Task):
 		import os.path
 		from shutil import copyfile
 		loopback_backup_name = 'loopback-{id:x}.img.backup'.format(id=info.run_id)
-		image_copy_path = os.path.join('/tmp', loopback_backup_name)
-		copyfile(info.volume.image_path, image_copy_path)
-		msg = 'A copy of the bootstrapped volume was created. Path: {path}'.format(path=image_copy_path)
+		destination = os.path.join(info.manifest.bootstrapper['workspace'], loopback_backup_name)
+		copyfile(info.volume.image_path, destination)
+		msg = 'A copy of the bootstrapped volume was created. Path: {path}'.format(path=destination)
 		log.info(msg)
 
 
@@ -65,8 +65,7 @@ class CreateFromImage(Task):
 	def run(self, info):
 		import os.path
 		from shutil import copyfile
-		loopback_filename = 'loopback-{id:x}.img'.format(id=info.run_id)
-		info.volume.image_path = os.path.join(info.manifest.volume['loopback_dir'], loopback_filename)
+		info.volume.image_path = os.path.join(info.workspace, 'volume.{ext}'.format(ext=info.volume.extension))
 		loopback_backup_path = info.manifest.plugins['prebootstrapped']['image']
 		copyfile(loopback_backup_path, info.volume.image_path)
 

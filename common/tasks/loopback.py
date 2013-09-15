@@ -9,9 +9,8 @@ class Create(Task):
 	before = [volume.Attach]
 
 	def run(self, info):
-		loopback_filename = 'loopback-{id:x}.img'.format(id=info.run_id)
 		import os.path
-		image_path = os.path.join(info.manifest.volume['loopback_dir'], loopback_filename)
+		image_path = os.path.join(info.workspace, 'volume.{ext}'.format(ext=info.volume.extension))
 		info.volume.create(image_path)
 
 
@@ -21,8 +20,8 @@ class MoveImage(Task):
 
 	def run(self, info):
 		import os.path
-		image_basename = os.path.basename(info.volume.image_path)
-		destination = os.path.join(info.manifest.bootstrapper['workspace'], image_basename)
+		filename = 'loopback-{id:x}.{ext}'.format(id=info.run_id, ext=info.volume.extension)
+		destination = os.path.join(info.bootstrapper['workspace'], filename)
 		import shutil
 		shutil.move(info.volume.image_path, destination)
 		import logging

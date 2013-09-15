@@ -23,6 +23,8 @@ class LoopbackVolume(Volume):
 	                  {'name': 'unlink_dm_node', 'src': 'linked', 'dst': 'partitioned'},
 	                  ]
 
+	extension = 'raw'
+
 	def __init__(self, partition_map, callbacks={}):
 		callbacks.update({'onbeforecreate': self._create,
 		                  'onbeforeattach': self._attach,

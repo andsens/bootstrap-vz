@@ -68,7 +68,7 @@ def tasks(tasklist, manifest):
 	             loopback.Detach(),
 	             filesystem.DeleteMountDir())
 
-	if manifest.bootstrapper['tarball']:
+	if manifest.bootstrapper.get('tarball', False):
 		tasklist.add(bootstrap.MakeTarball())
 
 	filesystem_specific_tasks = {'xfs': [filesystem.AddXFSProgs()],

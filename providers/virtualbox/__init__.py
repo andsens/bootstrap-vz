@@ -15,6 +15,7 @@ from common.tasks import security
 from common.tasks import network
 from common.tasks import initd
 from common.tasks import cleanup
+from common.tasks import workspace
 
 
 def initialize():
@@ -22,7 +23,8 @@ def initialize():
 
 
 def tasks(tasklist, manifest):
-	tasklist.add(packages.HostPackages(),
+	tasklist.add(workspace.CreateWorkspace(),
+	             packages.HostPackages(),
 	             common_packages.HostPackages(),
 	             packages.ImagePackages(),
 	             common_packages.ImagePackages(),
@@ -67,9 +69,10 @@ def tasks(tasklist, manifest):
 	             partitioning.UnmapPartitions(),
 	             volume_tasks.Detach(),
 	             filesystem.DeleteMountDir(),
-	             loopback.MoveImage())
+	             loopback.MoveImage(),
+	             workspace.DeleteWorkspace())
 
-	if manifest.bootstrapper['tarball']:
+	if manifest.bootstrapper.get('tarball', False):
 		tasklist.add(bootstrap.MakeTarball())
 
 	partitions = manifest.volume['partitions']
@@ -105,3 +108,4 @@ def rollback_tasks(tasklist, tasks_completed, manifest):
 	counter_task(filesystem.MountSpecials, filesystem.UnmountSpecials)
 	counter_task(filesystem.MountBoot, filesystem.UnmountBoot)
 	counter_task(volume_tasks.Attach, volume_tasks.Detach)
+	counter_task(workspace.CreateWorkspace, workspace.DeleteWorkspace)

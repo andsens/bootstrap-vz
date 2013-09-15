@@ -1,5 +1,6 @@
 from base import Task
 from common import phases
+from common.tasks import workspace
 
 
 class Attach(Task):
@@ -21,6 +22,7 @@ class Detach(Task):
 class Delete(Task):
 	description = 'Deleting the volume'
 	phase = phases.cleaning
+	before = [workspace.DeleteWorkspace]
 
 	def run(self, info):
 		info.volume.delete()

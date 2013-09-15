@@ -4,8 +4,8 @@ from common.tools import log_check_call
 
 class VirtualBoxVolume(LoopbackVolume):
 
-	def create(self, image_path):
-		super(VirtualBoxVolume, self).create(self)
-		self.image_path = image_path
+	extension = 'vdi'
+
+	def _create(self, e):
+		self.image_path = e.image_path
 		log_check_call(['/usr/bin/qemu-img', 'create', '-f', 'vdi', self.image_path, str(self.size) + 'M'])
-		self.created = True

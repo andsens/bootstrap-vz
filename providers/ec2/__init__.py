@@ -74,7 +74,7 @@ def tasks(tasklist, manifest):
 	             filesystem.DeleteMountDir(),
 	             ami.RegisterAMI())
 
-	if manifest.bootstrapper['tarball']:
+	if manifest.bootstrapper.get('tarball', False):
 		tasklist.add(bootstrap.MakeTarball())
 
 	backing_specific_tasks = {'ebs': [ebs.Create(),

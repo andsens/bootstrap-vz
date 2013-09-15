@@ -3,6 +3,7 @@ from common import phases
 from common.exceptions import TaskError
 from common.tools import log_check_call
 from ebs import Snapshot
+from common.tasks import workspace
 from connection import Connect
 import os.path
 
@@ -45,7 +46,7 @@ class BundleImage(Task):
 
 	def run(self, info):
 		bundle_name = 'bundle-{id:x}'.format(id=info.run_id)
-		info.bundle_path = os.path.join(info.manifest.image['bundle_dir'], bundle_name)
+		info.bundle_path = os.path.join(info.workspace, bundle_name)
 		log_check_call(['/usr/bin/euca-bundle-image',
 		                '--image', info.loopback_file,
 		                '--user', info.credentials['user-id'],
@@ -80,6 +81,7 @@ class UploadImage(Task):
 class RemoveBundle(Task):
 	description = 'Removing the bundle files'
 	phase = phases.cleaning
+	before = [workspace.DeleteWorkspace]
 
 	def run(self, info):
 		from shutil import rmtree
