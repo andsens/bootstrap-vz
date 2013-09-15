@@ -6,6 +6,7 @@ class NoPartitions(object):
 	def __init__(self, data):
 		root = data['root']
 		self.root = SinglePartition(root['size'], root['filesystem'])
+		self.partitions = [self.root]
 		self.mount_points = [('/', self.root)]
 
 	def get_total_size(self):

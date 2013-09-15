@@ -91,7 +91,9 @@ def tasks(tasklist, manifest):
 			break
 
 	if 'boot' in manifest.volume['partitions']:
-		tasklist.add(filesystem.MountBoot(), filesystem.UnmountBoot())
+		tasklist.add(filesystem.CreateBootMountDir(),
+		             filesystem.MountBoot(),
+		             filesystem.UnmountBoot())
 
 
 def rollback_tasks(tasklist, tasks_completed, manifest):
@@ -105,7 +107,7 @@ def rollback_tasks(tasklist, tasks_completed, manifest):
 	counter_task(filesystem.CreateMountDir, filesystem.DeleteMountDir)
 	counter_task(partitioning.MapPartitions, partitioning.UnmapPartitions)
 	counter_task(filesystem.MountRoot, filesystem.UnmountRoot)
-	counter_task(filesystem.MountSpecials, filesystem.UnmountSpecials)
 	counter_task(filesystem.MountBoot, filesystem.UnmountBoot)
+	counter_task(filesystem.MountSpecials, filesystem.UnmountSpecials)
 	counter_task(volume_tasks.Attach, volume_tasks.Detach)
 	counter_task(workspace.CreateWorkspace, workspace.DeleteWorkspace)

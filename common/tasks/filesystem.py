@@ -64,15 +64,15 @@ class MountBoot(Task):
 
 
 class CreateBootMountDir(Task):
-	description = 'Creating mountpoint boot partition'
+	description = 'Creating mountpoint for the boot partition'
 	phase = phases.volume_mounting
 	after = [MountRoot]
 	before = [MountBoot]
 
 	def run(self, info):
 		import os
-		info.boot = os.path.join(info.root, 'boot')
-		os.makedirs()
+		boot_dir = os.path.join(info.root, 'boot')
+		os.makedirs(boot_dir)
 
 
 class MountSpecials(Task):

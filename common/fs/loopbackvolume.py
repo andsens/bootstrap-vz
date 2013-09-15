@@ -49,15 +49,17 @@ class LoopbackVolume(Volume):
 
 	def _link_dm_node(self, e):
 		import os.path
+		from . import get_partitions
+		proc_partitions = get_partitions()
 		loop_device_name = os.path.basename(self.loop_device_path)
-		from . import get_major_minor_dev_num
-		major, minor = get_major_minor_dev_num(loop_device_name)
+		loop_device_partition = proc_partitions[loop_device_name]
+
 		sectors = self.size*1024*1024/512
 		table = ('{log_start_sec} {sectors} linear {major}:{minor} {start_sec}'
 		         .format(log_start_sec=0,
 		                 sectors=sectors,
-		                 major=major,
-		                 minor=minor,
+		                 major=loop_device_partition['major'],
+		                 minor=loop_device_partition['minor'],
 		                 start_sec=0))
 		import string
 		import os.path
