@@ -50,7 +50,7 @@ class CopyImage(Task):
 	def run(self, info):
 		import os.path
 		from shutil import copyfile
-		loopback_backup_name = 'loopback-{id:x}.img.backup'.format(id=info.run_id)
+		loopback_backup_name = 'volume-{id:x}.{ext}.backup'.format(id=info.run_id, ext=info.volume.extension)
 		destination = os.path.join(info.manifest.bootstrapper['workspace'], loopback_backup_name)
 		copyfile(info.volume.image_path, destination)
 		msg = 'A copy of the bootstrapped volume was created. Path: {path}'.format(path=destination)
