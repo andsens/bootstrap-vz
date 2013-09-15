@@ -21,6 +21,7 @@ class VirtualBoxVolume(LoopbackVolume):
 			raise VolumeError(msg)
 		nbd_max_part = int(self._module_param('nbd', 'max_part'))
 		if nbd_max_part < num_partitions:
+			# Found here: http://bethesignal.org/blog/2011/01/05/how-to-mount-virtualbox-vdi-image/
 			msg = ('The kernel module `nbd\' was loaded with the max_part '
 			       'parameter set to {max_part}, which is below '
 			       'the amount of partitions for this volume ({num_partitions}). '

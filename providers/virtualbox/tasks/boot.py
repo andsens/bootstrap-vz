@@ -17,6 +17,9 @@ class ConfigureGrub(Task):
 		grub_dir = os.path.join(boot_dir, 'grub')
 
 		if isinstance(info.volume, LoopbackVolume):
+			# GRUB cannot deal with installing to loopback devices
+			# so we fake a real harddisk with dmsetup.
+			# Guide here: http://ebroder.net/2009/08/04/installing-grub-onto-a-disk-image/
 			info.volume.unmount()
 			info.volume.unmap()
 			info.volume.link_dm_node()
@@ -45,3 +48,8 @@ class ConfigureGrub(Task):
 			info.volume.mount_root(info.root)
 			info.volume.mount_boot()
 			info.volume.mount_specials()
+
+		# Best guess right now...
+		device_map_path = os.path.join(grub_dir, 'device.map')
+		with open(device_map_path, 'w') as device_map:
+			device_map.write('(hd0) /dev/mapper/vda\n')
