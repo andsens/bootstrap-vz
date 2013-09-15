@@ -16,6 +16,7 @@ def log_call(command, stdin=None):
 	from os.path import realpath
 	command_log = realpath(command[0]).replace('/', '.')
 	log = logging.getLogger(__name__ + command_log)
+	log.debug('Executing: {command}'.format(command=' '.join(command)))
 
 	if stdin is not None:
 		process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
