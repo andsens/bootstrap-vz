@@ -23,8 +23,14 @@
 	},
 	"volume": {
 		"backing":    "ebs",
-		"filesystem": "ext4",
-		"size":       8192
+		"partition_table": {
+			"type": null,
+			"partitions": [
+				{"size":       8192,
+				 "filesystem": "ext4",
+				 "flags":      ["root"]}
+			]
+		}
 	},
 	"plugins": {
 		"admin_user": {

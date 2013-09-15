@@ -6,6 +6,7 @@ from tasks import connection
 from tasks import host
 from common.tasks import host as common_host
 from tasks import ami
+from common.tasks import volume
 from tasks import ebs
 from common.tasks import loopback
 from common.tasks import filesystem
@@ -49,7 +50,7 @@ def tasks(tasklist, manifest):
 	             apt.AptSources(),
 	             apt.AptUpgrade(),
 	             boot.ConfigureGrub(),
-	             filesystem.ModifyFstab(),
+	             filesystem.FStab(),
 	             common_boot.BlackListModules(),
 	             common_boot.DisableGetTTYs(),
 	             security.EnableShadowConfig(),
@@ -77,16 +78,16 @@ def tasks(tasklist, manifest):
 		tasklist.add(bootstrap.MakeTarball())
 
 	backing_specific_tasks = {'ebs': [ebs.Create(),
-	                                  ebs.Attach(),
-	                                  ebs.Detach(),
+	                                  volume.Attach(),
+	                                  volume.Detach(),
 	                                  ebs.Snapshot(),
-	                                  ebs.Delete()],
+	                                  volume.Delete()],
 	                          's3': [loopback.Create(),
-	                                 loopback.Attach(),
-	                                 loopback.Detach(),
+	                                 volume.Attach(),
+	                                 volume.Detach(),
 	                                 ami.BundleImage(),
 	                                 ami.UploadImage(),
-	                                 loopback.Delete(),
+	                                 volume.Delete(),
 	                                 ami.RemoveBundle()]}
 	tasklist.add(*backing_specific_tasks.get(manifest.volume['backing'].lower()))
 
@@ -105,11 +106,11 @@ def rollback_tasks(tasklist, tasks_completed, manifest):
 			tasklist.add(counter())
 
 	if manifest.volume['backing'].lower() == 'ebs':
-		counter_task(ebs.Create, ebs.Delete)
-		counter_task(ebs.Attach, ebs.Detach)
+		counter_task(ebs.Create, volume.Delete)
+		counter_task(volume.Attach, volume.Detach)
 	if manifest.volume['backing'].lower() == 's3':
-		counter_task(loopback.Create, loopback.Delete)
-		counter_task(loopback.Attach, loopback.Detach)
+		counter_task(loopback.Create, volume.Delete)
+		counter_task(volume.Attach, volume.Detach)
 	counter_task(filesystem.CreateMountDir, filesystem.DeleteMountDir)
 	counter_task(filesystem.MountVolume, filesystem.UnmountVolume)
 	counter_task(filesystem.MountSpecials, filesystem.UnmountSpecials)

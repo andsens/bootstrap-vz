@@ -34,14 +34,13 @@
 			"required": ["release", "architecture", "timezone", "locale", "charmap"]
 		},
 		"volume": {
-			"type": "object",
-			"properties": {
-				"size": {
-					"type": "integer",
-					"minimum": 1
-				}
-			},
-			"required": ["size"]
+			"type": "object"
+			// "properties": {
+			// 	"backing": {
+			// 		"type": "string"
+			// 	}
+			// },
+			// "required": ["backing"]
 		},
 		"plugins": {
 			"type": "object",

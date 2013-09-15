@@ -44,7 +44,7 @@ def tasks(tasklist, manifest):
 	             apt.AptSources(),
 	             apt.AptUpgrade(),
 	             boot.ConfigureGrub(),
-	             filesystem.ModifyFstab(),
+	             filesystem.FStab(),
 	             common_boot.BlackListModules(),
 	             common_boot.DisableGetTTYs(),
 	             security.EnableShadowConfig(),

@@ -12,7 +12,7 @@ class HostPackages(Task):
 
 	def run(self, info):
 		info.host_packages.update(['qemu-utils', 'parted', 'grub2', 'sysv-rc', 'kpartx'])
-		if info.manifest.volume['filesystem'] == 'xfs':
+		if 'xfs' in (p.filesystem for p in info.volume.partition_map.partitions):
 			info.host_packages.add('xfsprogs')
 
 

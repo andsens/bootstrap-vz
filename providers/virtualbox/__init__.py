@@ -2,8 +2,9 @@ from manifest import Manifest
 from tasks import packages
 from common.tasks import packages as common_packages
 from common.tasks import host
+from common.tasks import volume as volume_tasks
 from common.tasks import loopback
-from common.tasks import parted
+from common.tasks import partitioning
 from common.tasks import filesystem
 from common.tasks import bootstrap
 from common.tasks import locale
@@ -14,7 +15,6 @@ from common.tasks import security
 from common.tasks import network
 from common.tasks import initd
 from common.tasks import cleanup
-from common.tasks import loopback
 
 
 def initialize():
@@ -28,13 +28,13 @@ def tasks(tasklist, manifest):
 	             common_packages.ImagePackages(),
 	             host.CheckPackages(),
 
-	             loopback.CreateQemuImg(),
-	             loopback.Attach(),
-	             parted.PartitionVolume(),
-	             parted.MapPartitions(),
-	             parted.FormatPartitions(),
+	             loopback.Create(),
+	             volume_tasks.Attach(),
+	             partitioning.PartitionVolume(),
+	             partitioning.MapPartitions(),
+	             filesystem.Format(),
 	             filesystem.CreateMountDir(),
-	             filesystem.MountVolume(),
+	             filesystem.MountRoot(),
 
 	             bootstrap.Bootstrap(),
 	             filesystem.MountSpecials(),
@@ -44,7 +44,7 @@ def tasks(tasklist, manifest):
 	             apt.AptSources(),
 	             apt.AptUpgrade(),
 	             boot.ConfigureGrub(),
-	             filesystem.ModifyFstab(),
+	             filesystem.FStab(),
 	             common_boot.BlackListModules(),
 	             common_boot.DisableGetTTYs(),
 	             security.EnableShadowConfig(),
@@ -63,19 +63,32 @@ def tasks(tasklist, manifest):
 	             apt.EnableDaemonAutostart(),
 	             filesystem.UnmountSpecials(),
 
-	             filesystem.UnmountVolume(),
-	             parted.UnmapPartitions(),
-	             loopback.Detach(),
-	             filesystem.DeleteMountDir())
+	             filesystem.UnmountRoot(),
+	             partitioning.UnmapPartitions(),
+	             volume_tasks.Detach(),
+	             filesystem.DeleteMountDir(),
+	             volume_tasks.Delete())
 
 	if manifest.bootstrapper['tarball']:
 		tasklist.add(bootstrap.MakeTarball())
 
-	filesystem_specific_tasks = {'xfs': [filesystem.AddXFSProgs()],
-	                             'ext2': [filesystem.TuneVolumeFS()],
-	                             'ext3': [filesystem.TuneVolumeFS()],
-	                             'ext4': [filesystem.TuneVolumeFS()]}
-	tasklist.add(*filesystem_specific_tasks.get(manifest.volume['filesystem'].lower()))
+	partitions = manifest.volume['partitions']
+	import re
+	for key in ['boot', 'root']:
+		if key not in partitions:
+			continue
+		if re.match('^ext[2-4]$', partitions[key]['filesystem']) is not None:
+			tasklist.add(filesystem.TuneVolumeFS())
+			break
+	for key in ['boot', 'root']:
+		if key not in partitions:
+			continue
+		if partitions[key]['filesystem'] == 'xfs':
+			tasklist.add(filesystem.AddXFSProgs())
+			break
+
+	if 'boot' in manifest.volume['partitions']:
+		tasklist.add(filesystem.MountBoot(), filesystem.UnmountBoot())
 
 
 def rollback_tasks(tasklist, tasks_completed, manifest):
@@ -85,8 +98,10 @@ def rollback_tasks(tasklist, tasks_completed, manifest):
 		if task in completed and counter not in completed:
 			tasklist.add(counter())
 
+	counter_task(loopback.Create, volume_tasks.Delete)
 	counter_task(filesystem.CreateMountDir, filesystem.DeleteMountDir)
-	counter_task(parted.MapPartitions, parted.UnmapPartitions)
-	counter_task(filesystem.MountVolume, filesystem.UnmountVolume)
+	counter_task(partitioning.MapPartitions, partitioning.UnmapPartitions)
+	counter_task(filesystem.MountRoot, filesystem.UnmountRoot)
 	counter_task(filesystem.MountSpecials, filesystem.UnmountSpecials)
-	counter_task(loopback.Attach, loopback.Detach)
+	counter_task(filesystem.MountBoot, filesystem.UnmountBoot)
+	counter_task(volume_tasks.Attach, volume_tasks.Detach)

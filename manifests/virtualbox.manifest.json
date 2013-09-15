@@ -1,0 +1,50 @@
+{
+	"provider":       "virtualbox",
+	"virtualization": "ide",
+
+	"bootstrapper": {
+		"mount_dir": "/mnt/target",
+		"mirror":    "http://http.debian.net/debian/"
+	},
+	"image": {
+		"name":        "debian-{release}-{architecture}-{virtualization}-{%y}{%m}{%d}",
+		"description": "Debian {release} {architecture} ({virtualization})"
+	},
+	"system": {
+		"release":      "wheezy",
+		"architecture": "amd64",
+		"timezone":     "UTC",
+		"locale":       "en_US",
+		"charmap":      "UTF-8"
+	},
+	"volume": {
+		"backing":         "raw",
+		"loopback_dir":    "/tmp",
+		"partitions": {
+			"boot": {
+				"size":       12,
+				"filesystem": "ext2"
+			},
+			"root": {
+				"size":       812,
+				"filesystem": "ext4"
+			},
+			"swap": {"size": 200}
+		}
+	},
+	"plugins": {
+		"user_packages": {
+			"enabled": true,
+			"repo":    [ "apache2" ],
+			"local":   []
+		},
+		"root_password": {
+			"enabled":  true,
+			"password": "test"
+		},
+		"convert_image": {
+			"enabled": true,
+			"format":  "vdi"
+		}
+	}
+}

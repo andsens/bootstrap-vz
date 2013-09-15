@@ -1,7 +1,7 @@
 from base import Task
 from common import phases
 from providers.ec2.tasks import ebs
-from common.tasks import loopback
+from common.tasks import volume
 from common.tasks import bootstrap
 import time
 import logging
@@ -22,17 +22,24 @@ class Snapshot(ebs.Snapshot):
 class CreateFromSnapshot(Task):
 	description = 'Creating EBS volume from a snapshot'
 	phase = phases.volume_creation
-	before = [ebs.Attach]
+	before = [volume.Attach]
 
 	def run(self, info):
 		volume_size = int(info.manifest.volume['size'] / 1024)
 		snapshot = info.manifest.plugins['prebootstrapped']['snapshot']
-		info.volume = info.connection.create_volume(volume_size,
-		                                            info.host['availabilityZone'],
-		                                            snapshot=snapshot)
+		info.volume.volume = info.connection.create_volume(volume_size,
+		                                                   info.host['availabilityZone'],
+		                                                   snapshot=snapshot)
 		while info.volume.volume_state() != 'available':
 			time.sleep(5)
 			info.volume.update()
+
+		info.volume.force_state('detached_fmt')
+		partitions_state = 'formatted'
+		if 'partitions' in info.manifest.volume:
+			partitions_state = 'unmapped_fmt'
+		for partition in info.volume.partition_map.partitions:
+			partition.force_state(partitions_state)
 
 
 class CopyImage(Task):
@@ -45,7 +52,7 @@ class CopyImage(Task):
 		from shutil import copyfile
 		loopback_backup_name = 'loopback-{id:x}.img.backup'.format(id=info.run_id)
 		image_copy_path = os.path.join('/tmp', loopback_backup_name)
-		copyfile(info.loopback_file, image_copy_path)
+		copyfile(info.volume.image_path, image_copy_path)
 		msg = 'A copy of the bootstrapped volume was created. Path: {path}'.format(path=image_copy_path)
 		log.info(msg)
 
@@ -53,12 +60,19 @@ class CopyImage(Task):
 class CreateFromImage(Task):
 	description = 'Creating loopback image from a copy'
 	phase = phases.volume_creation
-	before = [loopback.Attach]
+	before = [volume.Attach]
 
 	def run(self, info):
-		loopback_filename = 'loopback-{id:x}.img'.format(id=info.run_id)
 		import os.path
-		info.loopback_file = os.path.join(info.manifest.volume['loopback_dir'], loopback_filename)
-		loopback_backup_path = info.manifest.plugins['prebootstrapped']['image']
 		from shutil import copyfile
-		copyfile(loopback_backup_path, info.loopback_file)
+		loopback_filename = 'loopback-{id:x}.img'.format(id=info.run_id)
+		info.volume.image_path = os.path.join(info.manifest.volume['loopback_dir'], loopback_filename)
+		loopback_backup_path = info.manifest.plugins['prebootstrapped']['image']
+		copyfile(loopback_backup_path, info.volume.image_path)
+
+		info.volume.force_state('detached_fmt')
+		partitions_state = 'formatted'
+		if 'partitions' in info.manifest.volume:
+			partitions_state = 'unmapped_fmt'
+		for partition in info.volume.partition_map.partitions:
+			partition.force_state(partitions_state)
