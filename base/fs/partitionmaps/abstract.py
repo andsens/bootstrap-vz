@@ -1,39 +1,23 @@
+from abc import ABCMeta
+from abc import abstractmethod
 from common.tools import log_check_call
-from partitions.partition import Partition
-from partitions.swap import Swap
-from exceptions import PartitionError
+from ..exceptions import PartitionError
 
 
-class PartitionMap(object):
+class AbstractPartitionMap(object):
 
+	__metaclass__ = ABCMeta
+
+	@abstractmethod
 	def __init__(self, data):
-		self.boot = None
-		self.swap = None
-		self.mount_points = []
-		if 'boot' in data:
-			self.boot = Partition(data['boot']['size'], data['boot']['filesystem'], None)
-			self.mount_points.append(('/boot', self.boot))
-		self.root = Partition(data['root']['size'], data['root']['filesystem'], self.boot)
-		self.mount_points.append(('/', self.root))
-		if 'swap' in data:
-			self.swap = Swap(data['swap']['size'], self.root)
-			self.mount_points.append(('none', self.root))
-		self.partitions = filter(lambda p: p is not None, [self.boot, self.root, self.swap])
+		pass
 
 	def get_total_size(self):
-		return sum(p.size for p in self.partitions)
+		return sum(p.size for p in self.partitions) + 1
 
+	@abstractmethod
 	def create(self, volume):
-		log_check_call(['/sbin/parted', '--script', '--align', 'optimal', volume.device_path,
-		                '--', 'mklabel', 'gpt'])
-		for partition in self.partitions:
-			partition.create(volume)
-
-		boot_idx = self.root.get_index()
-		if self.boot is not None:
-			boot_idx = self.boot.get_index()
-		log_check_call(['/sbin/parted', '--script', volume.device_path,
-		                '--', 'set', str(boot_idx), 'bios_grub', 'on'])
+		pass
 
 	def map(self, volume):
 		try:

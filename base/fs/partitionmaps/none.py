@@ -1,4 +1,4 @@
-from partitions.singlepartition import SinglePartition
+from ..partitions.single import SinglePartition
 
 
 class NoPartitions(object):

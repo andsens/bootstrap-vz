@@ -1,11 +1,11 @@
 from common.tools import log_check_call
-from partition import Partition
+from gpt import GPTPartition
 
 
-class Swap(Partition):
+class GPTSwapPartition(GPTPartition):
 
 	def __init__(self, size, previous):
-		super(Swap, self).__init__(size, 'swap', previous)
+		super(GPTSwapPartition, self).__init__(size, 'swap', 'swap', previous)
 
 	def _format(self, e):
 		log_check_call(['/sbin/mkswap', self.device_path])

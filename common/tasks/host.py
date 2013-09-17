@@ -14,6 +14,7 @@ class CheckPackages(Task):
 		from subprocess import CalledProcessError
 		for package in info.host_packages:
 			try:
+				# Use "dpkg-query -W -f='${Status} ${Version}\n' package" instead
 				log_check_call(['/usr/bin/dpkg', '--status', package])
 			except CalledProcessError:
 				msg = "The package ``{0}\'\' is not installed".format(package)

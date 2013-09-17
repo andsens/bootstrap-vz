@@ -1,5 +1,6 @@
-from common.tools import log_check_call
 from abc import ABCMeta
+from abc import abstractmethod
+from common.tools import log_check_call
 from fysom import Fysom
 
 
@@ -17,9 +18,9 @@ class AbstractPartition(object):
 		self.size          = size
 		self.filesystem    = filesystem
 		self.device_path   = None
-		self.initial_state = 'nonexistent'
 
-		callbacks.update({'onbeforeformat': self._format,
+		callbacks.update({'onbeforecreate': self._create,
+		                  'onbeforeformat': self._format,
 		                  'onbeforemount': self._mount,
 		                  'onbeforeunmount': self._unmount,
 		                  })
@@ -39,6 +40,13 @@ class AbstractPartition(object):
 	def get_uuid(self):
 		[uuid] = log_check_call(['/sbin/blkid', '-s', 'UUID', '-o', 'value', self.device_path])
 		return uuid
+
+	def create(self, volume):
+		self.fsm.create(volume=volume)
+
+	@abstractmethod
+	def _create(self, e):
+		pass
 
 	def _format(self, e):
 		mkfs = '/sbin/mkfs.{fs}'.format(fs=self.filesystem)

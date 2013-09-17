@@ -4,10 +4,12 @@ def load_volume(data):
 	from common.fs.loopbackvolume import LoopbackVolume
 	from providers.ec2.volume import EBSVolume
 	from providers.virtualbox.volume import VirtualBoxVolume
-	from partitionmap import PartitionMap
-	from nopartitions import NoPartitions
+	from partitionmaps.gpt import GPTPartitionMap
+	from partitionmaps.mbr import MBRPartitionMap
+	from partitionmaps.none import NoPartitions
 	partition_maps = {'none': NoPartitions,
-	                  'gpt': PartitionMap,
+	                  'gpt': GPTPartitionMap,
+	                  'mbr': MBRPartitionMap,
 	                  }
 	partition_map = partition_maps.get(data['partitions']['type'])(data['partitions'])
 	volume_backings = {'raw': LoopbackVolume,
