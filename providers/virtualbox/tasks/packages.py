@@ -11,7 +11,7 @@ class HostPackages(Task):
 	after = [packages.HostPackages]
 
 	def run(self, info):
-		info.host_packages.update(['qemu-utils', 'parted', 'kpartx', 'sysv-rc'])
+		info.host_packages.update(['qemu-utils', 'parted', 'kpartx'])
 		if 'xfs' in (p.filesystem for p in info.volume.partition_map.partitions):
 			info.host_packages.add('xfsprogs')
 
