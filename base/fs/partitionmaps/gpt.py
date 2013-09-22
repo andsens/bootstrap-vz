@@ -20,7 +20,9 @@ class GPTPartitionMap(AbstractPartitionMap):
 			self.mount_points.append(('none', self.root))
 		self.partitions = filter(lambda p: p is not None, [self.boot, self.root, self.swap])
 
-	def create(self, volume):
+		super(GPTPartitionMap, self).__init__()
+
+	def _before_create(self, volume):
 		log_check_call(['/sbin/parted', '--script', '--align', 'none', volume.device_path,
 		                '--', 'mklabel', 'gpt'])
 		for partition in self.partitions:

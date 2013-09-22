@@ -4,7 +4,7 @@ from base import BasePartition
 
 class MBRPartition(BasePartition):
 
-	def _create(self, e):
+	def _before_create(self, e):
 		start = self.get_start()
 		parted_command = ('mkpart primary {start}MiB {end}MiB'
 		                  .format(start=str(start),

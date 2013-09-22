@@ -20,7 +20,10 @@ class MBRPartitionMap(AbstractPartitionMap):
 			self.mount_points.append(('none', self.root))
 		self.partitions = filter(lambda p: p is not None, [self.boot, self.root, self.swap])
 
-	def create(self, volume):
+		super(MBRPartitionMap, self).__init__()
+
+	def _before_create(self, event):
+		volume = event.volume
 		log_check_call(['/sbin/parted', '--script', '--align', 'none', volume.device_path,
 		                '--', 'mklabel', 'msdos'])
 		for partition in self.partitions:

@@ -8,11 +8,11 @@ class VirtualBoxVolume(LoopbackVolume):
 
 	extension = 'vdi'
 
-	def _create(self, e):
+	def _before_create(self, e):
 		self.image_path = e.image_path
 		log_check_call(['/usr/bin/qemu-img', 'create', '-f', 'vdi', self.image_path, str(self.size) + 'M'])
 
-	def _attach(self, e):
+	def _before_attach(self, e):
 		num_partitions = len(self.partition_map.partitions)
 		if not self._module_loaded('nbd'):
 			msg = ('The kernel module `nbd\' must be loaded '
@@ -33,7 +33,7 @@ class VirtualBoxVolume(LoopbackVolume):
 		log_check_call(['/usr/bin/qemu-nbd', '--connect', self.loop_device_path, self.image_path])
 		self.device_path = self.loop_device_path
 
-	def _detach(self, e):
+	def _before_detach(self, e):
 		log_check_call(['/usr/bin/qemu-nbd', '--disconnect', self.loop_device_path])
 		del self.loop_device_path
 		del self.device_path

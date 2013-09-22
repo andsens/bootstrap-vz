@@ -5,20 +5,21 @@ class BasePartition(AbstractPartition):
 
 	events = [{'name': 'create', 'src': 'nonexistent', 'dst': 'unmapped'},
 	          {'name': 'map', 'src': 'unmapped', 'dst': 'mapped'},
-	          {'name': 'map', 'src': 'unmapped_fmt', 'dst': 'formatted'},
 	          {'name': 'format', 'src': 'mapped', 'dst': 'formatted'},
 	          {'name': 'mount', 'src': 'formatted', 'dst': 'mounted'},
 	          {'name': 'unmount', 'src': 'mounted', 'dst': 'formatted'},
 	          {'name': 'unmap', 'src': 'formatted', 'dst': 'unmapped_fmt'},
+
+	          {'name': 'map', 'src': 'unmapped_fmt', 'dst': 'formatted'},
 	          {'name': 'unmap', 'src': 'mapped', 'dst': 'unmapped'},
 	          ]
 
-	def __init__(self, size, filesystem, previous, callbacks={}):
+	def __init__(self, size, filesystem, previous):
 		self.previous = previous
-		callbacks.update({'onbeforemap': self._map,
-		                  'onbeforeunmap': self._unmap,
-		                  })
-		super(BasePartition, self).__init__(size, filesystem, callbacks=callbacks)
+		super(BasePartition, self).__init__(size, filesystem)
+
+	def is_blocking(self):
+		return self.get_state() in ['mapped', 'mounted', 'formatted']
 
 	def get_index(self):
 		if self.previous is None:
@@ -35,8 +36,8 @@ class BasePartition(AbstractPartition):
 	def map(self, device_path):
 		self.fsm.map(device_path=device_path)
 
-	def _map(self, e):
+	def _before_map(self, e):
 		self.device_path = e.device_path
 
-	def _unmap(self, e):
+	def _before_unmap(self, e):
 		self.device_path = None

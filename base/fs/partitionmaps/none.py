@@ -1,7 +1,10 @@
 from ..partitions.single import SinglePartition
+from common.fsm_proxy import FSMProxy
 
 
-class NoPartitions(object):
+class NoPartitions(FSMProxy):
+
+	events = [{'name': 'create', 'src': 'nonexistent', 'dst': 'created'}]
 
 	def __init__(self, data):
 		root = data['root']
@@ -9,17 +12,17 @@ class NoPartitions(object):
 		self.partitions = [self.root]
 		self.mount_points = [('/', self.root)]
 
+		cfg = {'initial': 'nonexistent', 'events': self.events, 'callbacks': {}}
+		super(NoPartitions, self).__init__(cfg)
+
+	def is_blocking(self):
+		return self.root.is_blocking()
+
 	def get_total_size(self):
 		return self.root.size
 
 	def create(self, volume):
-		self.root.create(volume)
+		self.fsm.create(volume=volume)
 
-	def format(self):
-		self.root.format()
-
-	def mount_root(self, destination):
-		self.root.mount(destination)
-
-	def unmount_root(self):
-		self.root.unmount()
+	def _before_create(self, event):
+		self.root.create(event.volume)

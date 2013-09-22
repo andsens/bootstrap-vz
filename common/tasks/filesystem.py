@@ -10,7 +10,8 @@ class Format(Task):
 	phase = phases.volume_preparation
 
 	def run(self, info):
-		info.volume.format()
+		for partition in info.volume.partition_map.partitions:
+			partition.format()
 
 
 class TuneVolumeFS(Task):
@@ -51,7 +52,7 @@ class MountRoot(Task):
 	after = [CreateMountDir]
 
 	def run(self, info):
-		info.volume.mount_root(info.root)
+		info.volume.partition_map.root.mount(info.root)
 
 
 class MountBoot(Task):
@@ -60,7 +61,7 @@ class MountBoot(Task):
 	after = [MountRoot]
 
 	def run(self, info):
-		info.volume.mount_boot()
+		info.volume.partition_map.boot.mount(info.boot_dir)
 
 
 class CreateBootMountDir(Task):
@@ -71,8 +72,8 @@ class CreateBootMountDir(Task):
 
 	def run(self, info):
 		import os
-		boot_dir = os.path.join(info.root, 'boot')
-		os.makedirs(boot_dir)
+		info.boot_dir = os.path.join(info.root, 'boot')
+		os.makedirs(info.boot_dir)
 
 
 class MountSpecials(Task):
@@ -90,7 +91,7 @@ class UnmountRoot(Task):
 	before = [volume.Detach]
 
 	def run(self, info):
-		info.volume.unmount_root()
+		info.volume.partition_map.root.unmount()
 
 
 class UnmountBoot(Task):
@@ -99,7 +100,7 @@ class UnmountBoot(Task):
 	before = [UnmountRoot]
 
 	def run(self, info):
-		info.volume.unmount_boot()
+		info.volume.partition_map.boot.unmount()
 
 
 class UnmountSpecials(Task):

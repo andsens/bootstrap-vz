@@ -19,7 +19,10 @@ class EBSVolume(Volume):
 		self.created = True
 
 	def attach(self, instance_id):
-		super(EBSVolume, self).attach(self)
+		self.fsm.attach(instance_id=instance_id)
+
+	def _before_attach(self, e):
+		instance_id = e.instance_id
 		import os.path
 		import string
 		for letter in string.ascii_lowercase:
@@ -37,14 +40,13 @@ class EBSVolume(Volume):
 			time.sleep(2)
 			self.volume.update()
 
-	def detach(self):
-		super(EBSVolume, self).detach(self)
+	def _before_detach(self, e):
 		self.volume.detach()
 		while self.volume.attachment_state() is not None:
 			time.sleep(2)
 			self.volume.update()
 
-	def delete(self):
+	def _before_delete(self, e):
 		super(EBSVolume, self).delete(self)
 		self.volume.delete()
 

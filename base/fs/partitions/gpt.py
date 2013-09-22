@@ -4,11 +4,11 @@ from base import BasePartition
 
 class GPTPartition(BasePartition):
 
-	def __init__(self, size, filesystem, name, previous, callbacks={}):
+	def __init__(self, size, filesystem, name, previous):
 		self.name = name
-		super(GPTPartition, self).__init__(size, filesystem, previous, callbacks=callbacks)
+		super(GPTPartition, self).__init__(size, filesystem, previous)
 
-	def _create(self, e):
+	def _before_create(self, e):
 		start = self.get_start()
 		# {name} only works for gpt, for msdos that becomes the part-type (primary, extended, logical)
 		parted_command = ('mkpart primary {start}MiB {end}MiB'

@@ -9,45 +9,31 @@ from base.fs.exceptions import VolumeError
 
 class LoopbackVolume(Volume):
 
-	link_dm_events = [{'name': 'link_dm_node', 'src': 'partitioned', 'dst': 'linked'},
-	                  {'name': 'map', 'src': 'linked', 'dst': 'mapped_lnk'},
-	                  {'name': 'format', 'src': 'mapped_lnk', 'dst': 'formatted_lnk'},
-	                  {'name': 'mount', 'src': ['formatted_lnk', 'mounted_lnk'], 'dst': 'mounted_lnk'},
-	                  {'name': 'unmount', 'src': 'mounted_lnk', 'dst': 'formatted_lnk'},
-	                  {'name': 'unmap', 'src': 'formatted_lnk', 'dst': 'partitioned_fmt_lnk'},
-	                  {'name': 'unlink_dm_node', 'src': 'partitioned_fmt_lnk', 'dst': 'partitioned_fmt'},
-
-	                  {'name': 'link_dm_node', 'src': 'partitioned_fmt', 'dst': 'partitioned_fmt_lnk'},
-	                  {'name': 'map', 'src': 'partitioned_fmt_lnk', 'dst': 'formatted_lnk'},
-	                  {'name': 'unmap', 'src': 'mapped_lnk', 'dst': 'linked'},
-	                  {'name': 'unlink_dm_node', 'src': 'linked', 'dst': 'partitioned'},
-	                  ]
+	events = [{'name': 'create', 'src': 'nonexistent', 'dst': 'detached'},
+	          {'name': 'attach', 'src': 'detached', 'dst': 'attached'},
+	          {'name': 'link_dm_node', 'src': 'attached', 'dst': 'linked'},
+            {'name': 'unlink_dm_node', 'src': 'linked', 'dst': 'attached'},
+	          {'name': 'detach', 'src': 'attached', 'dst': 'detached'},
+	          {'name': 'delete', 'src': 'detached', 'dst': 'deleted'},
+	          ]
 
 	extension = 'raw'
 
-	def __init__(self, partition_map, callbacks={}):
-		callbacks.update({'onbeforecreate': self._create,
-		                  'onbeforeattach': self._attach,
-		                  'onbeforedetach': self._detach,
-		                  'onbeforedelete': self._delete,
-		                  'onbeforelink_dm_node': self._link_dm_node,
-		                  'onbeforeunlink_dm_node': self._unlink_dm_node,
-		                  })
-		self.events.extend(self.link_dm_events)
-		super(LoopbackVolume, self).__init__(partition_map, callbacks=callbacks)
+	def __init__(self, partition_map):
+		super(LoopbackVolume, self).__init__(partition_map)
 
 	def create(self, image_path):
 		self.fsm.create(image_path=image_path)
 
-	def _create(self, e):
+	def _before_create(self, e):
 		self.image_path = e.image_path
 		log_check_call(['/usr/bin/qemu-img', 'create', '-f', 'raw', self.image_path, str(self.size) + 'M'])
 
-	def _attach(self, e):
+	def _before_attach(self, e):
 		[self.loop_device_path] = log_check_call(['/sbin/losetup', '--show', '--find', self.image_path])
 		self.device_path = self.loop_device_path
 
-	def _link_dm_node(self, e):
+	def _before_link_dm_node(self, e):
 		import os.path
 		from . import get_partitions
 		proc_partitions = get_partitions()
@@ -77,18 +63,18 @@ class LoopbackVolume(Volume):
 		log_check_call(['/sbin/dmsetup', 'create', self.dm_node_name], table)
 		self.device_path = self.dm_node_path
 
-	def _unlink_dm_node(self, e):
+	def _before_unlink_dm_node(self, e):
 		log_check_call(['/sbin/dmsetup', 'remove', self.dm_node_name])
 		del self.dm_node_name
 		del self.dm_node_path
 		self.device_path = self.loop_device_path
 
-	def _detach(self, e):
+	def _before_detach(self, e):
 		log_check_call(['/sbin/losetup', '--detach', self.loop_device_path])
 		del self.loop_device_path
 		del self.device_path
 
-	def _delete(self, e):
+	def _before_delete(self, e):
 		from os import remove
 		remove(self.image_path)
 		del self.image_path

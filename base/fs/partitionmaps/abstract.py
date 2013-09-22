@@ -1,25 +1,41 @@
 from abc import ABCMeta
 from abc import abstractmethod
 from common.tools import log_check_call
+from common.fsm_proxy import FSMProxy
 from ..exceptions import PartitionError
 
 
-class AbstractPartitionMap(object):
+class AbstractPartitionMap(FSMProxy):
 
 	__metaclass__ = ABCMeta
 
-	@abstractmethod
-	def __init__(self, data):
-		pass
+	events = [{'name': 'create', 'src': 'nonexistent', 'dst': 'unmapped'},
+	          {'name': 'map', 'src': 'unmapped', 'dst': 'mapped'},
+	          {'name': 'unmap', 'src': 'mapped', 'dst': 'unmapped'},
+	          ]
+
+	def __init__(self):
+		cfg = {'initial': 'nonexistent', 'events': self.events, 'callbacks': {}}
+		super(AbstractPartitionMap, self).__init__(cfg)
+
+	def is_blocking(self):
+		return self.is_state('mapped')
 
 	def get_total_size(self):
 		return sum(p.size for p in self.partitions) + 1
 
-	@abstractmethod
 	def create(self, volume):
+		self.fsm.create(volume=volume)
+
+	@abstractmethod
+	def _before_create(self, event):
 		pass
 
 	def map(self, volume):
+		self.fsm.map(volume=volume)
+
+	def _before_map(self, event):
+		volume = event.volume
 		try:
 			mappings = log_check_call(['/sbin/kpartx', '-l', volume.device_path])
 			import re
@@ -38,35 +54,23 @@ class AbstractPartitionMap(object):
 				self.partitions[p_idx].map(partition_path)
 
 			for idx, partition in enumerate(self.partitions):
-				if not partition.state() in ['mapped', 'formatted']:
+				if not partition.is_state('mapped'):
 					raise PartitionError('kpartx did not map partition #{idx}'.format(idx=idx+1))
 
 		except PartitionError as e:
 			for partition in self.partitions:
-				if partition.state() in ['mapped', 'formatted']:
+				if not partition.is_state('mapped'):
 					partition.unmap()
 			log_check_call(['/sbin/kpartx', '-d', volume.device_path])
 			raise e
 
 	def unmap(self, volume):
+		self.fsm.unmap(volume=volume)
+
+	def _before_unmap(self, event):
+		volume = event.volume
 		for partition in self.partitions:
-			partition.unmap()
+			if partition.is_blocking():
+				msg = 'The partition {partition} prevents the unmap procedure'.format(partition=partition)
+				raise PartitionError(msg)
 		log_check_call(['/sbin/kpartx', '-d', volume.device_path])
-
-	def format(self):
-		for partition in self.partitions:
-			partition.format()
-
-	def mount_root(self, destination):
-		self.root.mount(destination)
-
-	def unmount_root(self):
-		self.root.unmount()
-
-	def mount_boot(self):
-		import os.path
-		destination = os.path.join(self.root.mount_dir, 'boot')
-		self.boot.mount(destination)
-
-	def unmount_boot(self):
-		self.boot.unmount()
