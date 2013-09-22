@@ -20,7 +20,7 @@ class MoveImage(Task):
 
 	def run(self, info):
 		import os.path
-		filename = 'loopback-{id:x}.{ext}'.format(id=info.run_id, ext=info.volume.extension)
+		filename = 'volume-{id:x}.{ext}'.format(id=info.run_id, ext=info.volume.extension)
 		destination = os.path.join(info.manifest.bootstrapper['workspace'], filename)
 		import shutil
 		shutil.move(info.volume.image_path, destination)
