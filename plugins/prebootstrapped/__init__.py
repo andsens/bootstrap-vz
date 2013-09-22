@@ -21,16 +21,16 @@ def tasks(tasklist, manifest):
 	              bootstrap.Bootstrap]
 	if manifest.volume['backing'] == 'ebs':
 		if 'snapshot' in settings and settings['snapshot'] is not None:
-			tasklist.replace(ebs.Create, CreateFromSnapshot())
+			tasklist.replace(ebs.Create, CreateFromSnapshot)
 			tasklist.remove(*skip_tasks)
 		else:
-			tasklist.add(Snapshot())
+			tasklist.add(Snapshot)
 	else:
 		if 'image' in settings and settings['image'] is not None:
-			tasklist.replace(loopback.Create, CreateFromImage())
+			tasklist.replace(loopback.Create, CreateFromImage)
 			tasklist.remove(*skip_tasks)
 		else:
-			tasklist.add(CopyImage())
+			tasklist.add(CopyImage)
 
 
 def rollback_tasks(tasklist, tasks_completed, manifest):
@@ -38,7 +38,7 @@ def rollback_tasks(tasklist, tasks_completed, manifest):
 
 	def counter_task(task, counter):
 		if task in completed and counter not in completed:
-			tasklist.add(counter())
+			tasklist.add(counter)
 
 	if manifest.volume['backing'] == 'ebs':
 		counter_task(CreateFromSnapshot, volume.Delete)

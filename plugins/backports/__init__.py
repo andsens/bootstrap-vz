@@ -2,8 +2,8 @@
 
 def tasks(tasklist, manifest):
 	import tasks
-	tasklist.add(tasks.AptSourcesBackports())
-	tasklist.add(tasks.AddBackportsPackages())
+	tasklist.add(tasks.AptSourcesBackports,
+	             tasks.AddBackportsPackages)
 
 
 def validate_manifest(data, schema_validate):

@@ -23,54 +23,54 @@ def initialize():
 
 
 def tasks(tasklist, manifest):
-	tasklist.add(workspace.CreateWorkspace(),
-	             packages.HostPackages(),
-	             common_packages.HostPackages(),
-	             packages.ImagePackages(),
-	             common_packages.ImagePackages(),
-	             host.CheckPackages(),
+	tasklist.add(workspace.CreateWorkspace,
+	             packages.HostPackages,
+	             common_packages.HostPackages,
+	             packages.ImagePackages,
+	             common_packages.ImagePackages,
+	             host.CheckPackages,
 
-	             loopback.Create(),
-	             volume_tasks.Attach(),
-	             partitioning.PartitionVolume(),
-	             partitioning.MapPartitions(),
-	             filesystem.Format(),
-	             filesystem.CreateMountDir(),
-	             filesystem.MountRoot(),
+	             loopback.Create,
+	             volume_tasks.Attach,
+	             partitioning.PartitionVolume,
+	             partitioning.MapPartitions,
+	             filesystem.Format,
+	             filesystem.CreateMountDir,
+	             filesystem.MountRoot,
 
-	             bootstrap.Bootstrap(),
-	             filesystem.MountSpecials(),
-	             locale.GenerateLocale(),
-	             locale.SetTimezone(),
-	             apt.DisableDaemonAutostart(),
-	             apt.AptSources(),
-	             apt.AptUpgrade(),
-	             boot.ConfigureGrub(),
-	             filesystem.FStab(),
-	             common_boot.BlackListModules(),
-	             common_boot.DisableGetTTYs(),
-	             security.EnableShadowConfig(),
-	             network.RemoveDNSInfo(),
-	             network.ConfigureNetworkIF(),
-	             network.RemoveHostname(),
-	             initd.ResolveInitScripts(),
-	             initd.InstallInitScripts(),
-	             cleanup.ClearMOTD(),
-	             cleanup.CleanTMP(),
-	             apt.PurgeUnusedPackages(),
-	             apt.AptClean(),
-	             apt.EnableDaemonAutostart(),
-	             filesystem.UnmountSpecials(),
+	             bootstrap.Bootstrap,
+	             filesystem.MountSpecials,
+	             locale.GenerateLocale,
+	             locale.SetTimezone,
+	             apt.DisableDaemonAutostart,
+	             apt.AptSources,
+	             apt.AptUpgrade,
+	             boot.ConfigureGrub,
+	             filesystem.FStab,
+	             common_boot.BlackListModules,
+	             common_boot.DisableGetTTYs,
+	             security.EnableShadowConfig,
+	             network.RemoveDNSInfo,
+	             network.ConfigureNetworkIF,
+	             network.RemoveHostname,
+	             initd.ResolveInitScripts,
+	             initd.InstallInitScripts,
+	             cleanup.ClearMOTD,
+	             cleanup.CleanTMP,
+	             apt.PurgeUnusedPackages,
+	             apt.AptClean,
+	             apt.EnableDaemonAutostart,
+	             filesystem.UnmountSpecials,
 
-	             filesystem.UnmountRoot(),
-	             partitioning.UnmapPartitions(),
-	             volume_tasks.Detach(),
-	             filesystem.DeleteMountDir(),
-	             loopback.MoveImage(),
-	             workspace.DeleteWorkspace())
+	             filesystem.UnmountRoot,
+	             partitioning.UnmapPartitions,
+	             volume_tasks.Detach,
+	             filesystem.DeleteMountDir,
+	             loopback.MoveImage,
+	             workspace.DeleteWorkspace)
 
 	if manifest.bootstrapper.get('tarball', False):
-		tasklist.add(bootstrap.MakeTarball())
+		tasklist.add(bootstrap.MakeTarball)
 
 	partitions = manifest.volume['partitions']
 	import re
@@ -78,19 +78,19 @@ def tasks(tasklist, manifest):
 		if key not in partitions:
 			continue
 		if re.match('^ext[2-4]$', partitions[key]['filesystem']) is not None:
-			tasklist.add(filesystem.TuneVolumeFS())
+			tasklist.add(filesystem.TuneVolumeFS)
 			break
 	for key in ['boot', 'root']:
 		if key not in partitions:
 			continue
 		if partitions[key]['filesystem'] == 'xfs':
-			tasklist.add(filesystem.AddXFSProgs())
+			tasklist.add(filesystem.AddXFSProgs)
 			break
 
 	if 'boot' in manifest.volume['partitions']:
-		tasklist.add(filesystem.CreateBootMountDir(),
-		             filesystem.MountBoot(),
-		             filesystem.UnmountBoot())
+		tasklist.add(filesystem.CreateBootMountDir,
+		             filesystem.MountBoot,
+		             filesystem.UnmountBoot)
 
 
 def rollback_tasks(tasklist, tasks_completed, manifest):
@@ -98,7 +98,7 @@ def rollback_tasks(tasklist, tasks_completed, manifest):
 
 	def counter_task(task, counter):
 		if task in completed and counter not in completed:
-			tasklist.add(counter())
+			tasklist.add(counter)
 
 	counter_task(loopback.Create, volume_tasks.Delete)
 	counter_task(filesystem.CreateMountDir, filesystem.DeleteMountDir)
