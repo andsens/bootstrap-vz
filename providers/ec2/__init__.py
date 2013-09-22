@@ -16,7 +16,8 @@ from common.tasks import apt
 from tasks import boot
 from common.tasks import boot as common_boot
 from common.tasks import security
-from common.tasks import network
+from tasks import network
+from common.tasks import network as common_network
 from tasks import initd
 from common.tasks import initd as common_initd
 from common.tasks import cleanup
@@ -56,9 +57,9 @@ def tasks(tasklist, manifest):
 	             security.EnableShadowConfig(),
 	             security.DisableSSHPasswordAuthentication(),
 	             security.DisableSSHDNSLookup(),
-	             network.RemoveDNSInfo(),
-	             network.ConfigureNetworkIF(),
-	             network.ConfigureDHCP(),
+	             common_network.RemoveDNSInfo(),
+	             common_network.ConfigureNetworkIF(),
+	             network.EnableDHCPCDDNS(),
 	             common_initd.ResolveInitScripts(),
 	             initd.AddEC2InitScripts(),
 	             common_initd.InstallInitScripts(),
