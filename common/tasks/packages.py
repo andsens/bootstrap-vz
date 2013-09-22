@@ -17,11 +17,8 @@ class ImagePackages(Task):
 
 	def run(self, info):
 		# Add some basic packages we are going to need
-		include = set(['udev',
-		               'openssh-server',
-		               # We could bootstrap without locales, but things just suck without them, error messages etc.
-		               'locales',
-		               ])
+		# We could bootstrap without locales, but things just suck without them, error messages etc.
+		include = set(['locales'])
 		exclude = set()
 
 		info.img_packages = include, exclude
