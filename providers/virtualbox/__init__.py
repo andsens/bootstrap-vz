@@ -1,14 +1,10 @@
 from manifest import Manifest
 from tasks import packages
-from common.tasks import packages as common_packages
-from common.tasks import host
 from common.tasks import volume as volume_tasks
 from common.tasks import loopback
 from common.tasks import partitioning
 from common.tasks import filesystem
 from common.tasks import bootstrap
-from common.tasks import locale
-from common.tasks import apt
 from tasks import boot
 from common.tasks import boot as common_boot
 from common.tasks import security
@@ -23,28 +19,28 @@ def initialize():
 
 
 def tasks(tasklist, manifest):
-	tasklist.add(workspace.CreateWorkspace,
-	             packages.HostPackages,
-	             common_packages.HostPackages,
+	from common.task_sets import base_set
+	from common.task_sets import volume_set
+	from common.task_sets import mounting_set
+	from common.task_sets import apt_set
+	from common.task_sets import locale_set
+	tasklist.add(*base_set)
+	tasklist.add(*volume_set)
+	tasklist.add(*mounting_set)
+	tasklist.add(*apt_set)
+	tasklist.add(*locale_set)
+
+	if manifest.volume['partitions']['type'] != 'none':
+		from common.task_sets import partitioning_set
+		tasklist.add(*partitioning_set)
+
+	tasklist.add(packages.HostPackages,
 	             packages.ImagePackages,
-	             common_packages.ImagePackages,
-	             host.CheckPackages,
 
 	             loopback.Create,
-	             volume_tasks.Attach,
-	             partitioning.PartitionVolume,
-	             partitioning.MapPartitions,
 	             filesystem.Format,
-	             filesystem.CreateMountDir,
-	             filesystem.MountRoot,
 
 	             bootstrap.Bootstrap,
-	             filesystem.MountSpecials,
-	             locale.GenerateLocale,
-	             locale.SetTimezone,
-	             apt.DisableDaemonAutostart,
-	             apt.AptSources,
-	             apt.AptUpgrade,
 	             boot.ConfigureGrub,
 	             filesystem.FStab,
 	             common_boot.BlackListModules,
@@ -57,40 +53,22 @@ def tasks(tasklist, manifest):
 	             initd.InstallInitScripts,
 	             cleanup.ClearMOTD,
 	             cleanup.CleanTMP,
-	             apt.PurgeUnusedPackages,
-	             apt.AptClean,
-	             apt.EnableDaemonAutostart,
-	             filesystem.UnmountSpecials,
 
-	             filesystem.UnmountRoot,
-	             partitioning.UnmapPartitions,
-	             volume_tasks.Detach,
-	             filesystem.DeleteMountDir,
 	             loopback.MoveImage,
 	             workspace.DeleteWorkspace)
 
 	if manifest.bootstrapper.get('tarball', False):
 		tasklist.add(bootstrap.MakeTarball)
 
-	partitions = manifest.volume['partitions']
-	import re
-	for key in ['boot', 'root']:
-		if key not in partitions:
-			continue
-		if re.match('^ext[2-4]$', partitions[key]['filesystem']) is not None:
-			tasklist.add(filesystem.TuneVolumeFS)
-			break
-	for key in ['boot', 'root']:
-		if key not in partitions:
-			continue
-		if partitions[key]['filesystem'] == 'xfs':
-			tasklist.add(filesystem.AddXFSProgs)
-			break
+	from common.task_sets import fs_specific_set
+	for partition in manifest.volume['partitions']:
+		if 'filesystem' in partition:
+			fs_tasks = fs_specific_set.get(partition['filesystem'], [])
+			tasklist.add(fs_tasks)
 
 	if 'boot' in manifest.volume['partitions']:
-		tasklist.add(filesystem.CreateBootMountDir,
-		             filesystem.MountBoot,
-		             filesystem.UnmountBoot)
+		from common.task_sets import boot_partition_set
+		tasklist.add(*boot_partition_set)
 
 
 def rollback_tasks(tasklist, tasks_completed, manifest):
