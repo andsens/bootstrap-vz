@@ -13,13 +13,7 @@ class NoPartitions(object):
 		return self.root.size
 
 	def create(self, volume):
-		pass
-
-	def map(self, volume):
-		pass
-
-	def unmap(self, volume):
-		pass
+		self.root.create(volume)
 
 	def format(self):
 		self.root.format()
