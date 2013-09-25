@@ -10,7 +10,6 @@ class NoPartitions(FSMProxy):
 		root = data['root']
 		self.root = SinglePartition(root['size'], root['filesystem'])
 		self.partitions = [self.root]
-		self.mount_points = [('/', self.root)]
 
 		cfg = {'initial': 'nonexistent', 'events': self.events, 'callbacks': {}}
 		super(NoPartitions, self).__init__(cfg)

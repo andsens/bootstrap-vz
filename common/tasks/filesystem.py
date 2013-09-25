@@ -132,8 +132,15 @@ class FStab(Task):
 		# device = '/dev/sda'
 		# if info.manifest.virtualization == 'pvm':
 		# 	device = '/dev/xvda'
+		p_map = info.volume.partition_map
+		mount_points = [('/root', p_map.root)]
+		if hasattr(p_map, 'boot'):
+			mount_points.append(('/boot', p_map.boot))
+		if hasattr(p_map, 'swap'):
+			mount_points.append(('none', p_map.swap))
+
 		fstab_lines = []
-		for mount_point, partition in info.volume.partition_map.mount_points:
+		for mount_point, partition in mount_points:
 			mount_opts = ['defaults']
 			if partition.filesystem in ['ext2', 'ext3', 'ext4']:
 				mount_opts.append('barrier=0')

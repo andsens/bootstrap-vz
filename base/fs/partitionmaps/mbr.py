@@ -9,15 +9,11 @@ class MBRPartitionMap(AbstractPartitionMap):
 	def __init__(self, data):
 		self.boot = None
 		self.swap = None
-		self.mount_points = []
 		if 'boot' in data:
 			self.boot = MBRPartition(data['boot']['size'], data['boot']['filesystem'], None)
-			self.mount_points.append(('/boot', self.boot))
 		self.root = MBRPartition(data['root']['size'], data['root']['filesystem'], self.boot)
-		self.mount_points.append(('/', self.root))
 		if 'swap' in data:
 			self.swap = MBRSwapPartition(data['swap']['size'], self.root)
-			self.mount_points.append(('none', self.root))
 		self.partitions = filter(lambda p: p is not None, [self.boot, self.root, self.swap])
 
 		super(MBRPartitionMap, self).__init__()
