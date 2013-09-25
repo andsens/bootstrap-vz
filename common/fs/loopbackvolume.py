@@ -12,15 +12,17 @@ class LoopbackVolume(Volume):
 	events = [{'name': 'create', 'src': 'nonexistent', 'dst': 'detached'},
 	          {'name': 'attach', 'src': 'detached', 'dst': 'attached'},
 	          {'name': 'link_dm_node', 'src': 'attached', 'dst': 'linked'},
+	          {'name': 'mount_specials', 'src': 'linked', 'dst': 'lnk_specials_mounted'},
+	          {'name': 'unmount_specials', 'src': 'lnk_specials_mounted', 'dst': 'linked'},
             {'name': 'unlink_dm_node', 'src': 'linked', 'dst': 'attached'},
 	          {'name': 'detach', 'src': 'attached', 'dst': 'detached'},
 	          {'name': 'delete', 'src': 'detached', 'dst': 'deleted'},
+
+	          {'name': 'mount_specials', 'src': 'linked', 'dst': 'specials_mounted'},
+	          {'name': 'unmount_specials', 'src': 'specials_mounted', 'dst': 'linked'},
 	          ]
 
 	extension = 'raw'
-
-	def __init__(self, partition_map):
-		super(LoopbackVolume, self).__init__(partition_map)
 
 	def create(self, image_path):
 		self.fsm.create(image_path=image_path)
