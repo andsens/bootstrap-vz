@@ -16,18 +16,29 @@ class ConfigureGrub(Task):
 		boot_dir = os.path.join(info.root, 'boot')
 		grub_dir = os.path.join(boot_dir, 'grub')
 
-		# if type(info.volume) is LoopbackVolume:
-		if isinstance(info.volume, LoopbackVolume):
+		from partitionmaps.none import NoPartitions
+
+		def remount(volume, fn):
 			# GRUB cannot deal with installing to loopback devices
 			# so we fake a real harddisk with dmsetup.
 			# Guide here: http://ebroder.net/2009/08/04/installing-grub-onto-a-disk-image/
-			info.volume.unmount()
-			info.volume.unmap()
-			info.volume.link_dm_node()
-			info.volume.map()
-			info.volume.mount_root(info.root)
-			info.volume.mount_boot()
-			info.volume.mount_specials()
+			volume.unmount_specials()
+			p_map = volume.partition_map
+			if hasattr(p_map, 'boot'):
+				boot_dir = p_map.boot.mount_dir
+				p_map.boot.unmount()
+			p_map.root.unmount()
+			if isinstance(self.partition_map, NoPartitions):
+				p_map.unmap()
+				fn()
+				p_map.map()
+			p_map.root.mount(info.root)
+			if hasattr(p_map, 'boot'):
+				p_map.boot.mount(boot_dir)
+			volume.mount_specials()
+
+		if isinstance(info.volume, LoopbackVolume):
+			remount(info.volume, info.volume.link_dm_node)
 		try:
 			[device_path] = log_check_call(['readlink', '-f', info.volume.device_path])
 			device_map_path = os.path.join(grub_dir, 'device.map')
@@ -46,20 +57,8 @@ class ConfigureGrub(Task):
 			log_check_call(['/usr/sbin/chroot', info.root, '/usr/sbin/update-grub'])
 		except Exception as e:
 			if isinstance(info.volume, LoopbackVolume):
-				info.volume.unmount()
-				info.volume.unmap()
-				info.volume.unlink_dm_node()
-				info.volume.map()
-				info.volume.mount_root(info.root)
-				info.volume.mount_boot()
-				info.volume.mount_specials()
+				remount(info.volume, info.volume.unlink_dm_node)
 			raise e
 
 		if isinstance(info.volume, LoopbackVolume):
-			info.volume.unmount()
-			info.volume.unmap()
-			info.volume.unlink_dm_node()
-			info.volume.map()
-			info.volume.mount_root(info.root)
-			info.volume.mount_boot()
-			info.volume.mount_specials()
+			remount(info.volume, info.volume.unlink_dm_node)
