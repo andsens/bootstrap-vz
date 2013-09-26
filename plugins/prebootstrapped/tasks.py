@@ -34,12 +34,7 @@ class CreateFromSnapshot(Task):
 			time.sleep(5)
 			info.volume.update()
 
-		info.volume.force_state('detached_fmt')
-		partitions_state = 'formatted'
-		if 'partitions' in info.manifest.volume:
-			partitions_state = 'unmapped_fmt'
-		for partition in info.volume.partition_map.partitions:
-			partition.force_state(partitions_state)
+		set_fs_states(info.volume)
 
 
 class CopyImage(Task):
@@ -68,10 +63,20 @@ class CreateFromImage(Task):
 		info.volume.image_path = os.path.join(info.workspace, 'volume.{ext}'.format(ext=info.volume.extension))
 		loopback_backup_path = info.manifest.plugins['prebootstrapped']['image']
 		copyfile(loopback_backup_path, info.volume.image_path)
+		set_fs_states(info.volume)
 
-		info.volume.force_state('detached_fmt')
-		partitions_state = 'formatted'
-		if 'partitions' in info.manifest.volume:
+
+def set_fs_states(volume):
+		volume.set_state('detached')
+
+		p_map = volume.partition_map
+		partitions_state = 'attached'
+		from base.fs.partitionmaps.none import NoPartitions
+		if isinstance(p_map, NoPartitions):
+			p_map.set_state('created')
+			partitions_state = 'formatted'
+		else:
+			p_map.set_state('unmapped')
 			partitions_state = 'unmapped_fmt'
-		for partition in info.volume.partition_map.partitions:
-			partition.force_state(partitions_state)
+		for partition in p_map.partitions:
+			partition.set_state(partitions_state)

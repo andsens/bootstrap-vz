@@ -16,7 +16,7 @@ class ConfigureGrub(Task):
 		boot_dir = os.path.join(info.root, 'boot')
 		grub_dir = os.path.join(boot_dir, 'grub')
 
-		from partitionmaps.none import NoPartitions
+		from base.fs.partitionmaps.none import NoPartitions
 
 		def remount(volume, fn):
 			# GRUB cannot deal with installing to loopback devices
@@ -28,10 +28,13 @@ class ConfigureGrub(Task):
 				boot_dir = p_map.boot.mount_dir
 				p_map.boot.unmount()
 			p_map.root.unmount()
-			if isinstance(self.partition_map, NoPartitions):
+			if not isinstance(p_map, NoPartitions):
 				p_map.unmap()
 				fn()
 				p_map.map()
+			else:
+				fn()
+				p_map.root.device_path = volume.device_path
 			p_map.root.mount(info.root)
 			if hasattr(p_map, 'boot'):
 				p_map.boot.mount(boot_dir)
