@@ -12,23 +12,32 @@ class VirtualBoxVolume(LoopbackVolume):
 		self.image_path = e.image_path
 		log_check_call(['/usr/bin/qemu-img', 'create', '-f', 'vdi', self.image_path, str(self.size) + 'M'])
 
+	def _check_nbd_module(self):
+		from base.fs.partitionmaps.none import NoPartitions
+		if isinstance(self.partition_map, NoPartitions):
+			if not self._module_loaded('nbd'):
+				raise VolumeError('The kernel module `nbd\' must be loaded '
+				                  '(`modprobe nbd\') to attach .vdi images')
+		else:
+			num_partitions = len(self.partition_map.partitions)
+			if not self._module_loaded('nbd'):
+				msg = ('The kernel module `nbd\' must be loaded '
+				       '(`modprobe nbd max_part={num_partitions}\') to attach .vdi images'
+				       .format(num_partitions=num_partitions))
+				raise VolumeError(msg)
+			nbd_max_part = int(self._module_param('nbd', 'max_part'))
+			if nbd_max_part < num_partitions:
+				# Found here: http://bethesignal.org/blog/2011/01/05/how-to-mount-virtualbox-vdi-image/
+				msg = ('The kernel module `nbd\' was loaded with the max_part '
+				       'parameter set to {max_part}, which is below '
+				       'the amount of partitions for this volume ({num_partitions}). '
+				       'Reload the nbd kernel module with max_part set to at least {num_partitions} '
+				       '(`rmmod nbd; modprobe nbd max_part={num_partitions}\').'
+				       .format(max_part=nbd_max_part, num_partitions=num_partitions))
+				raise VolumeError(msg)
+
 	def _before_attach(self, e):
-		num_partitions = len(self.partition_map.partitions)
-		if not self._module_loaded('nbd'):
-			msg = ('The kernel module `nbd\' must be loaded '
-			       '(`modprobe nbd max_part={num_partitions}\') to attach .vdi images'
-			       .format(num_partitions=num_partitions))
-			raise VolumeError(msg)
-		nbd_max_part = int(self._module_param('nbd', 'max_part'))
-		if nbd_max_part < num_partitions:
-			# Found here: http://bethesignal.org/blog/2011/01/05/how-to-mount-virtualbox-vdi-image/
-			msg = ('The kernel module `nbd\' was loaded with the max_part '
-			       'parameter set to {max_part}, which is below '
-			       'the amount of partitions for this volume ({num_partitions}). '
-			       'Reload the nbd kernel module with max_part set to at least {num_partitions} '
-			       '(`rmmod nbd; modprobe nbd max_part={num_partitions}\').'
-			       .format(max_part=nbd_max_part, num_partitions=num_partitions))
-			raise VolumeError(msg)
+		self._check_nbd_module()
 		self.loop_device_path = self._find_free_nbd_device()
 		log_check_call(['/usr/bin/qemu-nbd', '--connect', self.loop_device_path, self.image_path])
 		self.device_path = self.loop_device_path
