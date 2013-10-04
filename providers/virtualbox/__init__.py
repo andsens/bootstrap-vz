@@ -54,8 +54,7 @@ def tasks(tasklist, manifest):
 	             cleanup.ClearMOTD,
 	             cleanup.CleanTMP,
 
-	             loopback.MoveImage,
-	             workspace.DeleteWorkspace)
+	             loopback.MoveImage)
 
 	if manifest.bootstrapper.get('tarball', False):
 		tasklist.add(bootstrap.MakeTarball)
