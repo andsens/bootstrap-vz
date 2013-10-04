@@ -73,7 +73,6 @@ def set_fs_states(volume):
 		partitions_state = 'attached'
 		from base.fs.partitionmaps.none import NoPartitions
 		if isinstance(p_map, NoPartitions):
-			p_map.set_state('created')
 			partitions_state = 'formatted'
 		else:
 			p_map.set_state('unmapped')

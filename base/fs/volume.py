@@ -2,6 +2,7 @@ from abc import ABCMeta
 from common.fsm_proxy import FSMProxy
 from common.tools import log_check_call
 from exceptions import VolumeError
+from partitionmaps.none import NoPartitions
 
 
 class Volume(FSMProxy):
@@ -21,12 +22,17 @@ class Volume(FSMProxy):
 		self.size = self.partition_map.get_total_size()
 
 		callbacks = {'onbeforedetach': self._check_blocking}
-		from partitionmaps.none import NoPartitions
 		if isinstance(self.partition_map, NoPartitions):
-			callbacks['onafterattach'] = lambda e: self.partition_map.create(self)
+			def set_dev_path(e):
+				self.partition_map.root.device_path = self.device_path
+			callbacks['onafterattach'] = set_dev_path
 
 		cfg = {'initial': 'nonexistent', 'events': self.events, 'callbacks': callbacks}
 		super(Volume, self).__init__(cfg)
+
+	def _after_create(self, e):
+		if isinstance(self.partition_map, NoPartitions):
+			self.partition_map.root.create()
 
 	def can_mount_specials(self):
 		return self.is_state('attached')
