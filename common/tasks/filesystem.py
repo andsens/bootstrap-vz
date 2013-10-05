@@ -155,3 +155,4 @@ class FStab(Task):
 		fstab_path = os.path.join(info.root, 'etc/fstab')
 		with open(fstab_path, 'w') as fstab:
 			fstab.write('\n'.join(fstab_lines))
+			fstab.write('\n')
