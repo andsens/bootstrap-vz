@@ -9,15 +9,6 @@ class FSMProxy(object):
 		self.fsm = Fysom(cfg)
 		self.attach_proxy_methods(self.fsm, events)
 
-	def is_state(self, event):
-		return self.fsm.isstate(event)
-
-	def set_state(self, event):
-		self.fsm.current = event
-
-	def get_state(self):
-		return self.fsm.current
-
 	def collect_event_listeners(self, events, callbacks):
 		callbacks = callbacks.copy()
 		callback_names = []

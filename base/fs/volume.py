@@ -35,7 +35,7 @@ class Volume(FSMProxy):
 			self.partition_map.root.create()
 
 	def can_mount_specials(self):
-		return self.is_state('attached')
+		return self.fsm.current == 'attached'
 
 	def mount_specials(self):
 		if self.specials_mounted:

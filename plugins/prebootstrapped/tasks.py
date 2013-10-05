@@ -67,7 +67,7 @@ class CreateFromImage(Task):
 
 
 def set_fs_states(volume):
-		volume.set_state('detached')
+		volume.fsm.current = 'detached'
 
 		p_map = volume.partition_map
 		partitions_state = 'attached'
@@ -75,7 +75,7 @@ def set_fs_states(volume):
 		if isinstance(p_map, NoPartitions):
 			partitions_state = 'formatted'
 		else:
-			p_map.set_state('unmapped')
+			p_map.fsm.current = 'unmapped'
 			partitions_state = 'unmapped_fmt'
 		for partition in p_map.partitions:
-			partition.set_state(partitions_state)
+			partition.fsm.current = partitions_state

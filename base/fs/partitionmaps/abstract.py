@@ -19,7 +19,7 @@ class AbstractPartitionMap(FSMProxy):
 		super(AbstractPartitionMap, self).__init__(cfg)
 
 	def is_blocking(self):
-		return self.is_state('mapped')
+		return self.fsm.current == 'mapped'
 
 	def get_total_size(self):
 		return sum(p.size for p in self.partitions) + 1
@@ -54,12 +54,12 @@ class AbstractPartitionMap(FSMProxy):
 				self.partitions[p_idx].map(partition_path)
 
 			for idx, partition in enumerate(self.partitions):
-				if not partition.is_state('mapped'):
+				if partition.fsm.current not in ['mapped', 'formatted']:
 					raise PartitionError('kpartx did not map partition #{idx}'.format(idx=idx+1))
 
 		except PartitionError as e:
 			for partition in self.partitions:
-				if not partition.is_state('mapped'):
+				if not partition.fsm.can('unmap'):
 					partition.unmap()
 			log_check_call(['/sbin/kpartx', '-d', volume.device_path])
 			raise e
@@ -70,7 +70,7 @@ class AbstractPartitionMap(FSMProxy):
 	def _before_unmap(self, event):
 		volume = event.volume
 		for partition in self.partitions:
-			if partition.is_state('mounted'):
+			if partition.fsm.cannot('unmap'):
 				msg = 'The partition {partition} prevents the unmap procedure'.format(partition=partition)
 				raise PartitionError(msg)
 		log_check_call(['/sbin/kpartx', '-d', volume.device_path])
