@@ -74,3 +74,5 @@ class AbstractPartitionMap(FSMProxy):
 				msg = 'The partition {partition} prevents the unmap procedure'.format(partition=partition)
 				raise PartitionError(msg)
 		log_check_call(['/sbin/kpartx', '-d', volume.device_path])
+		for partition in self.partitions:
+			partition.unmap()
