@@ -55,8 +55,16 @@ locale_set = [locale.GenerateLocale,
               locale.SetTimezone,
               ]
 
-fs_specific_set = {'ext2': [filesystem.TuneVolumeFS],
-                   'ext3': [filesystem.TuneVolumeFS],
-                   'ext4': [filesystem.TuneVolumeFS],
-                   'xfs':  [filesystem.AddXFSProgs],
-                   }
+
+def get_fs_specific_set(partitions):
+	task_set = {'ext2': [filesystem.TuneVolumeFS],
+	            'ext3': [filesystem.TuneVolumeFS],
+	            'ext4': [filesystem.TuneVolumeFS],
+	            'xfs':  [filesystem.AddXFSProgs],
+	            }
+	tasks = set()
+	if 'boot' in partitions:
+		tasks.update(task_set.get(partitions['boot']['filesystem'], []))
+	if 'root' in partitions:
+		tasks.update(task_set.get(partitions['root']['filesystem'], []))
+	return tasks

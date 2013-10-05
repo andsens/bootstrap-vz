@@ -59,11 +59,8 @@ def tasks(tasklist, manifest):
 	if manifest.bootstrapper.get('tarball', False):
 		tasklist.add(bootstrap.MakeTarball)
 
-	from common.task_sets import fs_specific_set
-	for partition in manifest.volume['partitions']:
-		if 'filesystem' in partition:
-			fs_tasks = fs_specific_set.get(partition['filesystem'], [])
-			tasklist.add(fs_tasks)
+	from common.task_sets import get_fs_specific_set
+	tasklist.add(*get_fs_specific_set(manifest.volume['partitions']))
 
 	if 'boot' in manifest.volume['partitions']:
 		from common.task_sets import boot_partition_set
