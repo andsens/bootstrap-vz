@@ -7,14 +7,15 @@ from common.tools import log_check_call
 class MBRPartitionMap(AbstractPartitionMap):
 
 	def __init__(self, data):
-		self.boot = None
-		self.swap = None
+		self.partitions = []
 		if 'boot' in data:
 			self.boot = MBRPartition(data['boot']['size'], data['boot']['filesystem'], None)
+			self.partitions.append(self.boot)
 		self.root = MBRPartition(data['root']['size'], data['root']['filesystem'], self.boot)
+		self.partitions.append(self.root)
 		if 'swap' in data:
 			self.swap = MBRSwapPartition(data['swap']['size'], self.root)
-		self.partitions = filter(lambda p: p is not None, [self.boot, self.root, self.swap])
+			self.partitions.append(self.swap)
 
 		super(MBRPartitionMap, self).__init__()
 
@@ -26,7 +27,7 @@ class MBRPartitionMap(AbstractPartitionMap):
 			partition.create(volume)
 
 		boot_idx = self.root.get_index()
-		if self.boot is not None:
+		if hasattr(self, 'boot'):
 			boot_idx = self.boot.get_index()
 		log_check_call(['/sbin/parted', '--script', volume.device_path,
 		                '--', 'set ' + str(boot_idx) + ' boot on'])

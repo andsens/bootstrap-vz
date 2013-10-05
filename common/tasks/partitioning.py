@@ -9,7 +9,7 @@ class PartitionVolume(Task):
 	phase = phases.volume_preparation
 
 	def run(self, info):
-		info.volume.partition_map.create()
+		info.volume.partition_map.create(info.volume)
 
 
 class MapPartitions(Task):
@@ -19,7 +19,7 @@ class MapPartitions(Task):
 	after = [PartitionVolume]
 
 	def run(self, info):
-		info.volume.partition_map.map()
+		info.volume.partition_map.map(info.volume)
 
 
 class UnmapPartitions(Task):
@@ -29,4 +29,4 @@ class UnmapPartitions(Task):
 	after = [filesystem.UnmountRoot]
 
 	def run(self, info):
-		info.volume.partition_map.unmap()
+		info.volume.partition_map.unmap(info.volume)

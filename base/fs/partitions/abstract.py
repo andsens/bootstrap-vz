@@ -22,9 +22,6 @@ class AbstractPartition(FSMProxy):
 		cfg = {'initial': 'nonexistent', 'events': self.events, 'callbacks': {}}
 		super(AbstractPartition, self).__init__(cfg)
 
-	def is_blocking(self):
-		return self.is_state('mounted')
-
 	def get_uuid(self):
 		[uuid] = log_check_call(['/sbin/blkid', '-s', 'UUID', '-o', 'value', self.device_path])
 		return uuid

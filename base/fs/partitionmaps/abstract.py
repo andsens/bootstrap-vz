@@ -70,7 +70,7 @@ class AbstractPartitionMap(FSMProxy):
 	def _before_unmap(self, event):
 		volume = event.volume
 		for partition in self.partitions:
-			if partition.is_blocking():
+			if partition.is_state('mounted'):
 				msg = 'The partition {partition} prevents the unmap procedure'.format(partition=partition)
 				raise PartitionError(msg)
 		log_check_call(['/sbin/kpartx', '-d', volume.device_path])

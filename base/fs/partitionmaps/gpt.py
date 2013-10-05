@@ -7,14 +7,15 @@ from common.tools import log_check_call
 class GPTPartitionMap(AbstractPartitionMap):
 
 	def __init__(self, data):
-		self.boot = None
-		self.swap = None
+		self.partitions = []
 		if 'boot' in data:
 			self.boot = GPTPartition(data['boot']['size'], data['boot']['filesystem'], 'boot', None)
+			self.partitions.append(self.boot)
 		self.root = GPTPartition(data['root']['size'], data['root']['filesystem'], 'root', self.boot)
+		self.partitions.append(self.root)
 		if 'swap' in data:
 			self.swap = GPTSwapPartition(data['swap']['size'], self.root)
-		self.partitions = filter(lambda p: p is not None, [self.boot, self.root, self.swap])
+			self.partitions.append(self.swap)
 
 		super(GPTPartitionMap, self).__init__()
 
@@ -26,7 +27,7 @@ class GPTPartitionMap(AbstractPartitionMap):
 			partition.create(volume)
 
 		boot_idx = self.root.get_index()
-		if self.boot is not None:
+		if hasattr(self, 'boot'):
 			boot_idx = self.boot.get_index()
 		log_check_call(['/sbin/parted', '--script', volume.device_path,
 		                '--', 'set ' + str(boot_idx) + ' boot on'])

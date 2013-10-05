@@ -9,7 +9,7 @@ class NoPartitions(object):
 		self.partitions = [self.root]
 
 	def is_blocking(self):
-		return self.root.is_blocking()
+		return self.root.is_state('mounted')
 
 	def get_total_size(self):
 		return self.root.size
