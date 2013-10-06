@@ -1,9 +1,9 @@
 from base import Task
 from common import phases
-from providers.ec2.tasks import ebs
 from common.tasks import volume
 from common.tasks import bootstrap
 from common.tasks import filesystem
+from common.fs import remount
 from shutil import copyfile
 import os.path
 import time
@@ -11,14 +11,16 @@ import logging
 log = logging.getLogger(__name__)
 
 
-class Snapshot(ebs.Snapshot):
+class Snapshot(Task):
 	description = 'Creating a snapshot of the bootstrapped volume'
 	phase = phases.os_installation
-	after = [bootstrap.Bootstrap]
+	after = [bootstrap.Bootstrap, filesystem.MountSpecials]
 
 	def run(self, info):
-		super(Snapshot, self).run(info)
-		msg = 'A snapshot of the bootstrapped volume was created. ID: {id}'.format(id=info.snapshot.id)
+		def mk_snapshot():
+			return info.volume.snapshot()
+		snapshot = remount(info.volume, mk_snapshot)
+		msg = 'A snapshot of the bootstrapped volume was created. ID: {id}'.format(id=snapshot.id)
 		log.info(msg)
 
 
@@ -43,7 +45,7 @@ class CreateFromSnapshot(Task):
 class CopyImage(Task):
 	description = 'Creating a snapshot of the bootstrapped volume'
 	phase = phases.os_installation
-	after = [bootstrap.Bootstrap]
+	after = [bootstrap.Bootstrap, filesystem.MountSpecials]
 
 	def run(self, info):
 		loopback_backup_name = 'volume-{id:x}.{ext}.backup'.format(id=info.run_id, ext=info.volume.extension)

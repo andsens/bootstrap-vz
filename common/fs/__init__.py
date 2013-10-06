@@ -28,11 +28,12 @@ def remount(volume, fn):
 	p_map.root.unmount()
 	if not isinstance(p_map, NoPartitions):
 		p_map.unmap(volume)
-		fn()
+		result = fn()
 		p_map.map(volume)
 	else:
-		fn()
+		result = fn()
 	p_map.root.mount(root_dir)
 	if hasattr(p_map, 'boot'):
 		p_map.boot.mount(boot_dir)
 	volume.mount_specials()
+	return result
