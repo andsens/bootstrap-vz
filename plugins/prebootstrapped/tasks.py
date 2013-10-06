@@ -3,6 +3,9 @@ from common import phases
 from providers.ec2.tasks import ebs
 from common.tasks import volume
 from common.tasks import bootstrap
+from common.tasks import filesystem
+from shutil import copyfile
+import os.path
 import time
 import logging
 log = logging.getLogger(__name__)
@@ -43,8 +46,6 @@ class CopyImage(Task):
 	after = [bootstrap.Bootstrap]
 
 	def run(self, info):
-		import os.path
-		from shutil import copyfile
 		loopback_backup_name = 'volume-{id:x}.{ext}.backup'.format(id=info.run_id, ext=info.volume.extension)
 		destination = os.path.join(info.manifest.bootstrapper['workspace'], loopback_backup_name)
 		copyfile(info.volume.image_path, destination)
@@ -58,12 +59,21 @@ class CreateFromImage(Task):
 	before = [volume.Attach]
 
 	def run(self, info):
-		import os.path
-		from shutil import copyfile
 		info.volume.image_path = os.path.join(info.workspace, 'volume.{ext}'.format(ext=info.volume.extension))
 		loopback_backup_path = info.manifest.plugins['prebootstrapped']['image']
 		copyfile(loopback_backup_path, info.volume.image_path)
+
 		set_fs_states(info.volume)
+
+
+class SetBootMountDir(Task):
+	description = 'Setting mountpoint for the boot partition'
+	phase = phases.volume_mounting
+	after = [filesystem.MountRoot]
+	before = [filesystem.MountBoot]
+
+	def run(self, info):
+		info.boot_dir = os.path.join(info.root, 'boot')
 
 
 def set_fs_states(volume):

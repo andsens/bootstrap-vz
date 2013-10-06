@@ -2,6 +2,7 @@ from tasks import Snapshot
 from tasks import CopyImage
 from tasks import CreateFromSnapshot
 from tasks import CreateFromImage
+from tasks import SetBootMountDir
 from providers.ec2.tasks import ebs
 from common.tasks import loopback
 from common.tasks import volume
@@ -23,12 +24,16 @@ def tasks(tasklist, manifest):
 		if 'snapshot' in settings and settings['snapshot'] is not None:
 			tasklist.replace(ebs.Create, CreateFromSnapshot)
 			tasklist.remove(*skip_tasks)
+			if 'boot' in manifest.volume['partitions']:
+				tasklist.add(SetBootMountDir)
 		else:
 			tasklist.add(Snapshot)
 	else:
 		if 'image' in settings and settings['image'] is not None:
 			tasklist.replace(loopback.Create, CreateFromImage)
 			tasklist.remove(*skip_tasks)
+			if 'boot' in manifest.volume['partitions']:
+				tasklist.add(SetBootMountDir)
 		else:
 			tasklist.add(CopyImage)
 
