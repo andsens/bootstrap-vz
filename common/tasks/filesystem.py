@@ -133,7 +133,7 @@ class FStab(Task):
 		# if info.manifest.virtualization == 'pvm':
 		# 	device = '/dev/xvda'
 		p_map = info.volume.partition_map
-		mount_points = [('/root', p_map.root)]
+		mount_points = [('/', p_map.root)]
 		if hasattr(p_map, 'boot'):
 			mount_points.append(('/boot', p_map.boot))
 		if hasattr(p_map, 'swap'):
