@@ -13,7 +13,10 @@ from common.tasks import partitioning
 
 def tasks(tasklist, manifest):
 	settings = manifest.plugins['prebootstrapped']
-	skip_tasks = [filesystem.Format,
+	skip_tasks = [ebs.Create,
+	              loopback.Create,
+
+	              filesystem.Format,
 	              partitioning.PartitionVolume,
 	              filesystem.TuneVolumeFS,
 	              filesystem.AddXFSProgs,
@@ -22,7 +25,7 @@ def tasks(tasklist, manifest):
 	              bootstrap.Bootstrap]
 	if manifest.volume['backing'] == 'ebs':
 		if 'snapshot' in settings and settings['snapshot'] is not None:
-			tasklist.replace(ebs.Create, CreateFromSnapshot)
+			tasklist.add(CreateFromSnapshot)
 			tasklist.remove(*skip_tasks)
 			if 'boot' in manifest.volume['partitions']:
 				tasklist.add(SetBootMountDir)
@@ -30,7 +33,7 @@ def tasks(tasklist, manifest):
 			tasklist.add(Snapshot)
 	else:
 		if 'image' in settings and settings['image'] is not None:
-			tasklist.replace(loopback.Create, CreateFromImage)
+			tasklist.add(CreateFromImage)
 			tasklist.remove(*skip_tasks)
 			if 'boot' in manifest.volume['partitions']:
 				tasklist.add(SetBootMountDir)

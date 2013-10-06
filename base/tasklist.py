@@ -16,10 +16,6 @@ class TaskList(object):
 		for task in args:
 			self.tasks.discard(task)
 
-	def replace(self, task, replacement):
-		self.remove(task)
-		self.add(replacement)
-
 	def run(self, bootstrap_info):
 		task_list = self.create_list(self.tasks)
 		log.debug('Tasklist:\n\t{list}'.format(list='\n\t'.join(repr(task) for task in task_list)))
