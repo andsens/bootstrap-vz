@@ -26,7 +26,7 @@ class BasePartition(AbstractPartition):
 
 	def get_start(self):
 		if self.previous is None:
-			return 1
+			return 0
 		else:
 			return self.previous.get_start() + self.previous.size
 

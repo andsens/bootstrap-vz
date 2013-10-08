@@ -22,7 +22,7 @@ class AbstractPartitionMap(FSMProxy):
 		return self.fsm.current == 'mapped'
 
 	def get_total_size(self):
-		return sum(p.size for p in self.partitions) + 1
+		return sum(p.size for p in self.partitions)
 
 	def create(self, volume):
 		self.fsm.create(volume=volume)
