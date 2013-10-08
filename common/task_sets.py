@@ -1,6 +1,7 @@
 from common.tasks import workspace
 from common.tasks import packages
 from common.tasks import host
+from common.tasks import bootstrap
 from common.tasks import volume
 from common.tasks import filesystem
 from common.tasks import partitioning
@@ -13,11 +14,14 @@ base_set = [workspace.CreateWorkspace,
             packages.HostPackages,
             packages.ImagePackages,
             host.CheckPackages,
+            bootstrap.Bootstrap,
             workspace.DeleteWorkspace,
             ]
 
 volume_set = [volume.Attach,
               volume.Detach,
+              filesystem.Format,
+              filesystem.FStab,
               ]
 
 partitioning_set = [partitioning.PartitionVolume,

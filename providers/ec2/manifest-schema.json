@@ -20,13 +20,9 @@
 				"backing": {
 					"type": "string",
 					"enum": ["ebs", "s3"]
-				},
-				"filesystem": {
-					"type": "string",
-					"enum": ["ext2", "ext3", "ext4", "xfs"]
 				}
 			},
-			"required": ["backing", "filesystem"]
+			"required": ["backing"]
 		}
 	},
 	"required": ["volume"]

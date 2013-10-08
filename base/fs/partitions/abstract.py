@@ -1,5 +1,4 @@
 from abc import ABCMeta
-from abc import abstractmethod
 from common.tools import log_check_call
 from common.fsm_proxy import FSMProxy
 
@@ -25,13 +24,6 @@ class AbstractPartition(FSMProxy):
 	def get_uuid(self):
 		[uuid] = log_check_call(['/sbin/blkid', '-s', 'UUID', '-o', 'value', self.device_path])
 		return uuid
-
-	def create(self, volume):
-		self.fsm.create(volume=volume)
-
-	@abstractmethod
-	def _before_create(self, e):
-		pass
 
 	def _before_format(self, e):
 		mkfs = '/sbin/mkfs.{fs}'.format(fs=self.filesystem)

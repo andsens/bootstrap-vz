@@ -18,6 +18,9 @@ class BasePartition(AbstractPartition):
 		self.previous = previous
 		super(BasePartition, self).__init__(size, filesystem)
 
+	def create(self, volume):
+		self.fsm.create(volume=volume)
+
 	def get_index(self):
 		if self.previous is None:
 			return 1

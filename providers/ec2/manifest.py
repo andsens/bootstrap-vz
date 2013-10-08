@@ -9,7 +9,8 @@ class Manifest(base.Manifest):
 		schema_path = path.join(path.dirname(__file__), 'manifest-schema.json')
 		self.schema_validate(data, schema_path)
 		if data['volume']['backing'] == 'ebs':
-			if data['volume']['size'] % 1024 != 0:
+			volume_size = self._calculate_volume_size(data['volume']['partitions'])
+			if volume_size % 1024 != 0:
 				msg = 'The volume size must be a multiple of 1024 when using EBS backing'
 				raise ManifestError(msg, self)
 		else:
@@ -21,5 +22,15 @@ class Manifest(base.Manifest):
 		self.credentials    = data['credentials']
 		self.virtualization = data['virtualization']
 		self.image          = data['image']
-		if data['volume']['backing'] == 'ebs':
-			self.ebs_volume_size = data['volume']['size'] / 1024
+
+	def _calculate_volume_size(self, partitions):
+		if partitions['type'] == 'mbr':
+			size = 1
+		else:
+			size = 0
+		if 'boot' in partitions:
+			size += partitions['boot']['size']
+		size += partitions['root']['size']
+		if 'swap' in partitions:
+			size += partitions['swap']['size']
+		return size

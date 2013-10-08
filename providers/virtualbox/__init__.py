@@ -38,11 +38,8 @@ def tasks(tasklist, manifest):
 	             packages.ImagePackages,
 
 	             loopback.Create,
-	             filesystem.Format,
 
-	             bootstrap.Bootstrap,
 	             boot.ConfigureGrub,
-	             filesystem.FStab,
 	             common_boot.BlackListModules,
 	             common_boot.DisableGetTTYs,
 	             security.EnableShadowConfig,

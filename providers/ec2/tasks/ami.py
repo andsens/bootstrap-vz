@@ -117,11 +117,14 @@ class RegisterAMI(Task):
 		arch = {'i386': 'i386', 'amd64': 'x86_64'}.get(info.manifest.system['architecture'])
 		kernel_id = self.kernel_mapping.get(info.host['region']).get(info.manifest.system['architecture'])
 
-		if info.manifest.volume['backing'] == 'ebs':
+		from providers.ec2.ebsvolume import EBSVolume
+		from common.fs.loopbackvolume import LoopbackVolume
+
+		if isinstance(info.volume, EBSVolume):
 			from boto.ec2.blockdevicemapping import BlockDeviceType
 			from boto.ec2.blockdevicemapping import BlockDeviceMapping
 			block_device = BlockDeviceType(snapshot_id=info.snapshot.id, delete_on_termination=True,
-			                               size=info.manifest.ebs_volume_size)
+			                               size=info.volume.partition_map.get_total_size()/1024)
 			block_device_map = BlockDeviceMapping()
 			block_device_map['/dev/sda1'] = block_device
 
@@ -129,7 +132,7 @@ class RegisterAMI(Task):
 			                                            architecture=arch, kernel_id=kernel_id,
 			                                            root_device_name='/dev/sda1',
 			                                            block_device_map=block_device_map)
-		if info.manifest.volume['backing'] == 's3':
+		if isinstance(info.volume, LoopbackVolume):
 			image_location = ('{bucket}/{ami_name}.manifest.xml'
 			                  .format(bucket=info.manifest.image['bucket'],
 			                          ami_name=info.ami_name))

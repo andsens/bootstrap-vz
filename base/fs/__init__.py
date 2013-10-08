@@ -2,7 +2,7 @@
 
 def load_volume(data):
 	from common.fs.loopbackvolume import LoopbackVolume
-	from providers.ec2.volume import EBSVolume
+	from providers.ec2.ebsvolume import EBSVolume
 	from providers.virtualbox.volume import VirtualBoxVolume
 	from partitionmaps.gpt import GPTPartitionMap
 	from partitionmaps.mbr import MBRPartitionMap

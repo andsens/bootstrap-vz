@@ -1,15 +1,22 @@
 from base import Task
 from common import phases
-from common.tasks import volume
 
 
 class Create(Task):
 	description = 'Creating the EBS volume'
 	phase = phases.volume_creation
-	before = [volume.Attach]
 
 	def run(self, info):
 		info.volume.create(info.connection, info.host['availabilityZone'])
+
+
+class Attach(Task):
+	description = 'Attaching the volume'
+	phase = phases.volume_creation
+	after = [Create]
+
+	def run(self, info):
+		info.volume.attach(info.host['instanceId'])
 
 
 class Snapshot(Task):
