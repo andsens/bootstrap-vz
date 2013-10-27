@@ -17,6 +17,8 @@ def get_args():
 	                    help='Print debugging information')
 	parser.add_argument('--pause-on-error', action='store_true',
 	                    help='Pause on error, before rollback')
+	parser.add_argument('--dry-run', action='store_true',
+	                    help='Dont\'t actually run the tasks')
 	parser.add_argument('manifest', help='Manifest file to use for bootstrapping', metavar='MANIFEST')
 	return parser.parse_args()
 
@@ -35,7 +37,7 @@ def run(args):
 	bootstrap_info = BootstrapInformation(manifest=manifest, debug=args.debug)
 
 	try:
-		tasklist.run(bootstrap_info)
+		tasklist.run(info=bootstrap_info, dry_run=args.dry_run)
 		log.info('Successfully completed bootstrapping')
 	except (Exception, KeyboardInterrupt) as e:
 		log.exception(e)
@@ -48,5 +50,5 @@ def run(args):
 			rollback_tasks = getattr(plugin, 'rollback_tasks', None)
 			if callable(rollback_tasks):
 				plugin.rollback_tasks(rollback_tasklist, tasklist.tasks_completed, manifest)
-		rollback_tasklist.run(bootstrap_info)
+		rollback_tasklist.run(info=bootstrap_info, dry_run=args.dry_run)
 		log.info('Successfully completed rollback')

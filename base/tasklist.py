@@ -16,7 +16,7 @@ class TaskList(object):
 		for task in args:
 			self.tasks.discard(task)
 
-	def run(self, bootstrap_info):
+	def run(self, info={}, dry_run=False):
 		task_list = self.create_list(self.tasks)
 		log.debug('Tasklist:\n\t{list}'.format(list='\n\t'.join(repr(task) for task in task_list)))
 
@@ -26,7 +26,8 @@ class TaskList(object):
 				log.info(task.description)
 			else:
 				log.info('Running {task}'.format(task=task))
-			task.run(bootstrap_info)
+			if not dry_run:
+				task.run(info)
 			self.tasks_completed.append(task)
 
 	def create_list(self, tasks):
