@@ -11,7 +11,8 @@ class GPTPartitionMap(AbstractPartitionMap):
 		if 'boot' in data:
 			self.boot = GPTPartition(data['boot']['size'], data['boot']['filesystem'], 'boot', None)
 			self.partitions.append(self.boot)
-		self.root = GPTPartition(data['root']['size'], data['root']['filesystem'], 'root', self.boot)
+		self.root = GPTPartition(data['root']['size'], data['root']['filesystem'], 'root',
+		                         getattr(self, 'boot', None))
 		self.partitions.append(self.root)
 		if 'swap' in data:
 			self.swap = GPTSwapPartition(data['swap']['size'], self.root)
