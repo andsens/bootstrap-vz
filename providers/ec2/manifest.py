@@ -11,7 +11,8 @@ class Manifest(base.Manifest):
 		if data['volume']['backing'] == 'ebs':
 			volume_size = self._calculate_volume_size(data['volume']['partitions'])
 			if volume_size % 1024 != 0:
-				msg = 'The volume size must be a multiple of 1024 when using EBS backing'
+				msg = ('The volume size must be a multiple of 1024 when using EBS backing '
+				       '(MBR partitioned volumes are 1MB larger than specified, for the post-mbr gap)')
 				raise ManifestError(msg, self)
 		else:
 			schema_path = path.join(path.dirname(__file__), 'manifest-schema-s3.json')
