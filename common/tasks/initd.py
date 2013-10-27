@@ -9,7 +9,8 @@ class ResolveInitScripts(Task):
 	phase = phases.system_modification
 
 	def run(self, info):
-		init_scripts = {'expand-volume': 'expand-volume'}
+		init_scripts = {}
+		init_scripts['expand-volume'] = 'expand-volume'
 
 		from subprocess import CalledProcessError
 		try:
