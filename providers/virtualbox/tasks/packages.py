@@ -11,7 +11,7 @@ class HostPackages(Task):
 	after = [packages.HostPackages]
 
 	def run(self, info):
-		info.host_packages.update(['qemu-utils', 'parted', 'kpartx'])
+		info.host_packages.add('qemu-utils')
 		if 'xfs' in (p.filesystem for p in info.volume.partition_map.partitions):
 			info.host_packages.add('xfsprogs')
 
@@ -25,7 +25,7 @@ class ImagePackages(Task):
 		manifest = info.manifest
 		include, exclude = info.img_packages
 		# Add some basic packages we are going to need
-		include.update(['grub2'])
+		include.add('grub2')
 
 		# In squeeze, we need a special kernel flavor for xen
 		kernels = {'squeeze': {'amd64': 'linux-image-amd64',
