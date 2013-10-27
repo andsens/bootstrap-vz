@@ -10,6 +10,13 @@ class HostPackages(Task):
 		info.host_packages = set()
 		info.host_packages.add('debootstrap')
 
+		from common.fs.loopbackvolume import LoopbackVolume
+		if isinstance(info.volume, LoopbackVolume):
+			info.host_packages.add('qemu-utils')
+
+		if 'xfs' in (p.filesystem for p in info.volume.partition_map.partitions):
+			info.host_packages.add('xfsprogs')
+
 		from base.fs.partitionmaps.none import NoPartitions
 		if not isinstance(info.volume.partition_map, NoPartitions):
 			info.host_packages.update(['parted', 'kpartx'])

@@ -11,10 +11,6 @@ class HostPackages(Task):
 	after = [packages.HostPackages]
 
 	def run(self, info):
-		for partition in info.volume.partition_map.partitions:
-			if partition.filesystem == 'xfs':
-				info.host_packages.add('xfsprogs')
-				break
 		if info.manifest.volume['backing'] == 's3':
 			info.host_packages.add('euca2ools')
 

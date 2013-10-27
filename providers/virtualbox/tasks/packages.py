@@ -1,19 +1,6 @@
 from base import Task
 from common import phases
 from common.tasks import packages
-from common.tasks.host import CheckPackages
-
-
-class HostPackages(Task):
-	description = 'Determining required host packages'
-	phase = phases.preparation
-	before = [CheckPackages]
-	after = [packages.HostPackages]
-
-	def run(self, info):
-		info.host_packages.add('qemu-utils')
-		if 'xfs' in (p.filesystem for p in info.volume.partition_map.partitions):
-			info.host_packages.add('xfsprogs')
 
 
 class ImagePackages(Task):
