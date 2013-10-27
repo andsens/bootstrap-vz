@@ -13,6 +13,7 @@ def load_volume(data):
 	                  }
 	partition_map = partition_maps.get(data['partitions']['type'])(data['partitions'])
 	volume_backings = {'raw': LoopbackVolume,
+	                   's3':  LoopbackVolume,
 	                   'vdi': VirtualBoxVolume,
 	                   'ebs': EBSVolume
 	                   }
