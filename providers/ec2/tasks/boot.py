@@ -24,6 +24,19 @@ class ConfigureGrub(Task):
 		copy(script_src, script_dst)
 		os.chmod(script_dst, rwxr_xr_x)
 
+		from base.fs.partitionmaps.none import NoPartitions
+		if not isinstance(info.volume.partition_map, NoPartitions):
+			from common.tools import sed_i
+			root_idx = info.volume.partition_map.root.get_index()
+			grub_device = 'GRUB_DEVICE=/dev/xvda{idx}'.format(idx=root_idx)
+			sed_i(script_dst, '^GRUB_DEVICE=/dev/xvda$', grub_device)
+			grub_root = '\troot (hd0,{idx})'.format(idx=root_idx-1)
+			sed_i(script_dst, '^\troot \(hd0\)$', grub_root)
+
+		if info.manifest.volume['backing'] == 's3':
+			from common.tools import sed_i
+			sed_i(script_dst, '^GRUB_DEVICE=/dev/xvda$', 'GRUB_DEVICE=/dev/xvda1')
+
 		from common.tools import sed_i
 		grub_def = os.path.join(info.root, 'etc/default/grub')
 		sed_i(grub_def, '^GRUB_TIMEOUT=[0-9]+', 'GRUB_TIMEOUT=0\n'

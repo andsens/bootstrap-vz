@@ -8,7 +8,8 @@ from common.tasks import volume as volume_tasks
 from tasks import ebs
 from common.tasks import partitioning
 from common.tasks import loopback
-from common.tasks import filesystem
+from common.tasks import filesystem as common_filesystem
+from tasks import filesystem
 from common.tasks import bootstrap
 from tasks import boot
 from common.tasks import boot as common_boot
@@ -66,15 +67,16 @@ def tasks(tasklist, manifest):
 
 	backing_specific_tasks = {'ebs': [ebs.Create,
 	                                  ebs.Attach,
+	                                  common_filesystem.FStab,
 	                                  ebs.Snapshot],
 	                          's3': [loopback.Create,
 	                                 volume_tasks.Attach,
+	                                 filesystem.S3FStab,
 	                                 ami.BundleImage,
 	                                 ami.UploadImage,
 	                                 ami.RemoveBundle]}
 	tasklist.add(*backing_specific_tasks.get(manifest.volume['backing'].lower()))
-	tasklist.add(filesystem.Format,
-	             filesystem.FStab,
+	tasklist.add(common_filesystem.Format,
 	             volume_tasks.Detach,
 	             volume_tasks.Delete)
 
@@ -103,10 +105,11 @@ def rollback_tasks(tasklist, tasks_completed, manifest):
 	counter_task(volume_tasks.Attach, volume_tasks.Detach)
 
 	counter_task(partitioning.MapPartitions, partitioning.UnmapPartitions)
-	counter_task(filesystem.CreateMountDir, filesystem.DeleteMountDir)
-	counter_task(filesystem.MountSpecials, filesystem.UnmountSpecials)
+	counter_task(common_filesystem.CreateMountDir, common_filesystem.DeleteMountDir)
+	counter_task(common_filesystem.MountSpecials, common_filesystem.UnmountSpecials)
 
-	counter_task(filesystem.MountRoot, filesystem.UnmountRoot)
-	counter_task(filesystem.MountBoot, filesystem.UnmountBoot)
+	counter_task(common_filesystem.MountRoot, common_filesystem.UnmountRoot)
+	counter_task(common_filesystem.MountBoot, common_filesystem.UnmountBoot)
 	counter_task(volume_tasks.Attach, volume_tasks.Detach)
 	counter_task(workspace.CreateWorkspace, workspace.DeleteWorkspace)
+	counter_task(ami.BundleImage, ami.RemoveBundle)

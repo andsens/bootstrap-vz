@@ -13,7 +13,7 @@ libdir=${exec_prefix}/lib
 export TEXTDOMAIN=grub
 export TEXTDOMAINDIR=${prefix}/share/locale
 
-GRUB_DEVICE=/dev/xvda1
+GRUB_DEVICE=/dev/xvda
 
 
 cat << EOF
