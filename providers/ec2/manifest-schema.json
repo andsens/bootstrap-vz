@@ -3,6 +3,17 @@
 	"title": "EC2 manifest",
 	"type": "object",
 	"properties": {
+		"image": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"description": {
+					"type": "string"
+				}
+			}
+		},
 		"credentials": {
 			"type": "object",
 			"properties": {
@@ -17,13 +28,10 @@
 		"volume": {
 			"type": "object",
 			"properties": {
-				"backing": {
-					"type": "string",
-					"enum": ["ebs", "s3"]
-				}
+				"backing": { "enum": ["ebs", "s3"] }
 			},
 			"required": ["backing"]
 		}
 	},
-	"required": ["volume"]
+	"required": ["image"]
 }

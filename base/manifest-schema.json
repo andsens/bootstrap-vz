@@ -9,37 +9,36 @@
 		"bootstrapper": {
 			"type": "object",
 			"properties": {
-				"workspace": { "type": "string" },
-				"mirror":   { "type": "string" },
-				"tarball": { "type": "boolean" }
+				"workspace": { "$ref": "#/definitions/path" },
+				"mirror":    { "type": "string", "format": "uri" },
+				"tarball":   { "type": "boolean" }
 			},
 			"required": ["workspace"]
 		},
 		"system": {
 			"type": "object",
 			"properties": {
-				"release": {
-					"type": "string",
-					"enum": ["wheezy"]
-				},
-				"architecture": {
-					"type": "string",
-					"enum": ["i386", "amd64"]
-				},
-				"timezone": { "type": "string" },
-				"locale":   { "type": "string" },
-				"charmap":  { "type": "string" }
+				"release":      { "enum": ["wheezy"] },
+				"architecture": { "enum": ["i386", "amd64"] },
+				"timezone":     { "type": "string" },
+				"locale":       { "type": "string" },
+				"charmap":      { "type": "string" }
 			},
 			"required": ["release", "architecture", "timezone", "locale", "charmap"]
 		},
 		"volume": {
-			"type": "object"
-			// "properties": {
-			// 	"backing": {
-			// 		"type": "string"
-			// 	}
-			// },
-			// "required": ["backing"]
+			"type": "object",
+			"properties": {
+				"backing": { "type": "string" },
+				"partitions": {
+					"type": "object",
+					"oneOf": [
+						{ "$ref": "#/definitions/no_partitions" },
+						{ "$ref": "#/definitions/partition_table" }
+					]
+				}
+			},
+			"required": ["partitions"]
 		},
 		"plugins": {
 			"type": "object",
@@ -57,5 +56,44 @@
 			"additionalProperties": false
 		}
 	},
-	"required": ["provider", "bootstrapper", "volume", "system"]
+	"required": ["provider", "bootstrapper", "volume", "system"],
+	"definitions": {
+		"path": {
+			"type":    "string",
+			"pattern": "^[^\\0]+$"
+		},
+		"no_partitions": {
+			"type": "object",
+			"properties": {
+				"type": { "enum": ["none"] },
+				"root": { "$ref": "#/definitions/partition" }
+			},
+			"required": ["root"],
+			"additionalProperties": false
+		},
+		"partition_table": {
+			"type": "object",
+			"properties": {
+				"type": { "enum": ["mbr", "gpt"] },
+				"boot": { "$ref": "#/definitions/partition" },
+				"root": { "$ref": "#/definitions/partition" },
+				"swap": {
+					"type": "object",
+					"properties": { "size": { "type": "integer", "minimum": 1 } },
+					"required": ["size"]
+				}
+			},
+			"required": ["root"],
+			"additionalProperties": false
+		},
+		"partition": {
+			"type": "object",
+			"properties": {
+				"size": { "type": "integer", "minimum": 1 },
+				"filesystem": { "enum": ["ext2", "ext3", "ext4", "xfs"] }
+			},
+			"required": ["size", "filesystem"]
+		}
+	},
+	"required": ["provider", "bootstrapper", "system", "volume"]
 }

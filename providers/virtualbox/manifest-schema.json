@@ -10,13 +10,8 @@
 					"type": "string",
 					"enum": ["raw", "vdi", "qcow2"]
 				}
-				// "filesystem": {
-				// 	"type": "string",
-				// 	"enum": ["ext2", "ext3", "ext4", "xfs"]
-				// }
 			},
 			"required": ["backing"]
 		}
-	},
-	"required": ["volume"]
+	}
 }
