@@ -28,7 +28,13 @@
 		"volume": {
 			"type": "object",
 			"properties": {
-				"backing": { "enum": ["ebs", "s3"] }
+				"backing": { "enum": ["ebs", "s3"] },
+				"partitions": {
+					"type": "object",
+					"properties": {
+						"type": { "enum": ["none", "mbr"] }
+					}
+				}
 			},
 			"required": ["backing"]
 		}
