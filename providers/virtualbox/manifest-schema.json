@@ -9,6 +9,12 @@
 				"backing": {
 					"type": "string",
 					"enum": ["raw", "vdi", "qcow2"]
+				},
+				"partitions": {
+					"type": "object",
+					"properties": {
+						"type": { "enum": ["none", "mbr"] }
+					}
 				}
 			},
 			"required": ["backing"]
