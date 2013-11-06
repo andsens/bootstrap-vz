@@ -8,15 +8,16 @@
 			"properties": {
 				"backing": {
 					"type": "string",
-					"enum": ["raw", "qcow2"]
+					"enum": ["raw", "vdi", "qcow2"]
 				},
-				"filesystem": {
-					"type": "string",
-					"enum": ["ext2", "ext3", "ext4", "xfs"]
+				"partitions": {
+					"type": "object",
+					"properties": {
+						"type": { "enum": ["none", "mbr"] }
+					}
 				}
 			},
-			"required": ["backing", "filesystem"]
+			"required": ["backing"]
 		}
-	},
-	"required": ["volume"]
+	}
 }

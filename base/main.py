@@ -15,6 +15,10 @@ def get_args():
 	parser = ArgumentParser(description='Bootstrap Debian for the cloud.')
 	parser.add_argument('--debug', action='store_true',
 	                    help='Print debugging information')
+	parser.add_argument('--pause-on-error', action='store_true',
+	                    help='Pause on error, before rollback')
+	parser.add_argument('--dry-run', action='store_true',
+	                    help='Dont\'t actually run the tasks')
 	parser.add_argument('manifest', help='Manifest file to use for bootstrapping', metavar='MANIFEST')
 	return parser.parse_args()
 
@@ -33,10 +37,12 @@ def run(args):
 	bootstrap_info = BootstrapInformation(manifest=manifest, debug=args.debug)
 
 	try:
-		tasklist.run(bootstrap_info)
+		tasklist.run(info=bootstrap_info, dry_run=args.dry_run)
 		log.info('Successfully completed bootstrapping')
 	except (Exception, KeyboardInterrupt) as e:
 		log.exception(e)
+		if args.pause_on_error:
+			raw_input("Press Enter to commence rollback")
 		log.error('Rolling back')
 		rollback_tasklist = TaskList()
 		provider.rollback_tasks(rollback_tasklist, tasklist.tasks_completed, manifest)
@@ -44,5 +50,5 @@ def run(args):
 			rollback_tasks = getattr(plugin, 'rollback_tasks', None)
 			if callable(rollback_tasks):
 				plugin.rollback_tasks(rollback_tasklist, tasklist.tasks_completed, manifest)
-		rollback_tasklist.run(bootstrap_info)
+		rollback_tasklist.run(info=bootstrap_info, dry_run=args.dry_run)
 		log.info('Successfully completed rollback')

@@ -1,34 +1,65 @@
 from base import Task
 from common import phases
+from common.tasks import apt
+from common.fs.loopbackvolume import LoopbackVolume
 
 
 class ConfigureGrub(Task):
 	description = 'Configuring grub'
 	phase = phases.system_modification
+	after = [apt.AptUpgrade]
 
 	def run(self, info):
-		import stat
-		rwxr_xr_x = (stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR |
-		             stat.S_IRGRP                | stat.S_IXGRP |
-		             stat.S_IROTH                | stat.S_IXOTH)
-		import os.path
-		device_map_path = os.path.join(info.root, 'boot/grub/device.map')
-		with open(device_map_path, 'w') as device_map:
-			device_map.write('(hd0)   /dev/sda\n')
-
+		import os
 		from common.tools import log_check_call
 
-		from shutil import copy
-		script_src = os.path.normpath(os.path.join(os.path.dirname(__file__), '../assets/grub.d/10_linux'))
-		script_dst = os.path.join(info.root, 'etc/grub.d/10_linux')
-		copy(script_src, script_dst)
-		os.chmod(script_dst, rwxr_xr_x)
-		script_src = os.path.normpath(os.path.join(os.path.dirname(__file__), '../assets/grub.d/00_header'))
-		script_dst = os.path.join(info.root, 'etc/grub.d/00_header')
-		copy(script_src, script_dst)
-		os.chmod(script_dst, rwxr_xr_x)
-		log_check_call(['/usr/sbin/chroot', info.root, '/usr/sbin/update-initramfs', '-u'])
-		# Install grub in mbr
-		log_check_call(['/usr/sbin/grub-install', '--boot-directory=' + info.root + "/boot/",
-		                info.bootstrap_device['path']])
-		log_check_call(['/usr/sbin/chroot', info.root, '/usr/sbin/update-grub'])
+		boot_dir = os.path.join(info.root, 'boot')
+		grub_dir = os.path.join(boot_dir, 'grub')
+
+		from base.fs.partitionmaps.none import NoPartitions
+		from base.fs.partitionmaps.gpt import GPTPartitionMap
+		from common.fs import remount
+		p_map = info.volume.partition_map
+
+		def mk_remount_fn(fn):
+			def set_device_path():
+				fn()
+				if isinstance(p_map, NoPartitions):
+					p_map.root.device_path = info.volume.device_path
+			return set_device_path
+		link_fn = mk_remount_fn(info.volume.link_dm_node)
+		unlink_fn = mk_remount_fn(info.volume.unlink_dm_node)
+
+		# GRUB cannot deal with installing to loopback devices
+		# so we fake a real harddisk with dmsetup.
+		# Guide here: http://ebroder.net/2009/08/04/installing-grub-onto-a-disk-image/
+		if isinstance(info.volume, LoopbackVolume):
+			remount(info.volume, link_fn)
+		try:
+			[device_path] = log_check_call(['readlink', '-f', info.volume.device_path])
+			device_map_path = os.path.join(grub_dir, 'device.map')
+			partition_prefix = 'msdos'
+			if isinstance(p_map, GPTPartitionMap):
+				partition_prefix = 'gpt'
+			with open(device_map_path, 'w') as device_map:
+				device_map.write('(hd0) {device_path}\n'.format(device_path=device_path))
+				if not isinstance(p_map, NoPartitions):
+					for idx, partition in enumerate(info.volume.partition_map.partitions):
+						[partition_path] = log_check_call(['readlink', '-f', partition.device_path])
+						device_map.write('(hd0,{prefix}{idx}) {device_path}\n'
+						                 .format(device_path=partition_path, prefix=partition_prefix, idx=idx+1))
+
+			# Install grub
+			log_check_call(['/usr/sbin/chroot', info.root,
+			                '/usr/sbin/grub-install',
+			                # '--root-directory=' + info.root,
+			                # '--boot-directory=' + boot_dir,
+			                device_path])
+			log_check_call(['/usr/sbin/chroot', info.root, '/usr/sbin/update-grub'])
+		except Exception as e:
+			if isinstance(info.volume, LoopbackVolume):
+				remount(info.volume, unlink_fn)
+			raise e
+
+		if isinstance(info.volume, LoopbackVolume):
+			remount(info.volume, unlink_fn)

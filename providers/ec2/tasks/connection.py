@@ -20,9 +20,12 @@ class GetCredentials(Task):
 			for key in keys:
 				creds[key] = manifest.credentials[key]
 			return creds
-		if all(getenv(key) is not None for key in keys):
+
+		def env_key(key):
+			return ('aws-'+key).upper().replace('-', '_')
+		if all(getenv(env_key(key)) is not None for key in keys):
 			for key in keys:
-				creds[key] = getenv(key)
+				creds[key] = getenv(env_key(key))
 			return creds
 		raise RuntimeError(('No ec2 credentials found, they must all be specified '
 		                    'exclusively via environment variables or through the manifest.'))

@@ -1,5 +1,6 @@
 from base import Task
 from common import phases
+from common.tools import log_check_call
 import os.path
 
 
@@ -8,11 +9,18 @@ class ResolveInitScripts(Task):
 	phase = phases.system_modification
 
 	def run(self, info):
-		init_scripts = {'expand-volume': 'expand-volume'}
+		init_scripts = {}
+		init_scripts['expand-volume'] = 'expand-volume'
 
-		init_scripts['generate-ssh-hostkeys'] = 'generate-ssh-hostkeys'
-		if info.manifest.system['release'] == 'squeeze':
-			init_scripts['generate-ssh-hostkeys'] = 'squeeze/generate-ssh-hostkeys'
+		from subprocess import CalledProcessError
+		try:
+			log_check_call(['/usr/sbin/chroot', info.root,
+			                '/usr/bin/dpkg-query', '-W', 'openssh-server'])
+			init_scripts['generate-ssh-hostkeys'] = 'generate-ssh-hostkeys'
+			if info.manifest.system['release'] == 'squeeze':
+				init_scripts['generate-ssh-hostkeys'] = 'squeeze/generate-ssh-hostkeys'
+		except CalledProcessError:
+			pass
 
 		disable_scripts = ['hwclock.sh']
 		if info.manifest.system['release'] == 'squeeze':
@@ -37,7 +45,6 @@ class InstallInitScripts(Task):
 		             stat.S_IRGRP                | stat.S_IXGRP |
 		             stat.S_IROTH                | stat.S_IXOTH)
 		from shutil import copy
-		from common.tools import log_check_call
 		for name, src in info.initd['install'].iteritems():
 			dst = os.path.join(info.root, 'etc/init.d', name)
 			copy(src, dst)

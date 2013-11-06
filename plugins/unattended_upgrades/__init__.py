@@ -2,8 +2,8 @@
 
 def tasks(tasklist, manifest):
 	import tasks
-	tasklist.add(tasks.AddUnattendedUpgradesPackage())
-	tasklist.add(tasks.EnablePeriodicUpgrades())
+	tasklist.add(tasks.AddUnattendedUpgradesPackage,
+	             tasks.EnablePeriodicUpgrades)
 
 
 def validate_manifest(data, schema_validate):

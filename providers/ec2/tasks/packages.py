@@ -11,8 +11,6 @@ class HostPackages(Task):
 	after = [packages.HostPackages]
 
 	def run(self, info):
-		if info.manifest.volume['filesystem'] == 'xfs':
-			info.host_packages.add('xfsprogs')
 		if info.manifest.volume['backing'] == 's3':
 			info.host_packages.add('euca2ools')
 
@@ -25,6 +23,7 @@ class ImagePackages(Task):
 	def run(self, info):
 		manifest = info.manifest
 		include, exclude = info.img_packages
+		include.add('openssh-server')
 		include.add('file')  # Needed for the init scripts
 		include.add('dhcpcd')  # isc-dhcp-client doesn't work properly with ec2
 		if manifest.virtualization == 'pvm':

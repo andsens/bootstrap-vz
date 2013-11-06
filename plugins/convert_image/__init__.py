@@ -2,7 +2,7 @@
 
 def tasks(tasklist, manifest):
 	from tasks import ConvertImage
-	tasklist.add(ConvertImage())
+	tasklist.add(ConvertImage)
 
 
 def validate_manifest(data, schema_validate):

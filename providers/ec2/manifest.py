@@ -9,8 +9,10 @@ class Manifest(base.Manifest):
 		schema_path = path.join(path.dirname(__file__), 'manifest-schema.json')
 		self.schema_validate(data, schema_path)
 		if data['volume']['backing'] == 'ebs':
-			if data['volume']['size'] % 1024 != 0:
-				msg = 'The volume size must be a multiple of 1024 when using EBS backing'
+			volume_size = self._calculate_volume_size(data['volume']['partitions'])
+			if volume_size % 1024 != 0:
+				msg = ('The volume size must be a multiple of 1024 when using EBS backing '
+				       '(MBR partitioned volumes are 1MB larger than specified, for the post-mbr gap)')
 				raise ManifestError(msg, self)
 		else:
 			schema_path = path.join(path.dirname(__file__), 'manifest-schema-s3.json')
@@ -21,9 +23,15 @@ class Manifest(base.Manifest):
 		self.credentials    = data['credentials']
 		self.virtualization = data['virtualization']
 		self.image          = data['image']
-		if data['volume']['backing'] == 'ebs':
-			self.ebs_volume_size = data['volume']['size'] / 1024
-		if 'loopback_dir' not in self.volume and self.volume['backing'].lower() == 's3':
-			self.volume['loopback_dir'] = '/tmp'
-		if 'bundle_dir' not in self.image and self.volume['backing'].lower() == 's3':
-			self.image['bundle_dir'] = '/tmp'
+
+	def _calculate_volume_size(self, partitions):
+		if partitions['type'] == 'mbr':
+			size = 1
+		else:
+			size = 0
+		if 'boot' in partitions:
+			size += partitions['boot']['size']
+		size += partitions['root']['size']
+		if 'swap' in partitions:
+			size += partitions['swap']['size']
+		return size

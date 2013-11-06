@@ -49,10 +49,6 @@ class Manifest(object):
 		self.bootstrapper = data['bootstrapper']
 		if 'mirror' not in self.bootstrapper:
 			self.bootstrapper['mirror'] = 'http://http.debian.net/debian'
-		if 'tarball' not in self.bootstrapper:
-			self.bootstrapper['tarball'] = False
-		if 'tarball_dir' not in self.bootstrapper and self.bootstrapper['tarball']:
-			self.bootstrapper['tarball_dir'] = '/tmp'
 		self.volume = data['volume']
 		self.system = data['system']
 		self.plugins = data['plugins'] if 'plugins' in data else {}

@@ -29,7 +29,7 @@ class MakeTarball(Task):
 		hash_args = [arg for arg in arguments if arg != info.root]
 		tarball_id = sha1(repr(frozenset(options + hash_args))).hexdigest()[0:8]
 		tarball_filename = 'debootstrap-{id}.tar'.format(id=tarball_id)
-		info.tarball = os.path.join(info.manifest.bootstrapper['tarball_dir'], tarball_filename)
+		info.tarball = os.path.join(info.manifest.bootstrapper['workspace'], tarball_filename)
 		if os.path.isfile(info.tarball):
 			log.debug('Found matching tarball, skipping download')
 		else:

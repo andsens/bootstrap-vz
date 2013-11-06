@@ -13,7 +13,7 @@
 prog=$(basename $0)
 logger="logger -t $prog"
 
-device_path="/dev/xvda1"
+device_path="/dev/xvda"
 
 filesystem=`blkid | grep $device_path | sed 's#\(.*\):.*TYPE="\(.*\)".*#\2#'`
 

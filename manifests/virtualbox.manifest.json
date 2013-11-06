@@ -1,0 +1,33 @@
+{
+	"provider"      : "virtualbox",
+	"bootstrapper": {
+		"workspace": "/target",
+		"tarball":   true
+	},
+	"image": {
+		"name"       : "debian-{release}-{architecture}-{%y}{%m}{%d}",
+		"description": "Debian {release} {architecture}"
+	},
+	"system": {
+		"release"     : "wheezy",
+		"architecture": "amd64",
+		"timezone"    : "UTC",
+		"locale"      : "en_US",
+		"charmap"     : "UTF-8"
+	},
+	"volume": {
+		"backing": "vdi",
+		"partitions": {
+			"type": "mbr",
+			"boot": {
+				"size":       32,
+				"filesystem": "ext2"
+			},
+			"root": {
+				"size":       991,
+				"filesystem": "ext4"
+			},
+			"swap": {"size": 128}
+		}
+	}
+}

@@ -3,6 +3,17 @@
 	"title": "EC2 manifest",
 	"type": "object",
 	"properties": {
+		"image": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"description": {
+					"type": "string"
+				}
+			}
+		},
 		"credentials": {
 			"type": "object",
 			"properties": {
@@ -17,17 +28,16 @@
 		"volume": {
 			"type": "object",
 			"properties": {
-				"backing": {
-					"type": "string",
-					"enum": ["ebs", "s3"]
-				},
-				"filesystem": {
-					"type": "string",
-					"enum": ["ext2", "ext3", "ext4", "xfs"]
+				"backing": { "enum": ["ebs", "s3"] },
+				"partitions": {
+					"type": "object",
+					"properties": {
+						"type": { "enum": ["none", "mbr"] }
+					}
 				}
 			},
-			"required": ["backing", "filesystem"]
+			"required": ["backing"]
 		}
 	},
-	"required": ["volume"]
+	"required": ["image"]
 }

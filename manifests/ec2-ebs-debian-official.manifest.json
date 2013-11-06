@@ -2,21 +2,16 @@
 	"provider":       "ec2",
 	"virtualization": "pvm",
 	"credentials":    {
-		"access-key":  null,
-		"secret-key":  null,
-		"certificate": null,
-		"private-key": null,
-		"user-id":     null
+		// "access-key": null,
+		// "secret-key": null
 	},
 
 	"bootstrapper": {
-		"mount_dir": "/target",
-		"mirror": "http://http.debian.net/debian"
+		"workspace": "/target"
 	},
 	"image": {
-		"name":        "debian-{release}-{architecture}-{virtualization}-{%Y}{%m}{%d}",
+		"name":        "debian-{release}-{architecture}-{virtualization}-{%y}{%m}{%d}",
 		"description": "Debian {release} {architecture} AMI ({virtualization})"
-		"bucket":      ""
 	},
 	"system": {
 		"release":      "wheezy",
@@ -26,18 +21,19 @@
 		"charmap":      "UTF-8"
 	},
 	"volume": {
-		"backing":      "s3",
-		"filesystem":   "ext4",
-		"size":         1024
+		"backing": "ebs",
+		"partitions": {
+			"type": "none",
+			"root": {
+				"size":       1024,
+				"filesystem": "ext4"
+			}
+		}
 	},
 	"plugins": {
 		"admin_user": {
 			"enabled": true,
 			"username": "admin"
-		},
-		"prebootstrapped": {
-			"enabled":  false,
-			"image": null
 		}
 	}
 }

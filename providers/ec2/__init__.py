@@ -1,24 +1,25 @@
 from manifest import Manifest
 import logging
 from tasks import packages
-from common.tasks import packages as common_packages
 from tasks import connection
 from tasks import host
-from common.tasks import host as common_host
 from tasks import ami
+from common.tasks import volume as volume_tasks
 from tasks import ebs
+from common.tasks import partitioning
 from common.tasks import loopback
-from common.tasks import filesystem
+from common.tasks import filesystem as common_filesystem
+from tasks import filesystem
 from common.tasks import bootstrap
-from common.tasks import locale
-from common.tasks import apt
 from tasks import boot
 from common.tasks import boot as common_boot
 from common.tasks import security
-from common.tasks import network
+from tasks import network
+from common.tasks import network as common_network
 from tasks import initd
 from common.tasks import initd as common_initd
 from common.tasks import cleanup
+from common.tasks import workspace
 
 
 def initialize():
@@ -27,74 +28,68 @@ def initialize():
 
 
 def tasks(tasklist, manifest):
-	tasklist.add(packages.HostPackages(),
-	             common_packages.HostPackages(),
-	             packages.ImagePackages(),
-	             common_packages.ImagePackages(),
-	             common_host.CheckPackages(),
-	             connection.GetCredentials(),
-	             host.GetInfo(),
-	             ami.AMIName(),
-	             connection.Connect(),
+	from common.task_sets import base_set
+	from common.task_sets import mounting_set
+	from common.task_sets import apt_set
+	from common.task_sets import locale_set
+	from common.task_sets import ssh_set
+	tasklist.add(*base_set)
+	tasklist.add(*mounting_set)
+	tasklist.add(*apt_set)
+	tasklist.add(*locale_set)
+	tasklist.add(*ssh_set)
 
-	             filesystem.FormatVolume(),
-	             filesystem.CreateMountDir(),
-	             filesystem.MountVolume(),
+	if manifest.volume['partitions']['type'] != 'none':
+		from common.task_sets import partitioning_set
+		tasklist.add(*partitioning_set)
 
-	             bootstrap.Bootstrap(),
-	             filesystem.MountSpecials(),
-	             locale.GenerateLocale(),
-	             locale.SetTimezone(),
-	             apt.DisableDaemonAutostart(),
-	             apt.AptSources(),
-	             apt.AptUpgrade(),
-	             boot.ConfigureGrub(),
-	             filesystem.ModifyFstab(),
-	             common_boot.BlackListModules(),
-	             common_boot.DisableGetTTYs(),
-	             security.EnableShadowConfig(),
-	             security.DisableSSHPasswordAuthentication(),
-	             security.DisableSSHDNSLookup(),
-	             network.RemoveDNSInfo(),
-	             network.ConfigureNetworkIF(),
-	             network.ConfigureDHCP(),
-	             common_initd.ResolveInitScripts(),
-	             initd.AddEC2InitScripts(),
-	             common_initd.InstallInitScripts(),
-	             cleanup.ClearMOTD(),
-	             cleanup.ShredHostkeys(),
-	             cleanup.CleanTMP(),
-	             apt.PurgeUnusedPackages(),
-	             apt.AptClean(),
-	             apt.EnableDaemonAutostart(),
-	             filesystem.UnmountSpecials(),
+	tasklist.add(packages.HostPackages,
+	             packages.ImagePackages,
+	             connection.GetCredentials,
+	             host.GetInfo,
+	             ami.AMIName,
+	             connection.Connect,
 
-	             filesystem.UnmountVolume(),
-	             filesystem.DeleteMountDir(),
-	             ami.RegisterAMI())
+	             boot.ConfigureGrub,
+	             common_boot.BlackListModules,
+	             common_boot.DisableGetTTYs,
+	             security.EnableShadowConfig,
+	             common_network.RemoveDNSInfo,
+	             common_network.ConfigureNetworkIF,
+	             network.EnableDHCPCDDNS,
+	             common_initd.ResolveInitScripts,
+	             initd.AddEC2InitScripts,
+	             common_initd.InstallInitScripts,
+	             initd.AdjustExpandVolumeScript,
+	             cleanup.ClearMOTD,
+	             cleanup.CleanTMP,
 
-	if manifest.bootstrapper['tarball']:
-		tasklist.add(bootstrap.MakeTarball())
+	             ami.RegisterAMI)
 
-	backing_specific_tasks = {'ebs': [ebs.Create(),
-	                                  ebs.Attach(),
-	                                  ebs.Detach(),
-	                                  ebs.Snapshot(),
-	                                  ebs.Delete()],
-	                          's3': [loopback.Create(),
-	                                 loopback.Attach(),
-	                                 loopback.Detach(),
-	                                 ami.BundleImage(),
-	                                 ami.UploadImage(),
-	                                 loopback.Delete(),
-	                                 ami.RemoveBundle()]}
+	backing_specific_tasks = {'ebs': [ebs.Create,
+	                                  ebs.Attach,
+	                                  common_filesystem.FStab,
+	                                  ebs.Snapshot],
+	                          's3': [loopback.Create,
+	                                 volume_tasks.Attach,
+	                                 filesystem.S3FStab,
+	                                 ami.BundleImage,
+	                                 ami.UploadImage,
+	                                 ami.RemoveBundle]}
 	tasklist.add(*backing_specific_tasks.get(manifest.volume['backing'].lower()))
+	tasklist.add(common_filesystem.Format,
+	             volume_tasks.Detach,
+	             volume_tasks.Delete)
 
-	filesystem_specific_tasks = {'xfs': [filesystem.AddXFSProgs()],
-	                             'ext2': [filesystem.TuneVolumeFS()],
-	                             'ext3': [filesystem.TuneVolumeFS()],
-	                             'ext4': [filesystem.TuneVolumeFS()]}
-	tasklist.add(*filesystem_specific_tasks.get(manifest.volume['filesystem'].lower()))
+	if manifest.bootstrapper.get('tarball', False):
+		tasklist.add(bootstrap.MakeTarball)
+
+	from common.task_sets import get_fs_specific_set
+	tasklist.add(*get_fs_specific_set(manifest.volume['partitions']))
+
+	if 'boot' in manifest.volume['partitions']:
+		from common.task_sets import boot_partition_set
+		tasklist.add(*boot_partition_set)
 
 
 def rollback_tasks(tasklist, tasks_completed, manifest):
@@ -102,14 +97,20 @@ def rollback_tasks(tasklist, tasks_completed, manifest):
 
 	def counter_task(task, counter):
 		if task in completed and counter not in completed:
-			tasklist.add(counter())
+			tasklist.add(counter)
 
-	if manifest.volume['backing'].lower() == 'ebs':
-		counter_task(ebs.Create, ebs.Delete)
-		counter_task(ebs.Attach, ebs.Detach)
-	if manifest.volume['backing'].lower() == 's3':
-		counter_task(loopback.Create, loopback.Delete)
-		counter_task(loopback.Attach, loopback.Detach)
-	counter_task(filesystem.CreateMountDir, filesystem.DeleteMountDir)
-	counter_task(filesystem.MountVolume, filesystem.UnmountVolume)
-	counter_task(filesystem.MountSpecials, filesystem.UnmountSpecials)
+	counter_task(ebs.Create, volume_tasks.Delete)
+	counter_task(ebs.Attach, volume_tasks.Detach)
+
+	counter_task(loopback.Create, volume_tasks.Delete)
+	counter_task(volume_tasks.Attach, volume_tasks.Detach)
+
+	counter_task(partitioning.MapPartitions, partitioning.UnmapPartitions)
+	counter_task(common_filesystem.CreateMountDir, common_filesystem.DeleteMountDir)
+	counter_task(common_filesystem.MountSpecials, common_filesystem.UnmountSpecials)
+
+	counter_task(common_filesystem.MountRoot, common_filesystem.UnmountRoot)
+	counter_task(common_filesystem.MountBoot, common_filesystem.UnmountBoot)
+	counter_task(volume_tasks.Attach, volume_tasks.Detach)
+	counter_task(workspace.CreateWorkspace, workspace.DeleteWorkspace)
+	counter_task(ami.BundleImage, ami.RemoveBundle)

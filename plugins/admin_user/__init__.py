@@ -2,11 +2,11 @@
 
 def tasks(tasklist, manifest):
 	import tasks
-	tasklist.add(tasks.AddSudoPackage())
-	tasklist.add(tasks.CreateAdminUser())
-	tasklist.add(tasks.PasswordlessSudo())
-	tasklist.add(tasks.AdminUserCredentials())
-	tasklist.add(tasks.DisableRootLogin())
+	tasklist.add(tasks.AddSudoPackage.
+	             tasks.CreateAdminUser,
+	             tasks.PasswordlessSudo,
+	             tasks.AdminUserCredentials,
+	             tasks.DisableRootLogin)
 
 
 def validate_manifest(data, schema_validate):
