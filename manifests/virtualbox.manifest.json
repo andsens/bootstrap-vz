@@ -16,7 +16,7 @@
 		"charmap"     : "UTF-8"
 	},
 	"volume": {
-		"backing":         "vdi",
+		"backing": "vdi",
 		"partitions": {
 			"type": "mbr",
 			"boot": {
@@ -26,8 +26,8 @@
 			"root": {
 				"size":       991,
 				"filesystem": "ext4"
-			}
-			// ,"swap": {"size": 128}
+			},
+			"swap": {"size": 128}
 		}
 	}
 }

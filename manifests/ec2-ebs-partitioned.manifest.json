@@ -1,0 +1,33 @@
+{
+	"provider":       "ec2",
+	"virtualization": "pvm",
+	"credentials":    {
+		// "access-key": null,
+		// "secret-key": null
+	},
+
+	"bootstrapper": {
+		"workspace": "/target"
+	},
+	"image": {
+		"name":        "debian-{release}-{architecture}-{virtualization}-{%y}{%m}{%d}",
+		"description": "Debian {release} {architecture} AMI ({virtualization})"
+	},
+	"system": {
+		"release":      "wheezy",
+		"architecture": "amd64",
+		"timezone":     "UTC",
+		"locale":       "en_US",
+		"charmap":      "UTF-8"
+	},
+	"volume": {
+		"backing": "ebs",
+		"partitions": {
+			"type": "mbr",
+			"root": {
+				"size":       1023,
+				"filesystem": "ext4"
+			}
+		}
+	}
+}
