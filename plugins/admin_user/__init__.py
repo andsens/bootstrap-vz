@@ -2,7 +2,7 @@
 
 def tasks(tasklist, manifest):
 	import tasks
-	tasklist.add(tasks.AddSudoPackage.
+	tasklist.add(tasks.AddSudoPackage,
 	             tasks.CreateAdminUser,
 	             tasks.PasswordlessSudo,
 	             tasks.AdminUserCredentials,
