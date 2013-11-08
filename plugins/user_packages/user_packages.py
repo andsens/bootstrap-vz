@@ -3,7 +3,7 @@ from common import phases
 import os
 from common.tasks.packages import ImagePackages
 from common.tasks.host import CheckPackages
-from common.tasks.filesystem import MountVolume
+from common.tasks.filesystem import MountRoot
 
 
 class AddUserPackages(Task):
@@ -22,7 +22,7 @@ class AddUserPackages(Task):
 class AddLocalUserPackages(Task):
 	description = 'Adding user local packages to the image packages'
 	phase = phases.system_modification
-	after = [MountVolume]
+	after = [MountRoot]
 
 	def run(self, info):
 		if 'local' not in info.manifest.plugins['user_packages']:
