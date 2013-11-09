@@ -2,8 +2,7 @@
 
 def tasks(tasklist, manifest):
 	import tasks
-	tasklist.add(tasks.DoSeds())
-
+	tasklist.add(tasks.DoSeds)
 
 def validate_manifest(data, schema_validate):
 	from os import path
