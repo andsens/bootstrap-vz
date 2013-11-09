@@ -25,15 +25,26 @@
 		"partitions": {
 			"type": "none",
 			"root": {
-				"size":       1024,
+				"size":       8192,
 				"filesystem": "ext4"
 			}
 		}
 	},
 	"plugins": {
-		"admin_user": {
+		"backports": {
 			"enabled": true,
-			"username": "admin"
+			"packages": [ "cloud-init" ]
+		},
+		"user_packages": {
+			"enabled": true,
+			"repo": [ "sudo" ],
+			"local": []
+		},
+		"sed": {
+			"enabled": true,
+			"file": "etc/cloud/cloud.cfg",
+			"find": "^     name: debian$",
+			"replace": "     name: admin\n     sudo: ALL=(ALL) NOPASSWD:ALL\n     shell: /bin/bash"
 		}
 	}
 }
