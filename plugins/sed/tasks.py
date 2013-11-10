@@ -12,8 +12,4 @@ class DoSeds(Task):
         def run(self, info):
 
 			chroot_path = os.path.join(info.root, info.manifest.plugins['sed']['file'])
-			print chroot_path
-			print info.manifest.plugins['sed']['file']
-			print info.manifest.plugins['sed']['find']
-			print info.manifest.plugins['sed']['replace']
 			sed_i(chroot_path, info.manifest.plugins['sed']['find'], info.manifest.plugins['sed']['replace'])
