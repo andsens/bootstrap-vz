@@ -8,7 +8,7 @@
 			"properties": {
 				"backing": {
 					"type": "string",
-					"enum": ["raw", "vdi", "qcow2"]
+					"enum": ["raw", "vdi"]
 				},
 				"partitions": {
 					"type": "object",
