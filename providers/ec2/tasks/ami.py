@@ -196,7 +196,7 @@ class RegisterAMI(Task):
 		image_manifest = ('{bucket}/{ami_name}.manifest.xml'
 		                  .format(bucket=info.manifest.image['bucket'],
 		                          ami_name=info.ami_name))
-		info.image = info.connection.register_image(description=info.ami_description,
+		info.image = info.connection.register_image(name=info.ami_name, description=info.ami_description,
 		                                            architecture=arch, kernel_id=kernel_id,
 		                                            root_device_name='dev/sda1',
 		                                            image_location=image_manifest)
