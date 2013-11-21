@@ -34,7 +34,7 @@ class GetCredentials(Task):
 class Connect(Task):
 	description = 'Connecting to EC2'
 	phase = phases.preparation
-	after = [GetCredentials, host.GetInfo]
+	predecessors = [GetCredentials, host.GetInfo]
 
 	def run(self, info):
 		from boto.ec2 import connect_to_region

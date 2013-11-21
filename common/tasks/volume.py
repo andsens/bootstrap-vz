@@ -22,7 +22,7 @@ class Detach(Task):
 class Delete(Task):
 	description = 'Deleting the volume'
 	phase = phases.cleaning
-	before = [workspace.DeleteWorkspace]
+	successors = [workspace.DeleteWorkspace]
 
 	def run(self, info):
 		info.volume.delete()

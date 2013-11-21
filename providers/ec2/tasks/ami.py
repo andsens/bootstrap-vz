@@ -13,7 +13,7 @@ cert_ec2 = os.path.normpath(os.path.join(os.path.dirname(__file__), '../assets/c
 class AMIName(Task):
 	description = 'Determining the AMI name'
 	phase = phases.preparation
-	after = [Connect]
+	predecessors = [Connect]
 
 	def run(self, info):
 		image_vars = {'release':        info.manifest.system['release'],
@@ -60,7 +60,7 @@ class BundleImage(Task):
 class UploadImage(Task):
 	description = 'Uploading the image bundle'
 	phase = phases.image_registration
-	after = [BundleImage]
+	predecessors = [BundleImage]
 
 	def run(self, info):
 		manifest_file = os.path.join(info.bundle_path, info.ami_name + '.manifest.xml')
@@ -81,7 +81,7 @@ class UploadImage(Task):
 class RemoveBundle(Task):
 	description = 'Removing the bundle files'
 	phase = phases.cleaning
-	before = [workspace.DeleteWorkspace]
+	successors = [workspace.DeleteWorkspace]
 
 	def run(self, info):
 		from shutil import rmtree
@@ -92,7 +92,7 @@ class RemoveBundle(Task):
 class RegisterAMI(Task):
 	description = 'Registering the image as an AMI'
 	phase = phases.image_registration
-	after = [Snapshot, UploadImage]
+	predecessors = [Snapshot, UploadImage]
 
 	# Source: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/UserProvidedKernels.html#AmazonKernelImageIDs
 	kernel_mapping = {'ap-northeast-1': {  # Asia Pacific (Tokyo) Region

@@ -7,7 +7,7 @@ import os
 class OpenNebulaContext(Task):
 	description = 'Setup OpenNebula init context'
 	phase = phases.system_modification
-	after = [GenerateLocale]
+	predecessors = [GenerateLocale]
 
 	def run(self, info):
 		import stat

@@ -7,8 +7,8 @@ from common.tasks.host import CheckPackages
 class HostPackages(Task):
 	description = 'Adding more required host packages'
 	phase = phases.preparation
-	before = [CheckPackages]
-	after = [packages.HostPackages]
+	predecessors = [packages.HostPackages]
+	successors = [CheckPackages]
 
 	def run(self, info):
 		if info.manifest.volume['backing'] == 's3':
@@ -18,7 +18,7 @@ class HostPackages(Task):
 class ImagePackages(Task):
 	description = 'Adding more required image packages'
 	phase = phases.preparation
-	after = [packages.ImagePackages]
+	predecessors = [packages.ImagePackages]
 
 	def run(self, info):
 		manifest = info.manifest

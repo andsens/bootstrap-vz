@@ -6,7 +6,7 @@ from common.tasks import loopback
 class ConvertImage(Task):
 	description = 'Converting raw image'
 	phase = phases.image_registration
-	before = [loopback.MoveImage]
+	successors = [loopback.MoveImage]
 
 	def run(self, info):
 		from common.tools import log_check_call

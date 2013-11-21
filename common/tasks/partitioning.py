@@ -15,8 +15,8 @@ class PartitionVolume(Task):
 class MapPartitions(Task):
 	description = 'Mapping volume partitions'
 	phase = phases.volume_preparation
-	before = [filesystem.Format]
-	after = [PartitionVolume]
+	predecessors = [PartitionVolume]
+	successors = [filesystem.Format]
 
 	def run(self, info):
 		info.volume.partition_map.map(info.volume)
@@ -25,8 +25,8 @@ class MapPartitions(Task):
 class UnmapPartitions(Task):
 	description = 'Removing volume partitions mapping'
 	phase = phases.volume_unmounting
-	before = [volume.Detach]
-	after = [filesystem.UnmountRoot]
+	predecessors = [filesystem.UnmountRoot]
+	successors = [volume.Detach]
 
 	def run(self, info):
 		info.volume.partition_map.unmap(info.volume)

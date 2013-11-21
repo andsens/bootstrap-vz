@@ -8,7 +8,7 @@ import os
 class DoSeds(Task):
 	description = 'Sedding files'
 	phase = phases.system_modification
-	after = [AptUpgrade]
+	predecessors = [AptUpgrade]
 
 	def run(self, info):
 		chroot_path = os.path.join(info.root, info.manifest.plugins['sed']['file'])

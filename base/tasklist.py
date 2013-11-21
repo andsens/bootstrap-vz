@@ -36,8 +36,8 @@ class TaskList(object):
 		for task in tasks:
 			self.check_ordering(task)
 			successors = set()
-			successors.update(task.before)
-			successors.update(filter(lambda succ: task in succ.after, tasks))
+			successors.update(task.successors)
+			successors.update(filter(lambda succ: task in succ.predecessors, tasks))
 			succeeding_phases = order[order.index(task.phase) + 1:]
 			successors.update(filter(lambda succ: succ.phase in succeeding_phases, tasks))
 			graph[task] = filter(lambda succ: succ in tasks, successors)
@@ -58,13 +58,13 @@ class TaskList(object):
 		return sorted_tasks
 
 	def check_ordering(self, task):
-		for successor in task.before:
+		for successor in task.successors:
 			if successor.phase > successor.phase:
 				msg = ("The task {task} is specified as running before {other}, "
 				       "but its phase '{phase}' lies after the phase '{other_phase}'"
 				       .format(task=task, other=successor, phase=task.phase, other_phase=successor.phase))
 				raise TaskListError(msg)
-		for predecessor in task.after:
+		for predecessor in task.predecessors:
 			if task.phase < predecessor.phase:
 				msg = ("The task {task} is specified as running after {other}, "
 				       "but its phase '{phase}' lies before the phase '{other_phase}'"

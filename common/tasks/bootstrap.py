@@ -43,7 +43,7 @@ class MakeTarball(Task):
 class Bootstrap(Task):
 	description = 'Installing Debian'
 	phase = phases.os_installation
-	after = [MakeTarball]
+	predecessors = [MakeTarball]
 
 	def run(self, info):
 		executable, options, arguments = get_bootstrap_args(info)

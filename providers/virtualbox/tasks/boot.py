@@ -7,7 +7,7 @@ from common.fs.loopbackvolume import LoopbackVolume
 class ConfigureGrub(Task):
 	description = 'Configuring grub'
 	phase = phases.system_modification
-	after = [apt.AptUpgrade]
+	predecessors = [apt.AptUpgrade]
 
 	def run(self, info):
 		import os

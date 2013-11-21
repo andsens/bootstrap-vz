@@ -2,8 +2,8 @@
 
 class Task(object):
 	phase = None
-	before = []
-	after = []
+	predecessors = []
+	successors = []
 
 	def __str__(self):
 		return '{module}.{task}'.format(module=self.__module__, task=self.__class__.__name__)

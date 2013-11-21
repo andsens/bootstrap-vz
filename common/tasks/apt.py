@@ -42,8 +42,8 @@ class DisableDaemonAutostart(Task):
 class AptUpgrade(Task):
 	description = 'Upgrading packages and fixing broken dependencies'
 	phase = phases.system_modification
-	before = [network.RemoveDNSInfo]
-	after = [locale.GenerateLocale, AptSources, DisableDaemonAutostart]
+	predecessors = [locale.GenerateLocale, AptSources, DisableDaemonAutostart]
+	successors = [network.RemoveDNSInfo]
 
 	def run(self, info):
 		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get', 'update'])

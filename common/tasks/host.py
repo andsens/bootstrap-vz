@@ -7,7 +7,7 @@ import packages
 class CheckPackages(Task):
 	description = 'Checking installed host packages'
 	phase = phases.preparation
-	after = [packages.HostPackages, packages.ImagePackages]
+	predecessors = [packages.HostPackages, packages.ImagePackages]
 
 	def run(self, info):
 		from common.tools import log_check_call

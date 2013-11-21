@@ -7,8 +7,8 @@ from common.tasks.host import CheckPackages
 class AddUnattendedUpgradesPackage(Task):
 	description = 'Adding ``unattended-upgrades\'\' to the image packages'
 	phase = phases.preparation
-	after = [ImagePackages]
-	before = [CheckPackages]
+	predecessors = [ImagePackages]
+	successors = [CheckPackages]
 
 	def run(self, info):
 		info.img_packages[0].add('unattended-upgrades')

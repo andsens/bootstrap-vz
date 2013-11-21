@@ -10,8 +10,8 @@ import os
 class AptSourcesBackports(Task):
 	description = 'Adding backports to sources.list'
 	phase = phases.system_modification
-	after = [AptSources]
-	before = [AptUpgrade]
+	predecessors = [AptSources]
+	successors = [AptUpgrade]
 
 	def run(self, info):
 		sources_path = os.path.join(info.root, 'etc/apt/sources.list')
@@ -25,7 +25,7 @@ class AptSourcesBackports(Task):
 class AddBackportsPackages(Task):
 	description = 'Adding backport packages to the image'
 	phase = phases.system_modification
-	after = [AptUpgrade]
+	predecessors = [AptUpgrade]
 
 	def run(self, info):
 		if 'packages' not in info.manifest.plugins['backports']:

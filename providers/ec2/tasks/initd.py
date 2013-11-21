@@ -8,8 +8,8 @@ import os.path
 class AddEC2InitScripts(Task):
 	description = 'Adding EC2 startup scripts'
 	phase = phases.system_modification
-	after = [initd.ResolveInitScripts]
-	before = [initd.InstallInitScripts]
+	predecessors = [initd.ResolveInitScripts]
+	successors = [initd.InstallInitScripts]
 
 	def run(self, info):
 		init_scripts = {'ec2-get-credentials': 'ec2-get-credentials',
@@ -23,7 +23,7 @@ class AddEC2InitScripts(Task):
 class AdjustExpandVolumeScript(Task):
 	description = 'Adjusting the expand-volume script'
 	phase = phases.system_modification
-	after = [initd.InstallInitScripts]
+	predecessors = [initd.InstallInitScripts]
 
 	def run(self, info):
 		if 'expand-volume' not in info.initd['install']:

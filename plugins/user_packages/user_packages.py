@@ -9,8 +9,8 @@ from common.tasks.filesystem import MountRoot
 class AddUserPackages(Task):
 	description = 'Adding user defined packages to the image packages'
 	phase = phases.preparation
-	after = [ImagePackages]
-	before = [CheckPackages]
+	predecessors = [ImagePackages]
+	successors = [CheckPackages]
 
 	def run(self, info):
 		if 'repo' not in info.manifest.plugins['user_packages']:
@@ -22,7 +22,7 @@ class AddUserPackages(Task):
 class AddLocalUserPackages(Task):
 	description = 'Adding user local packages to the image packages'
 	phase = phases.system_modification
-	after = [MountRoot]
+	predecessors = [MountRoot]
 
 	def run(self, info):
 		if 'local' not in info.manifest.plugins['user_packages']:

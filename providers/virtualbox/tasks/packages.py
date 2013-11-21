@@ -6,7 +6,7 @@ from common.tasks import packages
 class ImagePackages(Task):
 	description = 'Determining required image packages'
 	phase = phases.preparation
-	after = [packages.ImagePackages]
+	predecessors = [packages.ImagePackages]
 
 	def run(self, info):
 		manifest = info.manifest

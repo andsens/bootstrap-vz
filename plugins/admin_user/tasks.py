@@ -9,8 +9,8 @@ import os
 class AddSudoPackage(Task):
 	description = 'Adding ``sudo\'\' to the image packages'
 	phase = phases.preparation
-	after = [ImagePackages]
-	before = [CheckPackages]
+	predecessors = [ImagePackages]
+	successors = [CheckPackages]
 
 	def run(self, info):
 		info.img_packages[0].add('sudo')
@@ -45,7 +45,7 @@ class PasswordlessSudo(Task):
 class AdminUserCredentials(Task):
 	description = 'Modifying ec2-get-credentials to copy the ssh public key to the admin user'
 	phase = phases.system_modification
-	after = [InstallInitScripts]
+	predecessors = [InstallInitScripts]
 
 	def run(self, info):
 		from common.tools import sed_i

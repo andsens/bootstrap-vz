@@ -6,7 +6,7 @@ import volume
 class Create(Task):
 	description = 'Creating a loopback volume'
 	phase = phases.volume_creation
-	before = [volume.Attach]
+	successors = [volume.Attach]
 
 	def run(self, info):
 		import os.path

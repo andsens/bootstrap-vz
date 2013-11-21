@@ -13,7 +13,7 @@ class Create(Task):
 class Attach(Task):
 	description = 'Attaching the volume'
 	phase = phases.volume_creation
-	after = [Create]
+	predecessors = [Create]
 
 	def run(self, info):
 		info.volume.attach(info.host['instanceId'])

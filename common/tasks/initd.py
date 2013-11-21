@@ -37,7 +37,7 @@ class ResolveInitScripts(Task):
 class InstallInitScripts(Task):
 	description = 'Installing startup scripts'
 	phase = phases.system_modification
-	after = [ResolveInitScripts]
+	predecessors = [ResolveInitScripts]
 
 	def run(self, info):
 		import stat

@@ -14,7 +14,7 @@ log = logging.getLogger(__name__)
 class Snapshot(Task):
 	description = 'Creating a snapshot of the bootstrapped volume'
 	phase = phases.os_installation
-	after = [bootstrap.Bootstrap, filesystem.MountSpecials]
+	predecessors = [bootstrap.Bootstrap, filesystem.MountSpecials]
 
 	def run(self, info):
 		def mk_snapshot():
@@ -27,7 +27,7 @@ class Snapshot(Task):
 class CreateFromSnapshot(Task):
 	description = 'Creating EBS volume from a snapshot'
 	phase = phases.volume_creation
-	before = [volume.Attach]
+	successors = [volume.Attach]
 
 	def run(self, info):
 		volume_size = int(info.manifest.volume['size'] / 1024)
@@ -45,7 +45,7 @@ class CreateFromSnapshot(Task):
 class CopyImage(Task):
 	description = 'Creating a snapshot of the bootstrapped volume'
 	phase = phases.os_installation
-	after = [bootstrap.Bootstrap, filesystem.MountSpecials]
+	predecessors = [bootstrap.Bootstrap, filesystem.MountSpecials]
 
 	def run(self, info):
 		loopback_backup_name = 'volume-{id:x}.{ext}.backup'.format(id=info.run_id, ext=info.volume.extension)
@@ -61,7 +61,7 @@ class CopyImage(Task):
 class CreateFromImage(Task):
 	description = 'Creating loopback image from a copy'
 	phase = phases.volume_creation
-	before = [volume.Attach]
+	successors = [volume.Attach]
 
 	def run(self, info):
 		info.volume.image_path = os.path.join(info.workspace, 'volume.{ext}'.format(ext=info.volume.extension))
@@ -74,8 +74,8 @@ class CreateFromImage(Task):
 class SetBootMountDir(Task):
 	description = 'Setting mountpoint for the boot partition'
 	phase = phases.volume_mounting
-	after = [filesystem.MountRoot]
-	before = [filesystem.MountBoot]
+	predecessors = [filesystem.MountRoot]
+	successors = [filesystem.MountBoot]
 
 	def run(self, info):
 		info.boot_dir = os.path.join(info.root, 'boot')

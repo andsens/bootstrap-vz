@@ -17,7 +17,7 @@ class Format(Task):
 class TuneVolumeFS(Task):
 	description = 'Tuning the bootstrap volume filesystem'
 	phase = phases.volume_preparation
-	after = [Format]
+	predecessors = [Format]
 
 	def run(self, info):
 		import re
@@ -49,7 +49,7 @@ class CreateMountDir(Task):
 class MountRoot(Task):
 	description = 'Mounting the root partition'
 	phase = phases.volume_mounting
-	after = [CreateMountDir]
+	predecessors = [CreateMountDir]
 
 	def run(self, info):
 		info.volume.partition_map.root.mount(info.root)
@@ -58,7 +58,7 @@ class MountRoot(Task):
 class MountBoot(Task):
 	description = 'Mounting the boot partition'
 	phase = phases.volume_mounting
-	after = [MountRoot]
+	predecessors = [MountRoot]
 
 	def run(self, info):
 		info.volume.partition_map.boot.mount(info.boot_dir)
@@ -67,8 +67,8 @@ class MountBoot(Task):
 class CreateBootMountDir(Task):
 	description = 'Creating mountpoint for the boot partition'
 	phase = phases.volume_mounting
-	after = [MountRoot]
-	before = [MountBoot]
+	successors = [MountBoot]
+	predecessors = [MountRoot]
 
 	def run(self, info):
 		import os
@@ -79,7 +79,7 @@ class CreateBootMountDir(Task):
 class MountSpecials(Task):
 	description = 'Mounting special block devices'
 	phase = phases.os_installation
-	after = [Bootstrap]
+	predecessors = [Bootstrap]
 
 	def run(self, info):
 		info.volume.mount_specials()
@@ -88,7 +88,7 @@ class MountSpecials(Task):
 class UnmountRoot(Task):
 	description = 'Unmounting the bootstrap volume'
 	phase = phases.volume_unmounting
-	before = [volume.Detach]
+	successors = [volume.Detach]
 
 	def run(self, info):
 		info.volume.partition_map.root.unmount()
@@ -97,7 +97,7 @@ class UnmountRoot(Task):
 class UnmountBoot(Task):
 	description = 'Unmounting the boot partition'
 	phase = phases.volume_unmounting
-	before = [UnmountRoot]
+	successors = [UnmountRoot]
 
 	def run(self, info):
 		info.volume.partition_map.boot.unmount()
@@ -106,7 +106,7 @@ class UnmountBoot(Task):
 class UnmountSpecials(Task):
 	description = 'Unmunting special block devices'
 	phase = phases.volume_unmounting
-	before = [UnmountRoot]
+	successors = [UnmountRoot]
 
 	def run(self, info):
 		info.volume.unmount_specials()
@@ -115,7 +115,7 @@ class UnmountSpecials(Task):
 class DeleteMountDir(Task):
 	description = 'Deleting mountpoint for the bootstrap volume'
 	phase = phases.volume_unmounting
-	after = [UnmountRoot]
+	predecessors = [UnmountRoot]
 
 	def run(self, info):
 		import os
