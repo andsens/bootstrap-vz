@@ -18,22 +18,3 @@ class AddEC2InitScripts(Task):
 		init_scripts_dir = os.path.normpath(os.path.join(os.path.dirname(__file__), '../assets/init.d'))
 		for name, path in init_scripts.iteritems():
 			info.initd['install'][name] = os.path.join(init_scripts_dir, path)
-
-
-class AdjustExpandVolumeScript(Task):
-	description = 'Adjusting the expand-volume script'
-	phase = phases.system_modification
-	predecessors = [initd.InstallInitScripts]
-
-	def run(self, info):
-		if 'expand-volume' not in info.initd['install']:
-			raise TaskError('The expand-volume script was not installed')
-
-		from base.fs.partitionmaps.none import NoPartitions
-		if not isinstance(info.volume.partition_map, NoPartitions):
-			import os.path
-			from common.tools import sed_i
-			script = os.path.join(info.root, 'etc/init.d.expand-volume')
-			root_idx = info.volume.partition_map.root.get_index()
-			device_path = 'device_path="/dev/xvda{idx}"'.format(idx=root_idx)
-			sed_i(script, '^device_path="/dev/xvda$', device_path)

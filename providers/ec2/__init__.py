@@ -60,7 +60,7 @@ def tasks(tasklist, manifest):
 	             common_initd.ResolveInitScripts,
 	             initd.AddEC2InitScripts,
 	             common_initd.InstallInitScripts,
-	             initd.AdjustExpandVolumeScript,
+	             common_initd.AdjustExpandRootScript,
 	             cleanup.ClearMOTD,
 	             cleanup.CleanTMP,
 

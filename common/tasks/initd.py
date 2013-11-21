@@ -10,7 +10,7 @@ class ResolveInitScripts(Task):
 
 	def run(self, info):
 		init_scripts = {}
-		init_scripts['expand-volume'] = 'expand-volume'
+		init_scripts['expand-root'] = 'expand-root'
 
 		from subprocess import CalledProcessError
 		try:
@@ -53,3 +53,22 @@ class InstallInitScripts(Task):
 
 		for name in info.initd['disable']:
 			log_check_call(['/usr/sbin/chroot', info.root, '/sbin/insserv', '--remove', name])
+
+
+class AdjustExpandRootScript(Task):
+	description = 'Adjusting the expand-root script'
+	phase = phases.system_modification
+	predecessors = [InstallInitScripts]
+
+	def run(self, info):
+		if 'expand-root' not in info.initd['install']:
+			raise TaskError('The expand-root script was not installed')
+
+		from base.fs.partitionmaps.none import NoPartitions
+		if not isinstance(info.volume.partition_map, NoPartitions):
+			import os.path
+			from common.tools import sed_i
+			script = os.path.join(info.root, 'etc/init.d.expand-root')
+			root_idx = info.volume.partition_map.root.get_index()
+			device_path = 'device_path="/dev/xvda{idx}"'.format(idx=root_idx)
+			sed_i(script, '^device_path="/dev/xvda$', device_path)
