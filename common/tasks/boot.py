@@ -24,6 +24,6 @@ class DisableGetTTYs(Task):
 		tty1 = '1:2345:respawn:/sbin/getty 38400 tty1'
 		sed_i(inittab_path, '^' + tty1, '#' + tty1)
 		ttyx = ':23:respawn:/sbin/getty 38400 tty'
-		for i in range(2, 6):
+		for i in range(2, 7):
 			i = str(i)
 			sed_i(inittab_path, '^' + i + ttyx + i, '#' + i + ttyx + i)
