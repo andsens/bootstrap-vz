@@ -5,7 +5,6 @@ This plugin gives the possibility to the user to install Debian packages in the 
 Plugin is defined in the manifest file, plugin section with:
 
     "user_packages": {
-        "enabled": true,
         "repo": [ "apache2" ],
         "local": [ "/tmp/mypackage.deb" ]
     }

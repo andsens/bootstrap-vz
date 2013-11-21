@@ -57,14 +57,13 @@ class Manifest(object):
 		self.loaded_plugins = []
 		if 'plugins' in data:
 			for plugin_name, plugin_data in data['plugins'].iteritems():
-				if plugin_data['enabled']:
-					modname = 'plugins.{plugin_name}'.format(plugin_name=plugin_name)
-					plugin = __import__(modname, fromlist=['plugins'])
-					init = getattr(plugin, 'initialize', None)
-					if callable(init):
-						init()
-					log.debug('Loaded plugin `%s\'', plugin_name)
-					self.loaded_plugins.append(plugin)
-					validate = getattr(plugin, 'validate_manifest', None)
-					if callable(validate):
-						validate(data, self.schema_validate)
+				modname = 'plugins.{plugin_name}'.format(plugin_name=plugin_name)
+				plugin = __import__(modname, fromlist=['plugins'])
+				init = getattr(plugin, 'initialize', None)
+				if callable(init):
+					init()
+				log.debug('Loaded plugin `%s\'', plugin_name)
+				self.loaded_plugins.append(plugin)
+				validate = getattr(plugin, 'validate_manifest', None)
+				if callable(validate):
+					validate(data, self.schema_validate)

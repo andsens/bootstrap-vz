@@ -32,16 +32,13 @@
 	},
 	"plugins": {
 		"backports": {
-			"enabled": true,
 			"packages": [ "cloud-init" ]
 		},
 		"user_packages": {
-			"enabled": true,
 			"repo": [ "sudo" ],
 			"local": []
 		},
 		"sed": {
-			"enabled": true,
 			"file": "etc/cloud/cloud.cfg",
 			"find": "^     name: debian$",
 			"replace": "     name: admin\n     sudo: ALL=(ALL) NOPASSWD:ALL\n     shell: /bin/bash"

@@ -5,7 +5,6 @@ This plugin gives the possibility to the user to execute commands.
 Plugin is defined in the manifest file, plugin section with:
 
     "image_commands": {
-        "enabled": true,
         "commands": [ [ "touch", "/var/www/index.html" ]],
     }
 

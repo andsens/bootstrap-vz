@@ -4,7 +4,6 @@ Supported formats are the one supported by qemu-img.
 In the plugins section add:
 
                 "convert_image": {
-                        "enabled": true,
                         "format": "vdi"
                 }
 
