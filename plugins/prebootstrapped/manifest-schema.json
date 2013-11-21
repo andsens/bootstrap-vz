@@ -3,6 +3,16 @@
 	"title": "Prebootstrapped plugin manifest",
 	"type": "object",
 	"properties": {
+		"volume": {
+			"type": "object",
+			"properties": {
+				"backing": {
+					"type": "string",
+					"enum": ["raw", "ebs", "s3", "vdi"]
+				}
+			},
+			"required": ["backing"]
+		},
 		"plugins": {
 			"type": "object",
 			"properties": {
@@ -21,5 +31,5 @@
 			"required": ["prebootstrapped"]
 		}
 	},
-	"required": ["plugins"]
+	"required": ["volume", "plugins"]
 }
