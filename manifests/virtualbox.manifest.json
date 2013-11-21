@@ -1,8 +1,7 @@
 {
 	"provider"      : "virtualbox",
 	"bootstrapper": {
-		"workspace": "/target",
-		"tarball":   true
+		"workspace": "/target"
 	},
 	"image": {
 		"name"       : "debian-{release}-{architecture}-{%y}{%m}{%d}",
