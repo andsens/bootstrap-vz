@@ -6,23 +6,27 @@
 		"plugins": {
 			"type": "object",
 			"properties": {
-				"image_commands": {
+				"user_packages": {
 					"type": "object",
 					"properties": {
-						"commands": {
+						"repo": {
 							"type": "array",
-							"items": {
-								"type": "array",
-								"items": {"type": "string"},
-								"minItems": 1
-							},
+							"items": {"type": "string"},
+							"minItems": 1
+						},
+						"local": {
+							"type": "array",
+							"items": {"type": "string"},
 							"minItems": 1
 						}
 					},
-					"required": ["commands"]
+					"anyOf": [
+						{"required": ["repo"]},
+						{"required": ["local"]}
+          ]
 				}
 			},
-			"required": ["image_commands"]
+			"required": ["user_packages"]
 		}
 	},
 	"required": ["plugins"]

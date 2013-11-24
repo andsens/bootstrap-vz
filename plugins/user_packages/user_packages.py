@@ -13,8 +13,6 @@ class AddUserPackages(Task):
 	successors = [CheckPackages]
 
 	def run(self, info):
-		if 'repo' not in info.manifest.plugins['user_packages']:
-			return
 		for pkg in info.manifest.plugins['user_packages']['repo']:
 			info.img_packages[0].add(pkg)
 
@@ -25,9 +23,6 @@ class AddLocalUserPackages(Task):
 	predecessors = [MountRoot]
 
 	def run(self, info):
-		if 'local' not in info.manifest.plugins['user_packages']:
-			return
-
 		import stat
 		rwxr_xr_x = (stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR |
 		             stat.S_IRGRP                | stat.S_IXGRP |
