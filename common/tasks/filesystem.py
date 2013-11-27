@@ -55,25 +55,24 @@ class MountRoot(Task):
 		info.volume.partition_map.root.mount(info.root)
 
 
-class MountBoot(Task):
-	description = 'Mounting the boot partition'
-	phase = phases.volume_mounting
-	predecessors = [MountRoot]
-
-	def run(self, info):
-		info.volume.partition_map.boot.mount(info.boot_dir)
-
-
 class CreateBootMountDir(Task):
 	description = 'Creating mountpoint for the boot partition'
 	phase = phases.volume_mounting
-	successors = [MountBoot]
 	predecessors = [MountRoot]
 
 	def run(self, info):
-		import os
-		info.boot_dir = os.path.join(info.root, 'boot')
-		os.makedirs(info.boot_dir)
+		import os.path
+		os.makedirs(os.path.join(info.root, 'boot'))
+
+
+class MountBoot(Task):
+	description = 'Mounting the boot partition'
+	phase = phases.volume_mounting
+	predecessors = [CreateBootMountDir]
+
+	def run(self, info):
+		p_map = info.volume.partition_map
+		p_map.root.add_mount(p_map.boot, 'boot')
 
 
 class MountSpecials(Task):
@@ -82,7 +81,11 @@ class MountSpecials(Task):
 	predecessors = [Bootstrap]
 
 	def run(self, info):
-		info.volume.mount_specials()
+		root = info.volume.partition_map.root
+		root.add_mount('/dev', 'dev', ['--bind'])
+		root.add_mount('none', 'proc', ['--types', 'proc'])
+		root.add_mount('none', 'sys', ['--types', 'sysfs'])
+		root.add_mount('none', 'dev/pts', ['--types', 'devpts'])
 
 
 class UnmountRoot(Task):
@@ -92,24 +95,6 @@ class UnmountRoot(Task):
 
 	def run(self, info):
 		info.volume.partition_map.root.unmount()
-
-
-class UnmountBoot(Task):
-	description = 'Unmounting the boot partition'
-	phase = phases.volume_unmounting
-	successors = [UnmountRoot]
-
-	def run(self, info):
-		info.volume.partition_map.boot.unmount()
-
-
-class UnmountSpecials(Task):
-	description = 'Unmunting special block devices'
-	phase = phases.volume_unmounting
-	successors = [UnmountRoot]
-
-	def run(self, info):
-		info.volume.unmount_specials()
 
 
 class DeleteMountDir(Task):

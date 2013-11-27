@@ -107,10 +107,8 @@ def rollback_tasks(tasklist, tasks_completed, manifest):
 
 	counter_task(partitioning.MapPartitions, partitioning.UnmapPartitions)
 	counter_task(common_filesystem.CreateMountDir, common_filesystem.DeleteMountDir)
-	counter_task(common_filesystem.MountSpecials, common_filesystem.UnmountSpecials)
 
 	counter_task(common_filesystem.MountRoot, common_filesystem.UnmountRoot)
-	counter_task(common_filesystem.MountBoot, common_filesystem.UnmountBoot)
 	counter_task(volume_tasks.Attach, volume_tasks.Detach)
 	counter_task(workspace.CreateWorkspace, workspace.DeleteWorkspace)
 	counter_task(ami.BundleImage, ami.RemoveBundle)

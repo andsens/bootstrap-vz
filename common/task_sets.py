@@ -31,13 +31,11 @@ partitioning_set = [partitioning.PartitionVolume,
 
 boot_partition_set = [filesystem.CreateBootMountDir,
                       filesystem.MountBoot,
-                      filesystem.UnmountBoot,
                       ]
 
 mounting_set = [filesystem.CreateMountDir,
                 filesystem.MountRoot,
                 filesystem.MountSpecials,
-                filesystem.UnmountSpecials,
                 filesystem.UnmountRoot,
                 filesystem.DeleteMountDir,
                 ]

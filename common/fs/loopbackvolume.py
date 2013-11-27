@@ -19,9 +19,6 @@ class LoopbackVolume(Volume):
 
 	extension = 'raw'
 
-	def can_mount_specials(self):
-		return self.fsm.current in ['attached', 'linked']
-
 	def create(self, image_path):
 		self.fsm.create(image_path=image_path)
 

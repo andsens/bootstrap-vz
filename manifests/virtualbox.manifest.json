@@ -1,18 +1,18 @@
 {
-	"provider"      : "virtualbox",
+	"provider": "virtualbox",
 	"bootstrapper": {
 		"workspace": "/target"
 	},
 	"image": {
-		"name"       : "debian-{release}-{architecture}-{%y}{%m}{%d}",
+		"name":        "debian-{release}-{architecture}-{%y}{%m}{%d}",
 		"description": "Debian {release} {architecture}"
 	},
 	"system": {
-		"release"     : "wheezy",
+		"release":      "wheezy",
 		"architecture": "amd64",
-		"timezone"    : "UTC",
-		"locale"      : "en_US",
-		"charmap"     : "UTF-8"
+		"timezone":     "UTC",
+		"locale":       "en_US",
+		"charmap":      "UTF-8"
 	},
 	"volume": {
 		"backing": "vdi",
