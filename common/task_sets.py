@@ -47,6 +47,7 @@ ssh_set = [security.DisableSSHPasswordAuthentication,
 
 apt_set = [apt.DisableDaemonAutostart,
            apt.AptSources,
+           apt.AptUpdate,
            apt.AptUpgrade,
            apt.PurgeUnusedPackages,
            apt.AptClean,

@@ -31,12 +31,17 @@
 		}
 	},
 	"plugins": {
-		"backports": {
-			"packages": [ "cloud-init" ]
-		},
-		"user_packages": {
-			"repo": [ "sudo" ],
-			"local": []
+		"packages": {
+			"sources": {
+				"backports": [
+					"deb     {apt_mirror} {release}-backports main",
+					"deb-src {apt_mirror} {release}-backports main"
+				]
+			},
+			"remote": [
+				"sudo",
+				{ "name": "cloud-init", "target": "{release}-backports" }
+			]
 		},
 		"sed": {
 			"file": "etc/cloud/cloud.cfg",

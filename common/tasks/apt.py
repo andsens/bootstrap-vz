@@ -39,10 +39,25 @@ class DisableDaemonAutostart(Task):
 		         stat.S_IROTH                | stat.S_IXOTH)
 
 
+class AptUpdate(Task):
+	description = 'Updating the package cache'
+	phase = phases.system_modification
+	predecessors = [locale.GenerateLocale, AptSources]
+	successors = [network.RemoveDNSInfo]
+
+	def run(self, info):
+		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get', 'update'])
+		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get',
+		                                               '--fix-broken',
+		                                               '--assume-yes',
+		                                               'install'])
+		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get', '--assume-yes', 'upgrade'])
+
+
 class AptUpgrade(Task):
 	description = 'Upgrading packages and fixing broken dependencies'
 	phase = phases.system_modification
-	predecessors = [locale.GenerateLocale, AptSources, DisableDaemonAutostart]
+	predecessors = [AptUpdate, DisableDaemonAutostart]
 	successors = [network.RemoveDNSInfo]
 
 	def run(self, info):

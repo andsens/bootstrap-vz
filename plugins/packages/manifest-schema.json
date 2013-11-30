@@ -1,0 +1,62 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "Packages plugin manifest",
+	"type": "object",
+	"properties": {
+		"plugins": {
+			"type": "object",
+			"properties": {
+				"packages": {
+					"type": "object",
+					"properties": {
+						"sources": {
+							"type": "object",
+							"patternProperties": {
+								"^\\w+$": {
+									"type": "array",
+									"items": {"type": "string"},
+									"minItems": 1
+								}
+							},
+							"additionalProperties": false,
+							"minItems": 1
+						},
+						"remote": {
+							"type": "array",
+							"items": {
+								"anyOf": [
+									{
+										"type": "object",
+										"properties": {
+											"name": {"type": "string"},
+											"target": {"type": "string"}
+										},
+										"required": ["name"]
+									},
+									{ "type": "string" }
+								]
+							},
+							"minItems": 1
+						},
+						"local": {
+							"type": "array",
+							"items": { "$ref": "#/definitions/absolute_path" },
+							"minItems": 1
+						}
+					},
+					"anyOf": [
+						{"required": ["sources"]},
+						{"required": ["remote"]},
+						{"required": ["local"]}
+          ]
+				}
+			}
+		}
+	},
+	"definitions": {
+		"absolute_path": {
+			"type":    "string",
+			"pattern": "^/[^\\0]+$"
+		}
+	}
+}
