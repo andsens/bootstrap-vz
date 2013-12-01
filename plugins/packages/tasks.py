@@ -15,10 +15,10 @@ class AptSources(Task):
 		manifest_vars = {'release':      info.manifest.system['release'],
 		                 'architecture': info.manifest.system['architecture'],
 		                 'apt_mirror':   'http://http.debian.net/debian'}
-		for name in info.manifest.plugins['packages']['sources'].iterkeys():
+		for name, lines in info.manifest.plugins['packages']['sources'].iteritems():
 			list_path = os.path.join(info.root, 'etc/apt/sources.list.d/', name + '.list')
 			with open(list_path, 'a') as source_list:
-				for line in info.manifest.plugins['packages']['sources'][name]:
+				for line in lines:
 					source_list.write('{line}\n'.format(line=line.format(**manifest_vars)))
 
 

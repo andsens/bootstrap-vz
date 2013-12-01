@@ -45,7 +45,7 @@ def tasks(tasklist, manifest):
 	             network.RemoveDNSInfo,
 	             network.ConfigureNetworkIF,
 	             network.RemoveHostname,
-	             initd.ResolveInitScripts,
+	             initd.AddSSHKeyGeneration,
 	             initd.InstallInitScripts,
 	             cleanup.ClearMOTD,
 	             cleanup.CleanTMP,

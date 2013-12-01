@@ -1,6 +1,5 @@
 from base import Task
 from common import phases
-from common.exceptions import TaskError
 from common.tasks import initd
 import os.path
 
@@ -8,7 +7,6 @@ import os.path
 class AddEC2InitScripts(Task):
 	description = 'Adding EC2 startup scripts'
 	phase = phases.system_modification
-	predecessors = [initd.ResolveInitScripts]
 	successors = [initd.InstallInitScripts]
 
 	def run(self, info):

@@ -1,43 +1,13 @@
 from base import Task
 from common import phases
+from common.exceptions import TaskError
 from common.tools import log_check_call
 import os.path
-
-
-class ResolveInitScripts(Task):
-	description = 'Determining which startup scripts to install or disable'
-	phase = phases.system_modification
-
-	def run(self, info):
-		init_scripts = {}
-		init_scripts['expand-root'] = 'expand-root'
-
-		from subprocess import CalledProcessError
-		try:
-			log_check_call(['/usr/sbin/chroot', info.root,
-			                '/usr/bin/dpkg-query', '-W', 'openssh-server'])
-			init_scripts['generate-ssh-hostkeys'] = 'generate-ssh-hostkeys'
-			if info.manifest.system['release'] == 'squeeze':
-				init_scripts['generate-ssh-hostkeys'] = 'squeeze/generate-ssh-hostkeys'
-		except CalledProcessError:
-			pass
-
-		disable_scripts = ['hwclock.sh']
-		if info.manifest.system['release'] == 'squeeze':
-			disable_scripts.append('hwclockfirst.sh')
-
-		init_scripts_dir = os.path.normpath(os.path.join(os.path.dirname(__file__), '../assets/init.d'))
-		for name, path in init_scripts.iteritems():
-			init_scripts[name] = os.path.join(init_scripts_dir, path)
-
-		info.initd = {'install': init_scripts,
-		              'disable': disable_scripts}
 
 
 class InstallInitScripts(Task):
 	description = 'Installing startup scripts'
 	phase = phases.system_modification
-	predecessors = [ResolveInitScripts]
 
 	def run(self, info):
 		import stat
@@ -53,6 +23,47 @@ class InstallInitScripts(Task):
 
 		for name in info.initd['disable']:
 			log_check_call(['/usr/sbin/chroot', info.root, '/sbin/insserv', '--remove', name])
+
+
+class AddExpandRoot(Task):
+	description = 'Adding init script to expand the root volume'
+	phase = phases.system_modification
+	successors = [InstallInitScripts]
+
+	def run(self, info):
+		init_scripts_dir = os.path.normpath(os.path.join(os.path.dirname(__file__), '../assets/init.d'))
+		info.initd['install']['expand-root'] = os.path.join(init_scripts_dir, 'expand-root')
+
+
+class AddSSHKeyGeneration(Task):
+	description = 'Adding SSH private key generation init scripts'
+	phase = phases.system_modification
+	successors = [InstallInitScripts]
+
+	def run(self, info):
+		init_scripts_dir = os.path.normpath(os.path.join(os.path.dirname(__file__), '../assets/init.d'))
+		install = info.initd['install']
+		from subprocess import CalledProcessError
+		try:
+			log_check_call(['/usr/sbin/chroot', info.root,
+			                '/usr/bin/dpkg-query', '-W', 'openssh-server'])
+			if info.manifest.system['release'] == 'squeeze':
+				install['generate-ssh-hostkeys'] = os.path.join(init_scripts_dir, 'squeeze/generate-ssh-hostkeys')
+			else:
+				install['generate-ssh-hostkeys'] = os.path.join(init_scripts_dir, 'generate-ssh-hostkeys')
+		except CalledProcessError:
+			pass
+
+
+class RemoveHWClock(Task):
+	description = 'Removing hardware clock init scripts'
+	phase = phases.system_modification
+	successors = [InstallInitScripts]
+
+	def run(self, info):
+		info.initd['disable'].append('hwclock.sh')
+		if info.manifest.system['release'] == 'squeeze':
+			info.initd['disable'].append('hwclockfirst.sh')
 
 
 class AdjustExpandRootScript(Task):
