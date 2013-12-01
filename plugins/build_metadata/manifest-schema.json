@@ -3,6 +3,10 @@
 	"title": "Build metadata plugin manifest",
 	"type": "object",
 	"properties": {
+		"provider": {
+			"type": "string",
+			"enum": ["ec2"]
+		},
 		"plugins": {
 			"type": "object",
 			"properties": {
