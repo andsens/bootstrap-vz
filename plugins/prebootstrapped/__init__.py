@@ -10,6 +10,12 @@ from common.tasks import filesystem
 from common.tasks import partitioning
 
 
+def validate_manifest(data, schema_validate):
+	from os import path
+	schema_path = path.normpath(path.join(path.dirname(__file__), 'manifest-schema.json'))
+	schema_validate(data, schema_path)
+
+
 def tasks(tasklist, manifest):
 	settings = manifest.plugins['prebootstrapped']
 	skip_tasks = [ebs.Create,
@@ -47,9 +53,3 @@ def rollback_tasks(tasklist, tasks_completed, manifest):
 		counter_task(CreateFromSnapshot, volume.Delete)
 	else:
 		counter_task(CreateFromImage, volume.Delete)
-
-
-def validate_manifest(data, schema_validate):
-	from os import path
-	schema_path = path.normpath(path.join(path.dirname(__file__), 'manifest-schema.json'))
-	schema_validate(data, schema_path)
