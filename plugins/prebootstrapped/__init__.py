@@ -16,7 +16,7 @@ def validate_manifest(data, schema_validate):
 	schema_validate(data, schema_path)
 
 
-def tasks(tasklist, manifest):
+def resolve_tasks(tasklist, manifest):
 	settings = manifest.plugins['prebootstrapped']
 	skip_tasks = [ebs.Create,
 	              loopback.Create,
@@ -42,7 +42,7 @@ def tasks(tasklist, manifest):
 			tasklist.add(CopyImage)
 
 
-def rollback_tasks(tasklist, tasks_completed, manifest):
+def resolve_rollback_tasks(tasklist, tasks_completed, manifest):
 	completed = [type(task) for task in tasks_completed]
 
 	def counter_task(task, counter):

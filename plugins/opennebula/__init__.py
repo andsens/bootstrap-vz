@@ -1,5 +1,5 @@
 
 
-def tasks(tasklist, manifest):
+def resolve_tasks(tasklist, manifest):
 	import tasks
 	tasklist.add(tasks.OpenNebulaContext)

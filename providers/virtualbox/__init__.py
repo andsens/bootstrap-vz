@@ -17,7 +17,7 @@ def initialize():
 	pass
 
 
-def tasks(tasklist, manifest):
+def resolve_tasks(tasklist, manifest):
 	from common.task_sets import base_set
 	from common.task_sets import volume_set
 	from common.task_sets import mounting_set
@@ -62,7 +62,7 @@ def tasks(tasklist, manifest):
 		tasklist.add(*boot_partition_set)
 
 
-def rollback_tasks(tasklist, tasks_completed, manifest):
+def resolve_rollback_tasks(tasklist, tasks_completed, manifest):
 	completed = [type(task) for task in tasks_completed]
 
 	def counter_task(task, counter):

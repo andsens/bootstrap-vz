@@ -20,7 +20,7 @@ def validate_manifest(data, schema_validate):
 		raise ManifestError('The cloud-init package must be installed for the cloud_init plugin to work')
 
 
-def tasks(tasklist, manifest):
+def resolve_tasks(tasklist, manifest):
 	from tasks import SetUsername
 	from providers.ec2.tasks.initd import AddEC2InitScripts
 	from common.tasks import initd

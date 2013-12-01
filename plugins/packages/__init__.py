@@ -6,7 +6,7 @@ def validate_manifest(data, schema_validate):
 	schema_validate(data, schema_path)
 
 
-def tasks(tasklist, manifest):
+def resolve_tasks(tasklist, manifest):
 	from tasks import AptSources, InstallRemotePackages, InstallLocalPackages
 	packages = manifest.plugins['packages']
 	if 'sources' in packages:
