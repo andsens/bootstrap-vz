@@ -26,8 +26,7 @@ class ImagePackages(Task):
 		include.add('openssh-server')
 		include.add('file')  # Needed for the init scripts
 		include.add('dhcpcd')  # isc-dhcp-client doesn't work properly with ec2
-		if manifest.virtualization == 'pvm':
-			include.add('grub-pc')
+		include.add('grub-pc')
 
 		exclude.add('isc-dhcp-client')
 		exclude.add('isc-dhcp-common')

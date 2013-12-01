@@ -151,52 +151,38 @@ class RegisterAMI(Task):
 	                  }}
 
 	def run(self, info):
-		if info.manifest.volume['backing'] == 'ebs':
-			self.run_ebs(info)
+		registration_params = {'name': info.ami_name,
+		                       'description': info.ami_description}
+		registration_params['architecture'] = {'i386': 'i386',
+		                                       'amd64': 'x86_64'}.get(info.manifest.system['architecture'])
+
 		if info.manifest.volume['backing'] == 's3':
-			self.run_s3(info)
-
-	def run_ebs(self, info):
-		arch = {'i386': 'i386', 'amd64': 'x86_64'}.get(info.manifest.system['architecture'])
-
-		from base.fs.partitionmaps.none import NoPartitions
-		if isinstance(info.volume.partition_map, NoPartitions):
 			grub_boot_device = 'hd0'
-			root_device_name = '/dev/sda'
+			registration_params['root_device_name'] = 'dev/sda1'
 		else:
-			grub_boot_device = 'hd00'
-			root_idx = info.volume.partition_map.root.get_index()
-			root_device_name = '/dev/sda{idx}'.format(idx=root_idx)
+			from base.fs.partitionmaps.none import NoPartitions
+			if isinstance(info.volume.partition_map, NoPartitions):
+				grub_boot_device = 'hd0'
+				registration_params['root_device_name'] = '/dev/sda'
+			else:
+				grub_boot_device = 'hd00'
+				root_idx = info.volume.partition_map.root.get_index()
+				registration_params['root_device_name'] = '/dev/sda{idx}'.format(idx=root_idx)
 
-		kernel_id = (self.kernel_mapping
-		             .get(info.host['region'])
-		             .get(grub_boot_device)
-		             .get(info.manifest.system['architecture']))
+			from boto.ec2.blockdevicemapping import BlockDeviceType
+			from boto.ec2.blockdevicemapping import BlockDeviceMapping
+			block_device = BlockDeviceType(snapshot_id=info.snapshot.id, delete_on_termination=True,
+			                               size=info.volume.partition_map.get_total_size()/1024)
+			registration_params['block_device_map'] = BlockDeviceMapping()
+			registration_params['block_device_map']['/dev/sda'] = block_device
 
-		from boto.ec2.blockdevicemapping import BlockDeviceType
-		from boto.ec2.blockdevicemapping import BlockDeviceMapping
-		block_device = BlockDeviceType(snapshot_id=info.snapshot.id, delete_on_termination=True,
-		                               size=info.volume.partition_map.get_total_size()/1024)
-		block_device_map = BlockDeviceMapping()
-		block_device_map['/dev/sda'] = block_device
+		if info.manifest.virtualization == 'hvm':
+			registration_params['virtualization_type'] = 'hvm'
+		else:
+			registration_params['virtualization_type'] = 'paravirtual'
+			registration_params['kernel_id'] = (self.kernel_mapping
+			                                    .get(info.host['region'])
+			                                    .get(grub_boot_device)
+			                                    .get(info.manifest.system['architecture']))
 
-		info.image = info.connection.register_image(name=info.ami_name, description=info.ami_description,
-		                                            architecture=arch, kernel_id=kernel_id,
-		                                            root_device_name=root_device_name,
-		                                            block_device_map=block_device_map)
-
-	def run_s3(self, info):
-		arch = {'i386': 'i386', 'amd64': 'x86_64'}.get(info.manifest.system['architecture'])
-
-		kernel_id = (self.kernel_mapping
-		             .get(info.host['region'])
-		             .get('hd0')
-		             .get(info.manifest.system['architecture']))
-
-		image_manifest = ('{bucket}/{ami_name}.manifest.xml'
-		                  .format(bucket=info.manifest.image['bucket'],
-		                          ami_name=info.ami_name))
-		info.image = info.connection.register_image(name=info.ami_name, description=info.ami_description,
-		                                            architecture=arch, kernel_id=kernel_id,
-		                                            root_device_name='dev/sda1',
-		                                            image_location=image_manifest)
+		info.image = info.connection.register_image(**registration_params)

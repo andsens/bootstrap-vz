@@ -3,8 +3,8 @@ from common import phases
 import os
 
 
-class ConfigureGrub(Task):
-	description = 'Configuring grub'
+class ConfigurePVGrub(Task):
+	description = 'Creating grub config files for PVGrub'
 	phase = phases.system_modification
 
 	def run(self, info):

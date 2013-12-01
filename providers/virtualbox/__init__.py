@@ -5,8 +5,7 @@ from common.tasks import loopback
 from common.tasks import partitioning
 from common.tasks import filesystem
 from common.tasks import bootstrap
-from tasks import boot
-from common.tasks import boot as common_boot
+from common.tasks import boot
 from common.tasks import security
 from common.tasks import network
 from common.tasks import initd
@@ -38,9 +37,9 @@ def tasks(tasklist, manifest):
 
 	             loopback.Create,
 
-	             boot.ConfigureGrub,
-	             common_boot.BlackListModules,
-	             common_boot.DisableGetTTYs,
+	             boot.InstallGrub,
+	             boot.BlackListModules,
+	             boot.DisableGetTTYs,
 	             security.EnableShadowConfig,
 	             network.RemoveDNSInfo,
 	             network.ConfigureNetworkIF,

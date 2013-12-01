@@ -50,7 +50,6 @@ def tasks(tasklist, manifest):
 	             ami.AMIName,
 	             connection.Connect,
 
-	             boot.ConfigureGrub,
 	             common_boot.BlackListModules,
 	             common_boot.DisableGetTTYs,
 	             security.EnableShadowConfig,
@@ -67,6 +66,11 @@ def tasks(tasklist, manifest):
 	             cleanup.CleanTMP,
 
 	             ami.RegisterAMI)
+
+	if manifest.virtualization == 'pvm':
+		tasklist.add(boot.ConfigurePVGrub)
+	else:
+		tasklist.add(common_boot.InstallGrub)
 
 	backing_specific_tasks = {'ebs': [ebs.Create,
 	                                  ebs.Attach,

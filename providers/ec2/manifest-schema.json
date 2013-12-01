@@ -3,6 +3,7 @@
 	"title": "EC2 manifest",
 	"type": "object",
 	"properties": {
+		"virtualization": { "enum": ["pvm", "hvm"] },
 		"image": {
 			"type": "object",
 			"properties": {
