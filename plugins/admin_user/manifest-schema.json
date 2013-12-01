@@ -15,9 +15,7 @@
 					},
 					"required": ["username"]
 				}
-			},
-			"required": ["admin_user"]
+			}
 		}
-	},
-	"required": ["plugins"]
+	}
 }

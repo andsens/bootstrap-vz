@@ -8,9 +8,10 @@ def validate_manifest(data, schema_validate):
 
 def tasks(tasklist, manifest):
 	from tasks import AptSources, InstallRemotePackages, InstallLocalPackages
-	if 'sources' in manifest.plugins['packages']:
+	packages = manifest.plugins['packages']
+	if 'sources' in packages:
 		tasklist.add(AptSources)
-	if 'remote' in manifest.plugins['packages']:
+	if 'remote' in packages:
 		tasklist.add(InstallRemotePackages)
-	if 'local' in manifest.plugins['packages']:
+	if 'local' in packages:
 		tasklist.add(InstallLocalPackages)
