@@ -1,0 +1,23 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "cloud-init plugin manifest",
+	"type": "object",
+	"properties": {
+		"plugins": {
+			"type": "object",
+			"properties": {
+				"cloud_init": {
+					"type": "object",
+					"properties": {
+						"username": {
+							"type": "string"
+						}
+					},
+					"required": ["username"]
+				},
+				"packages":   {"type": "object"}
+			},
+			"required": ["cloud_init", "packages"]
+		}
+	}
+}

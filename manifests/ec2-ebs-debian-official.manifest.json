@@ -43,10 +43,8 @@
 				{ "name": "cloud-init", "target": "{release}-backports" }
 			]
 		},
-		"sed": {
-			"file": "etc/cloud/cloud.cfg",
-			"find": "^     name: debian$",
-			"replace": "     name: admin\n     sudo: ALL=(ALL) NOPASSWD:ALL\n     shell: /bin/bash"
+		"cloud_init": {
+			"username": "admin"
 		}
 	}
 }
