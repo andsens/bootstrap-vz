@@ -2,7 +2,7 @@ from base import Task
 from common import phases
 from common.tasks import volume
 from common.tasks import bootstrap
-from common.tasks import filesystem
+from providers.ec2.tasks import ebs
 from common.fs import remount
 from shutil import copyfile
 import os.path
@@ -27,18 +27,19 @@ class Snapshot(Task):
 class CreateFromSnapshot(Task):
 	description = 'Creating EBS volume from a snapshot'
 	phase = phases.volume_creation
-	successors = [volume.Attach]
+	successors = [ebs.Attach]
 
 	def run(self, info):
-		volume_size = int(info.manifest.volume['size'] / 1024)
+		volume_size = int(info.volume.partition_map.get_total_size() / 1024)
 		snapshot = info.manifest.plugins['prebootstrapped']['snapshot']
-		info.volume.volume = info.connection.create_volume(volume_size,
-		                                                   info.host['availabilityZone'],
-		                                                   snapshot=snapshot)
-		while info.volume.volume_state() != 'available':
+		ebs_volume = info.connection.create_volume(volume_size,
+		                                           info.host['availabilityZone'],
+		                                           snapshot=snapshot)
+		while ebs_volume.volume_state() != 'available':
 			time.sleep(5)
-			info.volume.update()
+			ebs_volume.update()
 
+		info.volume.volume = ebs_volume
 		set_fs_states(info.volume)
 
 
