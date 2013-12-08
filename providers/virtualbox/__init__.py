@@ -38,8 +38,6 @@ def resolve_tasks(tasklist, manifest):
 	             loopback.Create,
 
 	             boot.InstallGrub,
-	             boot.BlackListModules,
-	             boot.DisableGetTTYs,
 	             security.EnableShadowConfig,
 	             network.RemoveDNSInfo,
 	             network.ConfigureNetworkIF,
