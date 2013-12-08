@@ -72,9 +72,10 @@ class InstallGrub(Task):
 				device_map.write('(hd0) {device_path}\n'.format(device_path=device_path))
 				if not isinstance(p_map, NoPartitions):
 					for idx, partition in enumerate(info.volume.partition_map.partitions):
-						[partition_path] = log_check_call(['readlink', '-f', partition.device_path])
 						device_map.write('(hd0,{prefix}{idx}) {device_path}\n'
-						                 .format(device_path=partition_path, prefix=partition_prefix, idx=idx+1))
+						                 .format(device_path=partition.device_path,
+						                         prefix=partition_prefix,
+						                         idx=idx+1))
 
 			# Install grub
 			log_check_call(['/usr/sbin/chroot', info.root,
