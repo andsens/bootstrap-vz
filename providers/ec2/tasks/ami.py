@@ -158,16 +158,13 @@ class RegisterAMI(Task):
 
 		if info.manifest.volume['backing'] == 's3':
 			grub_boot_device = 'hd0'
-			registration_params['root_device_name'] = 'dev/sda1'
 		else:
+			registration_params['root_device_name'] = '/dev/sda'
 			from base.fs.partitionmaps.none import NoPartitions
 			if isinstance(info.volume.partition_map, NoPartitions):
 				grub_boot_device = 'hd0'
-				registration_params['root_device_name'] = '/dev/sda'
 			else:
 				grub_boot_device = 'hd00'
-				root_idx = info.volume.partition_map.root.get_index()
-				registration_params['root_device_name'] = '/dev/sda{idx}'.format(idx=root_idx)
 
 			from boto.ec2.blockdevicemapping import BlockDeviceType
 			from boto.ec2.blockdevicemapping import BlockDeviceMapping
