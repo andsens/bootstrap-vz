@@ -17,8 +17,6 @@ class LoopbackVolume(Volume):
 	          {'name': 'delete', 'src': 'detached', 'dst': 'deleted'},
 	          ]
 
-	extension = 'raw'
-
 	def create(self, image_path):
 		self.fsm.create(image_path=image_path)
 
