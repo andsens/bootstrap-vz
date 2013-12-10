@@ -27,9 +27,8 @@
 						}
 					}
 				}
-			},
-			"required": ["prebootstrapped"]
+			}
 		}
 	},
-	"required": ["volume", "plugins"]
+	"required": ["volume"]
 }

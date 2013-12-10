@@ -15,9 +15,7 @@
 					},
 					"required": ["password"]
 				}
-			},
-			"required": ["root_password"]
+			}
 		}
-	},
-	"required": ["plugins"]
+	}
 }
