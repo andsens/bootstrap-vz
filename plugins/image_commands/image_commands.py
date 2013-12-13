@@ -1,9 +1,5 @@
 from base import Task
 from common import phases
-import os
-from common.tasks.packages import ImagePackages
-from common.tasks.host import CheckPackages
-from common.tasks.filesystem import MountVolume
 
 
 class ImageExecuteCommand(Task):
