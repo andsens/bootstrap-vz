@@ -6,6 +6,8 @@ from common.fs import get_partitions
 
 class VirtualBoxVolume(LoopbackVolume):
 
+	extension = 'vdi'
+
 	def _before_create(self, e):
 		self.image_path = e.image_path
 		log_check_call(['/usr/bin/qemu-img', 'create', '-f', 'vdi', self.image_path, str(self.size) + 'M'])
