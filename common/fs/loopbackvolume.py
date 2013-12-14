@@ -35,7 +35,7 @@ class LoopbackVolume(Volume):
 		loop_device_name = os.path.basename(self.loop_device_path)
 		loop_device_partition = proc_partitions[loop_device_name]
 
-		sectors = self.size*1024*1024/512
+		sectors = self.size * 1024 * 1024 / 512
 		table = ('{log_start_sec} {sectors} linear {major}:{minor} {start_sec}'
 		         .format(log_start_sec=0,
 		                 sectors=sectors,

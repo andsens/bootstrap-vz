@@ -30,7 +30,7 @@ class ConfigurePVGrub(Task):
 			root_idx = info.volume.partition_map.root.get_index()
 			grub_device = 'GRUB_DEVICE=/dev/xvda{idx}'.format(idx=root_idx)
 			sed_i(script_dst, '^GRUB_DEVICE=/dev/xvda$', grub_device)
-			grub_root = '\troot (hd0,{idx})'.format(idx=root_idx-1)
+			grub_root = '\troot (hd0,{idx})'.format(idx=root_idx - 1)
 			sed_i(script_dst, '^\troot \(hd0\)$', grub_root)
 
 		if info.manifest.volume['backing'] == 's3':

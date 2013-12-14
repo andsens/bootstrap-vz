@@ -75,7 +75,7 @@ class InstallGrub(Task):
 						device_map.write('(hd0,{prefix}{idx}) {device_path}\n'
 						                 .format(device_path=partition.device_path,
 						                         prefix=partition_prefix,
-						                         idx=idx+1))
+						                         idx=idx + 1))
 
 			# Install grub
 			log_check_call(['/usr/sbin/chroot', info.root,

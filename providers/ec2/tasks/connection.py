@@ -22,7 +22,7 @@ class GetCredentials(Task):
 			return creds
 
 		def env_key(key):
-			return ('aws-'+key).upper().replace('-', '_')
+			return ('aws-' + key).upper().replace('-', '_')
 		if all(getenv(env_key(key)) is not None for key in keys):
 			for key in keys:
 				creds[key] = getenv(env_key(key))
