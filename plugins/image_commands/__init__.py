@@ -7,5 +7,5 @@ def validate_manifest(data, schema_validate):
 
 
 def resolve_tasks(tasklist, manifest):
-	from image_commands import ImageExecuteCommand
+	from tasks import ImageExecuteCommand
 	tasklist.add(ImageExecuteCommand)
