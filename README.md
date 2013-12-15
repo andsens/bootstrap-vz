@@ -22,7 +22,7 @@ Other depencies include:
 * xfsprogs (If you want to use XFS as a filesystem)
 Also the following python libraries are required:
 * **boto**
-* **jsomschema** ([version 2.0.0](https://pypi.python.org/pypi/jsonschema), only available through pip)
+* **jsonschema** ([version 2.0.0](https://pypi.python.org/pypi/jsonschema), only available through pip)
 * **termcolor**
 * **fysom**
 
