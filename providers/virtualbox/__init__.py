@@ -49,6 +49,12 @@ def resolve_tasks(tasklist, manifest):
 
 	             loopback.MoveImage)
 
+	if manifest.bootstrapper.get('guest_additions', False):
+		from tasks import guest_additions
+		tasklist.add(guest_additions.CheckGuestAdditionsPath,
+		             guest_additions.AddGuestAdditionsPackages,
+		             guest_additions.InstallGuestAdditions)
+
 	if manifest.bootstrapper.get('tarball', False):
 		tasklist.add(bootstrap.MakeTarball)
 
