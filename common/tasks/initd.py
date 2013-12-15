@@ -52,7 +52,9 @@ class AddSSHKeyGeneration(Task):
 			else:
 				install['generate-ssh-hostkeys'] = os.path.join(init_scripts_dir, 'generate-ssh-hostkeys')
 		except CalledProcessError:
-			pass
+			import logging
+			logging.getLogger(__name__).warn('The OpenSSH server has not been installed, '
+			                                 'not installing SSH host key generation script.')
 
 
 class RemoveHWClock(Task):
