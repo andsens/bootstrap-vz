@@ -59,6 +59,15 @@ class DisableRootLogin(Task):
 	phase = phases.system_modification
 
 	def run(self, info):
-		from common.tools import sed_i
-		sshdconfig_path = os.path.join(info.root, 'etc/ssh/sshd_config')
-		sed_i(sshdconfig_path, 'PermitRootLogin yes', 'PermitRootLogin no')
+		from subprocess import CalledProcessError
+		from common.tools import log_check_call
+		try:
+			log_check_call(['/usr/sbin/chroot', info.root,
+			                '/usr/bin/dpkg-query', '-W', 'openssh-server'])
+			from common.tools import sed_i
+			sshdconfig_path = os.path.join(info.root, 'etc/ssh/sshd_config')
+			sed_i(sshdconfig_path, 'PermitRootLogin yes', 'PermitRootLogin no')
+		except CalledProcessError:
+			import logging
+			logging.getLogger(__name__).warn('The OpenSSH server has not been installed, '
+			                                 'not disabling SSH root login.')
