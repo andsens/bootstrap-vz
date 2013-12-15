@@ -14,11 +14,9 @@ Command is executed in current context. It is possible to use variables to acces
 
 Available variables are:
   {root} : image mount point (to copy files for example or chroot commands)
-  {filesystem}    : used filesystem
-  {image} : image file path
 
 Example:
 
     [[ "touch", "{root}/var/www/hello" ],
-    [ "/usr/sbin/chroot", "{root}", "touch", "/var/www/hello.{filesystem}"]]
+    [ "/usr/sbin/chroot", "{root}", "touch", "/var/www/hello"]]
 
