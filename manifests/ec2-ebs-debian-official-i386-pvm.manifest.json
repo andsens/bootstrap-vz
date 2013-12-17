@@ -44,7 +44,8 @@
 			]
 		},
 		"cloud_init": {
-			"username": "admin"
+			"username": "admin",
+                        "metadata_sources": "Ec2"
 		}
 	}
 }

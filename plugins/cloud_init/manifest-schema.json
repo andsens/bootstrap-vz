@@ -11,6 +11,9 @@
 					"properties": {
 						"username": {
 							"type": "string"
+						},
+						"metadata_sources": {
+							"type": "string"
 						}
 					},
 					"required": ["username"]
