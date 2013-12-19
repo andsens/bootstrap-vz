@@ -23,9 +23,11 @@ def validate_manifest(data, schema_validate):
 def resolve_tasks(tasklist, manifest):
 	from tasks import SetUsername
 	from tasks import SetMetadataSource
+	from tasks import AutoSetMetadataSource
+	from tasks import DisableModules
 	from providers.ec2.tasks.initd import AddEC2InitScripts
 	from common.tasks import initd
-	tasklist.add(SetUsername, SetMetadataSource)
+	tasklist.add(SetUsername, AutoSetMetadataSource, SetMetadataSource, DisableModules)
 	tasklist.remove(AddEC2InitScripts,
 	                initd.AddExpandRoot,
 	                initd.AdjustExpandRootScript,

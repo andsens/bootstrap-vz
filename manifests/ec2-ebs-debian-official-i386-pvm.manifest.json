@@ -45,7 +45,8 @@
 		},
 		"cloud_init": {
 			"username": "admin",
-                        "metadata_sources": "Ec2"
+                        //"metadata_sources": "Ec2",
+			"disable_modules": [ "landscape", "byobu", "ssh-import-id" ]
 		}
 	}
 }
