@@ -45,6 +45,7 @@ class AutoSetMetadataSource(Task):
 		  sources = "Ec2"
 
 		if sources:
+		  print ("Setting metadata source to " + sources)
 		  sources = "cloud-init      cloud-init/datasources  multiselect     " + sources
 		  log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/debconf-set-selections' ], sources)
 
@@ -54,22 +55,22 @@ class DisableModules(Task):
 	predecessors = [apt.AptUpgrade]
 
 	def run(self, info):
-		patterns = ""
-		for pattern in info.manifest.plugins['cloud_init']['disable_modules']:
-		  if patterns != "":
-		    patterns = patterns + "|" + pattern
-		  else:
-		    patterns = "^\s+-\s+(" + pattern
-		patterns = patterns + ")$"
-		regex = re.compile(patterns)
+		if 'disable_modules' in info.manifest.plugins['cloud_init']:
+		  patterns = ""
+		  for pattern in info.manifest.plugins['cloud_init']['disable_modules']:
+		    if patterns != "":
+		      patterns = patterns + "|" + pattern
+		    else:
+		      patterns = "^\s+-\s+(" + pattern
+		  patterns = patterns + ")$"
+		  regex = re.compile(patterns)
 
-		f = open(info.root + "/etc/cloud/cloud.cfg")
-		lines = f.readlines()
-		f.close()
+		  f = open(info.root + "/etc/cloud/cloud.cfg")
+		  lines = f.readlines()
+		  f.close()
 
-		print("Pattern to match is " + patterns + "\n")
-		f = open(info.root + "/etc/cloud/cloud.cfg", "w")
-		for line in lines:
+		  f = open(info.root + "/etc/cloud/cloud.cfg", "w")
+		  for line in lines:
 		    if not regex.match(line):
 		      f.write(line)
-		f.close
+		  f.close
