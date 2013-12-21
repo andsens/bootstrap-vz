@@ -22,6 +22,7 @@ class SetUsername(Task):
 		           '     shell: /bin/bash').format(username=username)
 		sed_i(cloud_cfg, search, replace)
 
+
 class SetMetadataSource(Task):
         description = 'Setting metadata source'
         phase = phases.system_modification
@@ -31,7 +32,7 @@ class SetMetadataSource(Task):
         def run(self, info):
 		if "metadata_sources" in info.manifest.plugins['cloud_init']:
 		    sources = "cloud-init      cloud-init/datasources  multiselect     " + info.manifest.plugins['cloud_init']['metadata_sources']
-		    log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/debconf-set-selections' ], sources)
+		    log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/debconf-set-selections'], sources)
 
 
 class AutoSetMetadataSource(Task):
@@ -39,6 +40,7 @@ class AutoSetMetadataSource(Task):
         phase = phases.system_modification
 	predecessors = [apt.AptSources]
         successors = [SetMetadataSource]
+
 	def run(self, info):
 		sources = ""
 		if info.manifest.provider == "ec2":
@@ -47,7 +49,8 @@ class AutoSetMetadataSource(Task):
 		if sources:
 		  print ("Setting metadata source to " + sources)
 		  sources = "cloud-init      cloud-init/datasources  multiselect     " + sources
-		  log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/debconf-set-selections' ], sources)
+		  log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/debconf-set-selections'], sources)
+
 
 class DisableModules(Task):
 	description = 'Setting cloud.cfg modules'
