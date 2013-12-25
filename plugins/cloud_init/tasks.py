@@ -68,9 +68,13 @@ class DisableModules(Task):
 		  patterns = patterns + ")$"
 		  regex = re.compile(patterns)
 
-		  f = open(info.root + "/etc/cloud/cloud.cfg")
-		  lines = f.readlines()
-		  f.close()
+		  try:
+		    f = open(info.root + "/etc/cloud/cloud.cfg")
+		    lines = f.readlines()
+		    f.close()
+		  except:
+		    print "Cannot read cloud.cfg"
+		    return -1
 
 		  f = open(info.root + "/etc/cloud/cloud.cfg", "w")
 		  for line in lines:
