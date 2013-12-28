@@ -3,6 +3,7 @@ from common import phases
 from common.tasks.packages import ImagePackages
 from common.tasks.host import CheckPackages
 from common.tasks.initd import InstallInitScripts
+from plugins.packages.tasks import InstallRemotePackages
 import os
 
 
@@ -55,8 +56,9 @@ class AdminUserCredentials(Task):
 
 
 class DisableRootLogin(Task):
-	description = 'Disable SSH login for root'
+	description = 'Disabling SSH login for root'
 	phase = phases.system_modification
+	predecessors = [InstallRemotePackages]
 
 	def run(self, info):
 		from subprocess import CalledProcessError
