@@ -45,7 +45,7 @@ class BundleImage(Task):
 	phase = phases.image_registration
 
 	def run(self, info):
-		bundle_name = 'bundle-{id:x}'.format(id=info.run_id)
+		bundle_name = 'bundle-{id}'.format(id=info.run_id)
 		info.bundle_path = os.path.join(info.workspace, bundle_name)
 		log_check_call(['/usr/bin/euca-bundle-image',
 		                '--image', info.volume.image_path,

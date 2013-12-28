@@ -7,9 +7,8 @@ class BootstrapInformation(object):
 		self.volume = load_volume(self.manifest.volume)
 		self.debug = debug
 		import random
-		self.run_id = random.randrange(16 ** 8)
+		self.run_id = '{id:08x}'.format(id=random.randrange(16 ** 8))
 		import os.path
-		workspace_dirname = '{id:x}'.format(id=self.run_id)
-		self.workspace = os.path.join(manifest.bootstrapper['workspace'], workspace_dirname)
+		self.workspace = os.path.join(manifest.bootstrapper['workspace'], self.run_id)
 
 		self.initd = {'install': {}, 'disable': []}

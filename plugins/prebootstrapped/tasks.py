@@ -49,7 +49,7 @@ class CopyImage(Task):
 	predecessors = [bootstrap.Bootstrap]
 
 	def run(self, info):
-		loopback_backup_name = 'volume-{id:x}.{ext}.backup'.format(id=info.run_id, ext=info.volume.extension)
+		loopback_backup_name = 'volume-{id}.{ext}.backup'.format(id=info.run_id, ext=info.volume.extension)
 		destination = os.path.join(info.manifest.bootstrapper['workspace'], loopback_backup_name)
 
 		def mk_snapshot():
