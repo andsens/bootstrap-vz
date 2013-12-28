@@ -16,7 +16,7 @@
 			"properties": {
 				"backing": {
 					"type": "string",
-					"enum": ["raw", "vdi"]
+					"enum": ["raw", "vdi", "vmdk"]
 				},
 				"partitions": {
 					"type": "object",

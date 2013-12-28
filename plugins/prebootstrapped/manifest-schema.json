@@ -8,7 +8,7 @@
 			"properties": {
 				"backing": {
 					"type": "string",
-					"enum": ["raw", "ebs", "s3", "vdi"]
+					"enum": ["raw", "ebs", "s3", "vdi", "vmdk"]
 				}
 			},
 			"required": ["backing"]
