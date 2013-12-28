@@ -4,13 +4,11 @@ from common.tools import log_check_call
 from common.fs import get_partitions
 
 
-class VirtualBoxVolume(LoopbackVolume):
-
-	extension = 'vdi'
+class QEMUVolume(LoopbackVolume):
 
 	def _before_create(self, e):
 		self.image_path = e.image_path
-		log_check_call(['/usr/bin/qemu-img', 'create', '-f', 'vdi', self.image_path, str(self.size) + 'M'])
+		log_check_call(['/usr/bin/qemu-img', 'create', '-f', self.qemu_format, self.image_path, str(self.size) + 'M'])
 
 	def _check_nbd_module(self):
 		from base.fs.partitionmaps.none import NoPartitions
