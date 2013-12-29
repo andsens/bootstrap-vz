@@ -4,7 +4,7 @@ from common.tasks import apt
 
 
 class AddUnattendedUpgradesPackage(Task):
-	description = 'Adding ``unattended-upgrades\'\' to the image packages'
+	description = 'Adding `unattended-upgrades\' to the image packages'
 	phase = phases.preparation
 	predecessors = [apt.AddDefaultSources]
 

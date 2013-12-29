@@ -34,5 +34,5 @@ class CheckHostDependencies(Task):
 			try:
 				log_check_call(['/usr/bin/dpkg-query', '-s', package])
 			except CalledProcessError:
-				msg = "The package ``{0}\'\' is not installed".format(package)
+				msg = "The package `{0}\' is not installed".format(package)
 				raise TaskError(msg)

@@ -6,7 +6,7 @@ import os
 
 
 class AddSudoPackage(Task):
-	description = 'Adding ``sudo\'\' to the image packages'
+	description = 'Adding `sudo\' to the image packages'
 	phase = phases.preparation
 	predecessors = [apt.AddDefaultSources]
 
