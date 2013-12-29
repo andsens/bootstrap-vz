@@ -5,9 +5,10 @@ from common.tools import log_check_call
 from ebs import Snapshot
 from common.tasks import workspace
 from connection import Connect
+from . import assets
 import os.path
 
-cert_ec2 = os.path.normpath(os.path.join(os.path.dirname(__file__), '../assets/certs/cert-ec2.pem'))
+cert_ec2 = os.path.join(assets, 'certs/cert-ec2.pem')
 
 
 class AMIName(Task):

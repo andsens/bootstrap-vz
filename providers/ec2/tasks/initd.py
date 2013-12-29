@@ -1,6 +1,7 @@
 from base import Task
 from common import phases
 from common.tasks import initd
+from . import assets
 import os.path
 
 
@@ -13,6 +14,6 @@ class AddEC2InitScripts(Task):
 		init_scripts = {'ec2-get-credentials': 'ec2-get-credentials',
 		                'ec2-run-user-data': 'ec2-run-user-data'}
 
-		init_scripts_dir = os.path.normpath(os.path.join(os.path.dirname(__file__), '../assets/init.d'))
+		init_scripts_dir = os.path.join(assets, 'init.d')
 		for name, path in init_scripts.iteritems():
 			info.initd['install'][name] = os.path.join(init_scripts_dir, path)

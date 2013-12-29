@@ -2,6 +2,7 @@ from base import Task
 from common import phases
 from common.exceptions import TaskError
 from common.tools import log_check_call
+from . import assets
 import os.path
 
 
@@ -31,7 +32,7 @@ class AddExpandRoot(Task):
 	successors = [InstallInitScripts]
 
 	def run(self, info):
-		init_scripts_dir = os.path.normpath(os.path.join(os.path.dirname(__file__), '../assets/init.d'))
+		init_scripts_dir = os.path.join(assets, 'init.d')
 		info.initd['install']['expand-root'] = os.path.join(init_scripts_dir, 'expand-root')
 
 
@@ -41,7 +42,7 @@ class AddSSHKeyGeneration(Task):
 	successors = [InstallInitScripts]
 
 	def run(self, info):
-		init_scripts_dir = os.path.normpath(os.path.join(os.path.dirname(__file__), '../assets/init.d'))
+		init_scripts_dir = os.path.join(assets, 'init.d')
 		install = info.initd['install']
 		from subprocess import CalledProcessError
 		try:

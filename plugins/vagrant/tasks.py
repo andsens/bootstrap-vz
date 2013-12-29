@@ -5,6 +5,7 @@ from common.tasks import apt
 from plugins.admin_user.tasks import CreateAdminUser
 import os
 import shutil
+
 assets = os.path.normpath(os.path.join(os.path.dirname(__file__), 'assets'))
 
 

@@ -1,5 +1,6 @@
 from base import Task
 from common import phases
+from . import assets
 import os
 
 
@@ -19,7 +20,7 @@ class ConfigurePVGrub(Task):
 			os.chmod(cfg, os.stat(cfg).st_mode & ~ x_all)
 
 		from shutil import copy
-		script_src = os.path.normpath(os.path.join(os.path.dirname(__file__), '../assets/grub.d/40_custom'))
+		script_src = os.path.join(assets, 'grub.d/40_custom')
 		script_dst = os.path.join(info.root, 'etc/grub.d/40_custom')
 		copy(script_src, script_dst)
 		os.chmod(script_dst, rwxr_xr_x)

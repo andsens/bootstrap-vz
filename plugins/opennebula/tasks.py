@@ -3,6 +3,8 @@ from common import phases
 from common.tasks.locale import GenerateLocale
 import os
 
+assets = os.path.normpath(os.path.join(os.path.dirname(__file__), 'assets'))
+
 
 class OpenNebulaContext(Task):
 	description = 'Setup OpenNebula init context'
@@ -16,8 +18,7 @@ class OpenNebulaContext(Task):
 		             stat.S_IROTH                | stat.S_IXOTH)
 
 		from shutil import copy
-		assets_dir = os.path.normpath(os.path.join(os.path.dirname(__file__), 'assets'))
-		script_src = os.path.join(assets_dir, 'one-context_3.8.1.deb')
+		script_src = os.path.join(assets, 'one-context_3.8.1.deb')
 		script_dst = os.path.join(info.root, 'tmp/one-context_3.8.1.deb')
 		copy(script_src, script_dst)
 		os.chmod(script_dst, rwxr_xr_x)
@@ -34,11 +35,11 @@ class OpenNebulaContext(Task):
 		                '90', '2', '3', '4', '5', 'stop', '90', '0', '6'])
 
 		# Load all pubkeys in root authorized_keys
-		script_src = os.path.join(assets_dir, 'one-pubkey.sh')
+		script_src = os.path.join(assets, 'one-pubkey.sh')
 		script_dst = os.path.join(info.root, 'etc/one-context.d/one-pubkey.sh')
 		copy(script_src, script_dst)
 
 		# If USER_EC2_DATA is a script, execute it
-		script_src = os.path.join(assets_dir, 'one-ec2.sh')
+		script_src = os.path.join(assets, 'one-ec2.sh')
 		script_dst = os.path.join(info.root, 'etc/one-context.d/one-ec2.sh')
 		copy(script_src, script_dst)
