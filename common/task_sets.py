@@ -11,9 +11,8 @@ from common.tasks import security
 from common.tasks import locale
 
 base_set = [workspace.CreateWorkspace,
-            packages.HostPackages,
-            packages.ImagePackages,
-            host.CheckPackages,
+            host.HostDependencies,
+            host.CheckHostDependencies,
             bootstrap.Bootstrap,
             workspace.DeleteWorkspace,
             ]
@@ -45,16 +44,19 @@ ssh_set = [security.DisableSSHPasswordAuthentication,
            cleanup.ShredHostkeys,
            ]
 
-apt_set = [apt.DisableDaemonAutostart,
-           apt.AptSources,
+apt_set = [apt.WriteSources,
+           apt.DisableDaemonAutostart,
            apt.AptUpdate,
            apt.AptUpgrade,
+           packages.InstallRemotePackages,
+           packages.InstallLocalPackages,
            apt.PurgeUnusedPackages,
            apt.AptClean,
            apt.EnableDaemonAutostart,
            ]
 
-locale_set = [locale.GenerateLocale,
+locale_set = [locale.LocaleBootstrapPackage,
+              locale.GenerateLocale,
               locale.SetTimezone,
               ]
 

@@ -1,17 +1,13 @@
 from base import Task
 from common import phases
-from common.tasks.packages import ImagePackages
-from common.tasks.host import CheckPackages
 
 
 class AddUnattendedUpgradesPackage(Task):
 	description = 'Adding ``unattended-upgrades\'\' to the image packages'
 	phase = phases.preparation
-	predecessors = [ImagePackages]
-	successors = [CheckPackages]
 
 	def run(self, info):
-		info.img_packages[0].add('unattended-upgrades')
+		info.packages.add('unattended-upgrades')
 
 
 class EnablePeriodicUpgrades(Task):

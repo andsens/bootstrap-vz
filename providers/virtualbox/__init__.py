@@ -33,7 +33,7 @@ def resolve_tasks(tasklist, manifest):
 		from common.task_sets import partitioning_set
 		tasklist.add(*partitioning_set)
 
-	tasklist.add(packages.ImagePackages,
+	tasklist.add(packages.DefaultPackages,
 
 	             loopback.Create,
 

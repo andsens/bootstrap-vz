@@ -1,14 +1,14 @@
 
 
-def log_check_call(command, stdin=None):
-	status, stdout, stderr = log_call(command, stdin)
+def log_check_call(command, stdin=None, env=None):
+	status, stdout, stderr = log_call(command, stdin, env)
 	if status != 0:
 		from subprocess import CalledProcessError
 		raise CalledProcessError(status, ' '.join(command), '\n'.join(stderr))
 	return stdout
 
 
-def log_call(command, stdin=None):
+def log_call(command, stdin=None, env=None):
 	import subprocess
 	import select
 
@@ -18,13 +18,19 @@ def log_call(command, stdin=None):
 	log = logging.getLogger(__name__ + command_log)
 	log.debug('Executing: {command}'.format(command=' '.join(command)))
 
+	popen_args = {'args':   command,
+	              'env':    env,
+	              'stdin':  subprocess.PIPE,
+	              'stdout': subprocess.PIPE,
+	              'stderr': subprocess.PIPE, }
 	if stdin is not None:
-		process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		popen_args['stdin'] = subprocess.PIPE
+		process = subprocess.Popen(**popen_args)
 		process.stdin.write(stdin + "\n")
 		process.stdin.flush()
 		process.stdin.close()
 	else:
-		process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		process = subprocess.Popen(**popen_args)
 	stdout = []
 	stderr = []
 	while True:

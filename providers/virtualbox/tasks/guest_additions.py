@@ -1,7 +1,6 @@
 from base import Task
 from common import phases
-from common.tasks.packages import ImagePackages
-from common.tasks.host import CheckPackages
+from common.tasks.packages import InstallRemotePackages
 from common.tasks.filesystem import FStab
 from common.exceptions import TaskError
 
@@ -21,20 +20,18 @@ class CheckGuestAdditionsPath(Task):
 class AddGuestAdditionsPackages(Task):
 	description = 'Adding packages to support Guest Additions installation'
 	phase = phases.preparation
-	predecessors = [ImagePackages]
-	successors = [CheckPackages]
 
 	def run(self, info):
-		info.img_packages[0].update(['bzip2',
-		                             'build-essential',
-		                             'dkms',
-		                             ])
+		info.packages.add('bzip2')
+		info.packages.add('build-essential')
+		info.packages.add('dkms')
+		# info.packages.add('linux-headers-3.2.0-4-amd64')  # linux-headers-$(uname -r)
 
 
 class InstallGuestAdditions(Task):
 	description = 'Installing the VirtualBox Guest Additions'
 	phase = phases.system_modification
-	predecessors = [FStab]
+	predecessors = [FStab, InstallRemotePackages]
 
 	def run(self, info):
 		import os

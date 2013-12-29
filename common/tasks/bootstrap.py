@@ -8,11 +8,10 @@ log = logging.getLogger(__name__)
 def get_bootstrap_args(info):
 	executable = ['/usr/sbin/debootstrap']
 	options = ['--arch=' + info.manifest.system['architecture']]
-	include, exclude = info.img_packages
-	if len(include) > 0:
-		options.append('--include=' + ','.join(include))
-	if len(exclude) > 0:
-		options.append('--exclude=' + ','.join(exclude))
+	if len(info.include_packages) > 0:
+		options.append('--include=' + ','.join(info.include_packages))
+	if len(info.exclude_packages) > 0:
+		options.append('--exclude=' + ','.join(info.exclude_packages))
 	arguments = [info.manifest.system['release'], info.root, info.manifest.bootstrapper['mirror']]
 	return executable, options, arguments
 

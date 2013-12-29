@@ -32,8 +32,7 @@ class AddXFSProgs(Task):
 	phase = phases.preparation
 
 	def run(self, info):
-		include, exclude = info.img_packages
-		include.add('xfsprogs')
+		info.packages.add('xfsprogs')
 
 
 class CreateMountDir(Task):

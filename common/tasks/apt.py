@@ -1,31 +1,28 @@
 from base import Task
 from common import phases
 from common.tools import log_check_call
-import network
 import locale
 import os
 
 
-class AptSources(Task):
-	description = 'Adding aptitude sources'
-	phase = phases.system_modification
+class WriteSources(Task):
+	description = 'Writing aptitude sources to disk'
+	phase = phases.package_installation
 
 	def run(self, info):
-		sources_path = os.path.join(info.root, 'etc/apt/sources.list')
-		with open(sources_path, 'w') as apt_sources:
-			apt_sources.write(('deb     {apt_mirror} {release} main\n'
-			                   'deb-src {apt_mirror} {release} main\n'
-			                   .format(apt_mirror='http://http.debian.net/debian',
-			                           release=info.manifest.system['release'])))
-			apt_sources.write(('deb     {apt_mirror} {release}/updates main\n'
-			                   'deb-src {apt_mirror} {release}/updates main\n'
-			                   .format(apt_mirror='http://security.debian.org/',
-			                           release=info.manifest.system['release'])))
+		for name, sources in info.source_lists.sources.iteritems():
+			if name == 'main':
+				list_path = os.path.join(info.root, 'etc/apt/sources.list')
+			else:
+				list_path = os.path.join(info.root, 'etc/apt/sources.list.d/', name + '.list')
+			with open(list_path, 'w') as source_list:
+				for source in sources:
+					source_list.write('{line}\n'.format(line=str(source)))
 
 
 class DisableDaemonAutostart(Task):
 	description = 'Disabling daemon autostart'
-	phase = phases.system_modification
+	phase = phases.package_installation
 
 	def run(self, info):
 		rc_policy_path = os.path.join(info.root, 'usr/sbin/policy-rc.d')
@@ -41,27 +38,19 @@ class DisableDaemonAutostart(Task):
 
 class AptUpdate(Task):
 	description = 'Updating the package cache'
-	phase = phases.system_modification
-	predecessors = [locale.GenerateLocale, AptSources]
-	successors = [network.RemoveDNSInfo]
+	phase = phases.package_installation
+	predecessors = [locale.GenerateLocale, WriteSources]
 
 	def run(self, info):
 		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get', 'update'])
-		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get',
-		                                               '--fix-broken',
-		                                               '--assume-yes',
-		                                               'install'])
-		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get', '--assume-yes', 'upgrade'])
 
 
 class AptUpgrade(Task):
 	description = 'Upgrading packages and fixing broken dependencies'
-	phase = phases.system_modification
+	phase = phases.package_installation
 	predecessors = [AptUpdate, DisableDaemonAutostart]
-	successors = [network.RemoveDNSInfo]
 
 	def run(self, info):
-		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get', 'update'])
 		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get',
 		                                               '--fix-broken',
 		                                               '--assume-yes',

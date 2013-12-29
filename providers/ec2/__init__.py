@@ -43,8 +43,8 @@ def resolve_tasks(tasklist, manifest):
 		from common.task_sets import partitioning_set
 		tasklist.add(*partitioning_set)
 
-	tasklist.add(packages.HostPackages,
-	             packages.ImagePackages,
+	tasklist.add(packages.HostDependencies,
+	             packages.DefaultPackages,
 	             connection.GetCredentials,
 	             host.GetInfo,
 	             ami.AMIName,

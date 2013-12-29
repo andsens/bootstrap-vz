@@ -3,9 +3,19 @@ from common import phases
 import os.path
 
 
+class LocaleBootstrapPackage(Task):
+	description = 'Adding locale package to bootstrap installation'
+	phase = phases.preparation
+
+	def run(self, info):
+		# We could bootstrap without locales, but things just suck without them
+		# eg. error messages when running apt
+		info.include_packages.add('locales')
+
+
 class GenerateLocale(Task):
 	description = 'Generating the selected locale'
-	phase = phases.system_modification
+	phase = phases.package_installation
 
 	def run(self, info):
 		from common.tools import sed_i

@@ -30,19 +30,19 @@
 			}
 		}
 	},
-	"plugins": {
-		"packages": {
-			"sources": {
-				"backports": [
-					"deb     {apt_mirror} {release}-backports main",
-					"deb-src {apt_mirror} {release}-backports main"
-				]
-			},
-			"remote": [
-				"sudo",
-				{ "name": "cloud-init", "target": "{release}-backports" }
+	"packages": {
+		"sources": {
+			"backports": [
+				"deb     {apt_mirror} {release}-backports main",
+				"deb-src {apt_mirror} {release}-backports main"
 			]
 		},
+		"remote": [
+			"sudo",
+			{ "name": "cloud-init", "target": "{release}-backports" }
+		]
+	},
+	"plugins": {
 		"cloud_init": {
 			"username": "admin",
                         //"metadata_sources": "Ec2",
