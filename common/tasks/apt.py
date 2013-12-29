@@ -68,15 +68,25 @@ class AptUpgrade(Task):
 	predecessors = [AptUpdate, DisableDaemonAutostart]
 
 	def run(self, info):
-		log_check_call(['/usr/sbin/chroot', info.root,
-		                '/usr/bin/apt-get', 'install',
-		                                    '--fix-broken',
-		                                    '--no-install-recommends',
-		                                    '--assume-yes'])
-		log_check_call(['/usr/sbin/chroot', info.root,
-		                '/usr/bin/apt-get', 'upgrade',
-		                                    '--no-install-recommends',
-		                                    '--assume-yes'])
+		from subprocess import CalledProcessError
+		try:
+			log_check_call(['/usr/sbin/chroot', info.root,
+			                '/usr/bin/apt-get', 'install',
+			                                    '--fix-broken',
+			                                    '--no-install-recommends',
+			                                    '--assume-yes'])
+			log_check_call(['/usr/sbin/chroot', info.root,
+			                '/usr/bin/apt-get', 'upgrade',
+			                                    '--no-install-recommends',
+			                                    '--assume-yes'])
+		except CalledProcessError as e:
+			if e.returncode == 100:
+				import logging
+				msg = ('apt exited with status code 100. '
+				       'This can sometimes occur when package retrieval times out or a package extraction failed. '
+				       'apt might succeed if you try bootstrapping again.')
+				logging.getLogger(__name__).warn(msg)
+			raise e
 
 
 class PurgeUnusedPackages(Task):
