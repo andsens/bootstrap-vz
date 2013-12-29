@@ -12,17 +12,36 @@ class InstallRemotePackages(Task):
 		if len(info.packages.remote) == 0:
 			return
 		import os
-		from common.tools import log_check_call
 
 		packages = []
 		for name, target in info.packages.remote.iteritems():
 			packages.append('{name}/{target}'.format(name=name, target=target))
 
-		env = os.environ.copy()
-		env['DEBIAN_FRONTEND'] = 'noninteractive'
-		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get', 'install',
-		                '--assume-yes'] + packages,
-		               env=env)
+		import logging
+		msg = ('The following packages will be installed (package/target-release):'
+		       '\n{packages}\n').format(packages='\n'.join(packages))
+		logging.getLogger(__name__).debug(msg)
+
+		from common.tools import log_check_call
+		from subprocess import CalledProcessError
+		try:
+			env = os.environ.copy()
+			env['DEBIAN_FRONTEND'] = 'noninteractive'
+			log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get', 'install',
+			                '--assume-yes'] + packages,
+			               env=env)
+		except CalledProcessError as e:
+			disk_stat = os.statvfs(info.root)
+			root_free_mb = disk_stat.f_bsize * disk_stat.f_bavail / 1024 / 1024
+			disk_stat = os.statvfs(os.path.join(info.root, 'boot'))
+			boot_free_mb = disk_stat.f_bsize * disk_stat.f_bavail / 1024 / 1024
+			free_mb = min(root_free_mb, boot_free_mb)
+			if free_mb < 50:
+				msg = ('apt exited with a non-zero status, '
+				       'this may be because\nthe image volume is '
+				       'running out of disk space ({free}MB left)').format(free=free_mb)
+				logging.getLogger(__name__).warn(msg)
+			raise e
 
 
 class InstallLocalPackages(Task):
