@@ -20,6 +20,7 @@
 		"locale":       "en_US",
 		"charmap":      "UTF-8"
 	},
+	"packages": {},
 	"volume": {
 		"backing": "ebs",
 		"partitions": {

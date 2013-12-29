@@ -133,5 +133,5 @@
 			"required": ["size", "filesystem"]
 		}
 	},
-	"required": ["provider", "bootstrapper", "system", "volume"]
+	"required": ["provider", "bootstrapper", "system", "packages", "volume"]
 }
