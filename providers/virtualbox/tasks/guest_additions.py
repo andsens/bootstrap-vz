@@ -40,7 +40,6 @@ class InstallGuestAdditions(Task):
 
 	def run(self, info):
 		import os
-		from common.tools import log_call
 		guest_additions_path = info.manifest.bootstrapper['guest_additions']
 		mount_dir = 'mnt/guest_additions'
 		mount_path = os.path.join(info.root, mount_dir)
@@ -49,9 +48,14 @@ class InstallGuestAdditions(Task):
 		root.add_mount(guest_additions_path, mount_path, ['-o', 'loop'])
 
 		install_script = os.path.join('/', mount_dir, 'VBoxLinuxAdditions.run')
+		from common.tools import log_call
+		status, out, err = log_call(['/usr/sbin/chroot', info.root,
+		                            install_script, '--nox11'])
 		# Install will exit with $?=1 because X11 isn't installed
-		log_call(['/usr/sbin/chroot', info.root,
-		          install_script, '--nox11'])
+		if status != 1:
+			msg = ('VBoxLinuxAdditions.run exited with status {status}, '
+			       'it should exit with status 1').format(status=status)
+			raise TaskError(msg)
 
 		root.remove_mount(mount_path)
 		os.rmdir(mount_path)
