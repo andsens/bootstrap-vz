@@ -14,6 +14,8 @@ class BootstrapInformation(object):
 		from fs import load_volume
 		self.volume = load_volume(self.manifest.volume)
 
+		self.apt_mirror = self.manifest.packages.get('mirror', 'http://http.debian.net/debian')
+
 		class DictClass(dict):
 			def __getattr__(self, name):
 				return self[name]
@@ -31,7 +33,7 @@ class BootstrapInformation(object):
 					obj[key] = value
 
 		self.manifest_vars = {}
-		self.manifest_vars['apt_mirror'] = 'http://http.debian.net/debian'
+		self.manifest_vars['apt_mirror'] = self.apt_mirror
 		set_manifest_vars(self.manifest_vars, self.manifest.data)
 
 		from datetime import datetime

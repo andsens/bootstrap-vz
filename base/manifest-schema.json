@@ -29,6 +29,7 @@
 		"packages": {
 			"type": "object",
 			"properties": {
+				"mirror": { "type": "string", "format": "uri" },
 				"sources": {
 					"type": "object",
 					"patternProperties": {

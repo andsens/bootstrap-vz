@@ -48,8 +48,6 @@ class Manifest(object):
 		self.data = data
 		self.provider = data['provider']
 		self.bootstrapper = data['bootstrapper']
-		if 'mirror' not in self.bootstrapper:
-			self.bootstrapper['mirror'] = 'http://http.debian.net/debian'
 		self.volume = data['volume']
 		self.system = data['system']
 		self.packages = data['packages']
