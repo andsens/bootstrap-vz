@@ -1,10 +1,12 @@
 from base import Task
 from common import phases
+from common.tasks import apt
 
 
 class DefaultPackages(Task):
 	description = 'Adding image packages required for EC2'
 	phase = phases.preparation
+	predecessors = [apt.AddDefaultSources]
 
 	def run(self, info):
 		info.packages.add('openssh-server')

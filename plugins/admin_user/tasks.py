@@ -1,12 +1,14 @@
 from base import Task
 from common import phases
 from common.tasks.initd import InstallInitScripts
+from common.tasks import apt
 import os
 
 
 class AddSudoPackage(Task):
 	description = 'Adding ``sudo\'\' to the image packages'
 	phase = phases.preparation
+	predecessors = [apt.AddDefaultSources]
 
 	def run(self, info):
 		info.packages.add('sudo')

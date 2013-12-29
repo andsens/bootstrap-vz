@@ -5,6 +5,22 @@ import locale
 import os
 
 
+class AddDefaultSources(Task):
+	description = 'Adding default release sources'
+	phase = phases.preparation
+
+	def run(self, info):
+		if info.source_lists.target_exists('{system.release}'):
+			import logging
+			msg = ('{system.release} target already exists').format(**info.manifest_vars)
+			logging.getLogger(__name__).info(msg)
+		else:
+			info.source_lists.add('main', 'deb     {apt_mirror} {system.release} main')
+			info.source_lists.add('main', 'deb-src {apt_mirror} {system.release} main')
+			info.source_lists.add('main', 'deb     {apt_mirror} {system.release}-updates main')
+			info.source_lists.add('main', 'deb-src {apt_mirror} {system.release}-updates main')
+
+
 class WriteSources(Task):
 	description = 'Writing aptitude sources to disk'
 	phase = phases.package_installation

@@ -44,7 +44,8 @@ ssh_set = [security.DisableSSHPasswordAuthentication,
            cleanup.ShredHostkeys,
            ]
 
-apt_set = [apt.WriteSources,
+apt_set = [apt.AddDefaultSources,
+           apt.WriteSources,
            apt.DisableDaemonAutostart,
            apt.AptUpdate,
            apt.AptUpgrade,

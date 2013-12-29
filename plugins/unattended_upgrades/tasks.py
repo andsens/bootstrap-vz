@@ -1,10 +1,12 @@
 from base import Task
 from common import phases
+from common.tasks import apt
 
 
 class AddUnattendedUpgradesPackage(Task):
 	description = 'Adding ``unattended-upgrades\'\' to the image packages'
 	phase = phases.preparation
+	predecessors = [apt.AddDefaultSources]
 
 	def run(self, info):
 		info.packages.add('unattended-upgrades')

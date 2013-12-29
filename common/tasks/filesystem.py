@@ -2,6 +2,7 @@ from base import Task
 from common import phases
 from common.tools import log_check_call
 from bootstrap import Bootstrap
+from common.tasks import apt
 import volume
 
 
@@ -30,6 +31,7 @@ class TuneVolumeFS(Task):
 class AddXFSProgs(Task):
 	description = 'Adding `xfsprogs\' to the image packages'
 	phase = phases.preparation
+	predecessors = [apt.AddDefaultSources]
 
 	def run(self, info):
 		info.packages.add('xfsprogs')

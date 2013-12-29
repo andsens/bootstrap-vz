@@ -1,11 +1,12 @@
 from base import Task
 from common import phases
-from common.tasks import packages
+from common.tasks import apt
 
 
 class DefaultPackages(Task):
 	description = 'Adding image packages required for virtualbox'
 	phase = phases.preparation
+	predecessors = [apt.AddDefaultSources]
 
 	def run(self, info):
 		# Add some basic packages we are going to need

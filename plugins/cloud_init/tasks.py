@@ -1,6 +1,7 @@
 from base import Task
 from common import phases
 from common.tools import log_check_call
+from common.tasks import apt
 import os.path
 
 
@@ -21,7 +22,7 @@ class AddBackports(Task):
 class AddCloudInitPackages(Task):
 	description = 'Adding cloud-init package and sudo'
 	phase = phases.preparation
-	predecessors = [AddBackports]
+	predecessors = [apt.AddDefaultSources, AddBackports]
 
 	def run(self, info):
 		target = None
