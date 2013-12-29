@@ -22,9 +22,21 @@ def validate_manifest(data, schema_validate):
 
 def resolve_tasks(tasklist, manifest):
 	from tasks import SetUsername
+	from tasks import SetMetadataSource
+	from tasks import AutoSetMetadataSource
+	from tasks import DisableModules
 	from providers.ec2.tasks.initd import AddEC2InitScripts
 	from common.tasks import initd
-	tasklist.add(SetUsername)
+
+	options = manifest.plugins['cloud_init']
+	tasklist.add(AutoSetMetadataSource)
+	if 'username' in options:
+		tasklist.add(SetUsername)
+	if 'disable_modules' in options:
+		tasklist.add(DisableModules)
+	if 'metadata_sources' in options:
+		tasklist.add(SetMetadataSource)
+
 	tasklist.remove(AddEC2InitScripts,
 	                initd.AddExpandRoot,
 	                initd.AdjustExpandRootScript,
