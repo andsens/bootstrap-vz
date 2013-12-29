@@ -10,8 +10,8 @@
 		"workspace": "/target"
 	},
 	"image": {
-		"name":        "debian-{release}-{architecture}-{virtualization}-{%y}{%m}{%d}",
-		"description": "Debian {release} {architecture} AMI ({virtualization})"
+		"name":        "debian-{system.release}-{system.architecture}-{virtualization}-{%y}{%m}{%d}",
+		"description": "Debian {system.release} {system.architecture} AMI ({virtualization})"
 	},
 	"system": {
 		"release":      "wheezy",

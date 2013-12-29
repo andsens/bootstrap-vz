@@ -3,30 +3,31 @@ from exceptions import PackageError
 
 class PackageList(object):
 
-	def __init__(self, sources_list, manifest):
-		self.sources_list = sources_list
-		self.default_target = manifest.system['release']
+	def __init__(self, data, manifest_vars, default_target, source_lists):
+		self.manifest_vars = manifest_vars
+		self.source_lists = source_lists
+		self.default_target = default_target
 		self.remote = {}
 		self.local = set()
-		if 'remote' in manifest.packages:
-			manifest_vars = {'release':      manifest.system['release'],
-			                 'architecture': manifest.system['architecture']}
-			for package in manifest.packages['remote']:
+		if 'remote' in data:
+			for package in data['remote']:
 				target = None
 				if isinstance(package, dict):
-					name = package['name'].format(**manifest_vars)
+					name = package['name'].format(**self.manifest_vars)
 					if 'target' in package:
-						target = package['target'].format(**manifest_vars)
+						target = package['target'].format(**self.manifest_vars)
 				else:
-					name = package.format(**manifest_vars)
+					name = package.format(**self.manifest_vars)
 				self.add(name, target)
-		if 'local' in manifest.packages:
-			for package_path in manifest.packages['local']:
+		if 'local' in data:
+			for package_path in data['local']:
 				self.local.add(package_path)
 
 	def add(self, name, target=None):
 		if target is None:
 			target = self.default_target
+		name = name.format(**self.manifest_vars)
+		target = target.format(**self.manifest_vars)
 		if name in self.remote:
 			if self.remote[name] != target:
 				msg = ('The package {name} was already added to the package list, '
@@ -34,7 +35,7 @@ class PackageList(object):
 				raise PackageError(msg)
 			return
 
-		if not self.sources_list.target_exists(target):
+		if not self.source_lists.target_exists(target):
 			msg = ('The target release {target} was not found in the sources list').format(target=target)
 			raise PackageError(msg)
 		self.remote[name] = target

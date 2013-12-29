@@ -45,12 +45,14 @@ class Manifest(object):
 			raise ManifestError(e.message, self, e.path)
 
 	def parse(self, data):
+		self.data = data
 		self.provider = data['provider']
 		self.bootstrapper = data['bootstrapper']
 		if 'mirror' not in self.bootstrapper:
 			self.bootstrapper['mirror'] = 'http://http.debian.net/debian'
 		self.volume = data['volume']
 		self.system = data['system']
+		self.packages = data['packages']
 		self.plugins = data['plugins'] if 'plugins' in data else {}
 
 	def load_plugins(self, data):

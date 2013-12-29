@@ -19,17 +19,7 @@ class MoveImage(Task):
 	phase = phases.image_registration
 
 	def run(self, info):
-		manifest_vars = {'release':        info.manifest.system['release'],
-		                 'architecture':   info.manifest.system['architecture']}
-		from datetime import datetime
-		now = datetime.now()
-		time_vars = ['%a', '%A', '%b', '%B', '%c', '%d', '%f', '%H',
-		             '%I', '%j', '%m', '%M', '%p', '%S', '%U', '%w',
-		             '%W', '%x', '%X', '%y', '%Y', '%z', '%Z']
-		for var in time_vars:
-			manifest_vars[var] = now.strftime(var)
-
-		image_name = info.manifest.image['name'].format(**manifest_vars)
+		image_name = info.manifest.image['name'].format(**info.manifest_vars)
 		filename = '{image_name}.{ext}'.format(image_name=image_name, ext=info.volume.extension)
 
 		import os.path

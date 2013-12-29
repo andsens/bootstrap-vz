@@ -2,18 +2,17 @@
 
 class SourceLists(object):
 
-	def __init__(self, manifest):
+	def __init__(self, data, manifest_vars):
 		self.sources = {}
-		self.manifest_vars = {'release':      manifest.system['release'],
-		                      'architecture': manifest.system['architecture'],
-		                      'apt_mirror':   'http://http.debian.net/debian'}
-		if 'sources' in manifest.packages:
-			for name, lines in manifest.packages['sources'].iteritems():
+		self.manifest_vars = manifest_vars
+		if 'sources' in data:
+			for name, lines in data['sources'].iteritems():
 				for line in lines:
 					self.add_source(name, '{line}\n'.format(line=line.format(**self.manifest_vars)))
 
 	def add_source(self, name, line):
 		name = name.format(**self.manifest_vars)
+		line = line.format(**self.manifest_vars)
 		if name not in self.sources:
 			self.sources[name] = []
 		self.sources[name].append(Source(line))

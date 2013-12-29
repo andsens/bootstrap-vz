@@ -16,20 +16,8 @@ class AMIName(Task):
 	predecessors = [Connect]
 
 	def run(self, info):
-		image_vars = {'release':        info.manifest.system['release'],
-		              'architecture':   info.manifest.system['architecture'],
-		              'virtualization': info.manifest.virtualization,
-		              'backing':        info.manifest.volume['backing']}
-		from datetime import datetime
-		now = datetime.now()
-		time_vars = ['%a', '%A', '%b', '%B', '%c', '%d', '%f', '%H',
-		             '%I', '%j', '%m', '%M', '%p', '%S', '%U', '%w',
-		             '%W', '%x', '%X', '%y', '%Y', '%z', '%Z']
-		for var in time_vars:
-			image_vars[var] = now.strftime(var)
-
-		ami_name = info.manifest.image['name'].format(**image_vars)
-		ami_description = info.manifest.image['description'].format(**image_vars)
+		ami_name = info.manifest.image['name'].format(**info.manifest_vars)
+		ami_description = info.manifest.image['description'].format(**info.manifest_vars)
 
 		images = info.connection.get_all_images()
 		for image in images:

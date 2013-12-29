@@ -10,8 +10,8 @@
 		"workspace": "/target"
 	},
 	"image": {
-		"name":        "debian-{release}-{architecture}-{virtualization}-{%Y}-{%m}-{%d}-ebs",
-		"description": "Debian {release} {architecture}"
+		"name":        "debian-{system.release}-{system.architecture}-{virtualization}-{%Y}-{%m}-{%d}-ebs",
+		"description": "Debian {system.release} {system.architecture}"
 	},
 	"system": {
 		"release":      "wheezy",
@@ -33,13 +33,13 @@
 	"packages": {
 		"sources": {
 			"backports": [
-				"deb     {apt_mirror} {release}-backports main",
-				"deb-src {apt_mirror} {release}-backports main"
+				"deb     {apt_mirror} {system.release}-backports main",
+				"deb-src {apt_mirror} {system.release}-backports main"
 			]
 		},
 		"remote": [
 			"sudo",
-			{ "name": "cloud-init", "target": "{release}-backports" }
+			{ "name": "cloud-init", "target": "{system.release}-backports" }
 		]
 	},
 	"plugins": {
