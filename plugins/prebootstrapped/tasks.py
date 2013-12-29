@@ -1,7 +1,8 @@
 from base import Task
 from common import phases
 from common.tasks import volume
-from common.tasks import bootstrap
+from common.tasks import packages
+from providers.virtualbox.tasks import guest_additions
 from providers.ec2.tasks import ebs
 from common.fs import remount
 from shutil import copyfile
@@ -13,8 +14,8 @@ log = logging.getLogger(__name__)
 
 class Snapshot(Task):
 	description = 'Creating a snapshot of the bootstrapped volume'
-	phase = phases.os_installation
-	predecessors = [bootstrap.Bootstrap]
+	phase = phases.package_installation
+	predecessors = [packages.InstallRemotePackages, guest_additions.InstallGuestAdditions]
 
 	def run(self, info):
 		def mk_snapshot():
@@ -45,8 +46,8 @@ class CreateFromSnapshot(Task):
 
 class CopyImage(Task):
 	description = 'Creating a snapshot of the bootstrapped volume'
-	phase = phases.os_installation
-	predecessors = [bootstrap.Bootstrap]
+	phase = phases.package_installation
+	predecessors = [packages.InstallRemotePackages, guest_additions.InstallGuestAdditions]
 
 	def run(self, info):
 		loopback_backup_name = 'volume-{id}.{ext}.backup'.format(id=info.run_id, ext=info.volume.extension)

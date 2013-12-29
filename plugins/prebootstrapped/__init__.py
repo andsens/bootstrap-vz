@@ -5,6 +5,8 @@ from tasks import CreateFromImage
 from providers.ec2.tasks import ebs
 from common.tasks import loopback
 from common.tasks import volume
+from common.tasks import locale
+from common.tasks import apt
 from common.tasks import bootstrap
 from common.tasks import filesystem
 from common.tasks import partitioning
@@ -26,6 +28,9 @@ def resolve_tasks(tasklist, manifest):
 	              filesystem.TuneVolumeFS,
 	              filesystem.AddXFSProgs,
 	              filesystem.CreateBootMountDir,
+
+	              apt.DisableDaemonAutostart,
+	              locale.GenerateLocale,
 	              bootstrap.MakeTarball,
 	              bootstrap.Bootstrap]
 	if manifest.volume['backing'] == 'ebs':
