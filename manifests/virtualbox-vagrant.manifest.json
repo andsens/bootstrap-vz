@@ -1,0 +1,43 @@
+{
+	"provider": "virtualbox",
+	"bootstrapper": {
+		"workspace":       "/target",
+		"guest_additions": "/root/images/VBoxGuestAdditions.iso"
+	},
+	"image": {
+		"name":        "debian-{system.release}-{system.architecture}-{%y}{%m}{%d}",
+		"description": "Debian {system.release} {system.architecture}"
+	},
+	"system": {
+		"release":      "wheezy",
+		"architecture": "amd64",
+		"timezone":     "UTC",
+		"locale":       "en_US",
+		"charmap":      "UTF-8"
+	},
+	"volume": {
+		"backing": "vmdk",
+		"partitions": {
+			"type": "mbr",
+			"boot": {
+				"size":       64,
+				"filesystem": "ext2"
+			},
+			"root": {
+				"size":       1855,
+				"filesystem": "ext4"
+			},
+			"swap": {"size": 128}
+		}
+	},
+	"plugins": {
+		"admin_user": {
+			"username": "vagrant"
+		},
+		"root_password": {
+			"password": "vagrant"
+		},
+		"vagrant": {
+		}
+	}
+}

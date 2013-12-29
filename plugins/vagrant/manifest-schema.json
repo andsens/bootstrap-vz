@@ -1,0 +1,39 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "Vagrant plugin manifest",
+	"type": "object",
+	"properties": {
+		"provider": {
+			"type": "string",
+			"enum": ["virtualbox"]
+		},
+		"volume": {
+			"type": "object",
+			"properties": {
+				"backing": {
+					"type": "string",
+					"enum": ["vmdk"]
+					// VirtualBox only supports vmdk or raw when importing via OVF:
+					// https://www.virtualbox.org/browser/vbox/trunk/src/VBox/Main/src-server/ApplianceImplImport.cpp#L636
+				}
+			},
+			"required": ["backing"]
+		},
+		"plugins": {
+			"type": "object",
+			"properties": {
+				"root_password": {
+					"type": "object",
+					"properties": {
+						"password": {
+							"type": "string"
+						}
+					},
+					"required": ["password"]
+				}
+			},
+			"required": ["root_password"]
+		}
+	},
+	"required": ["plugins"]
+}
