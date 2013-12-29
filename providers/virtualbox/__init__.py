@@ -1,6 +1,6 @@
 from manifest import Manifest
-from tasks import packages
-from common.tasks import volume as volume_tasks
+import tasks.packages
+from common.tasks import volume
 from common.tasks import loopback
 from common.tasks import partitioning
 from common.tasks import filesystem
@@ -33,7 +33,7 @@ def resolve_tasks(tasklist, manifest):
 		from common.task_sets import partitioning_set
 		tasklist.add(*partitioning_set)
 
-	tasklist.add(packages.DefaultPackages,
+	tasklist.add(tasks.packages.DefaultPackages,
 
 	             loopback.Create,
 
@@ -73,9 +73,9 @@ def resolve_rollback_tasks(tasklist, tasks_completed, manifest):
 		if task in completed and counter not in completed:
 			tasklist.add(counter)
 
-	counter_task(loopback.Create, volume_tasks.Delete)
+	counter_task(loopback.Create, volume.Delete)
 	counter_task(filesystem.CreateMountDir, filesystem.DeleteMountDir)
 	counter_task(partitioning.MapPartitions, partitioning.UnmapPartitions)
 	counter_task(filesystem.MountRoot, filesystem.UnmountRoot)
-	counter_task(volume_tasks.Attach, volume_tasks.Detach)
+	counter_task(volume.Attach, volume.Detach)
 	counter_task(workspace.CreateWorkspace, workspace.DeleteWorkspace)

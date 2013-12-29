@@ -1,29 +1,29 @@
 from manifest import Manifest
-import logging
-from tasks import packages
-from tasks import connection
-from tasks import host
-from tasks import ami
-from common.tasks import volume as volume_tasks
-from tasks import ebs
+import tasks.packages
+import tasks.connection
+import tasks.host
+import tasks.ami
+import tasks.ebs
+import tasks.filesystem
+import tasks.boot
+import tasks.network
+import tasks.initd
+from common.tasks import volume
+from common.tasks import filesystem
+from common.tasks import boot
+from common.tasks import network
+from common.tasks import initd
 from common.tasks import partitioning
 from common.tasks import loopback
-from common.tasks import filesystem as common_filesystem
-from tasks import filesystem
 from common.tasks import bootstrap
-from tasks import boot
-from common.tasks import boot as common_boot
 from common.tasks import security
-from tasks import network
-from common.tasks import network as common_network
-from tasks import initd
-from common.tasks import initd as common_initd
 from common.tasks import cleanup
 from common.tasks import workspace
 
 
 def initialize():
 	# Regardless of of loglevel, we don't want boto debug stuff, it's very noisy
+	import logging
 	logging.getLogger('boto').setLevel(logging.INFO)
 
 
@@ -43,49 +43,49 @@ def resolve_tasks(tasklist, manifest):
 		from common.task_sets import partitioning_set
 		tasklist.add(*partitioning_set)
 
-	tasklist.add(host.HostDependencies,
-	             packages.DefaultPackages,
-	             connection.GetCredentials,
-	             host.GetInfo,
-	             ami.AMIName,
-	             connection.Connect,
+	tasklist.add(tasks.host.HostDependencies,
+	             tasks.packages.DefaultPackages,
+	             tasks.connection.GetCredentials,
+	             tasks.host.GetInfo,
+	             tasks.ami.AMIName,
+	             tasks.connection.Connect,
 
-	             common_boot.BlackListModules,
-	             common_boot.DisableGetTTYs,
+	             boot.BlackListModules,
+	             boot.DisableGetTTYs,
 	             security.EnableShadowConfig,
-	             common_network.RemoveDNSInfo,
-	             common_network.ConfigureNetworkIF,
-	             network.EnableDHCPCDDNS,
-	             common_initd.AddExpandRoot,
-	             common_initd.AddSSHKeyGeneration,
-	             common_initd.RemoveHWClock,
-	             initd.AddEC2InitScripts,
-	             common_initd.InstallInitScripts,
-	             common_initd.AdjustExpandRootScript,
+	             network.RemoveDNSInfo,
+	             network.ConfigureNetworkIF,
+	             tasks.network.EnableDHCPCDDNS,
+	             initd.AddExpandRoot,
+	             initd.AddSSHKeyGeneration,
+	             initd.RemoveHWClock,
+	             tasks.initd.AddEC2InitScripts,
+	             initd.InstallInitScripts,
+	             initd.AdjustExpandRootScript,
 	             cleanup.ClearMOTD,
 	             cleanup.CleanTMP,
 
-	             ami.RegisterAMI)
+	             tasks.ami.RegisterAMI)
 
 	if manifest.virtualization == 'pvm':
-		tasklist.add(boot.ConfigurePVGrub)
+		tasklist.add(tasks.boot.ConfigurePVGrub)
 	else:
-		tasklist.add(common_boot.InstallGrub)
+		tasklist.add(boot.InstallGrub)
 
-	backing_specific_tasks = {'ebs': [ebs.Create,
-	                                  ebs.Attach,
-	                                  common_filesystem.FStab,
-	                                  ebs.Snapshot],
+	backing_specific_tasks = {'ebs': [tasks.ebs.Create,
+	                                  tasks.ebs.Attach,
+	                                  filesystem.FStab,
+	                                  tasks.ebs.Snapshot],
 	                          's3': [loopback.Create,
-	                                 volume_tasks.Attach,
-	                                 filesystem.S3FStab,
-	                                 ami.BundleImage,
-	                                 ami.UploadImage,
-	                                 ami.RemoveBundle]}
+	                                 volume.Attach,
+	                                 tasks.filesystem.S3FStab,
+	                                 tasks.ami.BundleImage,
+	                                 tasks.ami.UploadImage,
+	                                 tasks.ami.RemoveBundle]}
 	tasklist.add(*backing_specific_tasks.get(manifest.volume['backing'].lower()))
-	tasklist.add(common_filesystem.Format,
-	             volume_tasks.Detach,
-	             volume_tasks.Delete)
+	tasklist.add(filesystem.Format,
+	             volume.Detach,
+	             volume.Delete)
 
 	if manifest.bootstrapper.get('tarball', False):
 		tasklist.add(bootstrap.MakeTarball)
@@ -105,16 +105,16 @@ def resolve_rollback_tasks(tasklist, tasks_completed, manifest):
 		if task in completed and counter not in completed:
 			tasklist.add(counter)
 
-	counter_task(ebs.Create, volume_tasks.Delete)
-	counter_task(ebs.Attach, volume_tasks.Detach)
+	counter_task(tasks.ebs.Create, volume.Delete)
+	counter_task(tasks.ebs.Attach, volume.Detach)
 
-	counter_task(loopback.Create, volume_tasks.Delete)
-	counter_task(volume_tasks.Attach, volume_tasks.Detach)
+	counter_task(loopback.Create, volume.Delete)
+	counter_task(volume.Attach, volume.Detach)
 
 	counter_task(partitioning.MapPartitions, partitioning.UnmapPartitions)
-	counter_task(common_filesystem.CreateMountDir, common_filesystem.DeleteMountDir)
+	counter_task(filesystem.CreateMountDir, filesystem.DeleteMountDir)
 
-	counter_task(common_filesystem.MountRoot, common_filesystem.UnmountRoot)
-	counter_task(volume_tasks.Attach, volume_tasks.Detach)
+	counter_task(filesystem.MountRoot, filesystem.UnmountRoot)
+	counter_task(volume.Attach, volume.Detach)
 	counter_task(workspace.CreateWorkspace, workspace.DeleteWorkspace)
-	counter_task(ami.BundleImage, ami.RemoveBundle)
+	counter_task(tasks.ami.BundleImage, tasks.ami.RemoveBundle)
