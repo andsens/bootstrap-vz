@@ -8,9 +8,9 @@ class SourceLists(object):
 		if 'sources' in data:
 			for name, lines in data['sources'].iteritems():
 				for line in lines:
-					self.add_source(name, '{line}\n'.format(line=line.format(**self.manifest_vars)))
+					self.add(name, line)
 
-	def add_source(self, name, line):
+	def add(self, name, line):
 		name = name.format(**self.manifest_vars)
 		line = line.format(**self.manifest_vars)
 		if name not in self.sources:
@@ -18,6 +18,7 @@ class SourceLists(object):
 		self.sources[name].append(Source(line))
 
 	def target_exists(self, target):
+		target = target.format(**self.manifest_vars)
 		for lines in self.sources.itervalues():
 			if target in (source.distribution for source in lines):
 				return True

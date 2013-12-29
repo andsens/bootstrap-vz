@@ -45,8 +45,7 @@ class BootstrapInformation(object):
 		from pkg.sourceslist import SourceLists
 		self.source_lists = SourceLists(self.manifest.packages, self.manifest_vars)
 		from pkg.packagelist import PackageList
-		self.packages = PackageList(self.manifest.packages, self.manifest_vars,
-		                            default_target=manifest.system['release'], source_lists=self.source_lists)
+		self.packages = PackageList(self.manifest.packages, self.manifest_vars, self.source_lists)
 		self.include_packages = set()
 		self.exclude_packages = set()
 

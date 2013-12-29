@@ -3,21 +3,20 @@ from exceptions import PackageError
 
 class PackageList(object):
 
-	def __init__(self, data, manifest_vars, default_target, source_lists):
+	def __init__(self, data, manifest_vars, source_lists):
 		self.manifest_vars = manifest_vars
 		self.source_lists = source_lists
-		self.default_target = default_target
 		self.remote = {}
 		self.local = set()
 		if 'remote' in data:
 			for package in data['remote']:
 				target = None
 				if isinstance(package, dict):
-					name = package['name'].format(**self.manifest_vars)
+					name = package['name']
 					if 'target' in package:
-						target = package['target'].format(**self.manifest_vars)
+						target = package['target']
 				else:
-					name = package.format(**self.manifest_vars)
+					name = package
 				self.add(name, target)
 		if 'local' in data:
 			for package_path in data['local']:
@@ -25,7 +24,7 @@ class PackageList(object):
 
 	def add(self, name, target=None):
 		if target is None:
-			target = self.default_target
+			target = '{system.release}'
 		name = name.format(**self.manifest_vars)
 		target = target.format(**self.manifest_vars)
 		if name in self.remote:
@@ -39,3 +38,7 @@ class PackageList(object):
 			msg = ('The target release {target} was not found in the sources list').format(target=target)
 			raise PackageError(msg)
 		self.remote[name] = target
+
+	def add_local(self, package_path):
+		package_path = package_path.format(**self.manifest_vars)
+		self.local.add(package_path)
