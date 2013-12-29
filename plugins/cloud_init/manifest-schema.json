@@ -3,6 +3,17 @@
 	"title": "cloud-init plugin manifest",
 	"type": "object",
 	"properties": {
+		"system": {
+			"type": "object",
+			"properties": {
+				"release": {
+					"type": "string",
+					"enum": ["wheezy", "stable",
+					         "jessie", "testing",
+					         "sid", "unstable"]
+				}
+			}
+		},
 		"plugins": {
 			"type": "object",
 			"properties": {
@@ -27,7 +38,7 @@
 				},
 				"packages":   {"type": "object"}
 			},
-			"required": ["cloud_init", "packages"]
+			"required": ["cloud_init"]
 		}
 	}
 }

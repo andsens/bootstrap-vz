@@ -30,18 +30,6 @@
 			}
 		}
 	},
-	"packages": {
-		"sources": {
-			"backports": [
-				"deb     {apt_mirror} {system.release}-backports main",
-				"deb-src {apt_mirror} {system.release}-backports main"
-			]
-		},
-		"remote": [
-			"sudo",
-			{ "name": "cloud-init", "target": "{system.release}-backports" }
-		]
-	},
 	"plugins": {
 		"cloud_init": {
 			"username": "admin",

@@ -4,40 +4,26 @@ def validate_manifest(data, schema_validate):
 	from os import path
 	schema_path = path.normpath(path.join(path.dirname(__file__), 'manifest-schema.json'))
 	schema_validate(data, schema_path)
-	packages = data['plugins']['packages']
-	cloud_init_installed = False
-	if 'remote' in packages:
-		for package in packages['remote']:
-			if isinstance(package, basestring):
-				name = package
-			else:
-				name = package['name']
-			if name == 'cloud-init':
-				cloud_init_installed = True
-				break
-	if not cloud_init_installed:
-		from common.exceptions import ManifestError
-		raise ManifestError('The cloud-init package must be installed for the cloud_init plugin to work')
 
 
 def resolve_tasks(tasklist, manifest):
-	from tasks import SetUsername
-	from tasks import SetMetadataSource
-	from tasks import AutoSetMetadataSource
-	from tasks import DisableModules
-	from providers.ec2.tasks.initd import AddEC2InitScripts
+	import tasks
+	import providers.ec2.tasks.initd as initd_ec2
 	from common.tasks import initd
 
-	options = manifest.plugins['cloud_init']
-	tasklist.add(AutoSetMetadataSource)
-	if 'username' in options:
-		tasklist.add(SetUsername)
-	if 'disable_modules' in options:
-		tasklist.add(DisableModules)
-	if 'metadata_sources' in options:
-		tasklist.add(SetMetadataSource)
+	if manifest.system['release'] in ['wheezy', 'stable']:
+		tasklist.add(tasks.AddBackports)
 
-	tasklist.remove(AddEC2InitScripts,
+	tasklist.add(tasks.AddCloudInitPackages,
+	             tasks.SetMetadataSource)
+
+	options = manifest.plugins['cloud_init']
+	if 'username' in options:
+		tasklist.add(tasks.SetUsername)
+	if 'disable_modules' in options:
+		tasklist.add(tasks.DisableModules)
+
+	tasklist.remove(initd_ec2.AddEC2InitScripts,
 	                initd.AddExpandRoot,
 	                initd.AdjustExpandRootScript,
 	                initd.AddSSHKeyGeneration)

@@ -1,19 +1,42 @@
 from base import Task
 from common import phases
-from plugins.packages.tasks import InstallRemotePackages
-from common.tasks import apt
 from common.tools import log_check_call
-import re
+import os.path
+
+
+class AddBackports(Task):
+	description = 'Adding backports to the apt sources'
+	phase = phases.preparation
+
+	def run(self, info):
+		if info.source_lists.target_exists('{system.release}-backports'):
+			import logging
+			msg = ('{system.release}-backports target already exists').format(**info.manifest_vars)
+			logging.getLogger(__name__).info(msg)
+		else:
+			info.source_lists.add('backports', 'deb     {apt_mirror} {system.release}-backports main')
+			info.source_lists.add('backports', 'deb-src {apt_mirror} {system.release}-backports main')
+
+
+class AddCloudInitPackages(Task):
+	description = 'Adding cloud-init package and sudo'
+	phase = phases.preparation
+	predecessors = [AddBackports]
+
+	def run(self, info):
+		target = None
+		if info.manifest.system['release'] in ['wheezy', 'stable']:
+			target = '{system.release}-backports'
+		info.packages.add('cloud-init', target)
+		info.packages.add('sudo')
 
 
 class SetUsername(Task):
 	description = 'Setting username in cloud.cfg'
 	phase = phases.system_modification
-	predecessors = [InstallRemotePackages]
 
 	def run(self, info):
 		from common.tools import sed_i
-		import os.path
 		cloud_cfg = os.path.join(info.root, 'etc/cloud/cloud.cfg')
 		username = info.manifest.plugins['cloud_init']['username']
 		search = '^     name: debian$'
@@ -24,60 +47,42 @@ class SetUsername(Task):
 
 
 class SetMetadataSource(Task):
-        description = 'Setting metadata source'
-        phase = phases.system_modification
-	predecessors = [apt.AptSources]
-        successors = [apt.AptUpdate]
-
-        def run(self, info):
-		if "metadata_sources" in info.manifest.plugins['cloud_init']:
-		    sources = "cloud-init      cloud-init/datasources  multiselect     " + info.manifest.plugins['cloud_init']['metadata_sources']
-		    log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/debconf-set-selections'], sources)
-
-
-class AutoSetMetadataSource(Task):
-	description = 'Auto-setting metadata source'
-        phase = phases.system_modification
-	predecessors = [apt.AptSources]
-        successors = [SetMetadataSource]
+	description = 'Setting metadata source'
+	phase = phases.system_modification
 
 	def run(self, info):
-		sources = ""
-		if info.manifest.provider == "ec2":
-		  sources = "Ec2"
-
-		if sources:
-		  print ("Setting metadata source to " + sources)
-		  sources = "cloud-init      cloud-init/datasources  multiselect     " + sources
-		  log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/debconf-set-selections'], sources)
+		if 'metadata_sources' in info.manifest.plugins['cloud_init']:
+			sources = info.manifest.plugins['cloud_init']['metadata_sources']
+		else:
+			source_mapping = {'ec2': 'Ec2'}
+			sources = source_mapping.get(info.manifest.provider, None)
+			if sources is None:
+				import logging
+				msg = ('No cloud-init metadata source mapping found for provider `{provider}\', '
+				       'skipping selections setting.').format(info.manifest.provider)
+				logging.getLogger(__name__).warn(msg)
+				return
+		sources = "cloud-init      cloud-init/datasources  multiselect     " + sources
+		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/debconf-set-selections'], sources)
 
 
 class DisableModules(Task):
 	description = 'Setting cloud.cfg modules'
-        phase = phases.system_modification
-	predecessors = [apt.AptUpgrade]
+	phase = phases.system_modification
 
 	def run(self, info):
-		if 'disable_modules' in info.manifest.plugins['cloud_init']:
-		  patterns = ""
-		  for pattern in info.manifest.plugins['cloud_init']['disable_modules']:
-		    if patterns != "":
-		      patterns = patterns + "|" + pattern
-		    else:
-		      patterns = "^\s+-\s+(" + pattern
-		  patterns = patterns + ")$"
-		  regex = re.compile(patterns)
+		import re
+		patterns = ""
+		for pattern in info.manifest.plugins['cloud_init']['disable_modules']:
+			if patterns != "":
+				patterns = patterns + "|" + pattern
+			else:
+				patterns = "^\s+-\s+(" + pattern
+		patterns = patterns + ")$"
+		regex = re.compile(patterns)
 
-		  try:
-		    f = open(info.root + "/etc/cloud/cloud.cfg")
-		    lines = f.readlines()
-		    f.close()
-		  except:
-		    print "Cannot read cloud.cfg"
-		    return -1
-
-		  f = open(info.root + "/etc/cloud/cloud.cfg", "w")
-		  for line in lines:
-		    if not regex.match(line):
-		      f.write(line)
-		  f.close
+		cloud_cfg = os.path.join(info.root, 'etc/cloud/cloud.cfg')
+		import fileinput
+		for line in fileinput.input(files=cloud_cfg, inplace=True):
+			if not regex.match(line):
+				print line,
