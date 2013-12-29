@@ -58,7 +58,8 @@ class AptUpdate(Task):
 	predecessors = [locale.GenerateLocale, WriteSources]
 
 	def run(self, info):
-		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get', 'update'])
+		log_check_call(['/usr/sbin/chroot', info.root,
+		                '/usr/bin/apt-get', 'update'])
 
 
 class AptUpgrade(Task):
@@ -67,11 +68,15 @@ class AptUpgrade(Task):
 	predecessors = [AptUpdate, DisableDaemonAutostart]
 
 	def run(self, info):
-		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get',
-		                                               '--fix-broken',
-		                                               '--assume-yes',
-		                                               'install'])
-		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get', '--assume-yes', 'upgrade'])
+		log_check_call(['/usr/sbin/chroot', info.root,
+		                '/usr/bin/apt-get', 'install',
+		                                    '--fix-broken',
+		                                    '--no-install-recommends',
+		                                    '--assume-yes'])
+		log_check_call(['/usr/sbin/chroot', info.root,
+		                '/usr/bin/apt-get', 'upgrade',
+		                                    '--no-install-recommends',
+		                                    '--assume-yes'])
 
 
 class PurgeUnusedPackages(Task):
@@ -79,7 +84,9 @@ class PurgeUnusedPackages(Task):
 	phase = phases.system_cleaning
 
 	def run(self, info):
-		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get', 'autoremove', '--purge'])
+		log_check_call(['/usr/sbin/chroot', info.root,
+		                '/usr/bin/apt-get', 'autoremove',
+		                                    '--purge'])
 
 
 class AptClean(Task):
@@ -87,7 +94,8 @@ class AptClean(Task):
 	phase = phases.system_cleaning
 
 	def run(self, info):
-		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get', 'clean'])
+		log_check_call(['/usr/sbin/chroot', info.root,
+		                '/usr/bin/apt-get', 'clean'])
 
 		lists = os.path.join(info.root, 'var/lib/apt/lists')
 		for list_file in [os.path.join(lists, f) for f in os.listdir(lists)]:

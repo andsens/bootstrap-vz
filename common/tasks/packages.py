@@ -27,8 +27,11 @@ class InstallRemotePackages(Task):
 		try:
 			env = os.environ.copy()
 			env['DEBIAN_FRONTEND'] = 'noninteractive'
-			log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/apt-get', 'install',
-			                '--assume-yes'] + packages,
+			log_check_call(['/usr/sbin/chroot', info.root,
+			                '/usr/bin/apt-get', 'install',
+			                                    '--no-install-recommends',
+			                                    '--assume-yes']
+			               + packages,
 			               env=env)
 		except CalledProcessError as e:
 			disk_stat = os.statvfs(info.root)
