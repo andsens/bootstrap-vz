@@ -5,7 +5,6 @@ from common.tasks import loopback
 from common.tasks import partitioning
 from common.tasks import filesystem
 from common.tasks import bootstrap
-from common.tasks import boot
 from common.tasks import security
 from common.tasks import network
 from common.tasks import initd
@@ -29,6 +28,9 @@ def resolve_tasks(tasklist, manifest):
 	tasklist.add(*apt_set)
 	tasklist.add(*locale_set)
 
+	from common.task_sets import bootloader_set
+	tasklist.add(*bootloader_set.get(manifest.system['bootloader']))
+
 	if manifest.volume['partitions']['type'] != 'none':
 		from common.task_sets import partitioning_set
 		tasklist.add(*partitioning_set)
@@ -37,7 +39,6 @@ def resolve_tasks(tasklist, manifest):
 
 	             loopback.Create,
 
-	             boot.InstallGrub,
 	             security.EnableShadowConfig,
 	             network.RemoveDNSInfo,
 	             network.ConfigureNetworkIF,

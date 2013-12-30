@@ -67,10 +67,11 @@ def resolve_tasks(tasklist, manifest):
 
 	             tasks.ami.RegisterAMI)
 
-	if manifest.virtualization == 'pvm':
-		tasklist.add(tasks.boot.ConfigurePVGrub)
+	if manifest.system['bootloader'] == 'pvgrub':
+		tasklist.add(boot.AddGrubPackage, tasks.boot.ConfigurePVGrub)
 	else:
-		tasklist.add(boot.InstallGrub)
+		from common.task_sets import bootloader_set
+		tasklist.add(*bootloader_set.get(manifest.system['bootloader']))
 
 	backing_specific_tasks = {'ebs': [tasks.ebs.Create,
 	                                  tasks.ebs.Attach,

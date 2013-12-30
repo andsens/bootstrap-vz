@@ -20,11 +20,12 @@
 			"properties": {
 				"release":      { "enum": ["wheezy"] },
 				"architecture": { "enum": ["i386", "amd64"] },
+				"bootloader":   { "enum": ["pvgrub", "grub", "extlinux"] },
 				"timezone":     { "type": "string" },
 				"locale":       { "type": "string" },
 				"charmap":      { "type": "string" }
 			},
-			"required": ["release", "architecture", "timezone", "locale", "charmap"]
+			"required": ["release", "architecture", "bootloader", "timezone", "locale", "charmap"]
 		},
 		"packages": {
 			"type": "object",

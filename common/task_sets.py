@@ -1,6 +1,7 @@
 from common.tasks import workspace
 from common.tasks import packages
 from common.tasks import host
+from common.tasks import boot
 from common.tasks import bootstrap
 from common.tasks import volume
 from common.tasks import filesystem
@@ -60,6 +61,11 @@ locale_set = [locale.LocaleBootstrapPackage,
               locale.GenerateLocale,
               locale.SetTimezone,
               ]
+
+
+bootloader_set = {'grub':     [boot.AddGrubPackage, boot.InstallGrub],
+                  'extlinux': [boot.AddExtlinuxPackage, boot.InstallExtLinux],
+                  }
 
 
 def get_fs_specific_set(partitions):

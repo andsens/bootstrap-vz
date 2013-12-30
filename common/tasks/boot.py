@@ -30,6 +30,15 @@ class DisableGetTTYs(Task):
 			sed_i(inittab_path, '^' + i + ttyx + i, '#' + i + ttyx + i)
 
 
+class AddGrubPackage(Task):
+	description = 'Adding grub package'
+	phase = phases.preparation
+	predecessors = [apt.AddDefaultSources]
+
+	def run(self, info):
+		info.packages.add('grub-pc')
+
+
 class InstallGrub(Task):
 	description = 'Installing grub'
 	phase = phases.system_modification
@@ -91,3 +100,24 @@ class InstallGrub(Task):
 
 		if isinstance(info.volume, LoopbackVolume):
 			remount(info.volume, unlink_fn)
+
+
+class AddExtlinuxPackage(Task):
+	description = 'Adding extlinux package'
+	phase = phases.preparation
+	predecessors = [apt.AddDefaultSources]
+
+	def run(self, info):
+		info.packages.add('extlinux')
+
+
+class InstallExtLinux(Task):
+	description = 'Installing extlinux'
+	phase = phases.system_modification
+	predecessors = [apt.AptUpgrade]
+
+	def run(self, info):
+		from common.tools import log_check_call
+		log_check_call(['/usr/sbin/chroot', info.root,
+		                '/usr/bin/extlinux',
+		                '--install', '/boot'])

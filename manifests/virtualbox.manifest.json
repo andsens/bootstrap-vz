@@ -11,6 +11,7 @@
 	"system": {
 		"release":      "wheezy",
 		"architecture": "amd64",
+		"bootloader":   "grub",
 		"timezone":     "UTC",
 		"locale":       "en_US",
 		"charmap":      "UTF-8"

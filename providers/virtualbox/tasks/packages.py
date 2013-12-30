@@ -9,9 +9,6 @@ class DefaultPackages(Task):
 	predecessors = [apt.AddDefaultSources]
 
 	def run(self, info):
-		# Add some basic packages we are going to need
-		info.packages.add('grub2')
-
 		kernels = {'amd64': 'linux-image-amd64',
 		           'i386':  'linux-image-686', }
 		info.packages.add(kernels.get(info.manifest.system['architecture']))

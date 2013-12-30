@@ -16,6 +16,7 @@
 	"system": {
 		"release":      "wheezy",
 		"architecture": "amd64",
+		"bootloader":   "pvgrub",
 		"timezone":     "UTC",
 		"locale":       "en_US",
 		"charmap":      "UTF-8"
