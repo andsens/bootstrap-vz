@@ -20,7 +20,9 @@
 		"locale":       "en_US",
 		"charmap":      "UTF-8"
 	},
-	"packages": {},
+	"packages": {
+		"mirror": "http://cloudfront.debian.net/debian"
+	},
 	"volume": {
 		"backing": "ebs",
 		"partitions": {
