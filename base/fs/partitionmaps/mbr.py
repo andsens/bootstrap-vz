@@ -32,8 +32,6 @@ class MBRPartitionMap(AbstractPartitionMap):
 		for partition in self.partitions:
 			partition.create(volume)
 
-		boot_idx = self.root.get_index()
-		if hasattr(self, 'boot'):
-			boot_idx = self.boot.get_index()
+		boot_idx = getattr(self, 'boot', self.root).get_index()
 		log_check_call(['/sbin/parted', '--script', volume.device_path,
 		                '--', 'set ' + str(boot_idx) + ' boot on'])

@@ -10,14 +10,10 @@ class PackageList(object):
 		self.local = set()
 		if 'remote' in data:
 			for package in data['remote']:
-				target = None
 				if isinstance(package, dict):
-					name = package['name']
-					if 'target' in package:
-						target = package['target']
+					self.add(package['name'], package.get('target', None))
 				else:
-					name = package
-				self.add(name, target)
+					self.add(package, None)
 		if 'local' in data:
 			for package_path in data['local']:
 				self.local.add(package_path)
