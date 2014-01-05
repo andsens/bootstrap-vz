@@ -1,4 +1,3 @@
-from manifest import Manifest
 import tasks.packages
 from common.tasks import volume
 from common.tasks import loopback
@@ -14,6 +13,12 @@ from common.tasks import workspace
 
 def initialize():
 	pass
+
+
+def validate_manifest(data, validator, error):
+	import os.path
+	schema_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'manifest-schema.json'))
+	validator(data, schema_path)
 
 
 def resolve_tasks(tasklist, manifest):

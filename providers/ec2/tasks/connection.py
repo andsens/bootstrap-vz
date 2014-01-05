@@ -16,9 +16,9 @@ class GetCredentials(Task):
 	def get_credentials(self, manifest, keys):
 		from os import getenv
 		creds = {}
-		if all(key in manifest.credentials for key in keys):
+		if all(key in manifest.data['credentials'] for key in keys):
 			for key in keys:
-				creds[key] = manifest.credentials[key]
+				creds[key] = manifest.data['credentials'][key]
 			return creds
 
 		def env_key(key):

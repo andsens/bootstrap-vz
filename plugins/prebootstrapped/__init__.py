@@ -12,10 +12,10 @@ from common.tasks import filesystem
 from common.tasks import partitioning
 
 
-def validate_manifest(data, schema_validate):
-	from os import path
-	schema_path = path.normpath(path.join(path.dirname(__file__), 'manifest-schema.json'))
-	schema_validate(data, schema_path)
+def validate_manifest(data, validator, error):
+	import os.path
+	schema_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'manifest-schema.json'))
+	validator(data, schema_path)
 
 
 def resolve_tasks(tasklist, manifest):

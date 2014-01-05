@@ -1,4 +1,3 @@
-from manifest import Manifest
 import tasks.packages
 import tasks.connection
 import tasks.host
@@ -25,6 +24,28 @@ def initialize():
 	# Regardless of of loglevel, we don't want boto debug stuff, it's very noisy
 	import logging
 	logging.getLogger('boto').setLevel(logging.INFO)
+
+
+def validate_manifest(data, validator, error):
+	import os.path
+	validator(data, os.path.join(os.path.dirname(__file__), 'manifest-schema.json'))
+
+	if data['volume']['backing'] == 'ebs':
+		volume_size = 1 if data['volume']['partitions']['type'] == 'mbr' else 0
+		for key, partition in data['volume']['partitions'].iteritems():
+			if key != 'type':
+				volume_size += partition['size']
+		if volume_size % 1024 != 0:
+			msg = ('The volume size must be a multiple of 1024 when using EBS backing '
+			       '(MBR partitioned volumes are 1MB larger than specified, for the post-mbr gap)')
+			error(msg, ['volume', 'partitions'])
+	else:
+		validator(data, os.path.join(os.path.dirname(__file__), 'manifest-schema-s3.json'))
+
+	if data['virtualization'] == 'pvm' and data['system']['bootloader'] != 'pvgrub':
+			error('Paravirtualized AMIs only support pvgrub as a bootloader', ['system', 'bootloader'])
+	if data['virtualization'] == 'hvm' and data['system']['bootloader'] != 'extlinux':
+			error('HVM AMIs only support extlinux as a bootloader', ['system', 'bootloader'])
 
 
 def resolve_tasks(tasklist, manifest):

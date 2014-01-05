@@ -1,16 +1,16 @@
 
 
 class ManifestError(Exception):
-	def __init__(self, message, manifest, json_path=None):
+	def __init__(self, message, manifest_path, json_path=None):
 		self.message = message
-		self.manifest = manifest
+		self.manifest_path = manifest_path
 		self.json_path = json_path
 
 	def __str__(self):
 		if self.json_path is not None:
 			path = '.'.join(self.json_path)
-			return "{2}\n\tFile: {0}\n\tJSON path: {1}".format(self.manifest.path, path, self.message)
-		return "{0}: {1}".format(self.manifest.path, self.message)
+			return "{2}\n\tFile: {0}\n\tJSON path: {1}".format(self.manifest_path, path, self.message)
+		return "{0}: {1}".format(self.manifest_path, self.message)
 
 
 class TaskListError(Exception):

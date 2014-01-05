@@ -15,6 +15,13 @@
 			},
 			"required": ["workspace"]
 		},
+		"image": {
+			"type": "object",
+			"properties": {
+				"name": { "type": "string" }
+			},
+			"required": ["name"]
+		},
 		"system": {
 			"type": "object",
 			"properties": {
@@ -92,7 +99,7 @@
 			"additionalProperties": false
 		}
 	},
-	"required": ["provider", "bootstrapper", "volume", "system"],
+	"required": ["provider", "bootstrapper", "image", "volume", "system"],
 	"definitions": {
 		"path": {
 			"type":    "string",

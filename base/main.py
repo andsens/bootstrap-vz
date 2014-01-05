@@ -24,13 +24,15 @@ def get_args():
 
 
 def run(args):
-	from manifest import load_manifest
-	(provider, manifest) = load_manifest(args.manifest)
+	from manifest import Manifest
+	manifest = Manifest(args.manifest)
+	provider = manifest.modules['provider']
+	plugins = manifest.modules['plugins']
 
 	from tasklist import TaskList
 	tasklist = TaskList()
 	provider.resolve_tasks(tasklist, manifest)
-	for plugin in manifest.loaded_plugins:
+	for plugin in plugins:
 		plugin.resolve_tasks(tasklist, manifest)
 
 	from bootstrapinfo import BootstrapInformation
@@ -46,7 +48,7 @@ def run(args):
 		log.error('Rolling back')
 		rollback_tasklist = TaskList()
 		provider.resolve_rollback_tasks(rollback_tasklist, tasklist.tasks_completed, manifest)
-		for plugin in manifest.loaded_plugins:
+		for plugin in plugins:
 			resolve_rollback_tasks = getattr(plugin, 'resolve_rollback_tasks', None)
 			if callable(resolve_rollback_tasks):
 				resolve_rollback_tasks(rollback_tasklist, tasklist.tasks_completed, manifest)

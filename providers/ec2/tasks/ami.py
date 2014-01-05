@@ -150,7 +150,7 @@ class RegisterAMI(Task):
 			grub_boot_device = 'hd0'
 		else:
 			root_dev_name = {'pvm': '/dev/sda',
-			                 'hvm': '/dev/xvda'}.get(info.manifest.virtualization)
+			                 'hvm': '/dev/xvda'}.get(info.manifest.data['virtualization'])
 			registration_params['root_device_name'] = root_dev_name
 			from base.fs.partitionmaps.none import NoPartitions
 			if isinstance(info.volume.partition_map, NoPartitions):
@@ -165,7 +165,7 @@ class RegisterAMI(Task):
 			registration_params['block_device_map'] = BlockDeviceMapping()
 			registration_params['block_device_map'][root_dev_name] = block_device
 
-		if info.manifest.virtualization == 'hvm':
+		if info.manifest.data['virtualization'] == 'hvm':
 			registration_params['virtualization_type'] = 'hvm'
 		else:
 			registration_params['virtualization_type'] = 'paravirtual'
