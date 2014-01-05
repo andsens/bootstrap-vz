@@ -7,7 +7,8 @@ class Attach(Task):
 	description = 'Attaching the volume'
 	phase = phases.volume_creation
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		info.volume.attach()
 
 
@@ -15,7 +16,8 @@ class Detach(Task):
 	description = 'Detaching the volume'
 	phase = phases.volume_unmounting
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		info.volume.detach()
 
 
@@ -24,5 +26,6 @@ class Delete(Task):
 	phase = phases.cleaning
 	successors = [workspace.DeleteWorkspace]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		info.volume.delete()

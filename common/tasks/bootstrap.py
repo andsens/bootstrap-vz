@@ -21,7 +21,8 @@ class MakeTarball(Task):
 	description = 'Creating bootstrap tarball'
 	phase = phases.os_installation
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		from hashlib import sha1
 		import os.path
 		executable, options, arguments = get_bootstrap_args(info)
@@ -45,7 +46,8 @@ class Bootstrap(Task):
 	phase = phases.os_installation
 	predecessors = [MakeTarball]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		executable, options, arguments = get_bootstrap_args(info)
 		if hasattr(info, 'tarball'):
 			options.extend(['--unpack-tarball=' + info.tarball])

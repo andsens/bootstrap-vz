@@ -8,7 +8,8 @@ class ConfigurePVGrub(Task):
 	description = 'Creating grub config files for PVGrub'
 	phase = phases.system_modification
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		import stat
 		rwxr_xr_x = (stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR |
 		             stat.S_IRGRP                | stat.S_IXGRP |

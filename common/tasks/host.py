@@ -7,7 +7,8 @@ class HostDependencies(Task):
 	description = 'Determining required host dependencies'
 	phase = phases.preparation
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		info.host_dependencies.add('debootstrap')
 
 		from common.fs.loopbackvolume import LoopbackVolume
@@ -27,7 +28,8 @@ class CheckHostDependencies(Task):
 	phase = phases.preparation
 	predecessors = [HostDependencies]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		from common.tools import log_check_call
 		from subprocess import CalledProcessError
 		for package in info.host_dependencies:

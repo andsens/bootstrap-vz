@@ -7,13 +7,15 @@ class GetCredentials(Task):
 	description = 'Getting AWS credentials'
 	phase = phases.preparation
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		keys = ['access-key', 'secret-key']
 		if info.manifest.volume['backing'] == 's3':
 			keys.extend(['certificate', 'private-key', 'user-id'])
-		info.credentials = self.get_credentials(info.manifest, keys)
+		info.credentials = cls.get_credentials(info.manifest, keys)
 
-	def get_credentials(self, manifest, keys):
+	@classmethod
+	def get_credentials(cls, manifest, keys):
 		from os import getenv
 		creds = {}
 		if all(key in manifest.data['credentials'] for key in keys):
@@ -36,7 +38,8 @@ class Connect(Task):
 	phase = phases.preparation
 	predecessors = [GetCredentials, host.GetInfo]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		from boto.ec2 import connect_to_region
 		info.connection = connect_to_region(info.host['region'],
 		                                    aws_access_key_id=info.credentials['access-key'],

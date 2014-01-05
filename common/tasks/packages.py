@@ -8,7 +8,8 @@ class InstallRemotePackages(Task):
 	phase = phases.package_installation
 	predecessors = [apt.AptUpgrade]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		if len(info.packages.remote) == 0:
 			return
 		import os
@@ -59,7 +60,8 @@ class InstallLocalPackages(Task):
 	predecessors = [apt.AptUpgrade]
 	successors = [InstallRemotePackages]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		if len(info.packages.local) == 0:
 			return
 		from shutil import copy

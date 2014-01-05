@@ -8,7 +8,8 @@ class BlackListModules(Task):
 	description = 'Blacklisting kernel modules'
 	phase = phases.system_modification
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		blacklist_path = os.path.join(info.root, 'etc/modprobe.d/blacklist.conf')
 		with open(blacklist_path, 'a') as blacklist:
 			blacklist.write(('# disable pc speaker\n'
@@ -19,7 +20,8 @@ class DisableGetTTYs(Task):
 	description = 'Disabling getty processes'
 	phase = phases.system_modification
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		from common.tools import sed_i
 		inittab_path = os.path.join(info.root, 'etc/inittab')
 		tty1 = '1:2345:respawn:/sbin/getty 38400 tty1'
@@ -35,7 +37,8 @@ class AddGrubPackage(Task):
 	phase = phases.preparation
 	predecessors = [apt.AddDefaultSources]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		info.packages.add('grub-pc')
 
 
@@ -44,7 +47,8 @@ class InstallGrub(Task):
 	phase = phases.system_modification
 	predecessors = [apt.AptUpgrade]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		from common.fs.loopbackvolume import LoopbackVolume
 		from common.tools import log_check_call
 
@@ -107,7 +111,8 @@ class AddExtlinuxPackage(Task):
 	phase = phases.preparation
 	predecessors = [apt.AddDefaultSources]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		info.packages.add('extlinux')
 
 
@@ -116,7 +121,8 @@ class InstallExtLinux(Task):
 	phase = phases.system_modification
 	predecessors = [apt.AptUpgrade]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		from common.tools import log_check_call
 		log_check_call(['/usr/sbin/chroot', info.root,
 		                '/usr/bin/extlinux',

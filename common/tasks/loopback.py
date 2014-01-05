@@ -8,7 +8,8 @@ class Create(Task):
 	phase = phases.volume_creation
 	successors = [volume.Attach]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		import os.path
 		image_path = os.path.join(info.workspace, 'volume.{ext}'.format(ext=info.volume.extension))
 		info.volume.create(image_path)
@@ -18,7 +19,8 @@ class MoveImage(Task):
 	description = 'Moving volume image'
 	phase = phases.image_registration
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		image_name = info.manifest.image['name'].format(**info.manifest_vars)
 		filename = '{image_name}.{ext}'.format(image_name=image_name, ext=info.volume.extension)
 

@@ -10,7 +10,8 @@ class InstallInitScripts(Task):
 	description = 'Installing startup scripts'
 	phase = phases.system_modification
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		import stat
 		rwxr_xr_x = (stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR |
 		             stat.S_IRGRP                | stat.S_IXGRP |
@@ -31,7 +32,8 @@ class AddExpandRoot(Task):
 	phase = phases.system_modification
 	successors = [InstallInitScripts]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		init_scripts_dir = os.path.join(assets, 'init.d')
 		info.initd['install']['expand-root'] = os.path.join(init_scripts_dir, 'expand-root')
 
@@ -41,7 +43,8 @@ class AddSSHKeyGeneration(Task):
 	phase = phases.system_modification
 	successors = [InstallInitScripts]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		init_scripts_dir = os.path.join(assets, 'init.d')
 		install = info.initd['install']
 		from subprocess import CalledProcessError
@@ -63,7 +66,8 @@ class RemoveHWClock(Task):
 	phase = phases.system_modification
 	successors = [InstallInitScripts]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		info.initd['disable'].append('hwclock.sh')
 		if info.manifest.system['release'] == 'squeeze':
 			info.initd['disable'].append('hwclockfirst.sh')
@@ -74,7 +78,8 @@ class AdjustExpandRootScript(Task):
 	phase = phases.system_modification
 	predecessors = [InstallInitScripts]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		if 'expand-root' not in info.initd['install']:
 			raise TaskError('The expand-root script was not installed')
 

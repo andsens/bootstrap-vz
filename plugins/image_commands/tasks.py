@@ -6,7 +6,8 @@ class ImageExecuteCommand(Task):
 	description = 'Execute command in the image'
 	phase = phases.system_modification
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		from common.tools import log_check_call
 
 		for user_cmd in info.manifest.plugins['image_commands']['commands']:

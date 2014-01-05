@@ -12,7 +12,8 @@ class AddFolderMounts(Task):
 	phase = phases.os_installation
 	predecessors = [bootstrap.Bootstrap]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		info.minimize_size_folder = os.path.join(info.workspace, 'minimize_size')
 		os.mkdir(info.minimize_size_folder)
 		for folder in folders:
@@ -28,7 +29,8 @@ class RemoveFolderMounts(Task):
 	phase = phases.system_cleaning
 	successors = [apt.AptClean]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		import shutil
 		for folder in folders:
 			temp_path = os.path.join(info.minimize_size_folder, folder.replace('/', '_'))

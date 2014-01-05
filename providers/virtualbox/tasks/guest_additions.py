@@ -8,7 +8,8 @@ class CheckGuestAdditionsPath(Task):
 	description = 'Checking whether the VirtualBox Guest Additions image exists'
 	phase = phases.preparation
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		import os.path
 		guest_additions_path = info.manifest.bootstrapper['guest_additions']
 		if not os.path.exists(guest_additions_path):
@@ -21,7 +22,8 @@ class AddGuestAdditionsPackages(Task):
 	phase = phases.package_installation
 	successors = [InstallRemotePackages]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		info.packages.add('bzip2')
 		info.packages.add('build-essential')
 		info.packages.add('dkms')
@@ -38,7 +40,8 @@ class InstallGuestAdditions(Task):
 	phase = phases.package_installation
 	predecessors = [InstallRemotePackages]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		import os
 		guest_additions_path = info.manifest.bootstrapper['guest_additions']
 		mount_dir = 'mnt/guest_additions'

@@ -9,7 +9,8 @@ class AddDefaultSources(Task):
 	description = 'Adding default release sources'
 	phase = phases.preparation
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		if info.source_lists.target_exists('{system.release}'):
 			import logging
 			msg = ('{system.release} target already exists').format(**info.manifest_vars)
@@ -25,7 +26,8 @@ class WriteSources(Task):
 	description = 'Writing aptitude sources to disk'
 	phase = phases.package_installation
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		for name, sources in info.source_lists.sources.iteritems():
 			if name == 'main':
 				list_path = os.path.join(info.root, 'etc/apt/sources.list')
@@ -40,7 +42,8 @@ class DisableDaemonAutostart(Task):
 	description = 'Disabling daemon autostart'
 	phase = phases.package_installation
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		rc_policy_path = os.path.join(info.root, 'usr/sbin/policy-rc.d')
 		with open(rc_policy_path, 'w') as rc_policy:
 			rc_policy.write(('#!/bin/sh\n'
@@ -57,7 +60,8 @@ class AptUpdate(Task):
 	phase = phases.package_installation
 	predecessors = [locale.GenerateLocale, WriteSources]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		log_check_call(['/usr/sbin/chroot', info.root,
 		                '/usr/bin/apt-get', 'update'])
 
@@ -67,7 +71,8 @@ class AptUpgrade(Task):
 	phase = phases.package_installation
 	predecessors = [AptUpdate, DisableDaemonAutostart]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		from subprocess import CalledProcessError
 		try:
 			log_check_call(['/usr/sbin/chroot', info.root,
@@ -93,7 +98,8 @@ class PurgeUnusedPackages(Task):
 	description = 'Removing unused packages'
 	phase = phases.system_cleaning
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		log_check_call(['/usr/sbin/chroot', info.root,
 		                '/usr/bin/apt-get', 'autoremove',
 		                                    '--purge'])
@@ -103,7 +109,8 @@ class AptClean(Task):
 	description = 'Clearing the aptitude cache'
 	phase = phases.system_cleaning
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		log_check_call(['/usr/sbin/chroot', info.root,
 		                '/usr/bin/apt-get', 'clean'])
 
@@ -117,5 +124,6 @@ class EnableDaemonAutostart(Task):
 	description = 'Re-enabling daemon autostart after installation'
 	phase = phases.system_cleaning
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		os.remove(os.path.join(info.root, 'usr/sbin/policy-rc.d'))

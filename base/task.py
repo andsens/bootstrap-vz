@@ -5,8 +5,13 @@ class Task(object):
 	predecessors = []
 	successors = []
 
-	def __str__(self):
-		return '{module}.{task}'.format(module=self.__module__, task=self.__class__.__name__)
+	class __metaclass__(type):
+		def __repr__(cls):
+			return '{module}.{task}'.format(module=cls.__module__, task=cls.__name__)
 
-	def __repr__(self):
-		return self.__str__()
+		def __str__(cls):
+			return repr(cls)
+
+	@classmethod
+	def run(cls, info):
+		pass

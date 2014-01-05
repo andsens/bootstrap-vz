@@ -9,7 +9,8 @@ class AddBackports(Task):
 	description = 'Adding backports to the apt sources'
 	phase = phases.preparation
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		if info.source_lists.target_exists('{system.release}-backports'):
 			import logging
 			msg = ('{system.release}-backports target already exists').format(**info.manifest_vars)
@@ -24,7 +25,8 @@ class AddCloudInitPackages(Task):
 	phase = phases.preparation
 	predecessors = [apt.AddDefaultSources, AddBackports]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		target = None
 		if info.manifest.system['release'] in ['wheezy', 'stable']:
 			target = '{system.release}-backports'
@@ -36,7 +38,8 @@ class SetUsername(Task):
 	description = 'Setting username in cloud.cfg'
 	phase = phases.system_modification
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		from common.tools import sed_i
 		cloud_cfg = os.path.join(info.root, 'etc/cloud/cloud.cfg')
 		username = info.manifest.plugins['cloud_init']['username']
@@ -51,7 +54,8 @@ class SetMetadataSource(Task):
 	description = 'Setting metadata source'
 	phase = phases.system_modification
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		if 'metadata_sources' in info.manifest.plugins['cloud_init']:
 			sources = info.manifest.plugins['cloud_init']['metadata_sources']
 		else:
@@ -71,7 +75,8 @@ class DisableModules(Task):
 	description = 'Setting cloud.cfg modules'
 	phase = phases.system_modification
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		import re
 		patterns = ""
 		for pattern in info.manifest.plugins['cloud_init']['disable_modules']:

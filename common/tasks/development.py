@@ -7,6 +7,7 @@ class TriggerRollback(Task):
 
 	description = 'Triggering a rollback by throwing an exception'
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		from common.exceptions import TaskError
 		raise TaskError('Trigger rollback')

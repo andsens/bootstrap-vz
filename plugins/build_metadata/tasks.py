@@ -6,7 +6,8 @@ class WriteMetadata(Task):
 	description = 'Writing bootstrap metadata to file'
 	phase = phases.cleaning
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		metadata_path = info.manifest.plugins['build_metadata']['path']
 		with open(metadata_path, 'w') as metadata:
 			metadata.write(('AMI_ID={ami_id}\n'

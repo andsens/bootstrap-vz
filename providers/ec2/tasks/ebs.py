@@ -6,7 +6,8 @@ class Create(Task):
 	description = 'Creating the EBS volume'
 	phase = phases.volume_creation
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		info.volume.create(info.connection, info.host['availabilityZone'])
 
 
@@ -15,7 +16,8 @@ class Attach(Task):
 	phase = phases.volume_creation
 	predecessors = [Create]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		info.volume.attach(info.host['instanceId'])
 
 
@@ -23,5 +25,6 @@ class Snapshot(Task):
 	description = 'Creating a snapshot of the EBS volume'
 	phase = phases.image_registration
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		info.snapshot = info.volume.snapshot()

@@ -6,7 +6,8 @@ class CreateWorkspace(Task):
 	description = 'Creating workspace'
 	phase = phases.preparation
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		import os
 		os.makedirs(info.workspace)
 
@@ -15,6 +16,7 @@ class DeleteWorkspace(Task):
 	description = 'Deleting workspace'
 	phase = phases.cleaning
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		import os
 		os.rmdir(info.workspace)

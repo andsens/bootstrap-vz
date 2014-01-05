@@ -11,7 +11,8 @@ class OpenNebulaContext(Task):
 	phase = phases.system_modification
 	predecessors = [GenerateLocale]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		import stat
 		rwxr_xr_x = (stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR |
 		             stat.S_IRGRP                | stat.S_IXGRP |

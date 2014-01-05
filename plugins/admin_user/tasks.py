@@ -10,7 +10,8 @@ class AddSudoPackage(Task):
 	phase = phases.preparation
 	predecessors = [apt.AddDefaultSources]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		info.packages.add('sudo')
 
 
@@ -18,7 +19,8 @@ class CreateAdminUser(Task):
 	description = 'Creating the admin user'
 	phase = phases.system_modification
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		from common.tools import log_check_call
 		log_check_call(['/usr/sbin/chroot', info.root,
 		                '/usr/sbin/useradd',
@@ -30,7 +32,8 @@ class PasswordlessSudo(Task):
 	description = 'Allowing the admin user to use sudo without a password'
 	phase = phases.system_modification
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		sudo_admin_path = os.path.join(info.root, 'etc/sudoers.d/99_admin')
 		username = info.manifest.plugins['admin_user']['username']
 		with open(sudo_admin_path, 'w') as sudo_admin:
@@ -45,7 +48,8 @@ class AdminUserCredentials(Task):
 	phase = phases.system_modification
 	predecessors = [InstallInitScripts]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		from common.tools import sed_i
 		getcreds_path = os.path.join(info.root, 'etc/init.d/ec2-get-credentials')
 		username = info.manifest.plugins['admin_user']['username']
@@ -56,7 +60,8 @@ class DisableRootLogin(Task):
 	description = 'Disabling SSH login for root'
 	phase = phases.system_modification
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		from subprocess import CalledProcessError
 		from common.tools import log_check_call
 		try:

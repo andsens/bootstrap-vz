@@ -7,7 +7,8 @@ class LocaleBootstrapPackage(Task):
 	description = 'Adding locale package to bootstrap installation'
 	phase = phases.preparation
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		# We could bootstrap without locales, but things just suck without them
 		# eg. error messages when running apt
 		info.include_packages.add('locales')
@@ -17,7 +18,8 @@ class GenerateLocale(Task):
 	description = 'Generating the selected locale'
 	phase = phases.package_installation
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		from common.tools import sed_i
 		from common.tools import log_check_call
 		locale_gen = os.path.join(info.root, 'etc/locale.gen')
@@ -38,7 +40,8 @@ class SetTimezone(Task):
 	description = 'Setting the selected timezone'
 	phase = phases.system_modification
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		from shutil import copy
 		tz_path = os.path.join(info.root, 'etc/timezone')
 		timezone = info.manifest.system['timezone']

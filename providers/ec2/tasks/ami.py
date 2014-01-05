@@ -16,7 +16,8 @@ class AMIName(Task):
 	phase = phases.preparation
 	predecessors = [Connect]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		ami_name = info.manifest.image['name'].format(**info.manifest_vars)
 		ami_description = info.manifest.image['description'].format(**info.manifest_vars)
 
@@ -33,7 +34,8 @@ class BundleImage(Task):
 	description = 'Bundling the image'
 	phase = phases.image_registration
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		bundle_name = 'bundle-{id}'.format(id=info.run_id)
 		info.bundle_path = os.path.join(info.workspace, bundle_name)
 		log_check_call(['/usr/bin/euca-bundle-image',
@@ -51,7 +53,8 @@ class UploadImage(Task):
 	phase = phases.image_registration
 	predecessors = [BundleImage]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		manifest_file = os.path.join(info.bundle_path, info.ami_name + '.manifest.xml')
 		if info.host['region'] == 'us-east-1':
 			s3_url = 'https://s3.amazonaws.com/'
@@ -72,7 +75,8 @@ class RemoveBundle(Task):
 	phase = phases.cleaning
 	successors = [workspace.DeleteWorkspace]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		from shutil import rmtree
 		rmtree(info.bundle_path)
 		del info.bundle_path
@@ -140,7 +144,8 @@ class RegisterAMI(Task):
 	                   }
 	                  }
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		registration_params = {'name': info.ami_name,
 		                       'description': info.ami_description}
 		registration_params['architecture'] = {'i386': 'i386',
@@ -169,7 +174,7 @@ class RegisterAMI(Task):
 			registration_params['virtualization_type'] = 'hvm'
 		else:
 			registration_params['virtualization_type'] = 'paravirtual'
-			registration_params['kernel_id'] = (self.kernel_mapping
+			registration_params['kernel_id'] = (cls.kernel_mapping
 			                                    .get(info.host['region'])
 			                                    .get(grub_boot_device)
 			                                    .get(info.manifest.system['architecture']))

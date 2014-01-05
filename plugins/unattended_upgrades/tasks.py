@@ -8,7 +8,8 @@ class AddUnattendedUpgradesPackage(Task):
 	phase = phases.preparation
 	predecessors = [apt.AddDefaultSources]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		info.packages.add('unattended-upgrades')
 
 
@@ -16,7 +17,8 @@ class EnablePeriodicUpgrades(Task):
 	description = 'Writing the periodic upgrades apt config file'
 	phase = phases.system_modification
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		import os.path
 		periodic_path = os.path.join(info.root, 'etc/apt/apt.conf.d/02periodic')
 		update_interval = info.manifest.plugins['unattended_upgrades']['update_interval']

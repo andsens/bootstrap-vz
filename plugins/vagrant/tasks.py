@@ -14,7 +14,8 @@ class CreateVagrantBoxDir(Task):
 	phase = phases.preparation
 	predecessors = [workspace.CreateWorkspace]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		info.vagrant_folder = os.path.join(info.workspace, 'vagrant')
 		os.mkdir(info.vagrant_folder)
 
@@ -24,7 +25,8 @@ class AddPackages(Task):
 	phase = phases.preparation
 	predecessors = [apt.AddDefaultSources]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		info.packages.add('openssh-server')
 
 
@@ -33,7 +35,8 @@ class AddInsecurePublicKey(Task):
 	phase = phases.system_modification
 	predecessors = [CreateAdminUser]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		ssh_dir = os.path.join(info.root, 'home/vagrant/.ssh')
 		os.mkdir(ssh_dir)
 
@@ -50,7 +53,8 @@ class PackageBox(Task):
 	description = 'Packaging the volume as a vagrant box'
 	phase = phases.image_registration
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		box_basename = info.manifest.image['name'].format(**info.manifest_vars)
 		box_name = '{name}.box'.format(name=box_basename)
 		box_path = os.path.join(info.manifest.bootstrapper['workspace'], box_name)
@@ -74,7 +78,7 @@ class PackageBox(Task):
 		log_check_call(['ln', '-s', info.volume.image_path, disk_link])
 
 		ovf_path = os.path.join(info.vagrant_folder, 'box.ovf')
-		self.write_ovf(info, ovf_path, box_name, mac_address, disk_name)
+		cls.write_ovf(info, ovf_path, box_name, mac_address, disk_name)
 
 		box_files = os.listdir(info.vagrant_folder)
 		log_check_call(['tar', '--create', '--gzip', '--dereference',
@@ -86,7 +90,7 @@ class PackageBox(Task):
 		logging.getLogger(__name__).info('The vagrant box has been placed at {box_path}'
 		                                 .format(box_path=box_path))
 
-	def write_ovf(self, info, destination, box_name, mac_address, disk_name):
+	def write_ovf(info, destination, box_name, mac_address, disk_name):
 		namespaces = {'ovf':     'http://schemas.dmtf.org/ovf/envelope/1',
 		              'rasd':    'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData',
 		              'vssd':    'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData',
@@ -153,6 +157,7 @@ class RemoveVagrantBoxDir(Task):
 	phase = phases.cleaning
 	successors = [workspace.DeleteWorkspace]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		shutil.rmtree(info.vagrant_folder)
 		del info.vagrant_folder

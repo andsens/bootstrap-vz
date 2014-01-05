@@ -8,7 +8,8 @@ class EnableDHCPCDDNS(Task):
 	description = 'Configuring the DHCP client to set the nameservers'
 	phase = phases.system_modification
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		# The dhcp client that ships with debian sets the DNS servers per default.
 		# For dhcpcd we need to configure it to do that.
 		from common.tools import sed_i
@@ -21,7 +22,8 @@ class AddBuildEssentialPackage(Task):
 	phase = phases.preparation
 	predecessors = [apt.AddDefaultSources]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		info.packages.add('build-essential')
 
 
@@ -29,7 +31,8 @@ class InstallEnhancedNetworking(Task):
 	description = 'Installing network drivers for SR-IOV support'
 	phase = phases.package_installation
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		drivers_url = 'http://downloads.sourceforge.net/project/e1000/ixgbevf stable/2.11.3/ixgbevf-2.11.3.tar.gz'
 		archive = os.path.join(info.root, 'tmp', 'ixgbevf-2.11.3.tar.gz')
 

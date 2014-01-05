@@ -10,7 +10,8 @@ class Format(Task):
 	description = 'Formatting the volume'
 	phase = phases.volume_preparation
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		for partition in info.volume.partition_map.partitions:
 			partition.format()
 
@@ -20,7 +21,8 @@ class TuneVolumeFS(Task):
 	phase = phases.volume_preparation
 	predecessors = [Format]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		import re
 		# Disable the time based filesystem check
 		for partition in info.volume.partition_map.partitions:
@@ -33,7 +35,8 @@ class AddXFSProgs(Task):
 	phase = phases.preparation
 	predecessors = [apt.AddDefaultSources]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		info.packages.add('xfsprogs')
 
 
@@ -41,7 +44,8 @@ class CreateMountDir(Task):
 	description = 'Creating mountpoint for the root partition'
 	phase = phases.volume_mounting
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		import os
 		info.root = os.path.join(info.workspace, 'root')
 		os.makedirs(info.root)
@@ -52,7 +56,8 @@ class MountRoot(Task):
 	phase = phases.volume_mounting
 	predecessors = [CreateMountDir]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		info.volume.partition_map.root.mount(info.root)
 
 
@@ -61,7 +66,8 @@ class CreateBootMountDir(Task):
 	phase = phases.volume_mounting
 	predecessors = [MountRoot]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		import os.path
 		os.makedirs(os.path.join(info.root, 'boot'))
 
@@ -71,7 +77,8 @@ class MountBoot(Task):
 	phase = phases.volume_mounting
 	predecessors = [CreateBootMountDir]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		p_map = info.volume.partition_map
 		p_map.root.add_mount(p_map.boot, 'boot')
 
@@ -81,7 +88,8 @@ class MountSpecials(Task):
 	phase = phases.os_installation
 	predecessors = [Bootstrap]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		root = info.volume.partition_map.root
 		root.add_mount('/dev', 'dev', ['--bind'])
 		root.add_mount('none', 'proc', ['--types', 'proc'])
@@ -94,7 +102,8 @@ class UnmountRoot(Task):
 	phase = phases.volume_unmounting
 	successors = [volume.Detach]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		info.volume.partition_map.root.unmount()
 
 
@@ -103,7 +112,8 @@ class DeleteMountDir(Task):
 	phase = phases.volume_unmounting
 	predecessors = [UnmountRoot]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		import os
 		os.rmdir(info.root)
 		del info.root
@@ -113,7 +123,8 @@ class FStab(Task):
 	description = 'Adding partitions to the fstab'
 	phase = phases.system_modification
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		import os.path
 		p_map = info.volume.partition_map
 		mount_points = [{'path': '/',

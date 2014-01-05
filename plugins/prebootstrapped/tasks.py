@@ -17,7 +17,8 @@ class Snapshot(Task):
 	phase = phases.package_installation
 	predecessors = [packages.InstallRemotePackages, guest_additions.InstallGuestAdditions]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		def mk_snapshot():
 			return info.volume.snapshot()
 		snapshot = remount(info.volume, mk_snapshot)
@@ -30,7 +31,8 @@ class CreateFromSnapshot(Task):
 	phase = phases.volume_creation
 	successors = [ebs.Attach]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		volume_size = int(info.volume.partition_map.get_total_size() / 1024)
 		snapshot = info.manifest.plugins['prebootstrapped']['snapshot']
 		ebs_volume = info.connection.create_volume(volume_size,
@@ -49,7 +51,8 @@ class CopyImage(Task):
 	phase = phases.package_installation
 	predecessors = [packages.InstallRemotePackages, guest_additions.InstallGuestAdditions]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		loopback_backup_name = 'volume-{id}.{ext}.backup'.format(id=info.run_id, ext=info.volume.extension)
 		destination = os.path.join(info.manifest.bootstrapper['workspace'], loopback_backup_name)
 
@@ -65,7 +68,8 @@ class CreateFromImage(Task):
 	phase = phases.volume_creation
 	successors = [volume.Attach]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		info.volume.image_path = os.path.join(info.workspace, 'volume.{ext}'.format(ext=info.volume.extension))
 		loopback_backup_path = info.manifest.plugins['prebootstrapped']['image']
 		copyfile(loopback_backup_path, info.volume.image_path)

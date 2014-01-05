@@ -10,7 +10,8 @@ class AddEC2InitScripts(Task):
 	phase = phases.system_modification
 	successors = [initd.InstallInitScripts]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		init_scripts = {'ec2-get-credentials': 'ec2-get-credentials',
 		                'ec2-run-user-data': 'ec2-run-user-data'}
 

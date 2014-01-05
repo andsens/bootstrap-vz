@@ -8,7 +8,8 @@ class PartitionVolume(Task):
 	description = 'Partitioning the volume'
 	phase = phases.volume_preparation
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		info.volume.partition_map.create(info.volume)
 
 
@@ -18,7 +19,8 @@ class MapPartitions(Task):
 	predecessors = [PartitionVolume]
 	successors = [filesystem.Format]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		info.volume.partition_map.map(info.volume)
 
 
@@ -28,5 +30,6 @@ class UnmapPartitions(Task):
 	predecessors = [filesystem.UnmountRoot]
 	successors = [volume.Detach]
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		info.volume.partition_map.unmap(info.volume)

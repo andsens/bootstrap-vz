@@ -18,17 +18,16 @@ class TaskList(object):
 
 	def run(self, info={}, dry_run=False):
 		task_list = self.create_list()
-		log.debug('Tasklist:\n\t{list}'.format(list='\n\t'.join(repr(task) for task in task_list)))
+		log.debug('Tasklist:\n\t{list}'.format(list='\n\t'.join(map(repr, task_list))))
 
-		for task_type in task_list:
-			task = task_type()
+		for task in task_list:
 			if hasattr(task, 'description'):
 				log.info(task.description)
 			else:
 				log.info('Running {task}'.format(task=task))
 			if not dry_run:
 				task.run(info)
-			self.tasks_completed.append(task_type)
+			self.tasks_completed.append(task)
 
 	def create_list(self):
 		from common.phases import order
@@ -47,7 +46,7 @@ class TaskList(object):
 		for component in components:
 			if len(component) > 1:
 				cycles_found += 1
-				log.debug('Cycle: {list}\n'.format(list=', '.join(repr(task) for task in component)))
+				log.debug('Cycle: {list}\n'.format(list=', '.join(map(repr, component))))
 		if cycles_found > 0:
 			msg = ('{0} cycles were found in the tasklist, '
 			       'consult the logfile for more information.'.format(cycles_found))

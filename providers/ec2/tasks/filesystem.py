@@ -6,7 +6,8 @@ class S3FStab(Task):
 	description = 'Adding the S3 root partition to the fstab'
 	phase = phases.system_modification
 
-	def run(self, info):
+	@classmethod
+	def run(cls, info):
 		import os.path
 		root = info.volume.partition_map.root
 
