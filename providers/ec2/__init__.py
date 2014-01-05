@@ -48,51 +48,47 @@ def validate_manifest(data, validator, error):
 			error('HVM AMIs only support extlinux as a bootloader', ['system', 'bootloader'])
 
 
-def resolve_tasks(tasklist, manifest):
-	from common.task_sets import base_set
-	from common.task_sets import mounting_set
-	from common.task_sets import apt_set
-	from common.task_sets import locale_set
-	from common.task_sets import ssh_set
-	tasklist.add(*base_set)
-	tasklist.add(*mounting_set)
-	tasklist.add(*apt_set)
-	tasklist.add(*locale_set)
-	tasklist.add(*ssh_set)
+def resolve_tasks(taskset, manifest):
+	import common.task_sets
+	taskset.update(common.task_sets.base_set)
+	taskset.update(common.task_sets.mounting_set)
+	taskset.update(common.task_sets.apt_set)
+	taskset.update(common.task_sets.locale_set)
+	taskset.update(common.task_sets.ssh_set)
 
 	if manifest.volume['partitions']['type'] != 'none':
-		from common.task_sets import partitioning_set
-		tasklist.add(*partitioning_set)
+		taskset.update(common.task_sets.partitioning_set)
 
-	tasklist.add(tasks.host.HostDependencies,
-	             tasks.packages.DefaultPackages,
-	             tasks.connection.GetCredentials,
-	             tasks.host.GetInfo,
-	             tasks.ami.AMIName,
-	             tasks.connection.Connect,
+	taskset.update([tasks.host.HostDependencies,
+	                tasks.packages.DefaultPackages,
+	                tasks.connection.GetCredentials,
+	                tasks.host.GetInfo,
+	                tasks.ami.AMIName,
+	                tasks.connection.Connect,
 
-	             boot.BlackListModules,
-	             boot.DisableGetTTYs,
-	             security.EnableShadowConfig,
-	             network.RemoveDNSInfo,
-	             network.ConfigureNetworkIF,
-	             tasks.network.EnableDHCPCDDNS,
-	             initd.AddExpandRoot,
-	             initd.AddSSHKeyGeneration,
-	             initd.RemoveHWClock,
-	             tasks.initd.AddEC2InitScripts,
-	             initd.InstallInitScripts,
-	             initd.AdjustExpandRootScript,
-	             cleanup.ClearMOTD,
-	             cleanup.CleanTMP,
+	                boot.BlackListModules,
+	                boot.DisableGetTTYs,
+	                security.EnableShadowConfig,
+	                network.RemoveDNSInfo,
+	                network.ConfigureNetworkIF,
+	                tasks.network.EnableDHCPCDDNS,
+	                initd.AddExpandRoot,
+	                initd.AddSSHKeyGeneration,
+	                initd.RemoveHWClock,
+	                tasks.initd.AddEC2InitScripts,
+	                initd.InstallInitScripts,
+	                initd.AdjustExpandRootScript,
+	                cleanup.ClearMOTD,
+	                cleanup.CleanTMP,
 
-	             tasks.ami.RegisterAMI)
+	                tasks.ami.RegisterAMI,
+	                ])
 
 	if manifest.system['bootloader'] == 'pvgrub':
-		tasklist.add(boot.AddGrubPackage, tasks.boot.ConfigurePVGrub)
+		taskset.add(boot.AddGrubPackage)
+		taskset.add(tasks.boot.ConfigurePVGrub)
 	else:
-		from common.task_sets import bootloader_set
-		tasklist.add(*bootloader_set.get(manifest.system['bootloader']))
+		taskset.update(common.task_sets.bootloader_set.get(manifest.system['bootloader']))
 
 	backing_specific_tasks = {'ebs': [tasks.ebs.Create,
 	                                  tasks.ebs.Attach,
@@ -104,29 +100,22 @@ def resolve_tasks(tasklist, manifest):
 	                                 tasks.ami.BundleImage,
 	                                 tasks.ami.UploadImage,
 	                                 tasks.ami.RemoveBundle]}
-	tasklist.add(*backing_specific_tasks.get(manifest.volume['backing'].lower()))
-	tasklist.add(filesystem.Format,
-	             volume.Detach,
-	             volume.Delete)
+	taskset.update(backing_specific_tasks.get(manifest.volume['backing'].lower()))
+	taskset.update([filesystem.Format,
+	                volume.Detach,
+	                volume.Delete,
+	                ])
 
 	if manifest.bootstrapper.get('tarball', False):
-		tasklist.add(bootstrap.MakeTarball)
+		taskset.add(bootstrap.MakeTarball)
 
-	from common.task_sets import get_fs_specific_set
-	tasklist.add(*get_fs_specific_set(manifest.volume['partitions']))
+	taskset.update(common.task_sets.get_fs_specific_set(manifest.volume['partitions']))
 
 	if 'boot' in manifest.volume['partitions']:
-		from common.task_sets import boot_partition_set
-		tasklist.add(*boot_partition_set)
+		taskset.update(common.task_sets.boot_partition_set)
 
 
-def resolve_rollback_tasks(tasklist, tasks_completed, manifest):
-	completed = [type(task) for task in tasks_completed]
-
-	def counter_task(task, counter):
-		if task in completed and counter not in completed:
-			tasklist.add(counter)
-
+def resolve_rollback_tasks(taskset, manifest, counter_task):
 	counter_task(tasks.ebs.Create, volume.Delete)
 	counter_task(tasks.ebs.Attach, volume.Detach)
 

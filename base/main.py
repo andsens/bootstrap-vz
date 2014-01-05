@@ -26,14 +26,10 @@ def get_args():
 def run(args):
 	from manifest import Manifest
 	manifest = Manifest(args.manifest)
-	provider = manifest.modules['provider']
-	plugins = manifest.modules['plugins']
 
 	from tasklist import TaskList
 	tasklist = TaskList()
-	provider.resolve_tasks(tasklist, manifest)
-	for plugin in plugins:
-		plugin.resolve_tasks(tasklist, manifest)
+	tasklist.load('resolve_tasks', manifest)
 
 	from bootstrapinfo import BootstrapInformation
 	bootstrap_info = BootstrapInformation(manifest=manifest, debug=args.debug)
@@ -46,11 +42,13 @@ def run(args):
 		if args.pause_on_error:
 			raw_input("Press Enter to commence rollback")
 		log.error('Rolling back')
+
 		rollback_tasklist = TaskList()
-		provider.resolve_rollback_tasks(rollback_tasklist, tasklist.tasks_completed, manifest)
-		for plugin in plugins:
-			resolve_rollback_tasks = getattr(plugin, 'resolve_rollback_tasks', None)
-			if callable(resolve_rollback_tasks):
-				resolve_rollback_tasks(rollback_tasklist, tasklist.tasks_completed, manifest)
+
+		def counter_task(task, counter):
+			if task in tasklist.tasks_completed and counter not in tasklist.tasks_completed:
+				rollback_tasklist.tasks.add(counter)
+		rollback_tasklist.load('resolve_rollback_tasks', manifest, counter_task)
+
 		rollback_tasklist.run(info=bootstrap_info, dry_run=args.dry_run)
 		log.info('Successfully completed rollback')

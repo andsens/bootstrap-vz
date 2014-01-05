@@ -6,13 +6,14 @@ def validate_manifest(data, validator, error):
 	validator(data, schema_path)
 
 
-def resolve_tasks(tasklist, manifest):
+def resolve_tasks(taskset, manifest):
 	import tasks
 	from providers.ec2.tasks import initd
-	if initd.AddEC2InitScripts in tasklist.tasks:
-		tasklist.add(tasks.AdminUserCredentials)
+	if initd.AddEC2InitScripts in taskset:
+		taskset.add(tasks.AdminUserCredentials)
 
-	tasklist.add(tasks.AddSudoPackage,
-	             tasks.CreateAdminUser,
-	             tasks.PasswordlessSudo,
-	             tasks.DisableRootLogin)
+	taskset.update([tasks.AddSudoPackage,
+	                tasks.CreateAdminUser,
+	                tasks.PasswordlessSudo,
+	                tasks.DisableRootLogin,
+	                ])

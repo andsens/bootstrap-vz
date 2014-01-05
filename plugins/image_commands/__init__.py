@@ -6,6 +6,6 @@ def validate_manifest(data, validator, error):
 	validator(data, schema_path)
 
 
-def resolve_tasks(tasklist, manifest):
+def resolve_tasks(taskset, manifest):
 	from tasks import ImageExecuteCommand
-	tasklist.add(ImageExecuteCommand)
+	taskset.add(ImageExecuteCommand)

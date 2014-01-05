@@ -1,5 +1,5 @@
 
 
-def resolve_tasks(tasklist, manifest):
+def resolve_tasks(taskset, manifest):
 	from tasks import WriteMetadata
-	tasklist.add(WriteMetadata)
+	taskset.add(WriteMetadata)

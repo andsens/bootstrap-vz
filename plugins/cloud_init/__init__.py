@@ -6,24 +6,25 @@ def validate_manifest(data, validator, error):
 	validator(data, schema_path)
 
 
-def resolve_tasks(tasklist, manifest):
+def resolve_tasks(taskset, manifest):
 	import tasks
 	import providers.ec2.tasks.initd as initd_ec2
 	from common.tasks import initd
 
 	if manifest.system['release'] in ['wheezy', 'stable']:
-		tasklist.add(tasks.AddBackports)
+		taskset.add(tasks.AddBackports)
 
-	tasklist.add(tasks.AddCloudInitPackages,
-	             tasks.SetMetadataSource)
+	taskset.update([tasks.AddCloudInitPackages,
+	                tasks.SetMetadataSource,
+	                ])
 
 	options = manifest.plugins['cloud_init']
 	if 'username' in options:
-		tasklist.add(tasks.SetUsername)
+		taskset.add(tasks.SetUsername)
 	if 'disable_modules' in options:
-		tasklist.add(tasks.DisableModules)
+		taskset.add(tasks.DisableModules)
 
-	tasklist.remove(initd_ec2.AddEC2InitScripts,
-	                initd.AddExpandRoot,
-	                initd.AdjustExpandRootScript,
-	                initd.AddSSHKeyGeneration)
+	taskset.discard(initd_ec2.AddEC2InitScripts)
+	taskset.discard(initd.AddExpandRoot)
+	taskset.discard(initd.AdjustExpandRootScript)
+	taskset.discard(initd.AddSSHKeyGeneration)

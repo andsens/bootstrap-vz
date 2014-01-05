@@ -18,7 +18,7 @@ def validate_manifest(data, validator, error):
 	validator(data, schema_path)
 
 
-def resolve_tasks(tasklist, manifest):
+def resolve_tasks(taskset, manifest):
 	settings = manifest.plugins['prebootstrapped']
 	skip_tasks = [ebs.Create,
 	              loopback.Create,
@@ -35,25 +35,19 @@ def resolve_tasks(tasklist, manifest):
 	              bootstrap.Bootstrap]
 	if manifest.volume['backing'] == 'ebs':
 		if 'snapshot' in settings and settings['snapshot'] is not None:
-			tasklist.add(CreateFromSnapshot)
-			tasklist.remove(*skip_tasks)
+			taskset.add(CreateFromSnapshot)
+			[taskset.discard(task) for task in skip_tasks]
 		else:
-			tasklist.add(Snapshot)
+			taskset.add(Snapshot)
 	else:
 		if 'image' in settings and settings['image'] is not None:
-			tasklist.add(CreateFromImage)
-			tasklist.remove(*skip_tasks)
+			taskset.add(CreateFromImage)
+			[taskset.discard(task) for task in skip_tasks]
 		else:
-			tasklist.add(CopyImage)
+			taskset.add(CopyImage)
 
 
-def resolve_rollback_tasks(tasklist, tasks_completed, manifest):
-	completed = [type(task) for task in tasks_completed]
-
-	def counter_task(task, counter):
-		if task in completed and counter not in completed:
-			tasklist.add(counter)
-
+def resolve_rollback_tasks(taskset, manifest, counter_task):
 	if manifest.volume['backing'] == 'ebs':
 		counter_task(CreateFromSnapshot, volume.Delete)
 	else:

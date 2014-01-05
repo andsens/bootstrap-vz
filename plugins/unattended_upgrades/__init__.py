@@ -6,7 +6,7 @@ def validate_manifest(data, validator, error):
 	validator(data, schema_path)
 
 
-def resolve_tasks(tasklist, manifest):
+def resolve_tasks(taskset, manifest):
 	import tasks
-	tasklist.add(tasks.AddUnattendedUpgradesPackage,
-	             tasks.EnablePeriodicUpgrades)
+	taskset.add(tasks.AddUnattendedUpgradesPackage)
+	taskset.add(tasks.EnablePeriodicUpgrades)

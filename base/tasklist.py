@@ -9,15 +9,15 @@ class TaskList(object):
 		self.tasks = set()
 		self.tasks_completed = []
 
-	def add(self, *args):
-		self.tasks.update(args)
-
-	def remove(self, *args):
-		for task in args:
-			self.tasks.discard(task)
+	def load(self, function, manifest, *args):
+		getattr(manifest.modules['provider'], function)(self.tasks, manifest, *args)
+		for plugin in manifest.modules['plugins']:
+			fn = getattr(plugin, function, None)
+			if callable(fn):
+				fn(self.tasks, manifest, *args)
 
 	def run(self, info={}, dry_run=False):
-		task_list = self.create_list(self.tasks)
+		task_list = self.create_list()
 		log.debug('Tasklist:\n\t{list}'.format(list='\n\t'.join(repr(task) for task in task_list)))
 
 		for task_type in task_list:
@@ -28,19 +28,19 @@ class TaskList(object):
 				log.info('Running {task}'.format(task=task))
 			if not dry_run:
 				task.run(info)
-			self.tasks_completed.append(task)
+			self.tasks_completed.append(task_type)
 
-	def create_list(self, tasks):
+	def create_list(self):
 		from common.phases import order
 		graph = {}
-		for task in tasks:
+		for task in self.tasks:
 			self.check_ordering(task)
 			successors = set()
 			successors.update(task.successors)
-			successors.update(filter(lambda succ: task in succ.predecessors, tasks))
+			successors.update(filter(lambda succ: task in succ.predecessors, self.tasks))
 			succeeding_phases = order[order.index(task.phase) + 1:]
-			successors.update(filter(lambda succ: succ.phase in succeeding_phases, tasks))
-			graph[task] = filter(lambda succ: succ in tasks, successors)
+			successors.update(filter(lambda succ: succ.phase in succeeding_phases, self.tasks))
+			graph[task] = filter(lambda succ: succ in self.tasks, successors)
 
 		components = self.strongly_connected_components(graph)
 		cycles_found = 0
