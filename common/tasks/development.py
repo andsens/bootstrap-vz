@@ -1,5 +1,5 @@
 from base import Task
-import phases
+from common import phases
 
 
 class TriggerRollback(Task):
