@@ -1,6 +1,5 @@
 from base import Task
 from common import phases
-from common.tasks.locale import GenerateLocale
 import os
 
 assets = os.path.normpath(os.path.join(os.path.dirname(__file__), 'assets'))
@@ -9,7 +8,6 @@ assets = os.path.normpath(os.path.join(os.path.dirname(__file__), 'assets'))
 class OpenNebulaContext(Task):
 	description = 'Setup OpenNebula init context'
 	phase = phases.system_modification
-	predecessors = [GenerateLocale]
 
 	@classmethod
 	def run(cls, info):

@@ -45,7 +45,6 @@ class AddGrubPackage(Task):
 class InstallGrub(Task):
 	description = 'Installing grub'
 	phase = phases.system_modification
-	predecessors = [apt.AptUpgrade]
 
 	@classmethod
 	def run(cls, info):
@@ -119,7 +118,6 @@ class AddExtlinuxPackage(Task):
 class InstallExtLinux(Task):
 	description = 'Installing extlinux'
 	phase = phases.system_modification
-	predecessors = [apt.AptUpgrade]
 
 	@classmethod
 	def run(cls, info):
