@@ -149,7 +149,9 @@ class RegisterAMI(Task):
 		if info.manifest.volume['backing'] == 's3':
 			grub_boot_device = 'hd0'
 		else:
-			registration_params['root_device_name'] = '/dev/sda'
+			root_dev_name = {'pvm': '/dev/sda',
+			                 'hvm': '/dev/xvda'}.get(info.manifest.virtualization)
+			registration_params['root_device_name'] = root_dev_name
 			from base.fs.partitionmaps.none import NoPartitions
 			if isinstance(info.volume.partition_map, NoPartitions):
 				grub_boot_device = 'hd0'
@@ -161,7 +163,7 @@ class RegisterAMI(Task):
 			block_device = BlockDeviceType(snapshot_id=info.snapshot.id, delete_on_termination=True,
 			                               size=info.volume.partition_map.get_total_size() / 1024)
 			registration_params['block_device_map'] = BlockDeviceMapping()
-			registration_params['block_device_map']['/dev/sda'] = block_device
+			registration_params['block_device_map'][root_dev_name] = block_device
 
 		if info.manifest.virtualization == 'hvm':
 			registration_params['virtualization_type'] = 'hvm'
