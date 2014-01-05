@@ -8,8 +8,8 @@ class ManifestError(Exception):
 
 	def __str__(self):
 		if self.json_path is not None:
-			path = '.'.join(self.json_path)
-			return ('{msg}\n\tFile: {file}\n\tJSON path: {jsonpath}'
+			path = '.'.join(map(str, self.json_path))
+			return ('{msg}\n  File path: {file}\n  JSON path: {jsonpath}'
 			        .format(msg=self.message, file=self.manifest_path, jsonpath=path))
 		return '{file}: {msg}'.format(msg=self.message, file=self.manifest_path)
 
@@ -19,7 +19,7 @@ class TaskListError(Exception):
 		self.message = message
 
 	def __str__(self):
-		return "Error in tasklist: {0}".format(self.message)
+		return 'Error in tasklist: {msg}'.format(msg=self.message)
 
 
 class TaskError(Exception):

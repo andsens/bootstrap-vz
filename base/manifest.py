@@ -62,5 +62,5 @@ class Manifest(object):
 			self.validation_error(e.message, e.path)
 
 	def validation_error(self, message, json_path=None):
-			from common.exceptions import ManifestError
-			raise ManifestError(message, self.path, json_path)
+		from common.exceptions import ManifestError
+		raise ManifestError(message, self.path, json_path)
