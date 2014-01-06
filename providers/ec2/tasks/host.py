@@ -4,7 +4,7 @@ from common.tasks import host
 
 
 class HostDependencies(Task):
-	description = 'Adding more required host packages'
+	description = 'Adding required host packages for EC2 bootstrapping'
 	phase = phases.preparation
 	successors = [host.CheckHostDependencies]
 
