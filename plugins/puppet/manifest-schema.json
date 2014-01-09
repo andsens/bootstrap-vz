@@ -1,0 +1,27 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "Puppet plugin manifest",
+	"type": "object",
+	"properties": {
+		"plugins": {
+			"type": "object",
+			"properties": {
+				"puppet": {
+					"type": "object",
+					"properties": {
+						"manifest": { "$ref": "#/definitions/absolute_path" },
+						"assets": { "$ref": "#/definitions/absolute_path" }
+					},
+					"minProperties": 1,
+					"additionalProperties": false
+				}
+			}
+		}
+	},
+	"definitions": {
+		"absolute_path": {
+			"type":    "string",
+			"pattern": "^/[^\\0]+$"
+		}
+	}
+}
