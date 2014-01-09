@@ -14,14 +14,16 @@ class QEMUVolume(LoopbackVolume):
 		from base.fs.partitionmaps.none import NoPartitions
 		if isinstance(self.partition_map, NoPartitions):
 			if not self._module_loaded('nbd'):
-				raise VolumeError('The kernel module `nbd\' must be loaded '
-				                  '(`modprobe nbd\') to attach .vdi images')
+				msg = ('The kernel module `nbd\' must be loaded '
+				       '(`modprobe nbd\') to attach .{extension} images'
+				       .format(extension=self.extension))
+				raise VolumeError(msg)
 		else:
 			num_partitions = len(self.partition_map.partitions)
 			if not self._module_loaded('nbd'):
 				msg = ('The kernel module `nbd\' must be loaded '
-				       '(`modprobe nbd max_part={num_partitions}\') to attach .vdi images'
-				       .format(num_partitions=num_partitions))
+				       '(`modprobe nbd max_part={num_partitions}\') to attach .{extension} images'
+				       .format(num_partitions=num_partitions, extension=self.extension))
 				raise VolumeError(msg)
 			nbd_max_part = int(self._module_param('nbd', 'max_part'))
 			if nbd_max_part < num_partitions:
