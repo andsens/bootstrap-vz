@@ -3,10 +3,6 @@ from common.tools import log_check_call
 from base.fs.exceptions import VolumeError
 
 
-# QEMU formats:
-# raw, host_device, qcow2, qcow, cow, vdi, vmdk, vpc, cloop
-
-
 class LoopbackVolume(Volume):
 
 	events = [{'name': 'create', 'src': 'nonexistent', 'dst': 'detached'},
