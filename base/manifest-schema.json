@@ -43,7 +43,10 @@
 					"patternProperties": {
 						"^\\w+$": {
 							"type": "array",
-							"items": {"type": "string"},
+							"items": {
+								"type": "string",
+								"pattern": "^(deb|deb-src)\\s+(\\[\\s*(.+\\S)?\\s*\\]\\s+)?\\S+\\s+\\S+(\\s+(.+\\S))?\\s*$"
+							},
 							"minItems": 1
 						}
 					},
