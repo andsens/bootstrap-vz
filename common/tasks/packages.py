@@ -70,12 +70,14 @@ class InstallLocalPackages(Task):
 
 		for package_src in info.packages.local:
 			pkg_name = os.path.basename(package_src)
-			package_dst = os.path.join('/tmp', pkg_name)
-			copy(package_src, os.path.join(info.root, package_dst))
+			package_rel_dst = os.path.join('tmp', pkg_name)
+			package_dst = os.path.join(info.root, package_rel_dst)
+			copy(package_src, package_dst)
 
+			package_path = os.path.join('/', package_rel_dst)
 			env = os.environ.copy()
 			env['DEBIAN_FRONTEND'] = 'noninteractive'
 			log_check_call(['/usr/sbin/chroot', info.root,
-			                '/usr/bin/dpkg', '--install', package_dst],
+			                '/usr/bin/dpkg', '--install', package_path],
 			               env=env)
 			os.remove(package_dst)
