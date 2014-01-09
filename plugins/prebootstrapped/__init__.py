@@ -3,6 +3,7 @@ from tasks import CopyImage
 from tasks import CreateFromSnapshot
 from tasks import CreateFromImage
 from providers.ec2.tasks import ebs
+from providers.virtualbox.tasks import guest_additions
 from common.tasks import loopback
 from common.tasks import volume
 from common.tasks import locale
@@ -32,7 +33,9 @@ def resolve_tasks(taskset, manifest):
 	              apt.DisableDaemonAutostart,
 	              locale.GenerateLocale,
 	              bootstrap.MakeTarball,
-	              bootstrap.Bootstrap]
+	              bootstrap.Bootstrap,
+	              guest_additions.InstallGuestAdditions,
+	              ]
 	if manifest.volume['backing'] == 'ebs':
 		if 'snapshot' in settings and settings['snapshot'] is not None:
 			taskset.add(CreateFromSnapshot)
