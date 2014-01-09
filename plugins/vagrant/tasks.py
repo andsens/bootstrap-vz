@@ -90,7 +90,8 @@ class PackageBox(Task):
 		logging.getLogger(__name__).info('The vagrant box has been placed at {box_path}'
 		                                 .format(box_path=box_path))
 
-	def write_ovf(info, destination, box_name, mac_address, disk_name):
+	@classmethod
+	def write_ovf(cls, info, destination, box_name, mac_address, disk_name):
 		namespaces = {'ovf':     'http://schemas.dmtf.org/ovf/envelope/1',
 		              'rasd':    'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData',
 		              'vssd':    'http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData',
