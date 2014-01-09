@@ -32,9 +32,16 @@ class CheckHostDependencies(Task):
 	def run(cls, info):
 		from common.tools import log_check_call
 		from subprocess import CalledProcessError
+		missing_packages = []
 		for package in info.host_dependencies:
 			try:
 				log_check_call(['/usr/bin/dpkg-query', '-s', package])
 			except CalledProcessError:
-				msg = "The package `{0}\' is not installed".format(package)
-				raise TaskError(msg)
+				missing_packages.append(package)
+		if len(missing_packages) > 0:
+			pkgs = '\', `'.join(missing_packages)
+			if len(missing_packages) > 1:
+				msg = "The packages `{packages}\' are not installed".format(packages=pkgs)
+			else:
+				msg = "The package `{packages}\' is not installed".format(packages=pkgs)
+			raise TaskError(msg)
