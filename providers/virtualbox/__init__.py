@@ -26,7 +26,7 @@ def resolve_tasks(tasklist, manifest):
 	tasklist.update(common.task_sets.base_set)
 	tasklist.update(common.task_sets.volume_set)
 	tasklist.update(common.task_sets.mounting_set)
-	tasklist.update(common.task_sets.apt_set)
+	tasklist.update(common.task_sets.get_apt_set(manifest))
 	tasklist.update(common.task_sets.locale_set)
 
 	tasklist.update(common.task_sets.bootloader_set.get(manifest.system['bootloader']))

@@ -5,9 +5,22 @@ import locale
 import os
 
 
+class AddManifestSources(Task):
+	description = 'Adding sources from the manifest'
+	phase = phases.preparation
+
+	@classmethod
+	def run(cls, info):
+		if 'sources' in info.manifest.packages:
+			for name, lines in info.manifest.packages['sources'].iteritems():
+				for line in lines:
+					info.source_lists.add(name, line)
+
+
 class AddDefaultSources(Task):
 	description = 'Adding default release sources'
 	phase = phases.preparation
+	predecessors = [AddManifestSources]
 
 	@classmethod
 	def run(cls, info):
@@ -20,6 +33,31 @@ class AddDefaultSources(Task):
 			info.source_lists.add('main', 'deb-src {apt_mirror} {system.release} main')
 			info.source_lists.add('main', 'deb     {apt_mirror} {system.release}-updates main')
 			info.source_lists.add('main', 'deb-src {apt_mirror} {system.release}-updates main')
+
+
+class AddRemoteManifestPackages(Task):
+	description = 'Adding remote packages from the manifest'
+	phase = phases.preparation
+	predecessors = [AddDefaultSources]
+
+	@classmethod
+	def run(cls, info):
+		for package in info.manifest.packages['remote']:
+			if isinstance(package, dict):
+				info.packages.add(package['name'], package.get('target', None))
+			else:
+				info.packages.add(package, None)
+
+
+class AddLocalManifestPackages(Task):
+	description = 'Adding local packages from the manifest'
+	phase = phases.preparation
+	predecessors = [AddDefaultSources]
+
+	@classmethod
+	def run(cls, info):
+		for package_path in info.manifest.packages['local']:
+			info.packages.add_local(package_path)
 
 
 class WriteSources(Task):

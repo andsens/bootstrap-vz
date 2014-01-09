@@ -52,7 +52,7 @@ def resolve_tasks(taskset, manifest):
 	import common.task_sets
 	taskset.update(common.task_sets.base_set)
 	taskset.update(common.task_sets.mounting_set)
-	taskset.update(common.task_sets.apt_set)
+	taskset.update(common.task_sets.get_apt_set(manifest))
 	taskset.update(common.task_sets.locale_set)
 	taskset.update(common.task_sets.ssh_set)
 

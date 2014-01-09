@@ -45,17 +45,27 @@ ssh_set = [security.DisableSSHPasswordAuthentication,
            cleanup.ShredHostkeys,
            ]
 
-apt_set = [apt.AddDefaultSources,
-           apt.WriteSources,
-           apt.DisableDaemonAutostart,
-           apt.AptUpdate,
-           apt.AptUpgrade,
-           packages.InstallRemotePackages,
-           packages.InstallLocalPackages,
-           apt.PurgeUnusedPackages,
-           apt.AptClean,
-           apt.EnableDaemonAutostart,
-           ]
+
+def get_apt_set(manifest):
+	base = [apt.AddDefaultSources,
+	        apt.WriteSources,
+	        apt.DisableDaemonAutostart,
+	        apt.AptUpdate,
+	        apt.AptUpgrade,
+	        packages.InstallRemotePackages,
+	        packages.InstallLocalPackages,
+	        apt.PurgeUnusedPackages,
+	        apt.AptClean,
+	        apt.EnableDaemonAutostart,
+	        ]
+	if 'sources' in manifest.packages:
+		base.append(apt.AddManifestSources)
+	if 'remote' in manifest.packages:
+		base.append(apt.AddRemoteManifestPackages)
+	if 'local' in manifest.packages:
+		base.append(apt.AddLocalManifestPackages)
+	return base
+
 
 locale_set = [locale.LocaleBootstrapPackage,
               locale.GenerateLocale,

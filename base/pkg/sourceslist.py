@@ -2,13 +2,9 @@
 
 class SourceLists(object):
 
-	def __init__(self, data, manifest_vars):
+	def __init__(self, manifest_vars):
 		self.sources = {}
 		self.manifest_vars = manifest_vars
-		if 'sources' in data:
-			for name, lines in data['sources'].iteritems():
-				for line in lines:
-					self.add(name, line)
 
 	def add(self, name, line):
 		name = name.format(**self.manifest_vars)
