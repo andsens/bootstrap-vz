@@ -1,0 +1,11 @@
+{
+	"squeeze": {
+		"amd64": "linux-image-xen-amd64",
+		"i386" : "linux-image-xen-686" },
+	"wheezy": {
+		"amd64": "linux-image-amd64",
+	      	"i386" :  "linux-image-686" },
+	"unstable": {
+		"amd64": "linux-image-amd64",
+	      	"i386" :  "linux-image-686" }
+}

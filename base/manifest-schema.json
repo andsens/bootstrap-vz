@@ -25,7 +25,7 @@
 		"system": {
 			"type": "object",
 			"properties": {
-				"release":      { "enum": ["wheezy"] },
+				"release":      { "enum": ["wheezy", "unstable"] },
 				"architecture": { "enum": ["i386", "amd64"] },
 				"bootloader":   { "enum": ["pvgrub", "grub", "extlinux"] },
 				"timezone":     { "type": "string" },

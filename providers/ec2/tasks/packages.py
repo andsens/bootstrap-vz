@@ -18,9 +18,9 @@ class DefaultPackages(Task):
 		info.exclude_packages.add('isc-dhcp-common')
 
 		# In squeeze, we need a special kernel flavor for xen
-		kernels = {'squeeze': {'amd64': 'linux-image-xen-amd64',
-		                       'i386':  'linux-image-xen-686', },
-		           'wheezy':  {'amd64': 'linux-image-amd64',
-		                       'i386':  'linux-image-686', }, }
+		kernels = {}
+		with open('packages-kernels.json') as stream:
+			import json
+			kernel = json.loads(stream.read())
 		kernel_package = kernels.get(info.manifest.system['release']).get(info.manifest.system['architecture'])
 		info.packages.add(kernel_package)
