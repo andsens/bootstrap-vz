@@ -1,0 +1,13 @@
+{
+	"squeeze": [
+		"auto lo\n",
+		"iface lo inet loopback\n",
+		"auto eth0\n",
+		"iface eth0 inet dhcp\n" ],
+	"wheezy": [
+		"auto eth0\n", 
+		"iface eth0 inet dhcp\n" ],
+	"unstable": [
+		"auto eth0\n",
+		"iface eth0 inet dhcp\n" ]
+}

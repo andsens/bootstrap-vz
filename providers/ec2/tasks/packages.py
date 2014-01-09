@@ -19,8 +19,8 @@ class DefaultPackages(Task):
 
 		# In squeeze, we need a special kernel flavor for xen
 		kernels = {}
-		with open('packages-kernels.json') as stream:
+		with open('providers/ec2/tasks/packages-kernels.json') as stream:
 			import json
-			kernel = json.loads(stream.read())
+			kernels = json.loads(stream.read())
 		kernel_package = kernels.get(info.manifest.system['release']).get(info.manifest.system['architecture'])
 		info.packages.add(kernel_package)
