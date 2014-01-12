@@ -7,7 +7,7 @@ class Phase(object):
 
 	def pos(self):
 		from common.phases import order
-		return (i for i, phase in enumerate(order) if phase is self).next()
+		return next(i for i, phase in enumerate(order) if phase is self)
 
 	def __cmp__(self, other):
 		return self.pos() - other.pos()

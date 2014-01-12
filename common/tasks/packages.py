@@ -3,26 +3,43 @@ from common import phases
 from common.tasks import apt
 
 
-class InstallRemotePackages(Task):
-	description = 'Installing remote packages'
+class AddManifestPackages(Task):
+	description = 'Adding packages from the manifest'
+	phase = phases.preparation
+	predecessors = [apt.AddDefaultSources]
+
+	@classmethod
+	def run(cls, info):
+		import re
+		remote = re.compile('^(?P<name>[^/]+)(/(?P<target>[^/]+))?$')
+		for package in info.manifest.packages['install']:
+			match = remote.match(package).groupdict()
+			if match is not None:
+				info.packages.add(match['name'], match['target'])
+			else:
+				info.packages.add_local(package)
+
+
+class InstallPackages(Task):
+	description = 'Installing packages'
 	phase = phases.package_installation
 	predecessors = [apt.AptUpgrade]
 
 	@classmethod
 	def run(cls, info):
-		if len(info.packages.remote) == 0:
-			return
+		batch = []
+		actions = {info.packages.Remote: cls.install_remote,
+		           info.packages.Local: cls.install_local}
+		for i, package in enumerate(info.packages.install):
+			batch.append(package)
+			next_package = info.packages.install[i + 1] if i + 1 < len(info.packages.install) else None
+			if next_package is None or package.__class__ is not next_package.__class__:
+				actions[package.__class__](info, batch)
+				batch = []
+
+	@classmethod
+	def install_remote(cls, info, remote_packages):
 		import os
-
-		packages = []
-		for name, target in info.packages.remote.iteritems():
-			packages.append('{name}/{target}'.format(name=name, target=target))
-
-		import logging
-		msg = ('The following packages will be installed (package/target-release):'
-		       '\n{packages}\n').format(packages='\n'.join(packages))
-		logging.getLogger(__name__).debug(msg)
-
 		from common.tools import log_check_call
 		from subprocess import CalledProcessError
 		try:
@@ -32,9 +49,10 @@ class InstallRemotePackages(Task):
 			                '/usr/bin/apt-get', 'install',
 			                                    '--no-install-recommends',
 			                                    '--assume-yes']
-			               + packages,
+			               + map(str, remote_packages),
 			               env=env)
 		except CalledProcessError as e:
+			import logging
 			disk_stat = os.statvfs(info.root)
 			root_free_mb = disk_stat.f_bsize * disk_stat.f_bavail / 1024 / 1024
 			disk_stat = os.statvfs(os.path.join(info.root, 'boot'))
@@ -53,31 +71,29 @@ class InstallRemotePackages(Task):
 					logging.getLogger(__name__).warn(msg)
 			raise e
 
-
-class InstallLocalPackages(Task):
-	description = 'Installing local packages'
-	phase = phases.package_installation
-	predecessors = [apt.AptUpgrade]
-	successors = [InstallRemotePackages]
-
 	@classmethod
-	def run(cls, info):
-		if len(info.packages.local) == 0:
-			return
+	def install_local(cls, info, local_packages):
 		from shutil import copy
 		from common.tools import log_check_call
 		import os
 
-		for package_src in info.packages.local:
+		absolute_package_paths = []
+		chrooted_package_paths = []
+		for package_src in local_packages:
 			pkg_name = os.path.basename(package_src)
 			package_rel_dst = os.path.join('tmp', pkg_name)
 			package_dst = os.path.join(info.root, package_rel_dst)
 			copy(package_src, package_dst)
-
+			absolute_package_paths.append(package_dst)
 			package_path = os.path.join('/', package_rel_dst)
-			env = os.environ.copy()
-			env['DEBIAN_FRONTEND'] = 'noninteractive'
-			log_check_call(['/usr/sbin/chroot', info.root,
-			                '/usr/bin/dpkg', '--install', package_path],
-			               env=env)
-			os.remove(package_dst)
+			chrooted_package_paths.append(package_path)
+
+		env = os.environ.copy()
+		env['DEBIAN_FRONTEND'] = 'noninteractive'
+		log_check_call(['/usr/sbin/chroot', info.root,
+		                '/usr/bin/dpkg', '--install']
+		               + chrooted_package_paths,
+		               env=env)
+
+		for path in absolute_package_paths:
+			os.remove(path)

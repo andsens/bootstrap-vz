@@ -1,6 +1,6 @@
 from base import Task
 from common import phases
-from common.tasks.packages import InstallRemotePackages
+from common.tasks.packages import InstallPackages
 from common.exceptions import TaskError
 
 
@@ -20,7 +20,7 @@ class CheckGuestAdditionsPath(Task):
 class AddGuestAdditionsPackages(Task):
 	description = 'Adding packages to support Guest Additions installation'
 	phase = phases.package_installation
-	successors = [InstallRemotePackages]
+	successors = [InstallPackages]
 
 	@classmethod
 	def run(cls, info):
@@ -38,7 +38,7 @@ class AddGuestAdditionsPackages(Task):
 class InstallGuestAdditions(Task):
 	description = 'Installing the VirtualBox Guest Additions'
 	phase = phases.package_installation
-	predecessors = [InstallRemotePackages]
+	predecessors = [InstallPackages]
 
 	@classmethod
 	def run(cls, info):

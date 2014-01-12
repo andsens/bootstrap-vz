@@ -53,26 +53,19 @@
 					"additionalProperties": false,
 					"minItems": 1
 				},
-				"remote": {
+				"trusted-keys": {
+					"type": "array",
+					"items": { "$ref": "#/definitions/absolute_path" },
+					"minItems": 1
+				},
+				"install": {
 					"type": "array",
 					"items": {
 						"anyOf": [
-							{
-								"type": "object",
-								"properties": {
-									"name": {"type": "string"},
-									"target": {"type": "string"}
-								},
-								"required": ["name"]
-							},
-							{ "type": "string" }
+							{ "pattern": "^[^/]+(/[^/]+)?$" },
+							{ "$ref": "#/definitions/absolute_path" }
 						]
 					},
-					"minItems": 1
-				},
-				"local": {
-					"type": "array",
-					"items": { "$ref": "#/definitions/absolute_path" },
 					"minItems": 1
 				}
 			},

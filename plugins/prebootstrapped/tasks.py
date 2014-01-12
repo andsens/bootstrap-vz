@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 class Snapshot(Task):
 	description = 'Creating a snapshot of the bootstrapped volume'
 	phase = phases.package_installation
-	predecessors = [packages.InstallRemotePackages, guest_additions.InstallGuestAdditions]
+	predecessors = [packages.InstallPackages, guest_additions.InstallGuestAdditions]
 
 	@classmethod
 	def run(cls, info):
@@ -49,7 +49,7 @@ class CreateFromSnapshot(Task):
 class CopyImage(Task):
 	description = 'Creating a snapshot of the bootstrapped volume'
 	phase = phases.package_installation
-	predecessors = [packages.InstallRemotePackages, guest_additions.InstallGuestAdditions]
+	predecessors = [packages.InstallPackages, guest_additions.InstallGuestAdditions]
 
 	@classmethod
 	def run(cls, info):

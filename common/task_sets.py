@@ -52,18 +52,17 @@ def get_apt_set(manifest):
 	        apt.DisableDaemonAutostart,
 	        apt.AptUpdate,
 	        apt.AptUpgrade,
-	        packages.InstallRemotePackages,
-	        packages.InstallLocalPackages,
+	        packages.InstallPackages,
 	        apt.PurgeUnusedPackages,
 	        apt.AptClean,
 	        apt.EnableDaemonAutostart,
 	        ]
 	if 'sources' in manifest.packages:
 		base.append(apt.AddManifestSources)
-	if 'remote' in manifest.packages:
-		base.append(apt.AddRemoteManifestPackages)
-	if 'local' in manifest.packages:
-		base.append(apt.AddLocalManifestPackages)
+	if 'trusted-keys' in manifest.packages:
+		base.append(apt.InstallTrustedKeys)
+	if 'install' in manifest.packages:
+		base.append(packages.AddManifestPackages)
 	return base
 
 

@@ -11,10 +11,9 @@ class AddManifestSources(Task):
 
 	@classmethod
 	def run(cls, info):
-		if 'sources' in info.manifest.packages:
-			for name, lines in info.manifest.packages['sources'].iteritems():
-				for line in lines:
-					info.source_lists.add(name, line)
+		for name, lines in info.manifest.packages['sources'].iteritems():
+			for line in lines:
+				info.source_lists.add(name, line)
 
 
 class AddDefaultSources(Task):
@@ -24,45 +23,29 @@ class AddDefaultSources(Task):
 
 	@classmethod
 	def run(cls, info):
-		if info.source_lists.target_exists('{system.release}'):
-			import logging
-			msg = ('{system.release} target already exists').format(**info.manifest_vars)
-			logging.getLogger(__name__).info(msg)
-		else:
-			info.source_lists.add('main', 'deb     {apt_mirror} {system.release} main')
-			info.source_lists.add('main', 'deb-src {apt_mirror} {system.release} main')
-			info.source_lists.add('main', 'deb     {apt_mirror} {system.release}-updates main')
-			info.source_lists.add('main', 'deb-src {apt_mirror} {system.release}-updates main')
+		info.source_lists.add('main', 'deb     {apt_mirror} {system.release} main')
+		info.source_lists.add('main', 'deb-src {apt_mirror} {system.release} main')
+		info.source_lists.add('main', 'deb     {apt_mirror} {system.release}-updates main')
+		info.source_lists.add('main', 'deb-src {apt_mirror} {system.release}-updates main')
 
 
-class AddRemoteManifestPackages(Task):
-	description = 'Adding remote packages from the manifest'
-	phase = phases.preparation
-	predecessors = [AddDefaultSources]
+class InstallTrustedKeys(Task):
+	description = 'Installing trusted keys'
+	phase = phases.package_installation
 
 	@classmethod
 	def run(cls, info):
-		for package in info.manifest.packages['remote']:
-			if isinstance(package, dict):
-				info.packages.add(package['name'], package.get('target', None))
-			else:
-				info.packages.add(package, None)
-
-
-class AddLocalManifestPackages(Task):
-	description = 'Adding local packages from the manifest'
-	phase = phases.preparation
-	predecessors = [AddDefaultSources]
-
-	@classmethod
-	def run(cls, info):
-		for package_path in info.manifest.packages['local']:
-			info.packages.add_local(package_path)
+		from shutil import copy
+		for key_path in info.manifest.packages['trusted-keys']:
+			key_name = os.path.basename(key_path)
+			destination = os.path.join(info.root, 'etc/apt/trusted.gpg.d', key_name)
+			copy(key_path, destination)
 
 
 class WriteSources(Task):
 	description = 'Writing aptitude sources to disk'
 	phase = phases.package_installation
+	predecessors = [InstallTrustedKeys]
 
 	@classmethod
 	def run(cls, info):
