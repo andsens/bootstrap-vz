@@ -9,10 +9,6 @@ class ImageExecuteCommand(Task):
 	@classmethod
 	def run(cls, info):
 		from common.tools import log_check_call
-
-		for user_cmd in info.manifest.plugins['image_commands']['commands']:
-			command = []
-			for elt in user_cmd:
-				fragment = elt.format(root=info.root)
-				command.append(fragment)
+		for raw_command in info.manifest.plugins['image_commands']['commands']:
+			command = map(lambda part: part.format(**info.manifest_vars), raw_command)
 			log_check_call(command)
