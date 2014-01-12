@@ -2,7 +2,6 @@ from base import Task
 from common import phases
 from common.tasks import workspace
 from common.tasks import apt
-from plugins.admin_user.tasks import CreateAdminUser
 import os
 import shutil
 
@@ -28,12 +27,41 @@ class AddPackages(Task):
 	@classmethod
 	def run(cls, info):
 		info.packages.add('openssh-server')
+		info.packages.add('sudo')
+		info.packages.add('nfs-client')
+
+
+class CreateVagrantUser(Task):
+	description = 'Creating the vagrant user'
+	phase = phases.system_modification
+
+	@classmethod
+	def run(cls, info):
+		from common.tools import log_check_call
+		log_check_call(['/usr/sbin/chroot', info.root,
+		                '/usr/sbin/useradd',
+		                '--create-home', '--shell', '/bin/bash',
+		                'vagrant'])
+
+
+class PasswordlessSudo(Task):
+	description = 'Allowing the vagrant user to use sudo without a password'
+	phase = phases.system_modification
+
+	@classmethod
+	def run(cls, info):
+		sudo_vagrant_path = os.path.join(info.root, 'etc/sudoers.d/vagrant')
+		with open(sudo_vagrant_path, 'w') as sudo_vagrant:
+			sudo_vagrant.write('vagrant ALL=(ALL) NOPASSWD:ALL')
+		import stat
+		ug_read_only = (stat.S_IRUSR | stat.S_IRGRP)
+		os.chmod(sudo_vagrant_path, ug_read_only)
 
 
 class AddInsecurePublicKey(Task):
 	description = 'Adding vagrant insecure public key'
 	phase = phases.system_modification
-	predecessors = [CreateAdminUser]
+	predecessors = [CreateVagrantUser]
 
 	@classmethod
 	def run(cls, info):
@@ -47,6 +75,16 @@ class AddInsecurePublicKey(Task):
 		authorized_keys_path = os.path.join(ssh_dir, 'authorized_keys')
 		with open(authorized_keys_path, 'a') as authorized_keys:
 			authorized_keys.write(insecure_public_key)
+
+
+class SetRootPassword(Task):
+	description = 'Setting the root password to `vagrant\''
+	phase = phases.system_modification
+
+	@classmethod
+	def run(cls, info):
+		from common.tools import log_check_call
+		log_check_call(['/usr/sbin/chroot', info.root, '/usr/sbin/chpasswd'], 'root:vagrant')
 
 
 class PackageBox(Task):

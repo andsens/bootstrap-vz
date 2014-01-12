@@ -18,22 +18,6 @@
 				}
 			},
 			"required": ["backing"]
-		},
-		"plugins": {
-			"type": "object",
-			"properties": {
-				"root_password": {
-					"type": "object",
-					"properties": {
-						"password": {
-							"type": "string"
-						}
-					},
-					"required": ["password"]
-				}
-			},
-			"required": ["root_password"]
 		}
-	},
-	"required": ["plugins"]
+	}
 }

@@ -16,6 +16,9 @@ def resolve_tasks(taskset, manifest):
 	from common.tasks import volume
 	taskset.update([tasks.CreateVagrantBoxDir,
 	                tasks.AddPackages,
+	                tasks.CreateVagrantUser,
+	                tasks.PasswordlessSudo,
+	                tasks.SetRootPassword,
 	                tasks.AddInsecurePublicKey,
 	                tasks.PackageBox,
 	                tasks.RemoveVagrantBoxDir,
