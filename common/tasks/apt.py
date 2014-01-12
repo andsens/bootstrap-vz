@@ -25,8 +25,9 @@ class AddDefaultSources(Task):
 	def run(cls, info):
 		info.source_lists.add('main', 'deb     {apt_mirror} {system.release} main')
 		info.source_lists.add('main', 'deb-src {apt_mirror} {system.release} main')
-		info.source_lists.add('main', 'deb     {apt_mirror} {system.release}-updates main')
-		info.source_lists.add('main', 'deb-src {apt_mirror} {system.release}-updates main')
+		if info.manifest.system['release'] != 'unstable':
+			info.source_lists.add('main', 'deb     {apt_mirror} {system.release}-updates main')
+			info.source_lists.add('main', 'deb-src {apt_mirror} {system.release}-updates main')
 
 
 class InstallTrustedKeys(Task):

@@ -30,11 +30,9 @@ class ConfigureNetworkIF(Task):
 	@classmethod
 	def run(cls, info):
 		interfaces_path = os.path.join(info.root, 'etc/network/interfaces')
-		if_config = {'squeeze': ('auto lo\n'
-		                         'iface lo inet loopback\n'
-		                         'auto eth0\n'
-		                         'iface eth0 inet dhcp\n'),
-		             'wheezy':  'auto eth0\n'
-		                        'iface eth0 inet dhcp\n'}
+		if_config = []
+		with open('common/tasks/network-configuration.json') as stream:
+			import json
+			if_config = json.loads(stream.read())
 		with open(interfaces_path, 'a') as interfaces:
-			interfaces.write(if_config.get(info.manifest.system['release']))
+			interfaces.write(''.join(if_config.get(info.manifest.system['release'])))
