@@ -29,7 +29,7 @@ linux_entry ()
 {
 	os="$1"
 	version="$2"
-	args="$4"
+	args="$3"
 
 	title="$(gettext_quoted "%s, with Linux %s")"
 
