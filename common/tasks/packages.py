@@ -13,7 +13,9 @@ class AddManifestPackages(Task):
 		import re
 		remote = re.compile('^(?P<name>[^/]+)(/(?P<target>[^/]+))?$')
 		for package in info.manifest.packages['install']:
-			match = remote.match(package).groupdict()
+			match = None
+			if remote.match(package):
+				match = remote.match(package).groupdict()
 			if match is not None:
 				info.packages.add(match['name'], match['target'])
 			else:
@@ -80,10 +82,10 @@ class InstallPackages(Task):
 		absolute_package_paths = []
 		chrooted_package_paths = []
 		for package_src in local_packages:
-			pkg_name = os.path.basename(package_src)
+			pkg_name = os.path.basename(package_src.path)
 			package_rel_dst = os.path.join('tmp', pkg_name)
 			package_dst = os.path.join(info.root, package_rel_dst)
-			copy(package_src, package_dst)
+			copy(package_src.path, package_dst)
 			absolute_package_paths.append(package_dst)
 			package_path = os.path.join('/', package_rel_dst)
 			chrooted_package_paths.append(package_path)
