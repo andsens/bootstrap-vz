@@ -13,11 +13,9 @@ class AddManifestPackages(Task):
 		import re
 		remote = re.compile('^(?P<name>[^/]+)(/(?P<target>[^/]+))?$')
 		for package in info.manifest.packages['install']:
-			match = None
-			if remote.match(package):
-				match = remote.match(package).groupdict()
+			match = remote.match(package)
 			if match is not None:
-				info.packages.add(match['name'], match['target'])
+				info.packages.add(match.group('name'), match.group('target'))
 			else:
 				info.packages.add_local(package)
 
