@@ -17,6 +17,8 @@ def log_call(command, stdin=None, env=None):
 	command_log = realpath(command[0]).replace('/', '.')
 	log = logging.getLogger(__name__ + command_log)
 	log.debug('Executing: {command}'.format(command=' '.join(command)))
+	if stdin is not None:
+		log.debug('  stdin: {stdin}'.format(stdin=stdin))
 
 	popen_args = {'args':   command,
 	              'env':    env,
