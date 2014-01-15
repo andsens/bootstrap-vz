@@ -35,4 +35,4 @@ class ConfigureNetworkIF(Task):
 			import json
 			if_config = json.loads(stream.read())
 		with open(interfaces_path, 'a') as interfaces:
-			interfaces.write(''.join(if_config.get(info.manifest.system['release'])))
+			interfaces.write('\n'.join(if_config.get(info.manifest.system['release'])))
