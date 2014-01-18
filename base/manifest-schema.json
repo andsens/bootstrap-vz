@@ -117,7 +117,7 @@
 		"partition_table": {
 			"type": "object",
 			"properties": {
-				"type": { "enum": ["mbr", "gpt"] },
+				"type": { "enum": ["msdos", "gpt"] },
 				"boot": { "$ref": "#/definitions/partition" },
 				"root": { "$ref": "#/definitions/partition" },
 				"swap": {

@@ -6,11 +6,11 @@ def load_volume(data):
 	from common.fs.virtualdiskimage import VirtualDiskImage
 	from common.fs.virtualmachinedisk import VirtualMachineDisk
 	from partitionmaps.gpt import GPTPartitionMap
-	from partitionmaps.mbr import MBRPartitionMap
+	from partitionmaps.msdos import MSDOSPartitionMap
 	from partitionmaps.none import NoPartitions
 	partition_maps = {'none': NoPartitions,
 	                  'gpt': GPTPartitionMap,
-	                  'mbr': MBRPartitionMap,
+	                  'msdos': MSDOSPartitionMap,
 	                  }
 	partition_map = partition_maps.get(data['partitions']['type'])(data['partitions'])
 	volume_backings = {'raw': LoopbackVolume,

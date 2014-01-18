@@ -20,7 +20,7 @@
 	"volume": {
 		"backing": "vdi",
 		"partitions": {
-			"type": "mbr",
+			"type": "msdos",
 			"boot": {
 				"size":       32,
 				"filesystem": "ext2"

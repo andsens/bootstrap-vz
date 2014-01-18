@@ -2,7 +2,7 @@ from common.tools import log_check_call
 from base import BasePartition
 
 
-class MBRPartition(BasePartition):
+class MSDOSPartition(BasePartition):
 
 	def get_start(self):
 		if self.previous is None:

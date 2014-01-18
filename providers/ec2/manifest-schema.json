@@ -30,7 +30,7 @@
 				"partitions": {
 					"type": "object",
 					"properties": {
-						"type": { "enum": ["none", "mbr"] }
+						"type": { "enum": ["none", "msdos"] }
 					}
 				}
 			},

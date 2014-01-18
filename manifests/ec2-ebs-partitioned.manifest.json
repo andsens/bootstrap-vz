@@ -27,7 +27,7 @@
 	"volume": {
 		"backing": "ebs",
 		"partitions": {
-			"type": "mbr",
+			"type": "msdos",
 			"root": {
 				"size":       1023,
 				"filesystem": "ext4"

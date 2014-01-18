@@ -20,7 +20,7 @@
 	"volume": {
 		"backing": "vmdk",
 		"partitions": {
-			"type": "mbr",
+			"type": "msdos",
 			"boot": {
 				"size":       64,
 				"filesystem": "ext2"

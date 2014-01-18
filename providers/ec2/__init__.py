@@ -31,7 +31,7 @@ def validate_manifest(data, validator, error):
 	validator(data, os.path.join(os.path.dirname(__file__), 'manifest-schema.json'))
 
 	if data['volume']['backing'] == 'ebs':
-		volume_size = 1 if data['volume']['partitions']['type'] == 'mbr' else 0
+		volume_size = 1 if data['volume']['partitions']['type'] == 'msdos' else 0
 		for key, partition in data['volume']['partitions'].iteritems():
 			if key != 'type':
 				volume_size += partition['size']

@@ -1,10 +1,10 @@
 from abstract import AbstractPartitionMap
-from ..partitions.mbr import MBRPartition
-from ..partitions.mbr_swap import MBRSwapPartition
+from ..partitions.msdos import MSDOSPartition
+from ..partitions.msdos_swap import MSDOSSwapPartition
 from common.tools import log_check_call
 
 
-class MBRPartitionMap(AbstractPartitionMap):
+class MSDOSPartitionMap(AbstractPartitionMap):
 
 	def __init__(self, data):
 		self.partitions = []
@@ -12,15 +12,15 @@ class MBRPartitionMap(AbstractPartitionMap):
 		def last_partition():
 			return self.partitions[-1] if len(self.partitions) > 0 else None
 		if 'boot' in data:
-			self.boot = MBRPartition(data['boot']['size'], data['boot']['filesystem'], None)
+			self.boot = MSDOSPartition(data['boot']['size'], data['boot']['filesystem'], None)
 			self.partitions.append(self.boot)
 		if 'swap' in data:
-			self.swap = MBRSwapPartition(data['swap']['size'], last_partition())
+			self.swap = MSDOSSwapPartition(data['swap']['size'], last_partition())
 			self.partitions.append(self.swap)
-		self.root = MBRPartition(data['root']['size'], data['root']['filesystem'], last_partition())
+		self.root = MSDOSPartition(data['root']['size'], data['root']['filesystem'], last_partition())
 		self.partitions.append(self.root)
 
-		super(MBRPartitionMap, self).__init__()
+		super(MSDOSPartitionMap, self).__init__()
 
 	def get_total_size(self):
 		return sum(p.size for p in self.partitions) + 1  # Post-MBR gap for embedding grub
