@@ -126,5 +126,6 @@ class InstallExtLinux(Task):
 	def run(cls, info):
 		from common.tools import log_check_call
 		log_check_call(['/usr/sbin/chroot', info.root,
-		                '/usr/bin/extlinux',
-		                '--install', '/boot'])
+		                '/usr/sbin/extlinux-install', info.volume.device_path])
+		log_check_call(['/usr/sbin/chroot', info.root,
+		                '/usr/sbin/extlinux-update'])

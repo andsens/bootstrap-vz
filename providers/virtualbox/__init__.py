@@ -20,6 +20,9 @@ def validate_manifest(data, validator, error):
 	schema_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'manifest-schema.json'))
 	validator(data, schema_path)
 
+	if data['volume']['partitions']['type'] == 'none' and data['system']['bootloader'] != 'extlinux':
+			error('Only extlinux can boot from unpartitioned disks', ['system', 'bootloader'])
+
 
 def resolve_tasks(tasklist, manifest):
 	import common.task_sets

@@ -16,7 +16,7 @@
 			"properties": {
 				"bootloader": {
 					"type": "string",
-					"enum": ["grub"]
+					"enum": ["grub", "extlinux"]
 				}
 			}
 		},
