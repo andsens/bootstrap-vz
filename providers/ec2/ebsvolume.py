@@ -12,7 +12,7 @@ class EBSVolume(Volume):
 		conn = e.connection
 		zone = e.zone
 		import math
-		size = int(math.ceil(self.partition_map.get_total_size() / 1024))
+		size = int(math.ceil(self.size / 1024))
 		self.volume = conn.create_volume(size, zone)
 		while self.volume.volume_state() != 'available':
 			time.sleep(5)

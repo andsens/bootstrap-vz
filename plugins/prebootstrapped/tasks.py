@@ -33,7 +33,7 @@ class CreateFromSnapshot(Task):
 
 	@classmethod
 	def run(cls, info):
-		volume_size = int(info.volume.partition_map.get_total_size() / 1024)
+		volume_size = int(info.volume.size / 1024)
 		snapshot = info.manifest.plugins['prebootstrapped']['snapshot']
 		ebs_volume = info.connection.create_volume(volume_size,
 		                                           info.host['availabilityZone'],

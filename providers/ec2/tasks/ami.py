@@ -166,7 +166,7 @@ class RegisterAMI(Task):
 			from boto.ec2.blockdevicemapping import BlockDeviceType
 			from boto.ec2.blockdevicemapping import BlockDeviceMapping
 			block_device = BlockDeviceType(snapshot_id=info.snapshot.id, delete_on_termination=True,
-			                               size=info.volume.partition_map.get_total_size() / 1024)
+			                               size=info.volume.size / 1024)
 			registration_params['block_device_map'] = BlockDeviceMapping()
 			registration_params['block_device_map'][root_dev_name] = block_device
 
