@@ -1,6 +1,7 @@
 from base import Task
 from common import phases
 from common.tasks import apt
+from common.tasks import filesystem
 import os.path
 
 
@@ -45,6 +46,7 @@ class AddGrubPackage(Task):
 class InstallGrub(Task):
 	description = 'Installing grub'
 	phase = phases.system_modification
+	predecessors = [filesystem.FStab]
 
 	@classmethod
 	def run(cls, info):
@@ -118,6 +120,7 @@ class AddExtlinuxPackage(Task):
 class InstallExtLinux(Task):
 	description = 'Installing extlinux'
 	phase = phases.system_modification
+	predecessors = [filesystem.FStab]
 
 	@classmethod
 	def run(cls, info):
