@@ -22,9 +22,6 @@ class MSDOSPartitionMap(AbstractPartitionMap):
 
 		super(MSDOSPartitionMap, self).__init__()
 
-	def get_total_size(self):
-		return sum(p.size for p in self.partitions) + 1  # Post-MBR gap for embedding grub
-
 	def _before_create(self, event):
 		volume = event.volume
 		log_check_call(['/sbin/parted', '--script', '--align', 'none', volume.device_path,

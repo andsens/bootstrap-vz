@@ -6,7 +6,7 @@ class MSDOSPartition(BasePartition):
 
 	def get_start(self):
 		if self.previous is None:
-			return 1  # Post-MBR gap for embedding grub
+			return 2  # Post-MBR gap for embedding grub
 		else:
 			return self.previous.get_start() + self.previous.size
 

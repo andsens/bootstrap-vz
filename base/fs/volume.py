@@ -3,6 +3,7 @@ from common.fsm_proxy import FSMProxy
 from common.tools import log_check_call
 from exceptions import VolumeError
 from partitionmaps.none import NoPartitions
+from partitionmaps.mbr import MSDOSPartitionMap
 
 
 class Volume(FSMProxy):
@@ -22,6 +23,8 @@ class Volume(FSMProxy):
 		self.real_device_path = None
 		self.partition_map = partition_map
 		self.size = self.partition_map.get_total_size()
+		if isinstance(self.partition_map, MSDOSPartitionMap):
+			self.size += 2  # Post-MBR gap for embedding bootloader
 
 		callbacks = {'onbeforedetach': self._check_blocking}
 		if isinstance(self.partition_map, NoPartitions):

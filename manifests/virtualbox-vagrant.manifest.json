@@ -26,7 +26,7 @@
 				"filesystem": "ext2"
 			},
 			"root": {
-				"size":       1855,
+				"size":       1854,
 				"filesystem": "ext4"
 			},
 			"swap": {"size": 128}
