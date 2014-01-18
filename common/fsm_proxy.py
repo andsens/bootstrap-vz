@@ -33,10 +33,16 @@ class FSMProxy(object):
 		def make_proxy(fsm, event):
 			fn = getattr(fsm, event)
 
-			def proxy():
-				fn()
+			def proxy(*args, **kwargs):
+				if len(args) > 0:
+					raise FSMProxyError('FSMProxy event listeners only accept named arguments.')
+				fn(**kwargs)
 			return proxy
 
 		for event in events:
 			if not hasattr(self, event):
 				setattr(self, event, make_proxy(fsm, event))
+
+
+class FSMProxyError(Exception):
+	pass
