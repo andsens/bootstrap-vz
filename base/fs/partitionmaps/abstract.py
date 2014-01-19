@@ -14,7 +14,7 @@ class AbstractPartitionMap(FSMProxy):
 	          {'name': 'unmap', 'src': 'mapped', 'dst': 'unmapped'},
 	          ]
 
-	def __init__(self):
+	def __init__(self, bootloader):
 		cfg = {'initial': 'nonexistent', 'events': self.events, 'callbacks': {}}
 		super(AbstractPartitionMap, self).__init__(cfg)
 
@@ -22,7 +22,7 @@ class AbstractPartitionMap(FSMProxy):
 		return self.fsm.current == 'mapped'
 
 	def get_total_size(self):
-		return sum(p.size for p in self.partitions)
+		return self.partitions[-1].get_end()
 
 	def create(self, volume):
 		self.fsm.create(volume=volume)

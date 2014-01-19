@@ -12,8 +12,10 @@ class Format(Task):
 
 	@classmethod
 	def run(cls, info):
+		from base.fs.partitions.unformatted import UnformattedPartition
 		for partition in info.volume.partition_map.partitions:
-			partition.format()
+			if not isinstance(partition, UnformattedPartition):
+				partition.format()
 
 
 class TuneVolumeFS(Task):
@@ -23,11 +25,13 @@ class TuneVolumeFS(Task):
 
 	@classmethod
 	def run(cls, info):
+		from base.fs.partitions.unformatted import UnformattedPartition
 		import re
 		# Disable the time based filesystem check
 		for partition in info.volume.partition_map.partitions:
-			if re.match('^ext[2-4]$', partition.filesystem) is not None:
-				log_check_call(['/sbin/tune2fs', '-i', '0', partition.device_path])
+			if not isinstance(partition, UnformattedPartition):
+				if re.match('^ext[2-4]$', partition.filesystem) is not None:
+					log_check_call(['/sbin/tune2fs', '-i', '0', partition.device_path])
 
 
 class AddXFSProgs(Task):
@@ -58,7 +62,7 @@ class MountRoot(Task):
 
 	@classmethod
 	def run(cls, info):
-		info.volume.partition_map.root.mount(info.root)
+		info.volume.partition_map.root.mount(destination=info.root)
 
 
 class CreateBootMountDir(Task):

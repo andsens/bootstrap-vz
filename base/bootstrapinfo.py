@@ -12,7 +12,7 @@ class BootstrapInformation(object):
 		self.workspace = os.path.join(manifest.bootstrapper['workspace'], self.run_id)
 
 		from fs import load_volume
-		self.volume = load_volume(self.manifest.volume)
+		self.volume = load_volume(self.manifest.volume, manifest.system['bootloader'])
 
 		self.apt_mirror = self.manifest.packages.get('mirror', 'http://http.debian.net/debian')
 

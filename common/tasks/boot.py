@@ -2,6 +2,7 @@ from base import Task
 from common import phases
 from common.tasks import apt
 from common.tasks import filesystem
+from base.fs import partitionmaps
 import os.path
 
 
@@ -56,19 +57,17 @@ class InstallGrub(Task):
 		boot_dir = os.path.join(info.root, 'boot')
 		grub_dir = os.path.join(boot_dir, 'grub')
 
-		from base.fs.partitionmaps.none import NoPartitions
-		from base.fs.partitionmaps.gpt import GPTPartitionMap
 		from common.fs import remount
 		p_map = info.volume.partition_map
 
 		def link_fn():
 			info.volume.link_dm_node()
-			if isinstance(p_map, NoPartitions):
+			if isinstance(p_map, partitionmaps.none.NoPartitions):
 				p_map.root.device_path = info.volume.device_path
 
 		def unlink_fn():
 			info.volume.unlink_dm_node()
-			if isinstance(p_map, NoPartitions):
+			if isinstance(p_map, partitionmaps.none.NoPartitions):
 				p_map.root.device_path = info.volume.device_path
 
 		# GRUB cannot deal with installing to loopback devices
@@ -80,11 +79,11 @@ class InstallGrub(Task):
 			[device_path] = log_check_call(['readlink', '-f', info.volume.device_path])
 			device_map_path = os.path.join(grub_dir, 'device.map')
 			partition_prefix = 'msdos'
-			if isinstance(p_map, GPTPartitionMap):
+			if isinstance(p_map, partitionmaps.gpt.GPTPartitionMap):
 				partition_prefix = 'gpt'
 			with open(device_map_path, 'w') as device_map:
 				device_map.write('(hd0) {device_path}\n'.format(device_path=device_path))
-				if not isinstance(p_map, NoPartitions):
+				if not isinstance(p_map, partitionmaps.none.NoPartitions):
 					for idx, partition in enumerate(info.volume.partition_map.partitions):
 						device_map.write('(hd0,{prefix}{idx}) {device_path}\n'
 						                 .format(device_path=partition.device_path,
@@ -93,10 +92,7 @@ class InstallGrub(Task):
 
 			# Install grub
 			log_check_call(['/usr/sbin/chroot', info.root,
-			                '/usr/sbin/grub-install',
-			                # '--root-directory=' + info.root,
-			                # '--boot-directory=' + boot_dir,
-			                device_path])
+			                '/usr/sbin/grub-install', device_path])
 			log_check_call(['/usr/sbin/chroot', info.root, '/usr/sbin/update-grub'])
 		except Exception as e:
 			if isinstance(info.volume, LoopbackVolume):
@@ -115,6 +111,8 @@ class AddExtlinuxPackage(Task):
 	@classmethod
 	def run(cls, info):
 		info.packages.add('extlinux')
+		if isinstance(info.volume.partition_map, partitionmaps.gpt.GPTPartitionMap):
+			info.packages.add('syslinux-common')
 
 
 class InstallExtLinux(Task):
@@ -125,7 +123,16 @@ class InstallExtLinux(Task):
 	@classmethod
 	def run(cls, info):
 		from common.tools import log_check_call
+		if isinstance(info.volume.partition_map, partitionmaps.gpt.GPTPartitionMap):
+			bootloader = '/usr/lib/syslinux/gptmbr.bin'
+		else:
+			bootloader = '/usr/lib/extlinux/mbr.bin'
 		log_check_call(['/usr/sbin/chroot', info.root,
-		                '/usr/sbin/extlinux-install', info.volume.device_path])
+		                '/bin/dd', 'bs=440', 'count=1',
+		                'if=' + bootloader,
+		                'of=' + info.volume.device_path])
+		log_check_call(['/usr/sbin/chroot', info.root,
+		                '/usr/bin/extlinux',
+		                '--install', '/boot/extlinux'])
 		log_check_call(['/usr/sbin/chroot', info.root,
 		                '/usr/sbin/extlinux-update'])

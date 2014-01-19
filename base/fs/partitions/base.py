@@ -16,6 +16,8 @@ class BasePartition(AbstractPartition):
 
 	def __init__(self, size, filesystem, previous):
 		self.previous = previous
+		self.offset = 0
+		self.flags = []
 		super(BasePartition, self).__init__(size, filesystem)
 
 	def create(self, volume):
@@ -29,12 +31,25 @@ class BasePartition(AbstractPartition):
 
 	def get_start(self):
 		if self.previous is None:
-			return 0
+			return self.offset
 		else:
-			return self.previous.get_start() + self.previous.size
+			return self.previous.get_end() + self.offset
 
 	def map(self, device_path):
 		self.fsm.map(device_path=device_path)
+
+	def _before_create(self, e):
+		from common.tools import log_check_call
+		create_command = ('mkpart primary {start}MiB {end}MiB'
+		                  .format(start=str(self.get_start()),
+		                          end=str(self.get_end())))
+		log_check_call(['/sbin/parted', '--script', '--align', 'none', e.volume.device_path,
+		                '--', create_command])
+
+		for flag in self.flags:
+			log_check_call(['/sbin/parted', '--script', e.volume.device_path,
+			                '--', ('set {idx} {flag} on'
+			                       .format(idx=str(self.get_index()), flag=flag))])
 
 	def _before_map(self, e):
 		self.device_path = e.device_path

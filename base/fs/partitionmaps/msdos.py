@@ -6,7 +6,7 @@ from common.tools import log_check_call
 
 class MSDOSPartitionMap(AbstractPartitionMap):
 
-	def __init__(self, data):
+	def __init__(self, data, bootloader):
 		self.partitions = []
 
 		def last_partition():
@@ -20,7 +20,11 @@ class MSDOSPartitionMap(AbstractPartitionMap):
 		self.root = MSDOSPartition(data['root']['size'], data['root']['filesystem'], last_partition())
 		self.partitions.append(self.root)
 
-		super(MSDOSPartitionMap, self).__init__()
+		getattr(self, 'boot', self.root).flags.append('boot')
+
+		if bootloader == 'grub':
+			self.partitions[0].offset = 2
+		super(MSDOSPartitionMap, self).__init__(bootloader)
 
 	def _before_create(self, event):
 		volume = event.volume
@@ -28,7 +32,3 @@ class MSDOSPartitionMap(AbstractPartitionMap):
 		                '--', 'mklabel', 'msdos'])
 		for partition in self.partitions:
 			partition.create(volume)
-
-		boot_idx = getattr(self, 'boot', self.root).get_index()
-		log_check_call(['/sbin/parted', '--script', volume.device_path,
-		                '--', 'set ' + str(boot_idx) + ' boot on'])

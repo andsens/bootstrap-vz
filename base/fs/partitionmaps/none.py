@@ -3,7 +3,7 @@ from ..partitions.single import SinglePartition
 
 class NoPartitions(object):
 
-	def __init__(self, data):
+	def __init__(self, data, bootloader):
 		root = data['root']
 		self.root = SinglePartition(root['size'], root['filesystem'])
 		self.partitions = [self.root]

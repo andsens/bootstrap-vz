@@ -28,5 +28,5 @@ def remount(volume, fn):
 		p_map.map(volume)
 	else:
 		result = fn()
-	p_map.root.mount(root_dir)
+	p_map.root.mount(destination=root_dir)
 	return result

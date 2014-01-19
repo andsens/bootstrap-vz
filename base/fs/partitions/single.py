@@ -2,4 +2,6 @@ from abstract import AbstractPartition
 
 
 class SinglePartition(AbstractPartition):
-		pass
+
+	def get_start(self):
+		return 0

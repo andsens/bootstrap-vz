@@ -1,6 +1,6 @@
 
 
-def load_volume(data):
+def load_volume(data, bootloader):
 	from common.fs.loopbackvolume import LoopbackVolume
 	from providers.ec2.ebsvolume import EBSVolume
 	from common.fs.virtualdiskimage import VirtualDiskImage
@@ -12,7 +12,7 @@ def load_volume(data):
 	                  'gpt': GPTPartitionMap,
 	                  'msdos': MSDOSPartitionMap,
 	                  }
-	partition_map = partition_maps.get(data['partitions']['type'])(data['partitions'])
+	partition_map = partition_maps.get(data['partitions']['type'])(data['partitions'], bootloader)
 	volume_backings = {'raw': LoopbackVolume,
 	                   's3':  LoopbackVolume,
 	                   'vdi': VirtualDiskImage,
