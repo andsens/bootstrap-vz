@@ -13,8 +13,6 @@ class MSDOSPartitionMap(AbstractPartitionMap):
 		def last_partition():
 			return self.partitions[-1] if len(self.partitions) > 0 else None
 
-		grub_offset = Bytes('2MiB')
-
 		if 'boot' in data:
 			self.boot = MSDOSPartition(Bytes(data['boot']['size']), data['boot']['filesystem'], None)
 			self.partitions.append(self.boot)
@@ -27,7 +25,7 @@ class MSDOSPartitionMap(AbstractPartitionMap):
 		getattr(self, 'boot', self.root).flags.append('boot')
 
 		if bootloader == 'grub':
-			self.partitions[0].offset = grub_offset
+			self.partitions[0].offset = Bytes('2MiB')
 			self.partitions[0].size -= self.partitions[0].offset
 
 		super(MSDOSPartitionMap, self).__init__(bootloader)

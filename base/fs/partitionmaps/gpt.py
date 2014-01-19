@@ -17,7 +17,7 @@ class GPTPartitionMap(AbstractPartitionMap):
 
 		if bootloader == 'grub':
 			from ..partitions.unformatted import UnformattedPartition
-			self.grub_boot = UnformattedPartition(Bytes('2MiB'), last_partition())
+			self.grub_boot = UnformattedPartition(Bytes('1007KiB'), last_partition())
 			self.grub_boot.flags.append('bios_grub')
 			self.partitions.append(self.grub_boot)
 
