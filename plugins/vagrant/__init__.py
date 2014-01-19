@@ -14,7 +14,8 @@ def resolve_tasks(taskset, manifest):
 	taskset.discard(loopback.MoveImage)
 
 	from common.tasks import volume
-	taskset.update([tasks.CreateVagrantBoxDir,
+	taskset.update([tasks.CheckBoxPath,
+	                tasks.CreateVagrantBoxDir,
 	                tasks.AddPackages,
 	                tasks.CreateVagrantUser,
 	                tasks.PasswordlessSudo,
