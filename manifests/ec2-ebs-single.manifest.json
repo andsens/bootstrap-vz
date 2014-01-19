@@ -29,7 +29,7 @@
 		"partitions": {
 			"type": "none",
 			"root": {
-				"size":       1024,
+				"size":       "1GiB",
 				"filesystem": "ext4"
 			}
 		}

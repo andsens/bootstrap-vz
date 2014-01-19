@@ -22,14 +22,14 @@
 		"partitions": {
 			"type": "msdos",
 			"boot": {
-				"size":       32,
+				"size":       "32MiB",
 				"filesystem": "ext2"
 			},
 			"root": {
-				"size":       990,
+				"size":       "864MiB",
 				"filesystem": "ext4"
 			},
-			"swap": {"size": 128}
+			"swap": {"size": "128MiB"}
 		}
 	}
 }

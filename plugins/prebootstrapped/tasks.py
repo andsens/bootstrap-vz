@@ -33,9 +33,8 @@ class CreateFromSnapshot(Task):
 
 	@classmethod
 	def run(cls, info):
-		volume_size = int(info.volume.size / 1024)
 		snapshot = info.manifest.plugins['prebootstrapped']['snapshot']
-		ebs_volume = info.connection.create_volume(volume_size,
+		ebs_volume = info.connection.create_volume(info.volume.size.get_qty_in('GiB'),
 		                                           info.host['availabilityZone'],
 		                                           snapshot=snapshot)
 		while ebs_volume.volume_state() != 'available':

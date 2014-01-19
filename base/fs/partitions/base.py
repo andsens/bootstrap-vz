@@ -16,7 +16,8 @@ class BasePartition(AbstractPartition):
 
 	def __init__(self, size, filesystem, previous):
 		self.previous = previous
-		self.offset = 0
+		from common.bytes import Bytes
+		self.offset = Bytes(0)
 		self.flags = []
 		super(BasePartition, self).__init__(size, filesystem)
 
@@ -40,7 +41,7 @@ class BasePartition(AbstractPartition):
 
 	def _before_create(self, e):
 		from common.tools import log_check_call
-		create_command = ('mkpart primary {start}MiB {end}MiB'
+		create_command = ('mkpart primary {start} {end}'
 		                  .format(start=str(self.get_start()),
 		                          end=str(self.get_end())))
 		log_check_call(['/sbin/parted', '--script', '--align', 'none', e.volume.device_path,

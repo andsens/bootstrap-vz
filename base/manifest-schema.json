@@ -105,6 +105,10 @@
 			"type":    "string",
 			"pattern": "^/[^\\0]+$"
 		},
+		"bytes": {
+			"type":    "string",
+			"pattern": "^\\d+([KMGT]i?B|B)$"
+		},
 		"no_partitions": {
 			"type": "object",
 			"properties": {
@@ -122,7 +126,7 @@
 				"root": { "$ref": "#/definitions/partition" },
 				"swap": {
 					"type": "object",
-					"properties": { "size": { "type": "integer", "minimum": 1 } },
+					"properties": { "size": { "$ref": "#/definitions/bytes" } },
 					"required": ["size"]
 				}
 			},
@@ -132,7 +136,7 @@
 		"partition": {
 			"type": "object",
 			"properties": {
-				"size": { "type": "integer", "minimum": 1 },
+				"size": { "$ref": "#/definitions/bytes" },
 				"filesystem": { "enum": ["ext2", "ext3", "ext4", "xfs"] }
 			},
 			"required": ["size", "filesystem"]

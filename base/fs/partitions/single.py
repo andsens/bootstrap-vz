@@ -4,4 +4,5 @@ from abstract import AbstractPartition
 class SinglePartition(AbstractPartition):
 
 	def get_start(self):
-		return 0
+		from common.bytes import Bytes
+		return Bytes(0)

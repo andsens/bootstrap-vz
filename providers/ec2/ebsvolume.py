@@ -11,8 +11,7 @@ class EBSVolume(Volume):
 	def _before_create(self, e):
 		conn = e.connection
 		zone = e.zone
-		import math
-		size = int(math.ceil(self.size / 1024))
+		size = self.size.get_qty_in('GiB')
 		self.volume = conn.create_volume(size, zone)
 		while self.volume.volume_state() != 'available':
 			time.sleep(5)

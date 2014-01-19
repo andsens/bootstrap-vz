@@ -29,7 +29,7 @@
 		"partitions": {
 			"type": "msdos",
 			"root": {
-				"size":       1022,
+				"size":       "1GiB",
 				"filesystem": "ext4"
 			}
 		}

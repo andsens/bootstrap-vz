@@ -55,7 +55,7 @@ class Volume(FSMProxy):
 		# The offset at which the volume should begin to be mapped in the new volume
 		start_sector = getattr(e, 'start_sector', 0)
 
-		sectors = getattr(e, 'sectors', self.size * 1024 * 1024 / 512 - start_sector)
+		sectors = getattr(e, 'sectors', int(self.size / 512) - start_sector)
 
 		table = ('{log_start_sec} {sectors} linear {major}:{minor} {start_sec}'
 		         .format(log_start_sec=logical_start_sector,

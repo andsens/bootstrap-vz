@@ -7,23 +7,29 @@ from common.tools import log_check_call
 class MSDOSPartitionMap(AbstractPartitionMap):
 
 	def __init__(self, data, bootloader):
+		from common.bytes import Bytes
 		self.partitions = []
 
 		def last_partition():
 			return self.partitions[-1] if len(self.partitions) > 0 else None
+
+		grub_offset = Bytes('2MiB')
+
 		if 'boot' in data:
-			self.boot = MSDOSPartition(data['boot']['size'], data['boot']['filesystem'], None)
+			self.boot = MSDOSPartition(Bytes(data['boot']['size']), data['boot']['filesystem'], None)
 			self.partitions.append(self.boot)
 		if 'swap' in data:
-			self.swap = MSDOSSwapPartition(data['swap']['size'], last_partition())
+			self.swap = MSDOSSwapPartition(Bytes(data['swap']['size']), last_partition())
 			self.partitions.append(self.swap)
-		self.root = MSDOSPartition(data['root']['size'], data['root']['filesystem'], last_partition())
+		self.root = MSDOSPartition(Bytes(data['root']['size']), data['root']['filesystem'], last_partition())
 		self.partitions.append(self.root)
 
 		getattr(self, 'boot', self.root).flags.append('boot')
 
 		if bootloader == 'grub':
-			self.partitions[0].offset = 2
+			self.partitions[0].offset = grub_offset
+			self.partitions[0].size -= self.partitions[0].offset
+
 		super(MSDOSPartitionMap, self).__init__(bootloader)
 
 	def _before_create(self, event):

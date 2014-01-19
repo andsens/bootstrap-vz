@@ -163,7 +163,7 @@ class PackageBox(Task):
 		# VHDURI = "http://go.microsoft.com/fwlink/?LinkId=137171"
 		volume_uuid = info.volume.get_uuid()
 		[disk] = root.findall('./ovf:DiskSection/ovf:Disk', namespaces)
-		attr(disk, 'ovf:capacity', info.volume.size * 1024 * 1024)
+		attr(disk, 'ovf:capacity', info.volume.size.get_qty_in('B'))
 		attr(disk, 'ovf:format', info.volume.ovf_uri)
 		attr(disk, 'ovf:uuid', volume_uuid)
 

@@ -8,7 +8,8 @@ class QEMUVolume(LoopbackVolume):
 
 	def _before_create(self, e):
 		self.image_path = e.image_path
-		log_check_call(['/usr/bin/qemu-img', 'create', '-f', self.qemu_format, self.image_path, str(self.size) + 'M'])
+		vol_size = str(self.size.get_qty_in('MiB')) + 'M'
+		log_check_call(['/usr/bin/qemu-img', 'create', '-f', self.qemu_format, self.image_path, vol_size])
 
 	def _check_nbd_module(self):
 		from base.fs.partitionmaps.none import NoPartitions

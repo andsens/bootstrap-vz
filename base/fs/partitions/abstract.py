@@ -37,10 +37,10 @@ class AbstractPartition(FSMProxy):
 			del self.mount_dir
 
 	def __init__(self, size, filesystem):
-		self.size          = size
-		self.filesystem    = filesystem
-		self.device_path   = None
-		self.mounts        = {}
+		self.size        = size
+		self.filesystem  = filesystem
+		self.device_path = None
+		self.mounts      = {}
 
 		cfg = {'initial': 'nonexistent', 'events': self.events, 'callbacks': {}}
 		super(AbstractPartition, self).__init__(cfg)

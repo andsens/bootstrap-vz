@@ -7,28 +7,36 @@ from common.tools import log_check_call
 class GPTPartitionMap(AbstractPartitionMap):
 
 	def __init__(self, data, bootloader):
+		from common.bytes import Bytes
 		self.partitions = []
 
 		def last_partition():
 			return self.partitions[-1] if len(self.partitions) > 0 else None
 
+		gpt_offset = Bytes('17KiB')
+
 		if bootloader == 'grub':
 			from ..partitions.unformatted import UnformattedPartition
-			self.grub_boot = UnformattedPartition(2, last_partition())
+			self.grub_boot = UnformattedPartition(Bytes('2MiB'), last_partition())
 			self.grub_boot.flags.append('bios_grub')
 			self.partitions.append(self.grub_boot)
 
 		if 'boot' in data:
-			self.boot = GPTPartition(data['boot']['size'], data['boot']['filesystem'], 'boot', last_partition())
+			self.boot = GPTPartition(Bytes(data['boot']['size']), data['boot']['filesystem'],
+			                         'boot', last_partition())
 			self.partitions.append(self.boot)
 		if 'swap' in data:
-			self.swap = GPTSwapPartition(data['swap']['size'], last_partition())
+			self.swap = GPTSwapPartition(Bytes(data['swap']['size']), last_partition())
 			self.partitions.append(self.swap)
-		self.root = GPTPartition(data['root']['size'], data['root']['filesystem'], 'root', last_partition())
+		self.root = GPTPartition(Bytes(data['root']['size']), data['root']['filesystem'], 'root', last_partition())
 		self.partitions.append(self.root)
 
-		if bootloader == 'extlinux':
-			getattr(self, 'boot', self.root).flags.append('legacy_boot')
+		if hasattr(self, 'grub_boot'):
+			self.partitions[1].size -= self.grub_boot.size
+
+		# Offset for GPT partitioning table
+		self.partitions[0].offset = gpt_offset
+		self.partitions[0].size -= self.partitions[0].offset
 
 		super(GPTPartitionMap, self).__init__(bootloader)
 

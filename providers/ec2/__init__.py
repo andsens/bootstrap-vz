@@ -30,14 +30,14 @@ def validate_manifest(data, validator, error):
 	import os.path
 	validator(data, os.path.join(os.path.dirname(__file__), 'manifest-schema.json'))
 
+	from common.bytes import Bytes
 	if data['volume']['backing'] == 'ebs':
-		volume_size = 2 if data['volume']['partitions']['type'] == 'msdos' else 0
+		volume_size = Bytes('2MiB') if data['volume']['partitions']['type'] == 'msdos' else Bytes(0)
 		for key, partition in data['volume']['partitions'].iteritems():
 			if key != 'type':
-				volume_size += partition['size']
-		if volume_size % 1024 != 0:
-			msg = ('The volume size must be a multiple of 1024 when using EBS backing '
-			       '(MBR partitioned volumes are 2MB larger than specified, for the post-mbr gap)')
+				volume_size += Bytes(partition['size'])
+		if volume_size % Bytes('1GiB') != 0:
+			msg = ('The volume size must be a multiple of 1GiB when using EBS backing')
 			error(msg, ['volume', 'partitions'])
 	else:
 		validator(data, os.path.join(os.path.dirname(__file__), 'manifest-schema-s3.json'))
