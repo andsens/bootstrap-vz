@@ -27,7 +27,6 @@ class GPTPartitionMap(AbstractPartitionMap):
 		self.root = GPTPartition(data['root']['size'], data['root']['filesystem'], 'root', last_partition())
 		self.partitions.append(self.root)
 
-		# getattr(self, 'boot', self.root).flags.append('boot')
 		if bootloader == 'extlinux':
 			getattr(self, 'boot', self.root).flags.append('legacy_boot')
 
