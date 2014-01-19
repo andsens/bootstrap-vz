@@ -23,6 +23,15 @@
 				}
 			}
 		},
+		"system": {
+			"type": "object",
+			"properties": {
+				"bootloader": {
+					"type": "string",
+					"enum": ["pvgrub", "extlinux"]
+				}
+			}
+		},
 		"volume": {
 			"type": "object",
 			"properties": {

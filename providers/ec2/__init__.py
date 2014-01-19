@@ -32,7 +32,7 @@ def validate_manifest(data, validator, error):
 
 	from common.bytes import Bytes
 	if data['volume']['backing'] == 'ebs':
-		volume_size = Bytes('2MiB') if data['volume']['partitions']['type'] == 'msdos' else Bytes(0)
+		volume_size = Bytes(0)
 		for key, partition in data['volume']['partitions'].iteritems():
 			if key != 'type':
 				volume_size += Bytes(partition['size'])
@@ -44,8 +44,10 @@ def validate_manifest(data, validator, error):
 
 	if data['virtualization'] == 'pvm' and data['system']['bootloader'] != 'pvgrub':
 			error('Paravirtualized AMIs only support pvgrub as a bootloader', ['system', 'bootloader'])
-	if data['virtualization'] == 'hvm' and data['system']['bootloader'] != 'extlinux':
+	if data['virtualization'] == 'hvm' and data['system']['bootloader'] == 'pvgrub':
 			error('HVM AMIs only support extlinux as a bootloader', ['system', 'bootloader'])
+	if data['volume']['partitions']['type'] == 'none' and data['system']['bootloader'] == 'grub':
+			error('Grub cannot boot from unpartitioned disks', ['system', 'bootloader'])
 
 
 def resolve_tasks(taskset, manifest):
