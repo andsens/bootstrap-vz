@@ -18,6 +18,21 @@
 				}
 			},
 			"required": ["backing"]
+		},
+		"plugins": {
+			"type": "object",
+			"properties": {
+				"vagrant": {
+					"type": "object",
+					"properties": {
+						"hostname": {
+							"type": "string",
+							"pattern": "^\\S+$"
+						}
+					},
+					"required": ["hostname"]
+				}
+			}
 		}
 	}
 }
