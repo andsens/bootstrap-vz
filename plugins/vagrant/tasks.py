@@ -93,6 +93,16 @@ class AddInsecurePublicKey(Task):
 		with open(authorized_keys_path, 'a') as authorized_keys:
 			authorized_keys.write(insecure_public_key)
 
+		import stat
+		os.chmod(ssh_dir, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
+		os.chmod(authorized_keys_path, stat.S_IRUSR | stat.S_IWUSR)
+
+		# We can't do this directly with python, since getpwnam gets its info from the host
+		from common.tools import log_check_call
+		log_check_call(['/usr/sbin/chroot', info.root,
+		                '/bin/chown', 'vagrant:vagrant',
+		                '/home/vagrant/.ssh', '/home/vagrant/.ssh/authorized_keys'])
+
 
 class SetRootPassword(Task):
 	description = 'Setting the root password to `vagrant\''
