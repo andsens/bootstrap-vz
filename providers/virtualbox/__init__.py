@@ -24,52 +24,52 @@ def validate_manifest(data, validator, error):
 			error('Only extlinux can boot from unpartitioned disks', ['system', 'bootloader'])
 
 
-def resolve_tasks(tasklist, manifest):
+def resolve_tasks(taskset, manifest):
 	import common.task_sets
-	tasklist.update(common.task_sets.base_set)
-	tasklist.update(common.task_sets.volume_set)
-	tasklist.update(common.task_sets.mounting_set)
-	tasklist.update(common.task_sets.get_apt_set(manifest))
-	tasklist.update(common.task_sets.locale_set)
+	taskset.update(common.task_sets.base_set)
+	taskset.update(common.task_sets.volume_set)
+	taskset.update(common.task_sets.mounting_set)
+	taskset.update(common.task_sets.get_apt_set(manifest))
+	taskset.update(common.task_sets.locale_set)
 
-	tasklist.update(common.task_sets.bootloader_set.get(manifest.system['bootloader']))
+	taskset.update(common.task_sets.bootloader_set.get(manifest.system['bootloader']))
 
 	if manifest.volume['partitions']['type'] != 'none':
-		tasklist.update(common.task_sets.partitioning_set)
+		taskset.update(common.task_sets.partitioning_set)
 
-	tasklist.update([tasks.packages.DefaultPackages,
+	taskset.update([tasks.packages.DefaultPackages,
 
-	                 loopback.Create,
+	                loopback.Create,
 
-	                 security.EnableShadowConfig,
-	                 network.RemoveDNSInfo,
-	                 network.ConfigureNetworkIF,
-	                 network.RemoveHostname,
-	                 initd.AddSSHKeyGeneration,
-	                 initd.InstallInitScripts,
-	                 cleanup.ClearMOTD,
-	                 cleanup.CleanTMP,
+	                security.EnableShadowConfig,
+	                network.RemoveDNSInfo,
+	                network.ConfigureNetworkIF,
+	                network.RemoveHostname,
+	                initd.AddSSHKeyGeneration,
+	                initd.InstallInitScripts,
+	                cleanup.ClearMOTD,
+	                cleanup.CleanTMP,
 
-	                 loopback.MoveImage,
-	                 ])
+	                loopback.MoveImage,
+	                ])
 
 	if manifest.bootstrapper.get('guest_additions', False):
 		from tasks import guest_additions
-		tasklist.update([guest_additions.CheckGuestAdditionsPath,
-		                 guest_additions.AddGuestAdditionsPackages,
-		                 guest_additions.InstallGuestAdditions,
-		                 ])
+		taskset.update([guest_additions.CheckGuestAdditionsPath,
+		                guest_additions.AddGuestAdditionsPackages,
+		                guest_additions.InstallGuestAdditions,
+		                ])
 
 	if manifest.bootstrapper.get('tarball', False):
-		tasklist.add(bootstrap.MakeTarball)
+		taskset.add(bootstrap.MakeTarball)
 
-	tasklist.update(common.task_sets.get_fs_specific_set(manifest.volume['partitions']))
+	taskset.update(common.task_sets.get_fs_specific_set(manifest.volume['partitions']))
 
 	if 'boot' in manifest.volume['partitions']:
-		tasklist.update(common.task_sets.boot_partition_set)
+		taskset.update(common.task_sets.boot_partition_set)
 
 
-def resolve_rollback_tasks(tasklist, manifest, counter_task):
+def resolve_rollback_tasks(taskset, manifest, counter_task):
 	counter_task(loopback.Create, volume.Delete)
 	counter_task(filesystem.CreateMountDir, filesystem.DeleteMountDir)
 	counter_task(partitioning.MapPartitions, partitioning.UnmapPartitions)
