@@ -72,6 +72,7 @@ def resolve_tasks(taskset, manifest):
 	                boot.DisableGetTTYs,
 	                security.EnableShadowConfig,
 	                network.RemoveDNSInfo,
+	                network.RemoveHostname,
 	                network.ConfigureNetworkIF,
 	                tasks.network.EnableDHCPCDDNS,
 	                initd.AddExpandRoot,
