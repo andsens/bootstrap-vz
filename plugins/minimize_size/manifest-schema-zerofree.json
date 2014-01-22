@@ -1,0 +1,18 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "Minimize size plugin manifest",
+	"type": "object",
+	"properties": {
+		"volume": {
+			"type": "object",
+			"properties": {
+				"partitions": {
+					"type": "object",
+					"properties": {
+						"type": { "enum": ["none"] }
+					}
+				}
+			}
+		}
+	}
+}
