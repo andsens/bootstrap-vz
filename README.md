@@ -1,15 +1,17 @@
-build-debian-cloud python version (preview)
+bootstrap-vz
 ===========================================
 
-This is a preview of the build-debian-cloud python version.  
-It currently only supports EBS booted volumes and none of the plugins have been ported.
+bootstrap-vz is a fully automated bootstrapping tool for Debian.
+It creates images for various virtualized platforms (at the moment: kvm, virtualbox, ec2).
+The plugin architecture allows for heavy modification of standard behavior
+(e.g. create a vagrant box, apply puppet manifests, run custom shell commands).
 
-Suggestions
------------
-The reason I release this preview is to get as many suggestions as possible.
-If you have an idea for how to improve upon the architecture or
-simply spotted a bug, please feel free to file a bug report.
-Pull requests are also welcome!
+At no time is the resulting image booted, meaning there are no latent logfiles
+or bash_history files.
+
+The bootstrapper runs on a single json manifest file which contains all configurable
+parameters. This allows you to recreate the image whenever you like so you can create
+an updated version of an existing image or create the same image in multiple EC2 regions.
 
 Dependencies
 ------------
@@ -27,22 +29,3 @@ Also the following python libraries are required:
 * **fysom**
 
 Bootstrapping instance store AMIs requires **euca2ools** to be installed.
-
-Highlights
-----------
-* The desired image is configured entirely via a JSON manifest file
-	* Manifests are validated by a json schemas
-	* Support comments
-* Proper support for different providers
-* The task based system has been completely revamped
-	* Higher granularity increases reusability of tasks across providers
-	* Tasks are neatly organized into modules
-	* A task dependency graph is built to determine the execution order
-* Support for rollback actions if something fails
-* Logfiles
-	* All output from invoked subprocesses is logged
-
-Disclaimer
-----------
-This is only a preview of the bootstrapper, so you can expect bugs and major architectural changes.
-Do not expect that the final version will look anything like this.
