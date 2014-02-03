@@ -1,0 +1,44 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "KVM manifest",
+	"type": "object",
+	"properties": {
+		"bootstrapper": {
+			"type": "object",
+			"properties": {
+				"virtio": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"minItems": 1
+				}
+			}
+		},
+		"system": {
+			"type": "object",
+			"properties": {
+				"bootloader": {
+					"type": "string",
+					"enum": ["grub", "extlinux"]
+				}
+			}
+		},
+		"volume": {
+			"type": "object",
+			"properties": {
+				"backing": {
+					"type": "string",
+					"enum": ["raw"]
+				},
+				"partitions": {
+					"type": "object",
+					"properties": {
+						"type": { "enum": ["none", "msdos", "gpt"] }
+					}
+				}
+			},
+			"required": ["backing"]
+		}
+	}
+}
