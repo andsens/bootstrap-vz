@@ -89,59 +89,44 @@ class RegisterAMI(Task):
 
 	# Source: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/UserProvidedKernels.html#AmazonKernelImageIDs
 	kernel_mapping = {'ap-northeast-1':  # Asia Pacific (Tokyo) Region
-	                  {'hd0':  {'i386':  'aki-136bf512',   # pv-grub-hd0_1.04-i386.gz
-	                            'amd64': 'aki-176bf516'},  # pv-grub-hd0_1.04-x86_64.gz
-	                   'hd00': {'i386':  'aki-196bf518',   # pv-grub-hd00_1.04-i386.gz
-	                            'amd64': 'aki-1f6bf51e'}   # pv-grub-hd00_1.04-x86_64.gz
-	                   },
+	                  {'i386':  'aki-136bf512',  # pv-grub-hd0_1.04-i386.gz
+	                   'amd64': 'aki-176bf516'  # pv-grub-hd0_1.04-x86_64.gz
+	                  },
 	                  'ap-southeast-1':  # Asia Pacific (Singapore) Region
-	                  {'hd0':  {'i386':  'aki-ae3973fc',   # pv-grub-hd0_1.04-i386.gz
-	                            'amd64': 'aki-503e7402'},  # pv-grub-hd0_1.04-x86_64.gz
-	                   'hd00': {'i386':  'aki-563e7404',   # pv-grub-hd00_1.04-i386.gz
-	                            'amd64': 'aki-5e3e740c'}   # pv-grub-hd00_1.04-x86_64.gz
-	                   },
+	                  {'i386':  'aki-ae3973fc', # pv-grub-hd0_1.04-i386.gz
+	                   'amd64': 'aki-503e7402'  # pv-grub-hd0_1.04-x86_64.gz
+	                  },
 	                  'ap-southeast-2':  # Asia Pacific (Sydney) Region
-	                  {'hd0':  {'i386':  'aki-cd62fff7',   # pv-grub-hd0_1.04-i386.gz
-	                            'amd64': 'aki-c362fff9'},  # pv-grub-hd0_1.04-x86_64.gz
-	                   'hd00': {'i386':  'aki-c162fffb',   # pv-grub-hd00_1.04-i386.gz
-	                            'amd64': 'aki-3b1d8001'}   # pv-grub-hd00_1.04-x86_64.gz
+	                  {'i386':  'aki-cd62fff7', # pv-grub-hd0_1.04-i386.gz
+	                   'amd64': 'aki-c362fff9'  # pv-grub-hd0_1.04-x86_64.gz
 	                   },
 	                  'eu-west-1':  # EU (Ireland) Region
-	                  {'hd0':  {'i386':  'aki-68a3451f',   # pv-grub-hd0_1.04-i386.gz
-	                            'amd64': 'aki-52a34525'},  # pv-grub-hd0_1.04-x86_64.gz
-	                   'hd00': {'i386':  'aki-5ea34529',   # pv-grub-hd00_1.04-i386.gz
-	                            'amd64': 'aki-58a3452f'}   # pv-grub-hd00_1.04-x86_64.gz
+	                  {'i386':  'aki-68a3451f', # pv-grub-hd0_1.04-i386.gz
+	                   'amd64': 'aki-52a34525'  # pv-grub-hd0_1.04-x86_64.gz
 	                   },
 	                  'sa-east-1':  # South America (Sao Paulo) Region
-	                  {'hd0':  {'i386':  'aki-5b53f446',   # pv-grub-hd0_1.04-i386.gz
-	                            'amd64': 'aki-5553f448'},  # pv-grub-hd0_1.04-x86_64.gz
-	                   'hd00': {'i386':  'aki-5753f44a',   # pv-grub-hd00_1.04-i386.gz
-	                            'amd64': 'aki-5153f44c'}   # pv-grub-hd00_1.04-x86_64.gz
+	                  {'i386':  'aki-5b53f446', # pv-grub-hd0_1.04-i386.gz
+	                   'amd64': 'aki-5553f448'  # pv-grub-hd0_1.04-x86_64.gz
 	                   },
 	                  'us-east-1':  # US East (Northern Virginia) Region
-	                  {'hd0':  {'i386':  'aki-8f9dcae6',   # pv-grub-hd0_1.04-i386.gz
-	                            'amd64': 'aki-919dcaf8'},  # pv-grub-hd0_1.04-x86_64.gz
-	                   'hd00': {'i386':  'aki-659ccb0c',   # pv-grub-hd00_1.04-i386.gz
-	                            'amd64': 'aki-499ccb20'}   # pv-grub-hd00_1.04-x86_64.gz
+	                  {'i386':  'aki-8f9dcae6', # pv-grub-hd0_1.04-i386.gz
+	                   'amd64': 'aki-919dcaf8'  # pv-grub-hd0_1.04-x86_64.gz
 	                   },
 	                  'us-gov-west-1':  # AWS GovCloud (US)
-	                  {'hd0':  {'i386':  'aki-1fe98d3c',   # pv-grub-hd0_1.04-i386.gz
-	                            'amd64': 'aki-1de98d3e'},  # pv-grub-hd0_1.04-x86_64.gz
-	                   'hd00': {'i386':  'aki-63e98d40',   # pv-grub-hd00_1.04-i386.gz
-	                            'amd64': 'aki-61e98d42'}   # pv-grub-hd00_1.04-x86_64.gz
+	                  {'i386':  'aki-1fe98d3c', # pv-grub-hd0_1.04-i386.gz
+	                   'amd64': 'aki-1de98d3e'  # pv-grub-hd0_1.04-x86_64.gz
 	                   },
 	                  'us-west-1':  # US West (Northern California) Region
-	                  {'hd0':  {'i386':  'aki-8e0531cb',   # pv-grub-hd0_1.04-i386.gz
-	                            'amd64': 'aki-880531cd'},  # pv-grub-hd0_1.04-x86_64.gz
-	                   'hd00': {'i386':  'aki-960531d3',   # pv-grub-hd00_1.04-i386.gz
-	                            'amd64': 'aki-920531d7'}   # pv-grub-hd00_1.04-x86_64.gz
+	                  {'i386':  'aki-8e0531cb', # pv-grub-hd0_1.04-i386.gz
+	                   'amd64': 'aki-880531cd'  # pv-grub-hd0_1.04-x86_64.gz
 	                   },
 	                  'us-west-2':  # US West (Oregon) Region
-	                  {'hd0':  {'i386':  'aki-f08f11c0',   # pv-grub-hd0_1.04-i386.gz
-	                            'amd64': 'aki-fc8f11cc'},  # pv-grub-hd0_1.04-x86_64.gz
-	                   'hd00': {'i386':  'aki-e28f11d2',   # pv-grub-hd00_1.04-i386.gz
-	                            'amd64': 'aki-e68f11d6'}   # pv-grub-hd00_1.04-x86_64.gz
-	                   }
+	                  {'i386':  'aki-f08f11c0', # pv-grub-hd0_1.04-i386.gz
+	                   'amd64': 'aki-fc8f11cc'  # pv-grub-hd0_1.04-x86_64.gz
+	                   },
+			  'cn-north-1': # China North (Beijing) Region
+			  {'i386': 'aki-908f1da9',  # pv-grub-hd0_1.04-i386.gz
+			   'amd64': 'aki-9e8f1da7'  # pv-grub-hd0_1.04-x86_64.gz
 	                  }
 
 	@classmethod
