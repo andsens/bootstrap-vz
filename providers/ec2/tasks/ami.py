@@ -163,7 +163,6 @@ class RegisterAMI(Task):
 			registration_params['virtualization_type'] = 'paravirtual'
 			registration_params['kernel_id'] = (cls.kernel_mapping
 			                                    .get(info.host['region'])
-			                                    .get(grub_boot_device)
 			                                    .get(info.manifest.system['architecture']))
 
 		info.image = info.connection.register_image(**registration_params)

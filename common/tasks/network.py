@@ -10,7 +10,9 @@ class RemoveDNSInfo(Task):
 	@classmethod
 	def run(cls, info):
 		from os import remove
-		remove(os.path.join(info.root, 'etc/resolv.conf'))
+		import os.path
+		if os.path.isfile(os.path.join(info.root, 'etc/resolv.conf')):
+			remove(os.path.join(info.root, 'etc/resolv.conf'))
 
 
 class RemoveHostname(Task):
@@ -20,7 +22,9 @@ class RemoveHostname(Task):
 	@classmethod
 	def run(cls, info):
 		from os import remove
-		remove(os.path.join(info.root, 'etc/hostname'))
+		import os.path
+		if os.path.isfile(os.path.join(info.root, 'etc/hostname')):
+			remove(os.path.join(info.root, 'etc/hostname'))
 
 
 class ConfigureNetworkIF(Task):
