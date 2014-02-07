@@ -58,6 +58,8 @@ class UploadImage(Task):
 		manifest_file = os.path.join(info.bundle_path, info.ami_name + '.manifest.xml')
 		if info.host['region'] == 'us-east-1':
 			s3_url = 'https://s3.amazonaws.com/'
+		elif info.host['region'] == 'cn-north-1':
+			s3_url = 'https://s3.cn-north-1.amazonaws.com.cn'
 		else:
 			s3_url = 'https://s3-{region}.amazonaws.com/'.format(region=info.host['region'])
 		log_check_call(['/usr/bin/euca-upload-bundle',
