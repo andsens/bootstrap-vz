@@ -130,7 +130,7 @@ class RegisterAMI(Task):
 			  {'i386': 'aki-908f1da9',  # pv-grub-hd0_1.04-i386.gz
 			   'amd64': 'aki-9e8f1da7'  # pv-grub-hd0_1.04-x86_64.gz
 	                  }
-
+			}
 	@classmethod
 	def run(cls, info):
 		registration_params = {'name': info.ami_name,
