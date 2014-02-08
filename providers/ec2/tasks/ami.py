@@ -62,6 +62,7 @@ class UploadImage(Task):
 			s3_url = 'https://s3.cn-north-1.amazonaws.com.cn'
 		else:
 			s3_url = 'https://s3-{region}.amazonaws.com/'.format(region=info.host['region'])
+		info.manifest.manifest_location = info.manifest.image['bucket'] + '/' + info.ami_name + '.manifest.xml'
 		log_check_call(['/usr/bin/euca-upload-bundle',
 		                '--bucket', info.manifest.image['bucket'],
 		                '--manifest', manifest_file,
@@ -140,6 +141,7 @@ class RegisterAMI(Task):
 
 		if info.manifest.volume['backing'] == 's3':
 			grub_boot_device = 'hd0'
+			registration_params['image_location'] = info.manifest.manifest_location
 		else:
 			root_dev_name = {'pvm': '/dev/sda',
 			                 'hvm': '/dev/xvda'}.get(info.manifest.data['virtualization'])
