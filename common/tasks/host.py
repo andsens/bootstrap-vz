@@ -35,7 +35,9 @@ class CheckHostDependencies(Task):
 		missing_packages = []
 		for package in info.host_dependencies:
 			try:
-				log_check_call(['/usr/bin/dpkg-query', '-s', package])
+				import os.path
+				if os.path.isfile('/usr/bin/dpkg-query'):
+					log_check_call(['/usr/bin/dpkg-query', '-s', package])
 			except CalledProcessError:
 				missing_packages.append(package)
 		if len(missing_packages) > 0:
