@@ -1,6 +1,6 @@
 from base import Task
 from common import phases
-import os.path
+import os
 
 
 class RemoveDNSInfo(Task):
@@ -9,10 +9,8 @@ class RemoveDNSInfo(Task):
 
 	@classmethod
 	def run(cls, info):
-		from os import remove
-		import os.path
 		if os.path.isfile(os.path.join(info.root, 'etc/resolv.conf')):
-			remove(os.path.join(info.root, 'etc/resolv.conf'))
+			os.remove(os.path.join(info.root, 'etc/resolv.conf'))
 
 
 class RemoveHostname(Task):
@@ -21,10 +19,8 @@ class RemoveHostname(Task):
 
 	@classmethod
 	def run(cls, info):
-		from os import remove
-		import os.path
 		if os.path.isfile(os.path.join(info.root, 'etc/hostname')):
-			remove(os.path.join(info.root, 'etc/hostname'))
+			os.remove(os.path.join(info.root, 'etc/hostname'))
 
 
 class ConfigureNetworkIF(Task):
