@@ -23,7 +23,7 @@ Other depencies include:
 * euca2ools
 * xfsprogs (If you want to use XFS as a filesystem)
 Also the following python libraries are required:
-* **boto**
+* **boto** ([version 2.14.0 or higher](https://github.com/boto/boto))
 * **jsonschema** ([version 2.0.0](https://pypi.python.org/pypi/jsonschema), only available through pip)
 * **termcolor**
 * **fysom**
