@@ -45,7 +45,7 @@
 				"sources": {
 					"type": "object",
 					"patternProperties": {
-						"^\\w+$": {
+						"^[^\/\\0]+$": {
 							"type": "array",
 							"items": {
 								"type": "string",
