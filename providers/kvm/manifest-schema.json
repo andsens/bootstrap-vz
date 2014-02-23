@@ -3,21 +3,22 @@
 	"title": "KVM manifest",
 	"type": "object",
 	"properties": {
-		"bootstrapper": {
+		"system": {
 			"type": "object",
 			"properties": {
 				"virtio": {
 					"type": "array",
 					"items": {
-						"type": "string"
+						"type": "string",
+						"enum": ["virtio",
+						         "virtio_pci",
+						         "virtio_balloon",
+						         "virtio_blk",
+						         "virtio_net",
+						         "virtio_ring"]
 					},
 					"minItems": 1
-				}
-			}
-		},
-		"system": {
-			"type": "object",
-			"properties": {
+				},
 				"bootloader": {
 					"type": "string",
 					"enum": ["grub", "extlinux"]
