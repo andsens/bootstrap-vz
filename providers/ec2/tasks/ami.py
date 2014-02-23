@@ -38,8 +38,10 @@ class BundleImage(Task):
 	def run(cls, info):
 		bundle_name = 'bundle-{id}'.format(id=info.run_id)
 		info.bundle_path = os.path.join(info.workspace, bundle_name)
+		arch = {'i386': 'i386', 'amd64': 'x86_64'}.get(info.manifest.system['architecture'])
 		log_check_call(['/usr/bin/euca-bundle-image',
 		                '--image', info.volume.image_path,
+		                '--arch', arch,
 		                '--user', info.credentials['user-id'],
 		                '--privatekey', info.credentials['private-key'],
 		                '--cert', info.credentials['certificate'],
