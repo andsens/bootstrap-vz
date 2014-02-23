@@ -9,7 +9,7 @@ class QEMUVolume(LoopbackVolume):
 	def _before_create(self, e):
 		self.image_path = e.image_path
 		vol_size = str(self.size.get_qty_in('MiB')) + 'M'
-		log_check_call(['/usr/bin/qemu-img', 'create', '-f', self.qemu_format, self.image_path, vol_size])
+		log_check_call(['qemu-img', 'create', '-f', self.qemu_format, self.image_path, vol_size])
 
 	def _check_nbd_module(self):
 		from base.fs.partitionmaps.none import NoPartitions
@@ -40,11 +40,11 @@ class QEMUVolume(LoopbackVolume):
 	def _before_attach(self, e):
 		self._check_nbd_module()
 		self.loop_device_path = self._find_free_nbd_device()
-		log_check_call(['/usr/bin/qemu-nbd', '--connect', self.loop_device_path, self.image_path])
+		log_check_call(['qemu-nbd', '--connect', self.loop_device_path, self.image_path])
 		self.device_path = self.loop_device_path
 
 	def _before_detach(self, e):
-		log_check_call(['/usr/bin/qemu-nbd', '--disconnect', self.loop_device_path])
+		log_check_call(['qemu-nbd', '--disconnect', self.loop_device_path])
 		del self.loop_device_path
 		del self.device_path
 

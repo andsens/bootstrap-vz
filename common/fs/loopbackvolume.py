@@ -12,14 +12,14 @@ class LoopbackVolume(Volume):
 	def _before_create(self, e):
 		self.image_path = e.image_path
 		vol_size = str(self.size.get_qty_in('MiB')) + 'M'
-		log_check_call(['/usr/bin/qemu-img', 'create', '-f', 'raw', self.image_path, vol_size])
+		log_check_call(['qemu-img', 'create', '-f', 'raw', self.image_path, vol_size])
 
 	def _before_attach(self, e):
-		[self.loop_device_path] = log_check_call(['/sbin/losetup', '--show', '--find', self.image_path])
+		[self.loop_device_path] = log_check_call(['losetup', '--show', '--find', self.image_path])
 		self.device_path = self.loop_device_path
 
 	def _before_detach(self, e):
-		log_check_call(['/sbin/losetup', '--detach', self.loop_device_path])
+		log_check_call(['losetup', '--detach', self.loop_device_path])
 		del self.loop_device_path
 		del self.device_path
 

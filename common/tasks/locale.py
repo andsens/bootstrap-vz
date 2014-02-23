@@ -28,12 +28,12 @@ class GenerateLocale(Task):
 		search = '# ' + locale_str
 		sed_i(locale_gen, search, locale_str)
 
-		log_check_call(['/usr/sbin/chroot', info.root, '/usr/sbin/locale-gen'])
+		log_check_call(['chroot', info.root, 'locale-gen'])
 
 		lang = '{locale}.{charmap}'.format(locale=info.manifest.system['locale'],
 		                                   charmap=info.manifest.system['charmap'])
-		log_check_call(['/usr/sbin/chroot', info.root,
-		                '/usr/sbin/update-locale', 'LANG=' + lang])
+		log_check_call(['chroot', info.root,
+		                'update-locale', 'LANG=' + lang])
 
 
 class SetTimezone(Task):

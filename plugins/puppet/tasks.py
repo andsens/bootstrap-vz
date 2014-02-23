@@ -84,8 +84,8 @@ class ApplyPuppetManifest(Task):
 
 		manifest_path = os.path.join('/', manifest_rel_dst)
 		from common.tools import log_check_call
-		log_check_call(['/usr/sbin/chroot', info.root,
-		                '/usr/bin/puppet', 'apply', manifest_path])
+		log_check_call(['chroot', info.root,
+		                'puppet', 'apply', manifest_path])
 		os.remove(manifest_dst)
 
 		from common.tools import sed_i

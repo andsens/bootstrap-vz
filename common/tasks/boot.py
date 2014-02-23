@@ -91,9 +91,9 @@ class InstallGrub(Task):
 						                         idx=idx + 1))
 
 			# Install grub
-			log_check_call(['/usr/sbin/chroot', info.root,
-			                '/usr/sbin/grub-install', device_path])
-			log_check_call(['/usr/sbin/chroot', info.root, '/usr/sbin/update-grub'])
+			log_check_call(['chroot', info.root,
+			                'grub-install', device_path])
+			log_check_call(['chroot', info.root, 'update-grub'])
 		except Exception as e:
 			if isinstance(info.volume, LoopbackVolume):
 				remount(info.volume, unlink_fn)
@@ -127,12 +127,12 @@ class InstallExtLinux(Task):
 			bootloader = '/usr/lib/syslinux/gptmbr.bin'
 		else:
 			bootloader = '/usr/lib/extlinux/mbr.bin'
-		log_check_call(['/usr/sbin/chroot', info.root,
-		                '/bin/dd', 'bs=440', 'count=1',
+		log_check_call(['chroot', info.root,
+		                'dd', 'bs=440', 'count=1',
 		                'if=' + bootloader,
 		                'of=' + info.volume.device_path])
-		log_check_call(['/usr/sbin/chroot', info.root,
-		                '/usr/bin/extlinux',
+		log_check_call(['chroot', info.root,
+		                'extlinux',
 		                '--install', '/boot/extlinux'])
-		log_check_call(['/usr/sbin/chroot', info.root,
-		                '/usr/sbin/extlinux-update'])
+		log_check_call(['chroot', info.root,
+		                'extlinux-update'])

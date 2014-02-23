@@ -14,5 +14,5 @@ class GPTPartition(BasePartition):
 		name_command = ('name {idx} {name}'
 		                .format(idx=self.get_index(),
 		                        name=self.name))
-		log_check_call(['/sbin/parted', '--script', e.volume.device_path,
+		log_check_call(['parted', '--script', e.volume.device_path,
 		                '--', name_command])

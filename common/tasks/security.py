@@ -10,7 +10,7 @@ class EnableShadowConfig(Task):
 	@classmethod
 	def run(cls, info):
 		from common.tools import log_check_call
-		log_check_call(['/usr/sbin/chroot', info.root, '/sbin/shadowconfig', 'on'])
+		log_check_call(['chroot', info.root, 'shadowconfig', 'on'])
 
 
 class DisableSSHPasswordAuthentication(Task):

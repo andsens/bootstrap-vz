@@ -36,7 +36,7 @@ class MSDOSPartitionMap(AbstractPartitionMap):
 
 	def _before_create(self, event):
 		volume = event.volume
-		log_check_call(['/sbin/parted', '--script', '--align', 'none', volume.device_path,
+		log_check_call(['parted', '--script', '--align', 'none', volume.device_path,
 		                '--', 'mklabel', 'msdos'])
 		for partition in self.partitions:
 			partition.create(volume)

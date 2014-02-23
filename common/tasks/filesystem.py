@@ -43,7 +43,7 @@ class TuneVolumeFS(Task):
 		for partition in info.volume.partition_map.partitions:
 			if not isinstance(partition, UnformattedPartition):
 				if re.match('^ext[2-4]$', partition.filesystem) is not None:
-					log_check_call(['/sbin/tune2fs', '-i', '0', partition.device_path])
+					log_check_call(['tune2fs', '-i', '0', partition.device_path])
 
 
 class AddXFSProgs(Task):

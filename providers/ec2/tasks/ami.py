@@ -39,7 +39,7 @@ class BundleImage(Task):
 		bundle_name = 'bundle-{id}'.format(id=info.run_id)
 		info.bundle_path = os.path.join(info.workspace, bundle_name)
 		arch = {'i386': 'i386', 'amd64': 'x86_64'}.get(info.manifest.system['architecture'])
-		log_check_call(['/usr/bin/euca-bundle-image',
+		log_check_call(['euca-bundle-image',
 		                '--image', info.volume.image_path,
 		                '--arch', arch,
 		                '--user', info.credentials['user-id'],
@@ -65,7 +65,7 @@ class UploadImage(Task):
 		else:
 			s3_url = 'https://s3-{region}.amazonaws.com/'.format(region=info.host['region'])
 		info.manifest.manifest_location = info.manifest.image['bucket'] + '/' + info.ami_name + '.manifest.xml'
-		log_check_call(['/usr/bin/euca-upload-bundle',
+		log_check_call(['euca-upload-bundle',
 		                '--bucket', info.manifest.image['bucket'],
 		                '--manifest', manifest_file,
 		                '--access-key', info.credentials['access-key'],

@@ -44,11 +44,11 @@ class BasePartition(AbstractPartition):
 		create_command = ('mkpart primary {start} {end}'
 		                  .format(start=str(self.get_start()),
 		                          end=str(self.get_end())))
-		log_check_call(['/sbin/parted', '--script', '--align', 'none', e.volume.device_path,
+		log_check_call(['parted', '--script', '--align', 'none', e.volume.device_path,
 		                '--', create_command])
 
 		for flag in self.flags:
-			log_check_call(['/sbin/parted', '--script', e.volume.device_path,
+			log_check_call(['parted', '--script', e.volume.device_path,
 			                '--', ('set {idx} {flag} on'
 			                       .format(idx=str(self.get_index()), flag=flag))])
 

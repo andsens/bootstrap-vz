@@ -8,4 +8,4 @@ class GPTSwapPartition(GPTPartition):
 		super(GPTSwapPartition, self).__init__(size, 'swap', None, 'swap', previous)
 
 	def _before_format(self, e):
-		log_check_call(['/sbin/mkswap', self.device_path])
+		log_check_call(['mkswap', self.device_path])

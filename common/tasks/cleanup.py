@@ -29,7 +29,7 @@ class ShredHostkeys(Task):
 		public = [path + '.pub' for path in private]
 
 		from common.tools import log_check_call
-		log_check_call(['/usr/bin/shred', '--remove'] + private + public)
+		log_check_call(['shred', '--remove'] + private + public)
 
 
 class CleanTMP(Task):

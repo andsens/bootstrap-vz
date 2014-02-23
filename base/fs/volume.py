@@ -76,12 +76,12 @@ class Volume(FSMProxy):
 		if not hasattr(self, 'dm_node_name'):
 			raise VolumeError('Unable to find a free block device path for mounting the bootstrap volume')
 
-		log_check_call(['/sbin/dmsetup', 'create', self.dm_node_name], table)
+		log_check_call(['dmsetup', 'create', self.dm_node_name], table)
 		self.unlinked_device_path = self.device_path
 		self.device_path = self.dm_node_path
 
 	def _before_unlink_dm_node(self, e):
-		log_check_call(['/sbin/dmsetup', 'remove', self.dm_node_name])
+		log_check_call(['dmsetup', 'remove', self.dm_node_name])
 		del self.dm_node_name
 		del self.dm_node_path
 		self.device_path = self.unlinked_device_path

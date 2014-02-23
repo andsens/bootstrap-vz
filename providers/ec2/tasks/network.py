@@ -40,17 +40,17 @@ class InstallEnhancedNetworking(Task):
 		urllib.urlretrieve(drivers_url, archive)
 
 		from common.tools import log_check_call
-		log_check_call('/bin/tar', '--ungzip',
-		                           '--extract',
-		                           '--file', archive,
-		                           '--directory', os.path.join(info.root, 'tmp'))
+		log_check_call('tar', '--ungzip',
+		                      '--extract',
+		                      '--file', archive,
+		                      '--directory', os.path.join(info.root, 'tmp'))
 
 		src_dir = os.path.join('/tmp', os.path.basename(drivers_url), 'src')
-		log_check_call(['/usr/sbin/chroot', info.root,
-		                '/usr/bin/make', '--directory', src_dir])
-		log_check_call(['/usr/sbin/chroot', info.root,
-		                '/usr/bin/make', 'install',
-		                                 '--directory', src_dir])
+		log_check_call(['chroot', info.root,
+		                'make', '--directory', src_dir])
+		log_check_call(['chroot', info.root,
+		                'make', 'install',
+		                        '--directory', src_dir])
 
 		ixgbevf_conf_path = os.path.join(info.root, 'etc/modprobe.d/ixgbevf.conf')
 		with open(ixgbevf_conf_path, 'w') as ixgbevf_conf:

@@ -37,13 +37,13 @@ class AbstractPartitionMap(FSMProxy):
 	def _before_map(self, event):
 		volume = event.volume
 		try:
-			mappings = log_check_call(['/sbin/kpartx', '-l', volume.device_path])
+			mappings = log_check_call(['kpartx', '-l', volume.device_path])
 			import re
 			regexp = re.compile('^(?P<name>.+[^\d](?P<p_idx>\d+)) : '
 			                    '(?P<start_blk>\d) (?P<num_blks>\d+) '
 			                    '{device_path} (?P<blk_offset>\d+)$'
 			                    .format(device_path=volume.device_path))
-			log_check_call(['/sbin/kpartx', '-a', volume.device_path])
+			log_check_call(['kpartx', '-a', volume.device_path])
 			import os.path
 			for mapping in mappings:
 				match = regexp.match(mapping)
@@ -61,7 +61,7 @@ class AbstractPartitionMap(FSMProxy):
 			for partition in self.partitions:
 				if not partition.fsm.can('unmap'):
 					partition.unmap()
-			log_check_call(['/sbin/kpartx', '-d', volume.device_path])
+			log_check_call(['kpartx', '-d', volume.device_path])
 			raise e
 
 	def unmap(self, volume):
@@ -73,6 +73,6 @@ class AbstractPartitionMap(FSMProxy):
 			if partition.fsm.cannot('unmap'):
 				msg = 'The partition {partition} prevents the unmap procedure'.format(partition=partition)
 				raise PartitionError(msg)
-		log_check_call(['/sbin/kpartx', '-d', volume.device_path])
+		log_check_call(['kpartx', '-d', volume.device_path])
 		for partition in self.partitions:
 			partition.unmap()

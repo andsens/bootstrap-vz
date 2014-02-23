@@ -27,7 +27,7 @@ class OpenNebulaContext(Task):
 		sed_i(vmcontext_def, '# Default-Start:', '# Default-Start: 2 3 4 5')
 
 		from common.tools import log_check_call
-		log_check_call(['/usr/sbin/chroot', info.root, 'update-rc.d', 'vmcontext', 'start',
+		log_check_call(['chroot', info.root, 'update-rc.d', 'vmcontext', 'start',
 		                '90', '2', '3', '4', '5', 'stop', '90', '0', '6'])
 
 		from shutil import copy

@@ -8,4 +8,4 @@ class MSDOSSwapPartition(MSDOSPartition):
 		super(MSDOSSwapPartition, self).__init__(size, 'swap', None, previous)
 
 	def _before_format(self, e):
-		log_check_call(['/sbin/mkswap', self.device_path])
+		log_check_call(['mkswap', self.device_path])

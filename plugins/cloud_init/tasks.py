@@ -68,7 +68,7 @@ class SetMetadataSource(Task):
 				logging.getLogger(__name__).warn(msg)
 				return
 		sources = "cloud-init      cloud-init/datasources  multiselect     " + sources
-		log_check_call(['/usr/sbin/chroot', info.root, '/usr/bin/debconf-set-selections'], sources)
+		log_check_call(['chroot', info.root, 'debconf-set-selections'], sources)
 
 
 class DisableModules(Task):

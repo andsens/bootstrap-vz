@@ -9,5 +9,5 @@ class SetRootPassword(Task):
 	@classmethod
 	def run(cls, info):
 		from common.tools import log_check_call
-		log_check_call(['/usr/sbin/chroot', info.root, '/usr/sbin/chpasswd'],
+		log_check_call(['chroot', info.root, 'chpasswd'],
 		               'root:' + info.manifest.plugins['root_password']['password'])

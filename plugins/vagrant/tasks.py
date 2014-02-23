@@ -71,8 +71,8 @@ class CreateVagrantUser(Task):
 	@classmethod
 	def run(cls, info):
 		from common.tools import log_check_call
-		log_check_call(['/usr/sbin/chroot', info.root,
-		                '/usr/sbin/useradd',
+		log_check_call(['chroot', info.root,
+		                'useradd',
 		                '--create-home', '--shell', '/bin/bash',
 		                'vagrant'])
 
@@ -115,8 +115,8 @@ class AddInsecurePublicKey(Task):
 
 		# We can't do this directly with python, since getpwnam gets its info from the host
 		from common.tools import log_check_call
-		log_check_call(['/usr/sbin/chroot', info.root,
-		                '/bin/chown', 'vagrant:vagrant',
+		log_check_call(['chroot', info.root,
+		                'chown', 'vagrant:vagrant',
 		                '/home/vagrant/.ssh', '/home/vagrant/.ssh/authorized_keys'])
 
 
@@ -127,7 +127,7 @@ class SetRootPassword(Task):
 	@classmethod
 	def run(cls, info):
 		from common.tools import log_check_call
-		log_check_call(['/usr/sbin/chroot', info.root, '/usr/sbin/chpasswd'], 'root:vagrant')
+		log_check_call(['chroot', info.root, 'chpasswd'], 'root:vagrant')
 
 
 class PackageBox(Task):
