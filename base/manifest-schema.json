@@ -99,7 +99,7 @@
 			"additionalProperties": false
 		}
 	},
-	"required": ["provider", "bootstrapper", "image", "volume", "system"],
+	"required": ["provider", "bootstrapper", "system", "volume"],
 	"definitions": {
 		"path": {
 			"type":    "string",
@@ -150,6 +150,5 @@
 			},
 			"required": ["size", "filesystem"]
 		}
-	},
-	"required": ["provider", "bootstrapper", "system", "packages", "volume"]
+	}
 }

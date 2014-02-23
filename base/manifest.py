@@ -45,7 +45,7 @@ class Manifest(object):
 		self.image        = self.data['image']
 		self.volume       = self.data['volume']
 		self.system       = self.data['system']
-		self.packages     = self.data['packages']
+		self.packages     = self.data['packages'] if 'packages' in self.data else {}
 		self.plugins      = self.data['plugins'] if 'plugins' in self.data else {}
 
 	def load_json(self, path):
