@@ -141,7 +141,12 @@
 			"type": "object",
 			"properties": {
 				"size": { "$ref": "#/definitions/bytes" },
-				"filesystem": { "enum": ["ext2", "ext3", "ext4", "xfs"] }
+				"filesystem": { "enum": ["ext2", "ext3", "ext4", "xfs"] },
+				"format_command": {
+					"type": "array",
+					"items": {"type": "string"},
+					"minItems": 1
+				}
 			},
 			"required": ["size", "filesystem"]
 		}

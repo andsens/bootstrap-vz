@@ -14,12 +14,12 @@ class BasePartition(AbstractPartition):
 	          {'name': 'unmap', 'src': 'mapped', 'dst': 'unmapped'},
 	          ]
 
-	def __init__(self, size, filesystem, previous):
+	def __init__(self, size, filesystem, format_command, previous):
 		self.previous = previous
 		from common.bytes import Bytes
 		self.offset = Bytes(0)
 		self.flags = []
-		super(BasePartition, self).__init__(size, filesystem)
+		super(BasePartition, self).__init__(size, filesystem, format_command)
 
 	def create(self, volume):
 		self.fsm.create(volume=volume)

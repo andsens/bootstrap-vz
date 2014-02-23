@@ -5,7 +5,8 @@ class NoPartitions(object):
 
 	def __init__(self, data, bootloader):
 		from common.bytes import Bytes
-		self.root = SinglePartition(Bytes(data['root']['size']), data['root']['filesystem'])
+		self.root = SinglePartition(Bytes(data['root']['size']),
+		                            data['root']['filesystem'], data['root'].get('format_command', None))
 		self.partitions = [self.root]
 
 	def is_blocking(self):

@@ -14,12 +14,16 @@ class MSDOSPartitionMap(AbstractPartitionMap):
 			return self.partitions[-1] if len(self.partitions) > 0 else None
 
 		if 'boot' in data:
-			self.boot = MSDOSPartition(Bytes(data['boot']['size']), data['boot']['filesystem'], None)
+			self.boot = MSDOSPartition(Bytes(data['boot']['size']),
+			                           data['boot']['filesystem'], data['boot'].get('format_command', None),
+			                           last_partition())
 			self.partitions.append(self.boot)
 		if 'swap' in data:
 			self.swap = MSDOSSwapPartition(Bytes(data['swap']['size']), last_partition())
 			self.partitions.append(self.swap)
-		self.root = MSDOSPartition(Bytes(data['root']['size']), data['root']['filesystem'], last_partition())
+		self.root = MSDOSPartition(Bytes(data['root']['size']),
+		                           data['root']['filesystem'], data['root'].get('format_command', None),
+		                           last_partition())
 		self.partitions.append(self.root)
 
 		getattr(self, 'boot', self.root).flags.append('boot')

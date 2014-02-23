@@ -23,13 +23,15 @@ class GPTPartitionMap(AbstractPartitionMap):
 			self.partitions.append(self.grub_boot)
 
 		if 'boot' in data:
-			self.boot = GPTPartition(Bytes(data['boot']['size']), data['boot']['filesystem'],
+			self.boot = GPTPartition(Bytes(data['boot']['size']),
+			                         data['boot']['filesystem'], data['boot'].get('format_command', None),
 			                         'boot', last_partition())
 			self.partitions.append(self.boot)
 		if 'swap' in data:
 			self.swap = GPTSwapPartition(Bytes(data['swap']['size']), last_partition())
 			self.partitions.append(self.swap)
-		self.root = GPTPartition(Bytes(data['root']['size']), data['root']['filesystem'],
+		self.root = GPTPartition(Bytes(data['root']['size']),
+		                         data['root']['filesystem'], data['root'].get('format_command', None),
 		                         'root', last_partition())
 		self.partitions.append(self.root)
 

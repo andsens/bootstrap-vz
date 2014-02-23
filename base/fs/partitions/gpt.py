@@ -4,9 +4,9 @@ from base import BasePartition
 
 class GPTPartition(BasePartition):
 
-	def __init__(self, size, filesystem, name, previous):
+	def __init__(self, size, filesystem, format_command, name, previous):
 		self.name = name
-		super(GPTPartition, self).__init__(size, filesystem, previous)
+		super(GPTPartition, self).__init__(size, filesystem, format_command, previous)
 
 	def _before_create(self, e):
 		super(GPTPartition, self)._before_create(e)

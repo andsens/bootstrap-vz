@@ -9,4 +9,4 @@ class UnformattedPartition(BasePartition):
 	          ]
 
 	def __init__(self, size, previous):
-		super(UnformattedPartition, self).__init__(size, None, previous)
+		super(UnformattedPartition, self).__init__(size, None, None, previous)

@@ -36,11 +36,12 @@ class AbstractPartition(FSMProxy):
 				log_check_call(['/bin/umount', self.mount_dir])
 			del self.mount_dir
 
-	def __init__(self, size, filesystem):
-		self.size        = size
-		self.filesystem  = filesystem
-		self.device_path = None
-		self.mounts      = {}
+	def __init__(self, size, filesystem, format_command):
+		self.size           = size
+		self.filesystem     = filesystem
+		self.format_command = format_command
+		self.device_path    = None
+		self.mounts         = {}
 
 		cfg = {'initial': 'nonexistent', 'events': self.events, 'callbacks': {}}
 		super(AbstractPartition, self).__init__(cfg)
@@ -57,8 +58,16 @@ class AbstractPartition(FSMProxy):
 		return self.get_start() + self.size
 
 	def _before_format(self, e):
-		mkfs = '/sbin/mkfs.{fs}'.format(fs=self.filesystem)
-		log_check_call([mkfs, self.device_path])
+		if self.format_command is None:
+			format_command = ['/sbin/mkfs.{fs}', '{device_path}']
+		else:
+			format_command = self.format_command
+		variables = {'fs': self.filesystem,
+		             'device_path': self.device_path,
+		             'size': self.size,
+		             }
+		command = map(lambda part: part.format(**variables), format_command)
+		log_check_call(command)
 
 	def _before_mount(self, e):
 		log_check_call(['/bin/mount', '--types', self.filesystem, self.device_path, e.destination])
