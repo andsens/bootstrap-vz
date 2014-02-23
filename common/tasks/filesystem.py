@@ -2,8 +2,20 @@ from base import Task
 from common import phases
 from common.tools import log_check_call
 from bootstrap import Bootstrap
-from common.tasks import apt
+import apt
+import host
 import volume
+
+
+class AddRequiredCommands(Task):
+	description = 'Adding commands required for formatting the partitions'
+	phase = phases.preparation
+	successors = [host.CheckExternalCommands]
+
+	@classmethod
+	def run(cls, info):
+		if 'xfs' in (p.filesystem for p in info.volume.partition_map.partitions):
+			info.host_dependencies['mkfs.xfs'] = 'xfsprogs'
 
 
 class Format(Task):

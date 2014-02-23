@@ -1,7 +1,21 @@
 from base import Task
 from common import phases
 import filesystem
+import host
 import volume
+
+
+class AddRequiredCommands(Task):
+	description = 'Adding commands required for partitioning the volume'
+	phase = phases.preparation
+	successors = [host.CheckExternalCommands]
+
+	@classmethod
+	def run(cls, info):
+		from base.fs.partitionmaps.none import NoPartitions
+		if not isinstance(info.volume.partition_map, NoPartitions):
+			info.host_dependencies['parted'] = 'parted'
+			info.host_dependencies['kpartx'] = 'kpartx'
 
 
 class PartitionVolume(Task):

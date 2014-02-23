@@ -1,6 +1,23 @@
 from base import Task
 from common import phases
+import host
 import volume
+
+
+class AddRequiredCommands(Task):
+	description = 'Adding commands required for creating loopback volumes'
+	phase = phases.preparation
+	successors = [host.CheckExternalCommands]
+
+	@classmethod
+	def run(cls, info):
+		from common.fs.loopbackvolume import LoopbackVolume
+		if isinstance(info.volume, LoopbackVolume):
+			info.host_dependencies['qemu-img'] = 'qemu-utils'
+			info.host_dependencies['losetup'] = 'mount'
+		from common.fs.qemuvolume import QEMUVolume
+		if isinstance(info.volume, QEMUVolume):
+			info.host_dependencies['losetup'] = 'qemu-nbd'
 
 
 class Create(Task):
