@@ -3,8 +3,12 @@ log = logging.getLogger(__name__)
 
 
 def main():
-	import log
+	import os
 	args = get_args()
+	# Require root privileges, except when doing a dry-run where they aren't needed
+	if os.geteuid() != 0 and not args.dry_run:
+		raise Exception('This program requires root privileges.')
+	import log
 	logfile = log.get_logfile_path(args.manifest)
 	log.setup_logger(logfile=logfile, debug=args.debug)
 	run(args)
@@ -40,7 +44,7 @@ def run(args):
 	except (Exception, KeyboardInterrupt) as e:
 		log.exception(e)
 		if args.pause_on_error:
-			raw_input("Press Enter to commence rollback")
+			raw_input('Press Enter to commence rollback')
 		log.error('Rolling back')
 
 		rollback_tasklist = TaskList()
