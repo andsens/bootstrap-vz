@@ -11,14 +11,20 @@ class CheckExternalCommands(Task):
 	def run(cls, info):
 		from common.tools import log_check_call
 		from subprocess import CalledProcessError
+		import re
 		missing_packages = []
 		for command, package in info.host_dependencies.items():
 			try:
 				log_check_call(['type ' + command], shell=True)
 			except CalledProcessError:
-				msg = ('The command `{command}\' is not available, '
-				       'it is located in the package `{package}\'.'
-				       .format(command=command, package=package))
+				if re.match('^https?:\/\/', package):
+					msg = ('The command `{command}\' is not available, '
+					       'you can download the software at `{package}\'.'
+					       .format(command=command, package=package))
+				else:
+					msg = ('The command `{command}\' is not available, '
+					       'it is located in the package `{package}\'.'
+					       .format(command=command, package=package))
 				missing_packages.append(msg)
 		if len(missing_packages) > 0:
 			msg = '\n'.join(missing_packages)
