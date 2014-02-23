@@ -1,4 +1,5 @@
 {
+	// In squeeze, we need a special kernel flavor for xen
 	"squeeze": {
 		"amd64": "linux-image-xen-amd64",
 		"i386" : "linux-image-xen-686" },

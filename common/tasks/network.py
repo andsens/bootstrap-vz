@@ -29,10 +29,10 @@ class ConfigureNetworkIF(Task):
 
 	@classmethod
 	def run(cls, info):
+		network_config_path = os.path.join(os.path.dirname(__file__), 'network-configuration.json')
+		from common.tools import config_get
+		if_config = config_get(network_config_path, [info.manifest.system['release']])
+
 		interfaces_path = os.path.join(info.root, 'etc/network/interfaces')
-		if_config = []
-		with open('common/tasks/network-configuration.json') as stream:
-			import json
-			if_config = json.loads(stream.read())
 		with open(interfaces_path, 'a') as interfaces:
-			interfaces.write('\n'.join(if_config.get(info.manifest.system['release'])) + '\n')
+			interfaces.write('\n'.join(if_config) + '\n')

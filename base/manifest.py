@@ -1,3 +1,4 @@
+from common.tools import load_json
 import logging
 log = logging.getLogger(__name__)
 
@@ -10,7 +11,7 @@ class Manifest(object):
 		self.parse()
 
 	def load(self):
-		self.data = self.load_json(self.path)
+		self.data = load_json(self.path)
 		provider_modname = 'providers.{provider}'.format(provider=self.data['provider'])
 		log.debug('Loading provider `{modname}\''.format(modname=provider_modname))
 		self.modules = {'provider': __import__(provider_modname, fromlist=['providers']),
@@ -55,7 +56,7 @@ class Manifest(object):
 
 	def schema_validator(self, data, schema_path):
 		import jsonschema
-		schema = self.load_json(schema_path)
+		schema = load_json(schema_path)
 		try:
 			jsonschema.validate(data, schema)
 		except jsonschema.ValidationError as e:

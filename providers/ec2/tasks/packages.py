@@ -17,10 +17,9 @@ class DefaultPackages(Task):
 		info.exclude_packages.add('isc-dhcp-client')
 		info.exclude_packages.add('isc-dhcp-common')
 
-		# In squeeze, we need a special kernel flavor for xen
-		kernels = {}
-		with open('providers/ec2/tasks/packages-kernels.json') as stream:
-			import json
-			kernels = json.loads(stream.read())
-		kernel_package = kernels.get(info.manifest.system['release']).get(info.manifest.system['architecture'])
+		import os.path
+		kernel_packages_path = os.path.join(os.path.dirname(__file__), 'packages-kernels.json')
+		from common.tools import config_get
+		kernel_package = config_get(kernel_packages_path, [info.manifest.system['release'],
+		                                                   info.manifest.system['architecture']])
 		info.packages.add(kernel_package)

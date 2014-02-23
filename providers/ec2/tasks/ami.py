@@ -92,48 +92,6 @@ class RegisterAMI(Task):
 	phase = phases.image_registration
 	predecessors = [Snapshot, UploadImage]
 
-	# Source: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/UserProvidedKernels.html#AmazonKernelImageIDs
-	kernel_mapping = {'ap-northeast-1':  # Asia Pacific (Tokyo) Region
-	                  {'i386':  'aki-136bf512',  # pv-grub-hd0_1.04-i386.gz
-	                   'amd64': 'aki-176bf516'  # pv-grub-hd0_1.04-x86_64.gz
-	                  },
-	                  'ap-southeast-1':  # Asia Pacific (Singapore) Region
-	                  {'i386':  'aki-ae3973fc', # pv-grub-hd0_1.04-i386.gz
-	                   'amd64': 'aki-503e7402'  # pv-grub-hd0_1.04-x86_64.gz
-	                  },
-	                  'ap-southeast-2':  # Asia Pacific (Sydney) Region
-	                  {'i386':  'aki-cd62fff7', # pv-grub-hd0_1.04-i386.gz
-	                   'amd64': 'aki-c362fff9'  # pv-grub-hd0_1.04-x86_64.gz
-	                   },
-	                  'eu-west-1':  # EU (Ireland) Region
-	                  {'i386':  'aki-68a3451f', # pv-grub-hd0_1.04-i386.gz
-	                   'amd64': 'aki-52a34525'  # pv-grub-hd0_1.04-x86_64.gz
-	                   },
-	                  'sa-east-1':  # South America (Sao Paulo) Region
-	                  {'i386':  'aki-5b53f446', # pv-grub-hd0_1.04-i386.gz
-	                   'amd64': 'aki-5553f448'  # pv-grub-hd0_1.04-x86_64.gz
-	                   },
-	                  'us-east-1':  # US East (Northern Virginia) Region
-	                  {'i386':  'aki-8f9dcae6', # pv-grub-hd0_1.04-i386.gz
-	                   'amd64': 'aki-919dcaf8'  # pv-grub-hd0_1.04-x86_64.gz
-	                   },
-	                  'us-gov-west-1':  # AWS GovCloud (US)
-	                  {'i386':  'aki-1fe98d3c', # pv-grub-hd0_1.04-i386.gz
-	                   'amd64': 'aki-1de98d3e'  # pv-grub-hd0_1.04-x86_64.gz
-	                   },
-	                  'us-west-1':  # US West (Northern California) Region
-	                  {'i386':  'aki-8e0531cb', # pv-grub-hd0_1.04-i386.gz
-	                   'amd64': 'aki-880531cd'  # pv-grub-hd0_1.04-x86_64.gz
-	                   },
-	                  'us-west-2':  # US West (Oregon) Region
-	                  {'i386':  'aki-f08f11c0', # pv-grub-hd0_1.04-i386.gz
-	                   'amd64': 'aki-fc8f11cc'  # pv-grub-hd0_1.04-x86_64.gz
-	                   },
-			  'cn-north-1': # China North (Beijing) Region
-			  {'i386': 'aki-908f1da9',  # pv-grub-hd0_1.04-i386.gz
-			   'amd64': 'aki-9e8f1da7'  # pv-grub-hd0_1.04-x86_64.gz
-	                  }
-			}
 	@classmethod
 	def run(cls, info):
 		registration_params = {'name': info.ami_name,
@@ -142,17 +100,11 @@ class RegisterAMI(Task):
 		                                       'amd64': 'x86_64'}.get(info.manifest.system['architecture'])
 
 		if info.manifest.volume['backing'] == 's3':
-			grub_boot_device = 'hd0'
 			registration_params['image_location'] = info.manifest.manifest_location
 		else:
 			root_dev_name = {'pvm': '/dev/sda',
 			                 'hvm': '/dev/xvda'}.get(info.manifest.data['virtualization'])
 			registration_params['root_device_name'] = root_dev_name
-			from base.fs.partitionmaps.none import NoPartitions
-			if isinstance(info.volume.partition_map, NoPartitions):
-				grub_boot_device = 'hd0'
-			else:
-				grub_boot_device = 'hd00'
 
 			from boto.ec2.blockdevicemapping import BlockDeviceType
 			from boto.ec2.blockdevicemapping import BlockDeviceMapping
@@ -165,8 +117,9 @@ class RegisterAMI(Task):
 			registration_params['virtualization_type'] = 'hvm'
 		else:
 			registration_params['virtualization_type'] = 'paravirtual'
-			registration_params['kernel_id'] = (cls.kernel_mapping
-			                                    .get(info.host['region'])
-			                                    .get(info.manifest.system['architecture']))
+			akis_path = os.path.join(os.path.dirname(__file__), 'akis.json')
+			from common.tools import config_get
+			registration_params['kernel_id'] = config_get(akis_path, [info.host['region'],
+			                                                          info.manifest.system['architecture']])
 
 		info.image = info.connection.register_image(**registration_params)
