@@ -55,6 +55,6 @@ class BootstrapInformation(object):
 		self.include_packages = set()
 		self.exclude_packages = set()
 
-		self.host_dependencies = set()
+		self.host_dependencies = {}
 
 		self.initd = {'install': {}, 'disable': []}

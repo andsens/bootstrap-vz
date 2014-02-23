@@ -61,7 +61,7 @@ def resolve_tasks(taskset, manifest):
 	if manifest.volume['partitions']['type'] != 'none':
 		taskset.update(common.task_sets.partitioning_set)
 
-	taskset.update([tasks.host.HostDependencies,
+	taskset.update([tasks.host.AddExternalCommands,
 	                tasks.packages.DefaultPackages,
 	                tasks.connection.GetCredentials,
 	                tasks.host.GetInfo,

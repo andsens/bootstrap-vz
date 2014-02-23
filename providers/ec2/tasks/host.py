@@ -3,15 +3,16 @@ from common import phases
 from common.tasks import host
 
 
-class HostDependencies(Task):
-	description = 'Adding required host packages for EC2 bootstrapping'
+class AddExternalCommands(Task):
+	description = 'Determining required external commands for EC2 bootstrapping'
 	phase = phases.preparation
-	successors = [host.CheckHostDependencies]
+	successors = [host.CheckExternalCommands]
 
 	@classmethod
 	def run(cls, info):
 		if info.manifest.volume['backing'] == 's3':
-			info.host_dependencies.add('euca2ools')
+			info.host_dependencies['euca-bundle-image'] = 'euca2ools'
+			info.host_dependencies['euca-upload-bundle'] = 'euca2ools'
 
 
 class GetInfo(Task):

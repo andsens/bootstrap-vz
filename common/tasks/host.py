@@ -3,47 +3,49 @@ from common import phases
 from common.exceptions import TaskError
 
 
-class HostDependencies(Task):
-	description = 'Determining required host dependencies'
+class AddExternalCommands(Task):
+	description = 'Determining which external commands are required'
 	phase = phases.preparation
 
 	@classmethod
 	def run(cls, info):
-		info.host_dependencies.add('debootstrap')
+		info.host_dependencies['debootstrap'] = 'debootstrap'
 
 		from common.fs.loopbackvolume import LoopbackVolume
 		if isinstance(info.volume, LoopbackVolume):
-			info.host_dependencies.add('qemu-utils')
+			info.host_dependencies['qemu-img'] = 'qemu-utils'
+			info.host_dependencies['losetup'] = 'mount'
+		from common.fs.qemuvolume import QEMUVolume
+		if isinstance(info.volume, QEMUVolume):
+			info.host_dependencies['losetup'] = 'qemu-nbd'
 
 		if 'xfs' in (p.filesystem for p in info.volume.partition_map.partitions):
-			info.host_dependencies.add('xfsprogs')
+			info.host_dependencies['mkfs.xfs'] = 'xfsprogs'
 
 		from base.fs.partitionmaps.none import NoPartitions
 		if not isinstance(info.volume.partition_map, NoPartitions):
-			info.host_dependencies.update(['parted', 'kpartx'])
+			info.host_dependencies['parted'] = 'parted'
+			info.host_dependencies['kpartx'] = 'kpartx'
 
 
-class CheckHostDependencies(Task):
-	description = 'Checking installed host packages'
+class CheckExternalCommands(Task):
+	description = 'Checking availability of external commands'
 	phase = phases.preparation
-	predecessors = [HostDependencies]
+	predecessors = [AddExternalCommands]
 
 	@classmethod
 	def run(cls, info):
 		from common.tools import log_check_call
 		from subprocess import CalledProcessError
 		missing_packages = []
-		for package in info.host_dependencies:
+		for command, package in info.host_dependencies.items():
 			try:
-				import os.path
-				if os.path.isfile('/usr/bin/dpkg-query'):
-					log_check_call(['/usr/bin/dpkg-query', '-s', package])
+				log_check_call(['type ' + command], shell=True)
 			except CalledProcessError:
-				missing_packages.append(package)
+				msg = ('The command `{command}\' is not available, '
+				       'it is located in the package `{package}\'.'
+				       .format(command=command, package=package))
+				missing_packages.append(msg)
 		if len(missing_packages) > 0:
-			pkgs = '\', `'.join(missing_packages)
-			if len(missing_packages) > 1:
-				msg = "The packages `{packages}\' are not installed".format(packages=pkgs)
-			else:
-				msg = "The package `{packages}\' is not installed".format(packages=pkgs)
+			msg = '\n'.join(missing_packages)
 			raise TaskError(msg)

@@ -12,8 +12,8 @@ from common.tasks import security
 from common.tasks import locale
 
 base_set = [workspace.CreateWorkspace,
-            host.HostDependencies,
-            host.CheckHostDependencies,
+            host.AddExternalCommands,
+            host.CheckExternalCommands,
             bootstrap.Bootstrap,
             workspace.DeleteWorkspace,
             ]
