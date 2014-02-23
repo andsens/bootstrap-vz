@@ -20,6 +20,6 @@ class DefaultPackages(Task):
 		import os.path
 		kernel_packages_path = os.path.join(os.path.dirname(__file__), 'packages-kernels.json')
 		from common.tools import config_get
-		kernel_package = config_get(kernel_packages_path, [info.manifest.system['release'],
+		kernel_package = config_get(kernel_packages_path, [info.release_codename,
 		                                                   info.manifest.system['architecture']])
 		info.packages.add(kernel_package)

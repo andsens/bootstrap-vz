@@ -31,7 +31,7 @@ class ConfigureNetworkIF(Task):
 	def run(cls, info):
 		network_config_path = os.path.join(os.path.dirname(__file__), 'network-configuration.json')
 		from common.tools import config_get
-		if_config = config_get(network_config_path, [info.manifest.system['release']])
+		if_config = config_get(network_config_path, [info.release_codename])
 
 		interfaces_path = os.path.join(info.root, 'etc/network/interfaces')
 		with open(interfaces_path, 'a') as interfaces:

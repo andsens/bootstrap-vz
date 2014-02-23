@@ -16,6 +16,10 @@ class BootstrapInformation(object):
 
 		self.apt_mirror = self.manifest.packages.get('mirror', 'http://http.debian.net/debian')
 
+		release_codenames_path = os.path.join(os.path.dirname(__file__), 'release-codenames.json')
+		from common.tools import config_get
+		self.release_codename = config_get(release_codenames_path, [self.manifest.system['release']])
+
 		class DictClass(dict):
 			def __getattr__(self, name):
 				return self[name]
