@@ -13,4 +13,4 @@ class VirtIO(Task):
 		with open(modules, "a") as modules_file:
 			modules_file.write("\n")
 			for module in info.manifest.bootstrapper.get('virtio', []):
-				modules_file.write(module+"\n")
+				modules_file.write(module + "\n")
