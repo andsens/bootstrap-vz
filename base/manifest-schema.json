@@ -25,7 +25,7 @@
 		"system": {
 			"type": "object",
 			"properties": {
-				"release":      { "enum": ["wheezy", "jessie", "testing", "unstable"] },
+				"release":      { "enum": ["squeeze", "wheezy", "jessie", "testing", "unstable"] },
 				"sections":     {
 					"type": "array",
 					"minItems": 1
