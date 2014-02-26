@@ -33,6 +33,8 @@
 		}
 	},
 	"plugins": {
-		"vagrant": {}
+		"vagrant": {
+			"hostname": "localhost"
+		}
 	}
 }
