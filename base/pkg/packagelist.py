@@ -34,12 +34,13 @@ class PackageList(object):
 			target = target.format(**self.manifest_vars)
 		package = next((pkg for pkg in self.remote() if pkg.name == name), None)
 		if package is not None:
-			same_target = package.target != target
+			same_target = package.target == target
 			same_target = same_target or package.target is None and target == self.default_target
 			same_target = same_target or package.target == self.default_target and target is None
 			if not same_target:
 				msg = ('The package {name} was already added to the package list, '
-				       'but with another target release ({target})').format(name=name, target=package.target)
+				       'but with target release `{target}\' instead of `{add_target}\''
+				       .format(name=name, target=package.target, add_target=target))
 				raise PackageError(msg)
 			return
 
