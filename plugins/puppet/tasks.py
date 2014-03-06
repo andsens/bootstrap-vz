@@ -5,8 +5,8 @@ from common.tasks import network
 import os
 
 
-class CheckPaths(Task):
-	description = 'Checking whether manifest and assets paths exist'
+class CheckAssetsPath(Task):
+	description = 'Checking whether the assets path exist'
 	phase = phases.preparation
 
 	@classmethod
@@ -20,6 +20,14 @@ class CheckPaths(Task):
 			msg = 'The assets path {assets} does not point to a directory.'.format(assets=assets)
 			raise TaskError(msg)
 
+
+class CheckManifestPath(Task):
+	description = 'Checking whether the manifest path exist'
+	phase = phases.preparation
+
+	@classmethod
+	def run(cls, info):
+		from common.exceptions import TaskError
 		manifest = info.manifest.plugins['puppet']['manifest']
 		if not os.path.exists(manifest):
 			msg = 'The manifest file {manifest} does not exist.'.format(manifest=manifest)

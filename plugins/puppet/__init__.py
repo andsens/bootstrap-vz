@@ -8,9 +8,10 @@ def validate_manifest(data, validator, error):
 
 
 def resolve_tasks(taskset, manifest):
-	taskset.add(tasks.CheckPaths)
 	taskset.add(tasks.AddPackages)
 	if 'assets' in manifest.plugins['puppet']:
+		taskset.add(tasks.CheckAssetsPath)
 		taskset.add(tasks.CopyPuppetAssets)
 	if 'manifest' in manifest.plugins['puppet']:
+		taskset.add(tasks.CheckManifestPath)
 		taskset.add(tasks.ApplyPuppetManifest)
