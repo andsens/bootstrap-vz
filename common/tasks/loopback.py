@@ -17,7 +17,7 @@ class AddRequiredCommands(Task):
 			info.host_dependencies['losetup'] = 'mount'
 		from common.fs.qemuvolume import QEMUVolume
 		if isinstance(info.volume, QEMUVolume):
-			info.host_dependencies['losetup'] = 'qemu-nbd'
+			info.host_dependencies['losetup'] = 'mount'
 
 
 class Create(Task):
