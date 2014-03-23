@@ -24,7 +24,7 @@ class Format(Task):
 
 	@classmethod
 	def run(cls, info):
-		from base.fs.partitions.unformatted import UnformattedPartition
+		from bootstrapvz.base.fs.partitions.unformatted import UnformattedPartition
 		for partition in info.volume.partition_map.partitions:
 			if not isinstance(partition, UnformattedPartition):
 				partition.format()
@@ -37,7 +37,7 @@ class TuneVolumeFS(Task):
 
 	@classmethod
 	def run(cls, info):
-		from base.fs.partitions.unformatted import UnformattedPartition
+		from bootstrapvz.base.fs.partitions.unformatted import UnformattedPartition
 		import re
 		# Disable the time based filesystem check
 		for partition in info.volume.partition_map.partitions:

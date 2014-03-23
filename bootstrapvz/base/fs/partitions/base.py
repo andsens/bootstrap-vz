@@ -81,7 +81,7 @@ class BasePartition(AbstractPartition):
 	def _before_create(self, e):
 		"""Creates the partition
 		"""
-		from common.tools import log_check_call
+		from bootstrapvz.common.tools import log_check_call
 		# The create command is failry simple, start and end are just Bytes objects coerced into strings
 		create_command = ('mkpart primary {start} {end}'
 		                  .format(start=str(self.get_start()),

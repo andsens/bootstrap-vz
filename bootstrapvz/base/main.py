@@ -20,7 +20,9 @@ def main():
 		raise Exception('This program requires root privileges.')
 	# Setup logging
 	import log
-	logfile = log.get_logfile_path(args.manifest)
+	log_dir = log.create_log_dir()
+	log_filename = log.get_log_filename(args.manifest)
+	logfile = os.path.join(log_dir, log_filename)
 	log.setup_logger(logfile=logfile, debug=args.debug)
 	# Everything has been set up, begin the bootstrapping process
 	run(args)

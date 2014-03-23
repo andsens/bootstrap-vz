@@ -5,7 +5,20 @@ both to a file and to the console.
 import logging
 
 
-def get_logfile_path(manifest_path):
+def create_log_dir():
+	"""Creates the log directory
+
+	Returns:
+		str. The path to the logdirectory
+	"""
+	log_dir_path = '/var/log/bootstrap-vz'
+	import os
+	if not os.path.exists(log_dir_path):
+		os.makedirs(log_dir_path)
+	return log_dir_path
+
+
+def get_log_filename(manifest_path):
 	"""Returns the path to a logfile given a manifest
 	The logfile name is constructed from the current timestamp and the basename of the manifest
 
@@ -22,7 +35,7 @@ def get_logfile_path(manifest_path):
 	manifest_name, _ = os.path.splitext(manifest_basename)
 	timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
 	filename = "{timestamp}_{name}.log".format(timestamp=timestamp, name=manifest_name)
-	return os.path.normpath(os.path.join(os.path.dirname(__file__), '../logs', filename))
+	return filename
 
 
 def setup_logger(logfile=None, debug=False):

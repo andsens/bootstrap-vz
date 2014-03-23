@@ -45,17 +45,17 @@ class AddGrubPackage(Task):
 
 
 class ConfigureGrub(Task):
-        description = 'Configuring grub'
-        phase = phases.system_modification
-        predecessors = [filesystem.FStab]
+	description = 'Configuring grub'
+	phase = phases.system_modification
+	predecessors = [filesystem.FStab]
 
-        @classmethod
-        def run(cls, info):
-                from common.tools import sed_i
-                grub_def = os.path.join(info.root, 'etc/default/grub')
-                sed_i(grub_def, '^#GRUB_TERMINAL=console', 'GRUB_TERMINAL=console')
-                sed_i(grub_def, '^GRUB_CMDLINE_LINUX_DEFAULT="quiet"',
-                        'GRUB_CMDLINE_LINUX_DEFAULT="console=ttyS0"')
+	@classmethod
+	def run(cls, info):
+		from bootstrapvz.common.tools import sed_i
+		grub_def = os.path.join(info.root, 'etc/default/grub')
+		sed_i(grub_def, '^#GRUB_TERMINAL=console', 'GRUB_TERMINAL=console')
+		sed_i(grub_def, '^GRUB_CMDLINE_LINUX_DEFAULT="quiet"',
+		                'GRUB_CMDLINE_LINUX_DEFAULT="console=ttyS0"')
 
 
 class InstallGrub(Task):

@@ -5,3 +5,6 @@ _site/
 # When developing for ec2 `vagrant provision' is quite handy
 /Vagrantfile
 /.vagrant
+/build
+/dist
+/bootstrap_vz.egg-info

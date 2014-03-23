@@ -17,7 +17,7 @@ def get_partitions():
 
 
 def remount(volume, fn):
-	from base.fs.partitionmaps.none import NoPartitions
+	from bootstrapvz.base.fs.partitionmaps.none import NoPartitions
 
 	p_map = volume.partition_map
 	root_dir = p_map.root.mount_dir

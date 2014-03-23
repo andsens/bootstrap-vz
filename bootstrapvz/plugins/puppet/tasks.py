@@ -53,7 +53,7 @@ class CopyPuppetAssets(Task):
 
 	@classmethod
 	def run(cls, info):
-		from common.tools import copy_tree
+		from bootstrapvz.common.tools import copy_tree
 		copy_tree(info.manifest.plugins['puppet']['assets'], os.path.join(info.root, 'etc/puppet'))
 
 

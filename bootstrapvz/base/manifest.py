@@ -121,5 +121,5 @@ class Manifest(object):
 			message (str): Message to user about the error
 			json_path (list): A path to the location in the manifest where the error occurred
 		"""
-		from common.exceptions import ManifestError
+		from bootstrapvz.common.exceptions import ManifestError
 		raise ManifestError(message, self.path, json_path)

@@ -83,7 +83,7 @@ class AdjustExpandRootScript(Task):
 		if 'expand-root' not in info.initd['install']:
 			raise TaskError('The expand-root script was not installed')
 
-		from base.fs.partitionmaps.none import NoPartitions
+		from bootstrapvz.base.fs.partitionmaps.none import NoPartitions
 		if not isinstance(info.volume.partition_map, NoPartitions):
 			import os.path
 			from ..tools import sed_i
