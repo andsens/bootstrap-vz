@@ -1,7 +1,7 @@
 
 
 class Task(object):
-	"""The task class represents are task that can be run.
+	"""The task class represents a task that can be run.
 	It is merely a wrapper for the run function and should never be instantiated.
 	"""
 	# The phase this task is located in.
@@ -31,7 +31,8 @@ class Task(object):
 	@classmethod
 	def run(cls, info):
 		"""The run function, all work is done inside this function
-		Args:
-			info (BootstrapInformation): The bootstrap info object
+
+		:param info: The bootstrap info object.
+		:type info: BootstrapInformation
 		"""
 		pass

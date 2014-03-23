@@ -25,7 +25,7 @@ class TaskList(object):
 		Args:
 			function (str): Name of the function to call
 			manifest (Manifest): The manifest
-			*args: Additional arguments that should be passed to the function that is called
+			\*args: Additional arguments that should be passed to the function that is called
 		"""
 		# Call 'function' on the provider
 		getattr(manifest.modules['provider'], function)(self.tasks, manifest, *args)

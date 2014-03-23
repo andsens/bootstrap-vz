@@ -35,6 +35,7 @@ class AbstractPartition(FSMProxy):
 
 		def mount(self, prefix):
 			"""Performs the mount operation or forwards it to another partition
+
 			Args:
 				prefix (str): Path prefix of the mountpoint
 			"""

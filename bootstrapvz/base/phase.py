@@ -5,6 +5,7 @@ class Phase(object):
 	It has no function other than to act as an anchor in the task graph.
 	All phases are instantiated in common.phases
 	"""
+
 	def __init__(self, name, description):
 		# The name of the phase
 		self.name = name
@@ -13,6 +14,7 @@ class Phase(object):
 
 	def pos(self):
 		"""Gets the position of the phase
+
 		Returns:
 			int. The positional index of the phase in relation to the other phases
 		"""
