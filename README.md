@@ -13,8 +13,12 @@ limits.
 
 Documentation
 -------------
-The documentation for bootstrap-vz is available
+The end-user documentation for bootstrap-vz is available
 at [andsens.github.io/bootstrap-vz](http://andsens.github.io/bootstrap-vz).
 There, you can discover [what the dependencies](http://andsens.github.io/bootstrap-vz/#dependencies)
 for a specific cloud provider are, [see a list of available plugins](http://andsens.github.io/bootstrap-vz/plugins.html)
 and learn [how you create a manifest](http://andsens.github.io/bootstrap-vz/manifest.html).
+
+Developers
+----------
+The API documentation can be found at [bootstrap-vz.readthedocs.org](http://bootstrap-vz.readthedocs.org).
