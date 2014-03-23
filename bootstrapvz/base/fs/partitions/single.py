@@ -11,6 +11,6 @@ class SinglePartition(AbstractPartition):
 		Returns:
 			Bytes. The starting byte of this partition
 		"""
-		from common.bytes import Bytes
+		from ....common.bytes import Bytes
 		# On an unpartitioned volume there is no offset and no previous partition
 		return Bytes(0)

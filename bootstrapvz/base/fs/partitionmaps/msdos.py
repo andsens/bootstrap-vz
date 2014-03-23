@@ -1,7 +1,7 @@
 from abstract import AbstractPartitionMap
 from ..partitions.msdos import MSDOSPartition
 from ..partitions.msdos_swap import MSDOSSwapPartition
-from common.tools import log_check_call
+from ....common.tools import log_check_call
 
 
 class MSDOSPartitionMap(AbstractPartitionMap):
@@ -15,7 +15,7 @@ class MSDOSPartitionMap(AbstractPartitionMap):
 			data (dict): volume.partitions part of the manifest
 			bootloader (str): Name of the bootloader we will use for bootstrapping
 		"""
-		from common.bytes import Bytes
+		from ....common.bytes import Bytes
 		# List of partitions
 		self.partitions = []
 

@@ -9,10 +9,10 @@ def load_volume(data, bootloader):
 	Returns:
 		Volume. The volume that represents all information pertaining to the volume we bootstrap on
 	"""
-	from common.fs.loopbackvolume import LoopbackVolume
-	from providers.ec2.ebsvolume import EBSVolume
-	from common.fs.virtualdiskimage import VirtualDiskImage
-	from common.fs.virtualmachinedisk import VirtualMachineDisk
+	from ...common.fs.loopbackvolume import LoopbackVolume
+	from ...providers.ec2.ebsvolume import EBSVolume
+	from ...common.fs.virtualdiskimage import VirtualDiskImage
+	from ...common.fs.virtualmachinedisk import VirtualMachineDisk
 	# Create a mapping between valid partition maps in the manifest and their corresponding classes
 	from partitionmaps.gpt import GPTPartitionMap
 	from partitionmaps.msdos import MSDOSPartitionMap

@@ -1,7 +1,7 @@
 from abc import ABCMeta
-from common.fsm_proxy import FSMProxy
-from common.tools import log_check_call
-from exceptions import VolumeError
+from ...common.fsm_proxy import FSMProxy
+from ...common.tools import log_check_call
+from .exceptions import VolumeError
 from partitionmaps.none import NoPartitions
 
 
@@ -90,7 +90,7 @@ class Volume(FSMProxy):
 			VolumeError
 		"""
 		import os.path
-		from common.fs import get_partitions
+		from ...common.fs import get_partitions
 		# Fetch information from /proc/partitions
 		proc_partitions = get_partitions()
 		device_name = os.path.basename(self.device_path)

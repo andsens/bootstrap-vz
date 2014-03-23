@@ -2,7 +2,7 @@
 .. module:: tasklist
 """
 
-from common.exceptions import TaskListError
+from ..common.exceptions import TaskListError
 import logging
 log = logging.getLogger(__name__)
 

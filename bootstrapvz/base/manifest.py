@@ -3,7 +3,7 @@ to determine which tasks should be added to the tasklist, what arguments various
 invocations should have etc..
 .. module:: manifest
 """
-from common.tools import load_json
+from ..common.tools import load_json
 import logging
 log = logging.getLogger(__name__)
 

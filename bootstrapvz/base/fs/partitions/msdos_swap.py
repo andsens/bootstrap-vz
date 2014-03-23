@@ -1,4 +1,4 @@
-from common.tools import log_check_call
+from ....common.tools import log_check_call
 from msdos import MSDOSPartition
 
 
