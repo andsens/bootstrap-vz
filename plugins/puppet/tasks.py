@@ -99,3 +99,13 @@ class ApplyPuppetManifest(Task):
 		from common.tools import sed_i
 		hosts_path = os.path.join(info.root, 'etc/hosts')
 		sed_i(hosts_path, '127.0.0.1\s*{hostname}\n?'.format(hostname=hostname), '')
+
+
+class EnableAgent(Task):
+	description = 'Enabling the puppet agent'
+	phase = phases.system_modification
+
+	@classmethod
+	def run(cls, info):
+		puppet_defaults = os.path.join(info.root, 'etc/defaults/puppet')
+		sed_i(puppet_defaults, 'START=no', 'START=yes')
