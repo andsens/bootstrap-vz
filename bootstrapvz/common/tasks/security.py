@@ -1,5 +1,5 @@
-from base import Task
-from common import phases
+from bootstrapvz.base import Task
+from .. import phases
 import os.path
 
 
@@ -9,7 +9,7 @@ class EnableShadowConfig(Task):
 
 	@classmethod
 	def run(cls, info):
-		from common.tools import log_check_call
+		from ..tools import log_check_call
 		log_check_call(['chroot', info.root, 'shadowconfig', 'on'])
 
 
@@ -19,7 +19,7 @@ class DisableSSHPasswordAuthentication(Task):
 
 	@classmethod
 	def run(cls, info):
-		from common.tools import sed_i
+		from ..tools import sed_i
 		sshd_config_path = os.path.join(info.root, 'etc/ssh/sshd_config')
 		sed_i(sshd_config_path, '^#PasswordAuthentication yes', 'PasswordAuthentication no')
 

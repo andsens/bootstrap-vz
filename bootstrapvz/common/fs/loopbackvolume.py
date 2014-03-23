@@ -1,5 +1,5 @@
-from base.fs.volume import Volume
-from common.tools import log_check_call
+from bootstrapvz.base.fs.volume import Volume
+from ..tools import log_check_call
 
 
 class LoopbackVolume(Volume):

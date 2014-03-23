@@ -1,7 +1,7 @@
-from base import Task
-from common import phases
-from common.exceptions import TaskError
-from common.tools import log_check_call
+from bootstrapvz.base import Task
+from .. import phases
+from ..exceptions import TaskError
+from ..tools import log_check_call
 from . import assets
 import os.path
 
@@ -86,7 +86,7 @@ class AdjustExpandRootScript(Task):
 		from base.fs.partitionmaps.none import NoPartitions
 		if not isinstance(info.volume.partition_map, NoPartitions):
 			import os.path
-			from common.tools import sed_i
+			from ..tools import sed_i
 			script = os.path.join(info.root, 'etc/init.d.expand-root')
 			root_idx = info.volume.partition_map.root.get_index()
 			device_path = 'device_path="/dev/xvda{idx}"'.format(idx=root_idx)

@@ -2,7 +2,7 @@
 .. module:: tasklist
 """
 
-from ..common.exceptions import TaskListError
+from bootstrapvz.common.exceptions import TaskListError
 import logging
 log = logging.getLogger(__name__)
 
@@ -63,7 +63,7 @@ class TaskList(object):
 	def create_list(self):
 		"""Creates a list of all the tasks that should be run.
 		"""
-		from common.phases import order
+		from bootstrapvz.common.phases import order
 		# Get a hold of all tasks
 		tasks = self.get_all_tasks()
 		# Make sure the taskset is a subset of all the tasks we have gathered
@@ -113,7 +113,9 @@ class TaskList(object):
 			list. A list of all tasks in the package
 		"""
 		# Get a generator that returns all classes in the package
-		classes = self.get_all_classes('..')
+		import os.path
+		pkg_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..'))
+		classes = self.get_all_classes(pkg_path, 'bootstrapvz.')
 
 		# lambda function to check whether a class is a task (excluding the superclass Task)
 		def is_task(obj):
@@ -121,11 +123,12 @@ class TaskList(object):
 			return issubclass(obj, Task) and obj is not Task
 		return filter(is_task, classes)  # Only return classes that are tasks
 
-	def get_all_classes(self, path=None):
+	def get_all_classes(self, path=None, prefix=''):
 		""" Given a path to a package, this function retrieves all the classes in it
 
 		Args:
 			path (str): Path to the package
+			prefix (str): Name of the package followed by a dot
 
 		Returns:
 			generator. A generator that yields classes
@@ -139,7 +142,7 @@ class TaskList(object):
 
 		def walk_error(module):
 			raise Exception('Unable to inspect module `{module}\''.format(module=module))
-		walker = pkgutil.walk_packages(path, '', walk_error)
+		walker = pkgutil.walk_packages([path], prefix, walk_error)
 		for _, module_name, _ in walker:
 			module = importlib.import_module(module_name)
 			classes = inspect.getmembers(module, inspect.isclass)

@@ -1,14 +1,14 @@
 import tasks.packages
-from common.tasks import volume
-from common.tasks import loopback
-from common.tasks import partitioning
-from common.tasks import filesystem
-from common.tasks import bootstrap
-from common.tasks import security
-from common.tasks import network
-from common.tasks import initd
-from common.tasks import cleanup
-from common.tasks import workspace
+from bootstrapvz.common.tasks import volume
+from bootstrapvz.common.tasks import loopback
+from bootstrapvz.common.tasks import partitioning
+from bootstrapvz.common.tasks import filesystem
+from bootstrapvz.common.tasks import bootstrap
+from bootstrapvz.common.tasks import security
+from bootstrapvz.common.tasks import network
+from bootstrapvz.common.tasks import initd
+from bootstrapvz.common.tasks import cleanup
+from bootstrapvz.common.tasks import workspace
 
 
 def initialize():
@@ -25,17 +25,17 @@ def validate_manifest(data, validator, error):
 
 
 def resolve_tasks(tasklist, manifest):
-	import common.task_sets
-	tasklist.update(common.task_sets.base_set)
-	tasklist.update(common.task_sets.volume_set)
-	tasklist.update(common.task_sets.mounting_set)
-	tasklist.update(common.task_sets.get_apt_set(manifest))
-	tasklist.update(common.task_sets.locale_set)
+	from bootstrapvz.common import task_sets
+	tasklist.update(task_sets.base_set)
+	tasklist.update(task_sets.volume_set)
+	tasklist.update(task_sets.mounting_set)
+	tasklist.update(task_sets.get_apt_set(manifest))
+	tasklist.update(task_sets.locale_set)
 
-	tasklist.update(common.task_sets.bootloader_set.get(manifest.system['bootloader']))
+	tasklist.update(task_sets.bootloader_set.get(manifest.system['bootloader']))
 
 	if manifest.volume['partitions']['type'] != 'none':
-		tasklist.update(common.task_sets.partitioning_set)
+		tasklist.update(task_sets.partitioning_set)
 
 	tasklist.update([tasks.packages.DefaultPackages,
 
@@ -60,10 +60,10 @@ def resolve_tasks(tasklist, manifest):
 		from tasks import virtio
 		tasklist.update([virtio.VirtIO])
 
-	tasklist.update(common.task_sets.get_fs_specific_set(manifest.volume['partitions']))
+	tasklist.update(task_sets.get_fs_specific_set(manifest.volume['partitions']))
 
 	if 'boot' in manifest.volume['partitions']:
-		tasklist.update(common.task_sets.boot_partition_set)
+		tasklist.update(task_sets.boot_partition_set)
 
 
 def resolve_rollback_tasks(tasklist, manifest, counter_task):

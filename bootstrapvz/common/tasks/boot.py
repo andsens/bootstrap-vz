@@ -1,8 +1,8 @@
-from base import Task
-from common import phases
-from common.tasks import apt
-from common.tasks import filesystem
-from base.fs import partitionmaps
+from bootstrapvz.base import Task
+from .. import phases
+import apt
+import filesystem
+from bootstrapvz.base.fs import partitionmaps
 import os.path
 
 
@@ -24,7 +24,7 @@ class DisableGetTTYs(Task):
 
 	@classmethod
 	def run(cls, info):
-		from common.tools import sed_i
+		from ..tools import sed_i
 		inittab_path = os.path.join(info.root, 'etc/inittab')
 		tty1 = '1:2345:respawn:/sbin/getty 38400 tty1'
 		sed_i(inittab_path, '^' + tty1, '#' + tty1)
@@ -65,13 +65,13 @@ class InstallGrub(Task):
 
 	@classmethod
 	def run(cls, info):
-		from common.fs.loopbackvolume import LoopbackVolume
-		from common.tools import log_check_call
+		from ..fs.loopbackvolume import LoopbackVolume
+		from ..tools import log_check_call
 
 		boot_dir = os.path.join(info.root, 'boot')
 		grub_dir = os.path.join(boot_dir, 'grub')
 
-		from common.fs import remount
+		from ..fs import remount
 		p_map = info.volume.partition_map
 
 		def link_fn():
@@ -136,7 +136,7 @@ class InstallExtLinux(Task):
 
 	@classmethod
 	def run(cls, info):
-		from common.tools import log_check_call
+		from ..tools import log_check_call
 		if isinstance(info.volume.partition_map, partitionmaps.gpt.GPTPartitionMap):
 			bootloader = '/usr/lib/syslinux/gptmbr.bin'
 		else:

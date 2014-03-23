@@ -1,7 +1,7 @@
 from abstract import AbstractPartitionMap
 from ..partitions.gpt import GPTPartition
 from ..partitions.gpt_swap import GPTSwapPartition
-from ....common.tools import log_check_call
+from bootstrapvz.common.tools import log_check_call
 
 
 class GPTPartitionMap(AbstractPartitionMap):
@@ -14,7 +14,7 @@ class GPTPartitionMap(AbstractPartitionMap):
 			data (dict): volume.partitions part of the manifest
 			bootloader (str): Name of the bootloader we will use for bootstrapping
 		"""
-		from ....common.bytes import Bytes
+		from bootstrapvz.common.bytes import Bytes
 		# List of partitions
 		self.partitions = []
 

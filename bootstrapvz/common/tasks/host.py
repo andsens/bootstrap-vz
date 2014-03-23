@@ -1,6 +1,6 @@
-from base import Task
-from common import phases
-from common.exceptions import TaskError
+from bootstrapvz.base import Task
+from .. import phases
+from ..exceptions import TaskError
 
 
 class CheckExternalCommands(Task):
@@ -9,7 +9,7 @@ class CheckExternalCommands(Task):
 
 	@classmethod
 	def run(cls, info):
-		from common.tools import log_check_call
+		from ..tools import log_check_call
 		from subprocess import CalledProcessError
 		import re
 		missing_packages = []

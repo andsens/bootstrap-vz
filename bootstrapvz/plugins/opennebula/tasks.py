@@ -1,6 +1,6 @@
-from base import Task
-from common.tasks import apt
-from common import phases
+from bootstrapvz.base import Task
+from bootstrapvz.common.tasks import apt
+from bootstrapvz.common import phases
 import os
 
 

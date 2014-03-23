@@ -1,10 +1,10 @@
-from base import Task
-from common import phases
-from common.tasks import volume
-from common.tasks import packages
-from providers.virtualbox.tasks import guest_additions
-from providers.ec2.tasks import ebs
-from common.fs import remount
+from bootstrapvz.base import Task
+from bootstrapvz.common import phases
+from bootstrapvz.common.tasks import volume
+from bootstrapvz.common.tasks import packages
+from bootstrapvz.providers.virtualbox.tasks import guest_additions
+from bootstrapvz.providers.ec2.tasks import ebs
+from bootstrapvz.common.fs import remount
 from shutil import copyfile
 import os.path
 import time
@@ -81,7 +81,7 @@ def set_fs_states(volume):
 
 		p_map = volume.partition_map
 		partitions_state = 'attached'
-		from base.fs.partitionmaps.none import NoPartitions
+		from bootstrapvz.base.fs.partitionmaps.none import NoPartitions
 		if isinstance(p_map, NoPartitions):
 			partitions_state = 'formatted'
 		else:

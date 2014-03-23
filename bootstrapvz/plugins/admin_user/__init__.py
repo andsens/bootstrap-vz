@@ -8,7 +8,7 @@ def validate_manifest(data, validator, error):
 
 def resolve_tasks(taskset, manifest):
 	import tasks
-	from providers.ec2.tasks import initd
+	from bootstrapvz.providers.ec2.tasks import initd
 	if initd.AddEC2InitScripts in taskset:
 		taskset.add(tasks.AdminUserCredentials)
 

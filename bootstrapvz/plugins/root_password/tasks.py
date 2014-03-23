@@ -1,5 +1,5 @@
-from base import Task
-from common import phases
+from bootstrapvz.base import Task
+from bootstrapvz.common import phases
 
 
 class SetRootPassword(Task):
@@ -8,6 +8,6 @@ class SetRootPassword(Task):
 
 	@classmethod
 	def run(cls, info):
-		from common.tools import log_check_call
+		from bootstrapvz.common.tools import log_check_call
 		log_check_call(['chroot', info.root, 'chpasswd'],
 		               'root:' + info.manifest.plugins['root_password']['password'])

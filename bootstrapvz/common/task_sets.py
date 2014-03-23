@@ -1,15 +1,15 @@
-from common.tasks import workspace
-from common.tasks import packages
-from common.tasks import host
-from common.tasks import boot
-from common.tasks import bootstrap
-from common.tasks import volume
-from common.tasks import filesystem
-from common.tasks import partitioning
-from common.tasks import cleanup
-from common.tasks import apt
-from common.tasks import security
-from common.tasks import locale
+from tasks import workspace
+from tasks import packages
+from tasks import host
+from tasks import boot
+from tasks import bootstrap
+from tasks import volume
+from tasks import filesystem
+from tasks import partitioning
+from tasks import cleanup
+from tasks import apt
+from tasks import security
+from tasks import locale
 
 base_set = [workspace.CreateWorkspace,
             bootstrap.AddRequiredCommands,

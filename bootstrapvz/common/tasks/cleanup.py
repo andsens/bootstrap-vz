@@ -1,5 +1,5 @@
-from base import Task
-from common import phases
+from bootstrapvz.base import Task
+from .. import phases
 import os
 import shutil
 
@@ -28,7 +28,7 @@ class ShredHostkeys(Task):
 		private = [os.path.join(info.root, 'etc/ssh', name) for name in ssh_hostkeys]
 		public = [path + '.pub' for path in private]
 
-		from common.tools import log_check_call
+		from ..tools import log_check_call
 		log_check_call(['shred', '--remove'] + private + public)
 
 

@@ -18,7 +18,7 @@ class Phase(object):
 		Returns:
 			int. The positional index of the phase in relation to the other phases
 		"""
-		from common.phases import order
+		from bootstrapvz.common.phases import order
 		return next(i for i, phase in enumerate(order) if phase is self)
 
 	def __cmp__(self, other):

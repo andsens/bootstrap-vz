@@ -29,7 +29,7 @@ class BasePartition(AbstractPartition):
 		# By saving the previous partition we have
 		# a linked list that partitions can go backwards in to find the first partition.
 		self.previous = previous
-		from common.bytes import Bytes
+		from bootstrapvz.common.bytes import Bytes
 		# Initialize the offset to 0 bytes, may be changed later
 		self.offset = Bytes(0)
 		# List of flags that parted should put on the partition

@@ -13,7 +13,7 @@ class NoPartitions(object):
 			data (dict): volume.partitions part of the manifest
 			bootloader (str): Name of the bootloader we will use for bootstrapping
 		"""
-		from ....common.bytes import Bytes
+		from bootstrapvz.common.bytes import Bytes
 		# In the NoPartitions partitions map we only have a single 'partition'
 		self.root = SinglePartition(Bytes(data['root']['size']),
 		                            data['root']['filesystem'], data['root'].get('format_command', None))

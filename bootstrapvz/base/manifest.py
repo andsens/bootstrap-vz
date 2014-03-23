@@ -3,7 +3,7 @@ to determine which tasks should be added to the tasklist, what arguments various
 invocations should have etc..
 .. module:: manifest
 """
-from ..common.tools import load_json
+from bootstrapvz.common.tools import load_json
 import logging
 log = logging.getLogger(__name__)
 
@@ -36,7 +36,7 @@ class Manifest(object):
 		# It strips comments (which are invalid in strict json) before loading the data.
 		self.data = load_json(self.path)
 		# Get the provider name from the manifest and load the corresponding module
-		provider_modname = 'providers.{provider}'.format(provider=self.data['provider'])
+		provider_modname = 'bootstrapvz.providers.{provider}'.format(provider=self.data['provider'])
 		log.debug('Loading provider `{modname}\''.format(modname=provider_modname))
 		# Create a modules dict that contains the loaded provider and plugins
 		self.modules = {'provider': __import__(provider_modname, fromlist=['providers']),
@@ -45,7 +45,7 @@ class Manifest(object):
 		# Run through all the plugins mentioned in the manifest and load them
 		if 'plugins' in self.data:
 			for plugin_name, plugin_data in self.data['plugins'].iteritems():
-				modname = 'plugins.{plugin}'.format(plugin=plugin_name)
+				modname = 'bootstrapvz.plugins.{plugin}'.format(plugin=plugin_name)
 				log.debug('Loading plugin `{modname}\''.format(modname=modname))
 				plugin = __import__(modname, fromlist=['plugins'])
 				self.modules['plugins'].append(plugin)

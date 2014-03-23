@@ -1,6 +1,6 @@
-from base import Task
-from common import phases
-from common.tasks import host
+from bootstrapvz.base import Task
+from bootstrapvz.common import phases
+from bootstrapvz.common.tasks import host
 
 
 class AddExternalCommands(Task):

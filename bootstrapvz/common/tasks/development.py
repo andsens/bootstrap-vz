@@ -1,5 +1,5 @@
-from base import Task
-from common import phases
+from bootstrapvz.base import Task
+from .. import phases
 
 
 class TriggerRollback(Task):
@@ -9,5 +9,5 @@ class TriggerRollback(Task):
 
 	@classmethod
 	def run(cls, info):
-		from common.exceptions import TaskError
+		from ..exceptions import TaskError
 		raise TaskError('Trigger rollback')

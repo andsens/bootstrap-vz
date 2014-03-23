@@ -1,5 +1,5 @@
-from base.fs.volume import Volume
-from base.fs.exceptions import VolumeError
+from bootstrapvz.base.fs.volume import Volume
+from bootstrapvz.base.fs.exceptions import VolumeError
 import time
 
 

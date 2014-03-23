@@ -1,7 +1,7 @@
-from common.fs.loopbackvolume import LoopbackVolume
-from base.fs.exceptions import VolumeError
-from common.tools import log_check_call
-from common.fs import get_partitions
+from loopbackvolume import LoopbackVolume
+from bootstrapvz.base.fs.exceptions import VolumeError
+from ..tools import log_check_call
+from . import get_partitions
 
 
 class QEMUVolume(LoopbackVolume):
@@ -12,7 +12,7 @@ class QEMUVolume(LoopbackVolume):
 		log_check_call(['qemu-img', 'create', '-f', self.qemu_format, self.image_path, vol_size])
 
 	def _check_nbd_module(self):
-		from base.fs.partitionmaps.none import NoPartitions
+		from bootstrapvz.base.fs.partitionmaps.none import NoPartitions
 		if isinstance(self.partition_map, NoPartitions):
 			if not self._module_loaded('nbd'):
 				msg = ('The kernel module `nbd\' must be loaded '

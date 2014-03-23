@@ -1,5 +1,5 @@
-from base import Task
-from common import phases
+from bootstrapvz.base import Task
+from bootstrapvz.common import phases
 import filesystem
 import host
 import volume
@@ -12,7 +12,7 @@ class AddRequiredCommands(Task):
 
 	@classmethod
 	def run(cls, info):
-		from base.fs.partitionmaps.none import NoPartitions
+		from bootstrapvz.base.fs.partitionmaps.none import NoPartitions
 		if not isinstance(info.volume.partition_map, NoPartitions):
 			info.host_dependencies['parted'] = 'parted'
 			info.host_dependencies['kpartx'] = 'kpartx'

@@ -1,5 +1,5 @@
-from base import Task
-from common import phases
+from bootstrapvz.base import Task
+from .. import phases
 import host
 import volume
 
@@ -11,11 +11,11 @@ class AddRequiredCommands(Task):
 
 	@classmethod
 	def run(cls, info):
-		from common.fs.loopbackvolume import LoopbackVolume
+		from ..fs.loopbackvolume import LoopbackVolume
 		if isinstance(info.volume, LoopbackVolume):
 			info.host_dependencies['qemu-img'] = 'qemu-utils'
 			info.host_dependencies['losetup'] = 'mount'
-		from common.fs.qemuvolume import QEMUVolume
+		from ..fs.qemuvolume import QEMUVolume
 		if isinstance(info.volume, QEMUVolume):
 			info.host_dependencies['losetup'] = 'mount'
 

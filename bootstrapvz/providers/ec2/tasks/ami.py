@@ -1,9 +1,9 @@
-from base import Task
-from common import phases
-from common.exceptions import TaskError
-from common.tools import log_check_call
+from bootstrapvz.base import Task
+from bootstrapvz.common import phases
+from bootstrapvz.common.exceptions import TaskError
+from bootstrapvz.common.tools import log_check_call
 from ebs import Snapshot
-from common.tasks import workspace
+from bootstrapvz.common.tasks import workspace
 from connection import Connect
 from . import assets
 import os.path
@@ -118,7 +118,7 @@ class RegisterAMI(Task):
 		else:
 			registration_params['virtualization_type'] = 'paravirtual'
 			akis_path = os.path.join(os.path.dirname(__file__), 'ami-akis.json')
-			from common.tools import config_get
+			from bootstrapvz.common.tools import config_get
 			registration_params['kernel_id'] = config_get(akis_path, [info.host['region'],
 			                                                          info.manifest.system['architecture']])
 

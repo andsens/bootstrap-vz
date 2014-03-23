@@ -1,5 +1,5 @@
-from base import Task
-from common import phases
+from bootstrapvz.base import Task
+from .. import phases
 import os
 
 
@@ -30,7 +30,7 @@ class ConfigureNetworkIF(Task):
 	@classmethod
 	def run(cls, info):
 		network_config_path = os.path.join(os.path.dirname(__file__), 'network-configuration.json')
-		from common.tools import config_get
+		from ..tools import config_get
 		if_config = config_get(network_config_path, [info.release_codename])
 
 		interfaces_path = os.path.join(info.root, 'etc/network/interfaces')

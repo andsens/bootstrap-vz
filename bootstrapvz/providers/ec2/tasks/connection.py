@@ -1,5 +1,5 @@
-from base import Task
-from common import phases
+from bootstrapvz.base import Task
+from bootstrapvz.common import phases
 import host
 
 

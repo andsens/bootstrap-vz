@@ -1,7 +1,7 @@
-from base import Task
-from common import phases
-from common.tasks.initd import InstallInitScripts
-from common.tasks import apt
+from bootstrapvz.base import Task
+from bootstrapvz.common import phases
+from bootstrapvz.common.tasks.initd import InstallInitScripts
+from bootstrapvz.common.tasks import apt
 import os
 
 
@@ -21,7 +21,7 @@ class CreateAdminUser(Task):
 
 	@classmethod
 	def run(cls, info):
-		from common.tools import log_check_call
+		from bootstrapvz.common.tools import log_check_call
 		log_check_call(['chroot', info.root,
 		                'useradd',
 		                '--create-home', '--shell', '/bin/bash',
@@ -50,7 +50,7 @@ class AdminUserCredentials(Task):
 
 	@classmethod
 	def run(cls, info):
-		from common.tools import sed_i
+		from bootstrapvz.common.tools import sed_i
 		getcreds_path = os.path.join(info.root, 'etc/init.d/ec2-get-credentials')
 		username = info.manifest.plugins['admin_user']['username']
 		sed_i(getcreds_path, 'username=\'root\'', 'username=\'{username}\''.format(username=username))
@@ -63,11 +63,11 @@ class DisableRootLogin(Task):
 	@classmethod
 	def run(cls, info):
 		from subprocess import CalledProcessError
-		from common.tools import log_check_call
+		from bootstrapvz.common.tools import log_check_call
 		try:
 			log_check_call(['chroot', info.root,
 			                'dpkg-query', '-W', 'openssh-server'])
-			from common.tools import sed_i
+			from bootstrapvz.common.tools import sed_i
 			sshdconfig_path = os.path.join(info.root, 'etc/ssh/sshd_config')
 			sed_i(sshdconfig_path, 'PermitRootLogin yes', 'PermitRootLogin no')
 		except CalledProcessError:

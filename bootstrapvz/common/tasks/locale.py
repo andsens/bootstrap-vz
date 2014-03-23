@@ -1,5 +1,5 @@
-from base import Task
-from common import phases
+from bootstrapvz.base import Task
+from .. import phases
 import os.path
 
 
@@ -20,8 +20,8 @@ class GenerateLocale(Task):
 
 	@classmethod
 	def run(cls, info):
-		from common.tools import sed_i
-		from common.tools import log_check_call
+		from ..tools import sed_i
+		from ..tools import log_check_call
 		locale_gen = os.path.join(info.root, 'etc/locale.gen')
 		locale_str = '{locale}.{charmap} {charmap}'.format(locale=info.manifest.system['locale'],
 		                                                   charmap=info.manifest.system['charmap'])

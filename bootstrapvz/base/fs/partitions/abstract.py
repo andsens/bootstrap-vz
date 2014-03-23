@@ -1,8 +1,8 @@
 from abc import ABCMeta
 from abc import abstractmethod
 import os.path
-from ....common.tools import log_check_call
-from ....common.fsm_proxy import FSMProxy
+from bootstrapvz.common.tools import log_check_call
+from bootstrapvz.common.fsm_proxy import FSMProxy
 
 
 class AbstractPartition(FSMProxy):

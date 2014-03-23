@@ -1,7 +1,7 @@
-from base import Task
-from common import phases
-from common.tasks.packages import InstallPackages
-from common.exceptions import TaskError
+from bootstrapvz.base import Task
+from bootstrapvz.common import phases
+from bootstrapvz.common.tasks.packages import InstallPackages
+from bootstrapvz.common.exceptions import TaskError
 
 
 class CheckGuestAdditionsPath(Task):
@@ -28,7 +28,7 @@ class AddGuestAdditionsPackages(Task):
 		info.packages.add('build-essential')
 		info.packages.add('dkms')
 
-		from common.tools import log_check_call
+		from bootstrapvz.common.tools import log_check_call
 		[kernel_version] = log_check_call(['chroot', info.root,
 		                                   'uname', '-r'])
 		kernel_headers_pkg = 'linux-headers-{version}'.format(version=kernel_version)
@@ -52,7 +52,7 @@ class InstallGuestAdditions(Task):
 
 		install_script = os.path.join('/', mount_dir, 'VBoxLinuxAdditions.run')
 		# Don't check the return code of the scripts here, because 1 not necessarily means they have failed
-		from common.tools import log_call
+		from bootstrapvz.common.tools import log_call
 		log_call(['chroot', info.root, install_script, '--nox11'])
 		# VBoxService process could be running, as it is not affected by DisableDaemonAutostart
 		log_call(['chroot', info.root, 'service', 'vboxadd-service', 'stop'])

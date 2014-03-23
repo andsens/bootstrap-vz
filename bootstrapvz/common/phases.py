@@ -1,4 +1,4 @@
-from base import Phase
+from bootstrapvz.base.phase import Phase
 
 preparation = Phase('Preparation', 'Initializing connections, fetching data etc.')
 volume_creation = Phase('Volume creation', 'Creating the volume to bootstrap onto')

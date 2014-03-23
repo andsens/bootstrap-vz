@@ -1,6 +1,6 @@
-from base import Task
-from common import phases
-from common.tools import log_check_call
+from bootstrapvz.base import Task
+from .. import phases
+from ..tools import log_check_call
 import locale
 import os
 

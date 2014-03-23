@@ -1,7 +1,7 @@
-from base import Task
-from common import phases
-from common.tools import log_check_call
-from common.tasks import apt
+from bootstrapvz.base import Task
+from bootstrapvz.common import phases
+from bootstrapvz.common.tools import log_check_call
+from bootstrapvz.common.tasks import apt
 import os.path
 
 
@@ -40,7 +40,7 @@ class SetUsername(Task):
 
 	@classmethod
 	def run(cls, info):
-		from common.tools import sed_i
+		from bootstrapvz.common.tools import sed_i
 		cloud_cfg = os.path.join(info.root, 'etc/cloud/cloud.cfg')
 		username = info.manifest.plugins['cloud_init']['username']
 		search = '^     name: debian$'

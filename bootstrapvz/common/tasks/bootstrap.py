@@ -1,6 +1,6 @@
-from base import Task
-from common import phases
-from common.exceptions import TaskError
+from bootstrapvz.base import Task
+from .. import phases
+from ..exceptions import TaskError
 import host
 import logging
 log = logging.getLogger(__name__)
@@ -45,7 +45,7 @@ class MakeTarball(Task):
 		if os.path.isfile(info.tarball):
 			log.debug('Found matching tarball, skipping download')
 		else:
-			from common.tools import log_call
+			from ..tools import log_call
 			status, out, err = log_call(executable + options + ['--make-tarball=' + info.tarball] + arguments)
 			if status != 1:
 				msg = 'debootstrap exited with status {status}, it should exit with status 1'.format(status=status)
@@ -63,5 +63,5 @@ class Bootstrap(Task):
 		if hasattr(info, 'tarball'):
 			options.extend(['--unpack-tarball=' + info.tarball])
 
-		from common.tools import log_check_call
+		from ..tools import log_check_call
 		log_check_call(executable + options + arguments)

@@ -7,7 +7,7 @@ def validate_manifest(data, validator, error):
 
 
 def resolve_tasks(taskset, manifest):
-	from common.tasks.security import DisableSSHPasswordAuthentication
+	from bootstrapvz.common.tasks.security import DisableSSHPasswordAuthentication
 	from tasks import SetRootPassword
 	taskset.discard(DisableSSHPasswordAuthentication)
 	taskset.add(SetRootPassword)

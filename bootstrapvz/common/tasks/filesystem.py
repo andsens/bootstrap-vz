@@ -1,8 +1,8 @@
-from base import Task
-from common import phases
-from common.tools import log_check_call
-from bootstrap import Bootstrap
+from bootstrapvz.base import Task
+from .. import phases
+from ..tools import log_check_call
 import apt
+import bootstrap
 import host
 import volume
 
@@ -102,7 +102,7 @@ class MountBoot(Task):
 class MountSpecials(Task):
 	description = 'Mounting special block devices'
 	phase = phases.os_installation
-	predecessors = [Bootstrap]
+	predecessors = [bootstrap.Bootstrap]
 
 	@classmethod
 	def run(cls, info):

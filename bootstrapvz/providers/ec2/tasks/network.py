@@ -1,6 +1,6 @@
-from base import Task
-from common import phases
-from common.tasks import apt
+from bootstrapvz.base import Task
+from bootstrapvz.common import phases
+from bootstrapvz.common.tasks import apt
 import os.path
 
 
@@ -12,7 +12,7 @@ class EnableDHCPCDDNS(Task):
 	def run(cls, info):
 		# The dhcp client that ships with debian sets the DNS servers per default.
 		# For dhcpcd we need to configure it to do that.
-		from common.tools import sed_i
+		from bootstrapvz.common.tools import sed_i
 		dhcpcd = os.path.join(info.root, 'etc/default/dhcpcd')
 		sed_i(dhcpcd, '^#*SET_DNS=.*', 'SET_DNS=\'yes\'')
 
@@ -39,7 +39,7 @@ class InstallEnhancedNetworking(Task):
 		import urllib
 		urllib.urlretrieve(drivers_url, archive)
 
-		from common.tools import log_check_call
+		from bootstrapvz.common.tools import log_check_call
 		log_check_call('tar', '--ungzip',
 		                      '--extract',
 		                      '--file', archive,

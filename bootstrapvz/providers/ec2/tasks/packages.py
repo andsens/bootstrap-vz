@@ -1,6 +1,6 @@
-from base import Task
-from common import phases
-from common.tasks import apt
+from bootstrapvz.base import Task
+from bootstrapvz.common import phases
+from bootstrapvz.common.tasks import apt
 
 
 class DefaultPackages(Task):
@@ -19,7 +19,7 @@ class DefaultPackages(Task):
 
 		import os.path
 		kernel_packages_path = os.path.join(os.path.dirname(__file__), 'packages-kernels.json')
-		from common.tools import config_get
+		from bootstrapvz.common.tools import config_get
 		kernel_package = config_get(kernel_packages_path, [info.release_codename,
 		                                                   info.manifest.system['architecture']])
 		info.packages.add(kernel_package)

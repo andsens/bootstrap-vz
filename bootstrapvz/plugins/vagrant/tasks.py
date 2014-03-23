@@ -1,7 +1,7 @@
-from base import Task
-from common import phases
-from common.tasks import workspace
-from common.tasks import apt
+from bootstrapvz.base import Task
+from bootstrapvz.common import phases
+from bootstrapvz.common.tasks import workspace
+from bootstrapvz.common.tasks import apt
 import os
 import shutil
 
@@ -18,7 +18,7 @@ class CheckBoxPath(Task):
 		box_name = '{name}.box'.format(name=box_basename)
 		box_path = os.path.join(info.manifest.bootstrapper['workspace'], box_name)
 		if os.path.exists(box_path):
-			from common.exceptions import TaskError
+			from bootstrapvz.common.exceptions import TaskError
 			msg = 'The vagrant box `{name}\' already exists at `{path}\''.format(name=box_name, path=box_path)
 			raise TaskError(msg)
 		info.vagrant = {'box_name': box_name,
@@ -60,7 +60,7 @@ class SetHostname(Task):
 			hostname_file.write(hostname)
 
 		hosts_path = os.path.join(info.root, 'etc/hosts')
-		from common.tools import sed_i
+		from bootstrapvz.common.tools import sed_i
 		sed_i(hosts_path, '^127.0.0.1\tlocalhost$', '127.0.0.1\tlocalhost\n127.0.0.1\t' + hostname)
 
 
@@ -70,7 +70,7 @@ class CreateVagrantUser(Task):
 
 	@classmethod
 	def run(cls, info):
-		from common.tools import log_check_call
+		from bootstrapvz.common.tools import log_check_call
 		log_check_call(['chroot', info.root,
 		                'useradd',
 		                '--create-home', '--shell', '/bin/bash',
@@ -114,7 +114,7 @@ class AddInsecurePublicKey(Task):
 		os.chmod(authorized_keys_path, stat.S_IRUSR | stat.S_IWUSR)
 
 		# We can't do this directly with python, since getpwnam gets its info from the host
-		from common.tools import log_check_call
+		from bootstrapvz.common.tools import log_check_call
 		log_check_call(['chroot', info.root,
 		                'chown', 'vagrant:vagrant',
 		                '/home/vagrant/.ssh', '/home/vagrant/.ssh/authorized_keys'])
@@ -126,7 +126,7 @@ class SetRootPassword(Task):
 
 	@classmethod
 	def run(cls, info):
-		from common.tools import log_check_call
+		from bootstrapvz.common.tools import log_check_call
 		log_check_call(['chroot', info.root, 'chpasswd'], 'root:vagrant')
 
 
@@ -142,14 +142,14 @@ class PackageBox(Task):
 
 		import random
 		mac_address = '080027{mac:06X}'.format(mac=random.randrange(16 ** 6))
-		from common.tools import sed_i
+		from bootstrapvz.common.tools import sed_i
 		sed_i(vagrantfile, '\\[MAC_ADDRESS\\]', mac_address)
 
 		metadata_source = os.path.join(assets, 'metadata.json')
 		metadata = os.path.join(info.vagrant['folder'], 'metadata.json')
 		shutil.copy(metadata_source, metadata)
 
-		from common.tools import log_check_call
+		from bootstrapvz.common.tools import log_check_call
 		disk_name = 'box-disk1.{ext}'.format(ext=info.volume.extension)
 		disk_link = os.path.join(info.vagrant['folder'], disk_name)
 		log_check_call(['ln', '-s', info.volume.image_path, disk_link])

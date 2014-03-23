@@ -8,8 +8,8 @@ def validate_manifest(data, validator, error):
 
 def resolve_tasks(taskset, manifest):
 	import tasks
-	import providers.ec2.tasks.initd as initd_ec2
-	from common.tasks import initd
+	import bootstrapvz.providers.ec2.tasks.initd as initd_ec2
+	from bootstrapvz.common.tasks import initd
 
 	if manifest.system['release'] in ['wheezy', 'stable']:
 		taskset.add(tasks.AddBackports)

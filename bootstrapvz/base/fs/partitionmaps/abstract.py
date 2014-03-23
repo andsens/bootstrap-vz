@@ -1,7 +1,7 @@
 from abc import ABCMeta
 from abc import abstractmethod
-from ....common.tools import log_check_call
-from ....common.fsm_proxy import FSMProxy
+from bootstrapvz.common.tools import log_check_call
+from bootstrapvz.common.fsm_proxy import FSMProxy
 from ..exceptions import PartitionError
 
 

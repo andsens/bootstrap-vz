@@ -1,6 +1,6 @@
-from base import Task
-from common import phases
-from common.tasks import initd
+from bootstrapvz.base import Task
+from bootstrapvz.common import phases
+from bootstrapvz.common.tasks import initd
 from . import assets
 import os.path
 

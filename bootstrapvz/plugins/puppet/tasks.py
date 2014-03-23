@@ -1,7 +1,7 @@
-from base import Task
-from common import phases
-from common.tasks import apt
-from common.tasks import network
+from bootstrapvz.base import Task
+from bootstrapvz.common import phases
+from bootstrapvz.common.tasks import apt
+from bootstrapvz.common.tasks import network
 import os
 
 
@@ -11,7 +11,7 @@ class CheckAssetsPath(Task):
 
 	@classmethod
 	def run(cls, info):
-		from common.exceptions import TaskError
+		from bootstrapvz.common.exceptions import TaskError
 		assets = info.manifest.plugins['puppet']['assets']
 		if not os.path.exists(assets):
 			msg = 'The assets directory {assets} does not exist.'.format(assets=assets)
@@ -27,7 +27,7 @@ class CheckManifestPath(Task):
 
 	@classmethod
 	def run(cls, info):
-		from common.exceptions import TaskError
+		from bootstrapvz.common.exceptions import TaskError
 		manifest = info.manifest.plugins['puppet']['manifest']
 		if not os.path.exists(manifest):
 			msg = 'The manifest file {manifest} does not exist.'.format(manifest=manifest)
@@ -77,12 +77,12 @@ class ApplyPuppetManifest(Task):
 		copy(pp_manifest, manifest_dst)
 
 		manifest_path = os.path.join('/', manifest_rel_dst)
-		from common.tools import log_check_call
+		from bootstrapvz.common.tools import log_check_call
 		log_check_call(['chroot', info.root,
 		                'puppet', 'apply', manifest_path])
 		os.remove(manifest_dst)
 
-		from common.tools import sed_i
+		from bootstrapvz.common.tools import sed_i
 		hosts_path = os.path.join(info.root, 'etc/hosts')
 		sed_i(hosts_path, '127.0.0.1\s*{hostname}\n?'.format(hostname=hostname), '')
 

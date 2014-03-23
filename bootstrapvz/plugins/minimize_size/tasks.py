@@ -1,11 +1,11 @@
-from base import Task
-from common import phases
-from common.tasks import apt
-from common.tasks import bootstrap
-from common.tasks import filesystem
-from common.tasks import host
-from common.tasks import partitioning
-from common.tasks import volume
+from bootstrapvz.base import Task
+from bootstrapvz.common import phases
+from bootstrapvz.common.tasks import apt
+from bootstrapvz.common.tasks import bootstrap
+from bootstrapvz.common.tasks import filesystem
+from bootstrapvz.common.tasks import host
+from bootstrapvz.common.tasks import partitioning
+from bootstrapvz.common.tasks import volume
 import os
 
 folders = ['tmp', 'var/lib/apt/lists']
@@ -69,7 +69,7 @@ class Zerofree(Task):
 
 	@classmethod
 	def run(cls, info):
-		from common.tools import log_check_call
+		from bootstrapvz.common.tools import log_check_call
 		log_check_call(['zerofree', info.volume.partition_map.root.device_path])
 
 
@@ -80,5 +80,5 @@ class ShrinkVolume(Task):
 
 	@classmethod
 	def run(cls, info):
-		from common.tools import log_check_call
+		from bootstrapvz.common.tools import log_check_call
 		log_check_call(['/usr/bin/vmware-vdiskmanager', '-k', info.volume.image_path])
