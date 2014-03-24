@@ -62,15 +62,15 @@ class AddRequiredCommands(Task):
 
 
 class Zerofree(Task):
-	description = 'Zeroing unused blocks on the volume'
+	description = 'Zeroing unused blocks on the root partition'
 	phase = phases.volume_unmounting
-	predecessors = [filesystem.UnmountRoot, partitioning.UnmapPartitions]
-	successors = [volume.Detach]
+	predecessors = [filesystem.UnmountRoot]
+	successors = [partitioning.UnmapPartitions, volume.Detach]
 
 	@classmethod
 	def run(cls, info):
 		from common.tools import log_check_call
-		log_check_call(['zerofree', info.volume.device_path])
+		log_check_call(['zerofree', info.volume.partition_map.root.device_path])
 
 
 class ShrinkVolume(Task):
