@@ -1,14 +1,14 @@
 
 
-def log_check_call(command, stdin=None, env=None):
-	status, stdout, stderr = log_call(command, stdin, env)
+def log_check_call(command, stdin=None, env=None, shell=False):
+	status, stdout, stderr = log_call(command, stdin, env, shell)
 	if status != 0:
 		from subprocess import CalledProcessError
 		raise CalledProcessError(status, ' '.join(command), '\n'.join(stderr))
 	return stdout
 
 
-def log_call(command, stdin=None, env=None):
+def log_call(command, stdin=None, env=None, shell=False):
 	import subprocess
 	import select
 
@@ -22,6 +22,7 @@ def log_call(command, stdin=None, env=None):
 
 	popen_args = {'args':   command,
 	              'env':    env,
+	              'shell':  shell,
 	              'stdin':  subprocess.PIPE,
 	              'stdout': subprocess.PIPE,
 	              'stderr': subprocess.PIPE, }
@@ -56,3 +57,17 @@ def sed_i(file_path, pattern, subst):
 	import re
 	for line in fileinput.input(files=file_path, inplace=True):
 		print re.sub(pattern, subst, line),
+
+
+def load_json(path):
+	import json
+	from minify_json import json_minify
+	with open(path) as stream:
+		return json.loads(json_minify(stream.read(), False))
+
+
+def config_get(path, config_path):
+	config = load_json(path)
+	for key in config_path:
+		config = config.get(key)
+	return config

@@ -12,5 +12,5 @@ class VirtIO(Task):
 		modules = os.path.join(info.root, '/etc/initramfs-tools/modules')
 		with open(modules, "a") as modules_file:
 			modules_file.write("\n")
-			for module in info.manifest.bootstrapper.get('virtio', []):
-				modules_file.write(module+"\n")
+			for module in info.manifest.system.get('virtio', []):
+				modules_file.write(module + "\n")

@@ -22,8 +22,8 @@ class CreateAdminUser(Task):
 	@classmethod
 	def run(cls, info):
 		from common.tools import log_check_call
-		log_check_call(['/usr/sbin/chroot', info.root,
-		                '/usr/sbin/useradd',
+		log_check_call(['chroot', info.root,
+		                'useradd',
 		                '--create-home', '--shell', '/bin/bash',
 		                info.manifest.plugins['admin_user']['username']])
 
@@ -65,8 +65,8 @@ class DisableRootLogin(Task):
 		from subprocess import CalledProcessError
 		from common.tools import log_check_call
 		try:
-			log_check_call(['/usr/sbin/chroot', info.root,
-			                '/usr/bin/dpkg-query', '-W', 'openssh-server'])
+			log_check_call(['chroot', info.root,
+			                'dpkg-query', '-W', 'openssh-server'])
 			from common.tools import sed_i
 			sshdconfig_path = os.path.join(info.root, 'etc/ssh/sshd_config')
 			sed_i(sshdconfig_path, 'PermitRootLogin yes', 'PermitRootLogin no')

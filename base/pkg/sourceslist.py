@@ -1,12 +1,27 @@
 
 
 class SourceLists(object):
+	"""Represents a list of sources lists for apt
+	"""
 
 	def __init__(self, manifest_vars):
+		"""
+		Args:
+			manifest_vars (dict): The manifest variables
+		"""
+		# A dictionary with the name of the file in sources.list.d as the key
+		# That values are lists of Source objects
 		self.sources = {}
+		# Save the manifest variables, we need the later on
 		self.manifest_vars = manifest_vars
 
 	def add(self, name, line):
+		"""Adds a source to the apt sources list
+
+		Args:
+			name (str): Name of the file in sources.list.d, may contain manifest vars references
+			line (str): The line for the source file, may contain manifest vars references
+		"""
 		name = name.format(**self.manifest_vars)
 		line = line.format(**self.manifest_vars)
 		if name not in self.sources:
@@ -14,7 +29,16 @@ class SourceLists(object):
 		self.sources[name].append(Source(line))
 
 	def target_exists(self, target):
+		"""Checks whether the target exists in the sources list
+
+		Args:
+			target (str): Name of the target to check for, may contain manifest vars references
+
+		Returns:
+			bool. Whether the target exists
+		"""
 		target = target.format(**self.manifest_vars)
+		# Run through all the sources and return True if the target exists
 		for lines in self.sources.itervalues():
 			if target in (source.distribution for source in lines):
 				return True
@@ -22,8 +46,20 @@ class SourceLists(object):
 
 
 class Source(object):
+	"""Represents a single source line
+	"""
 
 	def __init__(self, line):
+		"""
+		Args:
+			line (str): A apt source line
+
+		Raises:
+			SourceError
+		"""
+		# Parse the source line and populate the class attributes with it
+		# The format is taken from `man sources.list`
+		# or: http://manpages.debian.org/cgi-bin/man.cgi?sektion=5&query=sources.list&apropos=0&manpath=sid&locale=en
 		import re
 		regexp = re.compile('^(?P<type>deb|deb-src)\s+'
 		                    '(\[\s*(?P<options>.+\S)?\s*\]\s+)?'
@@ -45,6 +81,12 @@ class Source(object):
 			self.components = re.sub(' +', ' ', match['components']).split(' ')
 
 	def __str__(self):
+		"""Convert the object into a source line
+		This is pretty much the reverse of what we're doing in the initialization function.
+
+		Returns:
+			string.
+		"""
 		options = ''
 		if len(self.options) > 0:
 			options = ' [{options}]'.format(options=' '.join(self.options))

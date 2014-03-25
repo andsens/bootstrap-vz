@@ -99,7 +99,7 @@
 			"additionalProperties": false
 		}
 	},
-	"required": ["provider", "bootstrapper", "image", "volume", "system"],
+	"required": ["provider", "bootstrapper", "system", "volume"],
 	"definitions": {
 		"path": {
 			"type":    "string",
@@ -141,10 +141,14 @@
 			"type": "object",
 			"properties": {
 				"size": { "$ref": "#/definitions/bytes" },
-				"filesystem": { "enum": ["ext2", "ext3", "ext4", "xfs"] }
+				"filesystem": { "enum": ["ext2", "ext3", "ext4", "xfs"] },
+				"format_command": {
+					"type": "array",
+					"items": {"type": "string"},
+					"minItems": 1
+				}
 			},
 			"required": ["size", "filesystem"]
 		}
-	},
-	"required": ["provider", "bootstrapper", "system", "packages", "volume"]
+	}
 }

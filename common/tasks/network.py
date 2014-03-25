@@ -1,6 +1,6 @@
 from base import Task
 from common import phases
-import os.path
+import os
 
 
 class RemoveDNSInfo(Task):
@@ -9,10 +9,8 @@ class RemoveDNSInfo(Task):
 
 	@classmethod
 	def run(cls, info):
-		from os import remove
-		import os.path
 		if os.path.isfile(os.path.join(info.root, 'etc/resolv.conf')):
-			remove(os.path.join(info.root, 'etc/resolv.conf'))
+			os.remove(os.path.join(info.root, 'etc/resolv.conf'))
 
 
 class RemoveHostname(Task):
@@ -21,10 +19,8 @@ class RemoveHostname(Task):
 
 	@classmethod
 	def run(cls, info):
-		from os import remove
-		import os.path
 		if os.path.isfile(os.path.join(info.root, 'etc/hostname')):
-			remove(os.path.join(info.root, 'etc/hostname'))
+			os.remove(os.path.join(info.root, 'etc/hostname'))
 
 
 class ConfigureNetworkIF(Task):
@@ -33,10 +29,10 @@ class ConfigureNetworkIF(Task):
 
 	@classmethod
 	def run(cls, info):
+		network_config_path = os.path.join(os.path.dirname(__file__), 'network-configuration.json')
+		from common.tools import config_get
+		if_config = config_get(network_config_path, [info.release_codename])
+
 		interfaces_path = os.path.join(info.root, 'etc/network/interfaces')
-		if_config = []
-		with open('common/tasks/network-configuration.json') as stream:
-			import json
-			if_config = json.loads(stream.read())
 		with open(interfaces_path, 'a') as interfaces:
-			interfaces.write('\n'.join(if_config.get(info.manifest.system['release'])) + '\n')
+			interfaces.write('\n'.join(if_config) + '\n')

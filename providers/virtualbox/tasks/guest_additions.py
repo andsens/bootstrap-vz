@@ -29,8 +29,8 @@ class AddGuestAdditionsPackages(Task):
 		info.packages.add('dkms')
 
 		from common.tools import log_check_call
-		[kernel_version] = log_check_call(['/usr/sbin/chroot', info.root,
-		                                   '/bin/uname', '-r'])
+		[kernel_version] = log_check_call(['chroot', info.root,
+		                                   'uname', '-r'])
 		kernel_headers_pkg = 'linux-headers-{version}'.format(version=kernel_version)
 		info.packages.add(kernel_headers_pkg)
 
@@ -52,7 +52,7 @@ class InstallGuestAdditions(Task):
 
 		install_script = os.path.join('/', mount_dir, 'VBoxLinuxAdditions.run')
 		from common.tools import log_call
-		status, out, err = log_call(['/usr/sbin/chroot', info.root,
+		status, out, err = log_call(['chroot', info.root,
 		                            install_script, '--nox11'])
 		# Install will exit with $?=1 because X11 isn't installed
 		if status != 1:

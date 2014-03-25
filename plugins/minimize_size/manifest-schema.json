@@ -10,16 +10,10 @@
 					"type": "object",
 					"properties": {
 						"shrink": { "type": "boolean" },
-						"zerofree": { "$ref": "#/definitions/absolute_path" }
+						"zerofree": { "type": "boolean" }
 					}
 				}
 			}
-		}
-	},
-	"definitions": {
-		"absolute_path": {
-			"type":    "string",
-			"pattern": "^/[^\\0]+$"
 		}
 	}
 }

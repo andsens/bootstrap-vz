@@ -61,7 +61,7 @@ def resolve_tasks(taskset, manifest):
 	if manifest.volume['partitions']['type'] != 'none':
 		taskset.update(common.task_sets.partitioning_set)
 
-	taskset.update([tasks.host.HostDependencies,
+	taskset.update([tasks.host.AddExternalCommands,
 	                tasks.packages.DefaultPackages,
 	                tasks.connection.GetCredentials,
 	                tasks.host.GetInfo,
@@ -97,7 +97,8 @@ def resolve_tasks(taskset, manifest):
 	                                  tasks.ebs.Attach,
 	                                  filesystem.FStab,
 	                                  tasks.ebs.Snapshot],
-	                          's3': [loopback.Create,
+	                          's3': [loopback.AddRequiredCommands,
+	                                 loopback.Create,
 	                                 volume.Attach,
 	                                 tasks.filesystem.S3FStab,
 	                                 tasks.ami.BundleImage,

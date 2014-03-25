@@ -6,9 +6,13 @@ from partitionmaps.none import NoPartitions
 
 
 class Volume(FSMProxy):
+	"""Represents an abstract volume.
+	This class is a finite state machine and represents the state of the real volume.
+	"""
 
 	__metaclass__ = ABCMeta
 
+	# States this volume can be in
 	events = [{'name': 'create', 'src': 'nonexistent', 'dst': 'detached'},
 	          {'name': 'attach', 'src': 'detached', 'dst': 'attached'},
 	          {'name': 'link_dm_node', 'src': 'attached', 'dst': 'linked'},
@@ -18,33 +22,76 @@ class Volume(FSMProxy):
 	          ]
 
 	def __init__(self, partition_map):
+		"""
+		Args:
+			partition_map (PartitionMap): The partition map for the volume
+		"""
+		# Path to the volume
 		self.device_path = None
 		self.real_device_path = None
+		# The partition map
 		self.partition_map = partition_map
+		# The size of the volume as reported by the partition map
 		self.size = self.partition_map.get_total_size()
 
+		# Before detaching, check that nothing would block the detachment
 		callbacks = {'onbeforedetach': self._check_blocking}
 		if isinstance(self.partition_map, NoPartitions):
+			# When the volume has no partitions, the virtual root partition path is equal to that of the volume
+			# Update that path whenever the path to the volume changes
 			def set_dev_path(e):
 				self.partition_map.root.device_path = self.device_path
 			callbacks['onafterattach'] = set_dev_path
 			callbacks['onlink_dm_node'] = set_dev_path
 			callbacks['onunlink_dm_node'] = set_dev_path
 
+		# Create the configuration for our finite state machine
 		cfg = {'initial': 'nonexistent', 'events': self.events, 'callbacks': callbacks}
 		super(Volume, self).__init__(cfg)
 
 	def _after_create(self, e):
+		"""
+		Args:
+			e (_e_obj): Event object containing arguments to create()
+		"""
 		if isinstance(self.partition_map, NoPartitions):
+			# When the volume has no partitions, the virtual root partition
+			# is essentially created when the volume is created, forward that creation event.
 			self.partition_map.root.create()
 
 	def _check_blocking(self, e):
+		"""Checks whether the volume is blocked
+
+		Args:
+			e (_e_obj): Event object containing arguments to create()
+
+		Raises:
+			VolumeError
+		"""
+		# Only the partition map can block the volume
 		if self.partition_map.is_blocking():
 			raise VolumeError('The partitionmap prevents the detach procedure')
 
 	def _before_link_dm_node(self, e):
+		"""Links the volume using the device mapper
+		This allows us to create a 'window' into the volume that acts like a volum in itself.
+		Mainly it is used to fool grub into thinking that it is working with a real volume,
+		rather than a loopback device or a network block device.
+
+		Args:
+			e (_e_obj): Event object containing arguments to create()
+			            Arguments are:
+			            logical_start_sector (int): The sector the volume should start at in the new volume
+			            start_sector (int): The offset at which the volume should begin to be mapped in the new volume
+			            sectors (int): The number of sectors that should be mapped
+			            Read more at: http://manpages.debian.org/cgi-bin/man.cgi?query=dmsetup&apropos=0&sektion=0&manpath=Debian+7.0+wheezy&format=html&locale=en
+
+		Raises:
+			VolumeError
+		"""
 		import os.path
 		from common.fs import get_partitions
+		# Fetch information from /proc/partitions
 		proc_partitions = get_partitions()
 		device_name = os.path.basename(self.device_path)
 		device_partition = proc_partitions[device_name]
@@ -55,8 +102,10 @@ class Volume(FSMProxy):
 		# The offset at which the volume should begin to be mapped in the new volume
 		start_sector = getattr(e, 'start_sector', 0)
 
+		# The number of sectors that should be mapped
 		sectors = getattr(e, 'sectors', int(self.size / 512) - start_sector)
 
+		# This is the table  we send to dmsetup, so that it may create a decie mapping for us.
 		table = ('{log_start_sec} {sectors} linear {major}:{minor} {start_sec}'
 		         .format(log_start_sec=logical_start_sector,
 		                 sectors=sectors,
@@ -65,6 +114,7 @@ class Volume(FSMProxy):
 		                 start_sec=start_sector))
 		import string
 		import os.path
+		# Figure out the device letter and path
 		for letter in string.ascii_lowercase:
 			dev_name = 'vd' + letter
 			dev_path = os.path.join('/dev/mapper', dev_name)
@@ -76,12 +126,21 @@ class Volume(FSMProxy):
 		if not hasattr(self, 'dm_node_name'):
 			raise VolumeError('Unable to find a free block device path for mounting the bootstrap volume')
 
-		log_check_call(['/sbin/dmsetup', 'create', self.dm_node_name], table)
+		# Create the device mapping
+		log_check_call(['dmsetup', 'create', self.dm_node_name], table)
+		# Update the device_path but remember the old one for when we unlink the volume again
 		self.unlinked_device_path = self.device_path
 		self.device_path = self.dm_node_path
 
 	def _before_unlink_dm_node(self, e):
-		log_check_call(['/sbin/dmsetup', 'remove', self.dm_node_name])
+		"""Unlinks the device mapping
+
+		Args:
+			e (_e_obj): Event object containing arguments to create()
+		"""
+		log_check_call(['dmsetup', 'remove', self.dm_node_name])
+		# Delete the no longer valid information
 		del self.dm_node_name
 		del self.dm_node_path
+		# Reset the device_path
 		self.device_path = self.unlinked_device_path

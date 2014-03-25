@@ -5,8 +5,8 @@ from common.tasks import network
 import os
 
 
-class CheckPaths(Task):
-	description = 'Checking whether manifest and assets paths exist'
+class CheckAssetsPath(Task):
+	description = 'Checking whether the assets path exist'
 	phase = phases.preparation
 
 	@classmethod
@@ -20,6 +20,14 @@ class CheckPaths(Task):
 			msg = 'The assets path {assets} does not point to a directory.'.format(assets=assets)
 			raise TaskError(msg)
 
+
+class CheckManifestPath(Task):
+	description = 'Checking whether the manifest path exist'
+	phase = phases.preparation
+
+	@classmethod
+	def run(cls, info):
+		from common.exceptions import TaskError
 		manifest = info.manifest.plugins['puppet']['manifest']
 		if not os.path.exists(manifest):
 			msg = 'The manifest file {manifest} does not exist.'.format(manifest=manifest)
@@ -84,10 +92,20 @@ class ApplyPuppetManifest(Task):
 
 		manifest_path = os.path.join('/', manifest_rel_dst)
 		from common.tools import log_check_call
-		log_check_call(['/usr/sbin/chroot', info.root,
-		                '/usr/bin/puppet', 'apply', manifest_path])
+		log_check_call(['chroot', info.root,
+		                'puppet', 'apply', manifest_path])
 		os.remove(manifest_dst)
 
 		from common.tools import sed_i
 		hosts_path = os.path.join(info.root, 'etc/hosts')
 		sed_i(hosts_path, '127.0.0.1\s*{hostname}\n?'.format(hostname=hostname), '')
+
+
+class EnableAgent(Task):
+	description = 'Enabling the puppet agent'
+	phase = phases.system_modification
+
+	@classmethod
+	def run(cls, info):
+		puppet_defaults = os.path.join(info.root, 'etc/defaults/puppet')
+		sed_i(puppet_defaults, 'START=no', 'START=yes')

@@ -1,31 +1,20 @@
 bootstrap-vz
 ===========================================
 
-bootstrap-vz is a fully automated bootstrapping tool for Debian.
-It creates images for various virtualized platforms (at the moment: kvm, virtualbox, ec2).
-The plugin architecture allows for heavy modification of standard behavior
-(e.g. create a vagrant box, apply puppet manifests, run custom shell commands).
+bootstrap-vz is a bootstrapping framework for Debian.
+It is is specifically targeted at bootstrapping systems for virtualized environments.
+bootstrap-vz runs without any user intervention and generates ready-to-boot images for
+[a number of virtualization platforms](http://andsens.github.io/bootstrap-vz/providers.html).
+Its aim is to provide a reproducable bootstrapping process using [manifests](http://andsens.github.io/bootstrap-vz/manifest.html) as well as supporting a high degree of customizability through plugins.
 
-At no time is the resulting image booted, meaning there are no latent logfiles
-or bash_history files.
+bootstrap-vz was coded from scratch in python once the bash script architecture that was used in the
+[build-debian-cloud](https://github.com/andsens/build-debian-cloud) bootstrapper reached its
+limits.
 
-The bootstrapper runs on a single json manifest file which contains all configurable
-parameters. This allows you to recreate the image whenever you like so you can create
-an updated version of an existing image or create the same image in multiple EC2 regions.
-
-Dependencies
-------------
-You will need to run debian wheezy with **python 2.7** and **debootstrap** installed.
-Other depencies include:
-* qemu-utils
-* parted
-* grub2
-* euca2ools
-* xfsprogs (If you want to use XFS as a filesystem)
-Also the following python libraries are required:
-* **boto** ([version 2.14.0 or higher](https://github.com/boto/boto))
-* **jsonschema** ([version 2.0.0](https://pypi.python.org/pypi/jsonschema), only available through pip)
-* **termcolor**
-* **fysom**
-
-Bootstrapping instance store AMIs requires **euca2ools** to be installed.
+Documentation
+-------------
+The documentation for bootstrap-vz is available
+at [andsens.github.io/bootstrap-vz](http://andsens.github.io/bootstrap-vz).
+There, you can discover [what the dependencies](http://andsens.github.io/bootstrap-vz/#dependencies)
+for a specific cloud provider are, [see a list of available plugins](http://andsens.github.io/bootstrap-vz/plugins.html)
+and learn [how you create a manifest](http://andsens.github.io/bootstrap-vz/manifest.html).

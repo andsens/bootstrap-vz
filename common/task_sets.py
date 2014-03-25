@@ -12,19 +12,21 @@ from common.tasks import security
 from common.tasks import locale
 
 base_set = [workspace.CreateWorkspace,
-            host.HostDependencies,
-            host.CheckHostDependencies,
+            bootstrap.AddRequiredCommands,
+            host.CheckExternalCommands,
             bootstrap.Bootstrap,
             workspace.DeleteWorkspace,
             ]
 
 volume_set = [volume.Attach,
               volume.Detach,
+              filesystem.AddRequiredCommands,
               filesystem.Format,
               filesystem.FStab,
               ]
 
-partitioning_set = [partitioning.PartitionVolume,
+partitioning_set = [partitioning.AddRequiredCommands,
+                    partitioning.PartitionVolume,
                     partitioning.MapPartitions,
                     partitioning.UnmapPartitions,
                     ]

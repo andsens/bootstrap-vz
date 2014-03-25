@@ -45,6 +45,6 @@ class ConfigurePVGrub(Task):
 		                                        'GRUB_HIDDEN_TIMEOUT=true')
 
 		from common.tools import log_check_call
-		log_check_call(['/usr/sbin/chroot', info.root, '/usr/sbin/update-grub'])
-		log_check_call(['/usr/sbin/chroot', info.root,
-		                '/bin/ln', '--symbolic', '/boot/grub/grub.cfg', '/boot/grub/menu.lst'])
+		log_check_call(['chroot', info.root, 'update-grub'])
+		log_check_call(['chroot', info.root,
+		                'ln', '--symbolic', '/boot/grub/grub.cfg', '/boot/grub/menu.lst'])

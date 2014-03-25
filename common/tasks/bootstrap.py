@@ -1,12 +1,23 @@
 from base import Task
 from common import phases
 from common.exceptions import TaskError
+import host
 import logging
 log = logging.getLogger(__name__)
 
 
+class AddRequiredCommands(Task):
+	description = 'Adding commands required bootstrapping Debian'
+	phase = phases.preparation
+	successors = [host.CheckExternalCommands]
+
+	@classmethod
+	def run(cls, info):
+		info.host_dependencies['debootstrap'] = 'debootstrap'
+
+
 def get_bootstrap_args(info):
-	executable = ['/usr/sbin/debootstrap']
+	executable = ['debootstrap']
 	options = ['--arch=' + info.manifest.system['architecture']]
 	if len(info.include_packages) > 0:
 		options.append('--include=' + ','.join(info.include_packages))

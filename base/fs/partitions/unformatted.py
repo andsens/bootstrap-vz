@@ -2,11 +2,20 @@ from base import BasePartition
 
 
 class UnformattedPartition(BasePartition):
+	"""Represents an unformatted partition
+	It cannot be mounted
+	"""
 
+	# The states for our state machine. It can only be mapped, not mounted.
 	events = [{'name': 'create', 'src': 'nonexistent', 'dst': 'unmapped'},
 	          {'name': 'map', 'src': 'unmapped', 'dst': 'mapped'},
 	          {'name': 'unmap', 'src': 'mapped', 'dst': 'unmapped'},
 	          ]
 
 	def __init__(self, size, previous):
-		super(UnformattedPartition, self).__init__(size, None, previous)
+		"""
+		Args:
+			size (Bytes): Size of the partition
+			previous (BasePartition): The partition that preceeds this one
+		"""
+		super(UnformattedPartition, self).__init__(size, None, None, previous)
