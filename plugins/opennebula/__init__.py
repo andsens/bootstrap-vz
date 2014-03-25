@@ -2,5 +2,7 @@ import tasks
 
 
 def resolve_tasks(taskset, manifest):
-	taskset.add(tasks.AddONEContextPackage)
-	taskset.add(tasks.OpenNebulaContext)
+	if manifest.system['release'] in ['wheezy', 'stable']:
+		taskset.add(tasks.AddBackports)
+	taskset.update([tasks.AddONEContextPackage])
+
