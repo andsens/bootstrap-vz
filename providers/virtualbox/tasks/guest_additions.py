@@ -60,5 +60,6 @@ class InstallGuestAdditions(Task):
 			       'it should exit with status 1').format(status=status)
 			raise TaskError(msg)
 
+		log_call(['chroot', info.root, 'service', 'vboxadd-service', 'stop'])
 		root.remove_mount(mount_path)
 		os.rmdir(mount_path)
