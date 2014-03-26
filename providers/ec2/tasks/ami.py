@@ -117,7 +117,7 @@ class RegisterAMI(Task):
 			registration_params['virtualization_type'] = 'hvm'
 		else:
 			registration_params['virtualization_type'] = 'paravirtual'
-			akis_path = os.path.join(os.path.dirname(__file__), 'akis.json')
+			akis_path = os.path.join(os.path.dirname(__file__), 'ami-akis.json')
 			from common.tools import config_get
 			registration_params['kernel_id'] = config_get(akis_path, [info.host['region'],
 			                                                          info.manifest.system['architecture']])
