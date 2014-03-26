@@ -60,6 +60,6 @@ class InstallGuestAdditions(Task):
 			       'it should exit with status 1').format(status=status)
 			raise TaskError(msg)
 
-		log_call(['/usr/sbin/chroot', info.root, '/usr/sbin/service', 'vboxadd-service', 'stop'])
+		log_call(['chroot', info.root, 'service', 'vboxadd-service', 'stop'])
 		root.remove_mount(mount_path)
 		os.rmdir(mount_path)
