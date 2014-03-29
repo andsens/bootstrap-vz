@@ -23,7 +23,7 @@ class SetNtpServers(Task):
 		import os
 		import re
 		ntp_path = os.path.join(info.root, 'etc/ntp.conf')
-		servers = info.manifest.plugins['ntp']['servers']
+		servers = list(info.manifest.plugins['ntp']['servers'])
 		debian_ntp_server = re.compile('.*[0-9]\.debian\.pool\.ntp\.org.*')
 		for line in fileinput.input(files=ntp_path, inplace=True):
 			# Will write all the specified servers on the first match, then supress all other default servers
