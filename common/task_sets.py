@@ -74,7 +74,7 @@ locale_set = [locale.LocaleBootstrapPackage,
               ]
 
 
-bootloader_set = {'grub':     [boot.AddGrubPackage, boot.InstallGrub],
+bootloader_set = {'grub':     [boot.AddGrubPackage, boot.ConfigureGrub, boot.InstallGrub],
                   'extlinux': [boot.AddExtlinuxPackage, boot.InstallExtLinux],
                   }
 
