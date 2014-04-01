@@ -1,5 +1,3 @@
-
-
 def log_check_call(command, stdin=None, env=None, shell=False):
 	status, stdout, stderr = log_call(command, stdin, env, shell)
 	if status != 0:
@@ -71,3 +69,21 @@ def config_get(path, config_path):
 	for key in config_path:
 		config = config.get(key)
 	return config
+
+def copy_tree(from_path,to_path):
+	from shutil import copy
+	import os
+	for abs_prefix, dirs, files in os.walk(from_path):
+		prefix = os.path.normpath(os.path.relpath(abs_prefix, from_path))
+		for path in dirs:
+			full_path = os.path.join(to_path, prefix, path)
+			if os.path.exists(full_path):
+				if os.path.isdir(full_path):
+					continue
+				else:
+					os.remove(full_path)
+			os.mkdir(full_path)
+		for path in files:
+			copy(os.path.join(abs_prefix, path),
+			     os.path.join(to_path, prefix, path))
+
