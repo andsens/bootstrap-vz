@@ -97,3 +97,19 @@ class InstallPackages(Task):
 
 		for path in absolute_package_paths:
 			os.remove(path)
+
+
+class AddTaskselStandardPackages(Task):
+	description = 'Adding standard packages from tasksel'
+	phase = phases.package_installation
+	predecessors = [apt.AptUpdate]
+	successors = [InstallPackages]
+
+	@classmethod
+	def run(cls, info):
+		import subprocess
+		tasksel_packages = subprocess.check_output(['chroot', info.root,
+		                                         'tasksel', '--task-packages',
+		                                         'standard']).strip().split('\n')
+		for pkg in tasksel_packages:
+			info.packages.add(pkg)
