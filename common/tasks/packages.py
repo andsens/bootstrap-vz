@@ -1,6 +1,7 @@
 from base import Task
 from common import phases
 from common.tasks import apt
+from common.tools import log_check_call
 
 
 class AddManifestPackages(Task):
@@ -74,7 +75,6 @@ class InstallPackages(Task):
 	@classmethod
 	def install_local(cls, info, local_packages):
 		from shutil import copy
-		from common.tools import log_check_call
 		import os
 
 		absolute_package_paths = []
@@ -107,9 +107,6 @@ class AddTaskselStandardPackages(Task):
 
 	@classmethod
 	def run(cls, info):
-		import subprocess
-		tasksel_packages = subprocess.check_output(['chroot', info.root,
-		                                         'tasksel', '--task-packages',
-		                                         'standard']).strip().split('\n')
+		tasksel_packages = log_check_call(['chroot', info.root, 'tasksel', '--task-packages', 'standard'])
 		for pkg in tasksel_packages:
 			info.packages.add(pkg)
