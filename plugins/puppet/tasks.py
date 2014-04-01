@@ -53,22 +53,8 @@ class CopyPuppetAssets(Task):
 
 	@classmethod
 	def run(cls, info):
-		from shutil import copy
-		puppet_path = os.path.join(info.root, 'etc/puppet')
-		puppet_assets = info.manifest.plugins['puppet']['assets']
-		for abs_prefix, dirs, files in os.walk(puppet_assets):
-			prefix = os.path.normpath(os.path.relpath(abs_prefix, puppet_assets))
-			for path in dirs:
-				full_path = os.path.join(puppet_path, prefix, path)
-				if os.path.exists(full_path):
-					if os.path.isdir(full_path):
-						continue
-					else:
-						os.remove(full_path)
-				os.mkdir(full_path)
-			for path in files:
-				copy(os.path.join(abs_prefix, path),
-				     os.path.join(puppet_path, prefix, path))
+		from common.tools import copy_tree
+		copy_tree(info.manifest.plugins['puppet']['assets'], os.path.join(info.root, 'etc/puppet'))
 
 
 class ApplyPuppetManifest(Task):
