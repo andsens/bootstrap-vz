@@ -71,6 +71,9 @@
 						]
 					},
 					"minItems": 1
+				},
+				"install_standard": {
+					"type": "boolean"
 				}
 			},
 			"additionalProperties": false

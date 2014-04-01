@@ -65,6 +65,8 @@ def get_apt_set(manifest):
 		base.append(apt.InstallTrustedKeys)
 	if 'install' in manifest.packages:
 		base.append(packages.AddManifestPackages)
+	if manifest.packages.get('install_standard', False):
+		base.append(packages.AddTaskselStandardPackages)
 	return base
 
 
