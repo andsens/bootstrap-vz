@@ -51,9 +51,10 @@ class InstallGuestAdditions(Task):
 		root.add_mount(guest_additions_path, mount_path, ['-o', 'loop'])
 
 		install_script = os.path.join('/', mount_dir, 'VBoxLinuxAdditions.run')
+		# Don't check the return code of the scripts here, because 1 not necessarily means they have failed
 		from common.tools import log_call
 		log_call(['chroot', info.root, install_script, '--nox11'])
-
+		# VBoxService process could be running, as it is not affected by DisableDaemonAutostart
 		log_call(['chroot', info.root, 'service', 'vboxadd-service', 'stop'])
 		root.remove_mount(mount_path)
 		os.rmdir(mount_path)
