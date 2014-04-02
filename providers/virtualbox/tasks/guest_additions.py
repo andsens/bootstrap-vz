@@ -54,11 +54,6 @@ class InstallGuestAdditions(Task):
 		from common.tools import log_call
 		status, out, err = log_call(['chroot', info.root,
 		                            install_script, '--nox11'])
-		# Install will exit with $?=1 because X11 isn't installed
-		if status != 1:
-			msg = ('VBoxLinuxAdditions.run exited with status {status}, '
-			       'it should exit with status 1').format(status=status)
-			raise TaskError(msg)
 
 		log_call(['chroot', info.root, 'service', 'vboxadd-service', 'stop'])
 		root.remove_mount(mount_path)
