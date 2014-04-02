@@ -52,8 +52,7 @@ class InstallGuestAdditions(Task):
 
 		install_script = os.path.join('/', mount_dir, 'VBoxLinuxAdditions.run')
 		from common.tools import log_call
-		status, out, err = log_call(['chroot', info.root,
-		                            install_script, '--nox11'])
+		log_call(['chroot', info.root, install_script, '--nox11'])
 
 		log_call(['chroot', info.root, 'service', 'vboxadd-service', 'stop'])
 		root.remove_mount(mount_path)
