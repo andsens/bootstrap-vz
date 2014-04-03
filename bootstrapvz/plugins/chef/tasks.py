@@ -1,6 +1,6 @@
-from base import Task
-from common import phases
-from common.tasks import apt
+from bootstrapvz.base import Task
+from bootstrapvz.common import phases
+from bootstrapvz.common.tasks import apt
 import os
 
 
@@ -10,7 +10,7 @@ class CheckAssetsPath(Task):
 
 	@classmethod
 	def run(cls, info):
-		from common.exceptions import TaskError
+		from bootstrapvz.common.exceptions import TaskError
 		assets = info.manifest.plugins['chef']['assets']
 		if not os.path.exists(assets):
 			msg = 'The assets directory {assets} does not exist.'.format(assets=assets)
@@ -36,5 +36,5 @@ class CopyChefAssets(Task):
 
 	@classmethod
 	def run(cls, info):
-		from common.tools import copy_tree
+		from bootstrapvz.common.tools import copy_tree
 		copy_tree(info.manifest.plugins['chef']['assets'], os.path.join(info.root, 'etc/chef'))

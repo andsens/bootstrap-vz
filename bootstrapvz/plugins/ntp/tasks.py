@@ -1,6 +1,6 @@
-from base import Task
-from common import phases
-from common.tasks import packages
+from bootstrapvz.base import Task
+from bootstrapvz.common import phases
+from bootstrapvz.common.tasks import packages
 
 
 class AddNtpPackage(Task):
