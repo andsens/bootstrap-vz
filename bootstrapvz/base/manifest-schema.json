@@ -57,6 +57,33 @@
 					"additionalProperties": false,
 					"minItems": 1
 				},
+				"preferences": {
+					"type": "object",
+					"patternProperties": {
+						"^[^\/\\0]+$": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"pin": {
+										"type": "string"
+									},
+									"package": {
+										"type": "string"
+									},
+									"pin-priority": {
+										"type": "integer"
+									}
+								},
+								"required": ["pin", "package", "pin-priority"],
+								"additionalProperties": false
+							},
+							"minItems": 1
+						}
+					},
+					"additionalProperties": false,
+					"minItems": 1
+				},
 				"trusted-keys": {
 					"type": "array",
 					"items": { "$ref": "#/definitions/absolute_path" },

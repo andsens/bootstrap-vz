@@ -63,6 +63,9 @@ def get_apt_set(manifest):
 		base.append(apt.AddManifestSources)
 	if 'trusted-keys' in manifest.packages:
 		base.append(apt.InstallTrustedKeys)
+	if 'preferences' in manifest.packages:
+		base.append(apt.AddManifestPreferences)
+		base.append(apt.WritePreferences)
 	if 'install' in manifest.packages:
 		base.append(packages.AddManifestPackages)
 	if manifest.packages.get('install_standard', False):
