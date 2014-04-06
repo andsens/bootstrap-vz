@@ -83,6 +83,9 @@ class BootstrapInformation(object):
 		# so that tasks may add to that list without having to fiddle with apt source list files.
 		from pkg.sourceslist import SourceLists
 		self.source_lists = SourceLists(self.manifest_vars)
+		# Keep a list of apt preferences
+		from pkg.preferenceslist import PreferenceLists
+		self.preference_lists = PreferenceLists(self.manifest_vars)
 		# Keep a list of packages that should be installed, tasks can add and remove things from this list
 		from pkg.packagelist import PackageList
 		self.packages = PackageList(self.manifest_vars, self.source_lists)

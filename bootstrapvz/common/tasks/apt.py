@@ -33,6 +33,16 @@ class AddDefaultSources(Task):
 			info.source_lists.add('main', 'deb-src {apt_mirror} {system.release}-updates ' + sections)
 
 
+class AddManifestPreferences(Task):
+	description = 'Adding preferences from the manifest'
+	phase = phases.preparation
+
+	@classmethod
+	def run(cls, info):
+		for name, preferences in info.manifest.packages['preferences'].iteritems():
+                            info.preference_lists.add(name, preferences)
+
+
 class InstallTrustedKeys(Task):
 	description = 'Installing trusted keys'
 	phase = phases.package_installation
@@ -61,6 +71,23 @@ class WriteSources(Task):
 			with open(list_path, 'w') as source_list:
 				for source in sources:
 					source_list.write('{line}\n'.format(line=str(source)))
+
+
+class WritePreferences(Task):
+	description = 'Writing aptitude preferences to disk'
+	phase = phases.package_installation
+	predecessors = [WriteSources]
+
+	@classmethod
+	def run(cls, info):
+		for name, preferences in info.preference_lists.preferences.iteritems():
+			if name == 'main':
+				list_path = os.path.join(info.root, 'etc/apt/preferences')
+			else:
+				list_path = os.path.join(info.root, 'etc/apt/preferences.d/', name)
+			with open(list_path, 'w') as preference_list:
+				for preference in preferences:
+					preference_list.write('{preference}\n'.format(preference=str(preference)))
 
 
 class DisableDaemonAutostart(Task):
