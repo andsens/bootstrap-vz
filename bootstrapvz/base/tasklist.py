@@ -35,7 +35,7 @@ class TaskList(object):
 			if callable(fn):
 				fn(self.tasks, manifest, *args)
 
-	def run(self, info={}, dry_run=False):
+	def run(self, info, dry_run=False):
 		"""Converts the taskgraph into a list and runs all tasks in that list
 
 		Args:
