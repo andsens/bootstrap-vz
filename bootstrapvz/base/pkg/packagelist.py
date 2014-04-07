@@ -1,4 +1,3 @@
-from exceptions import PackageError
 
 
 class PackageList(object):
@@ -71,6 +70,7 @@ class PackageList(object):
 		Raises:
 			PackageError
 		"""
+		from exceptions import PackageError
 		name = name.format(**self.manifest_vars)
 		if target is not None:
 			target = target.format(**self.manifest_vars)
