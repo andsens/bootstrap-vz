@@ -41,6 +41,7 @@ class Volume(FSMProxy):
 			def set_dev_path(e):
 				self.partition_map.root.device_path = self.device_path
 			callbacks['onafterattach'] = set_dev_path
+			callbacks['onafterdetach'] = set_dev_path  # Will become None
 			callbacks['onlink_dm_node'] = set_dev_path
 			callbacks['onunlink_dm_node'] = set_dev_path
 
