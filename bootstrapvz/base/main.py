@@ -13,9 +13,9 @@ def main():
 		Exception
 	"""
 	# Get the commandline arguments
-	import os
 	args = get_args()
 	# Require root privileges, except when doing a dry-run where they aren't needed
+	import os
 	if os.geteuid() != 0 and not args.dry_run:
 		raise Exception('This program requires root privileges.')
 	# Setup logging
