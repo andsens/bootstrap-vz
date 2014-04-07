@@ -98,3 +98,4 @@ def run(args):
 		# Run the rollback tasklist
 		rollback_tasklist.run(info=bootstrap_info, dry_run=args.dry_run)
 		log.info('Successfully completed rollback')
+		raise e
