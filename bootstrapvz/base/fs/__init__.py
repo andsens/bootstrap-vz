@@ -9,10 +9,6 @@ def load_volume(data, bootloader):
 	Returns:
 		Volume. The volume that represents all information pertaining to the volume we bootstrap on
 	"""
-	from bootstrapvz.common.fs.loopbackvolume import LoopbackVolume
-	from bootstrapvz.providers.ec2.ebsvolume import EBSVolume
-	from bootstrapvz.common.fs.virtualdiskimage import VirtualDiskImage
-	from bootstrapvz.common.fs.virtualmachinedisk import VirtualMachineDisk
 	# Create a mapping between valid partition maps in the manifest and their corresponding classes
 	from partitionmaps.gpt import GPTPartitionMap
 	from partitionmaps.msdos import MSDOSPartitionMap
@@ -23,7 +19,12 @@ def load_volume(data, bootloader):
 	                  }
 	# Instantiate the partition map
 	partition_map = partition_maps.get(data['partitions']['type'])(data['partitions'], bootloader)
+
 	# Create a mapping between valid volume backings in the manifest and their corresponding classes
+	from bootstrapvz.common.fs.loopbackvolume import LoopbackVolume
+	from bootstrapvz.providers.ec2.ebsvolume import EBSVolume
+	from bootstrapvz.common.fs.virtualdiskimage import VirtualDiskImage
+	from bootstrapvz.common.fs.virtualmachinedisk import VirtualMachineDisk
 	volume_backings = {'raw': LoopbackVolume,
 	                   's3':  LoopbackVolume,
 	                   'vdi': VirtualDiskImage,
