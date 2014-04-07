@@ -138,8 +138,9 @@ class Volume(FSMProxy):
 			e (_e_obj): Event object containing arguments to create()
 		"""
 		log_check_call(['dmsetup', 'remove', self.dm_node_name])
-		# Delete the no longer valid information
-		del self.dm_node_name
-		del self.dm_node_path
 		# Reset the device_path
 		self.device_path = self.unlinked_device_path
+		# Delete the no longer valid information
+		del self.unlinked_device_path
+		del self.dm_node_name
+		del self.dm_node_path
