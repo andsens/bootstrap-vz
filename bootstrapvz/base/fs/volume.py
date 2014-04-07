@@ -28,7 +28,6 @@ class Volume(FSMProxy):
 		"""
 		# Path to the volume
 		self.device_path = None
-		self.real_device_path = None
 		# The partition map
 		self.partition_map = partition_map
 		# The size of the volume as reported by the partition map
