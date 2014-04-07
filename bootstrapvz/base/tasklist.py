@@ -166,7 +166,7 @@ class TaskList(object):
 		for successor in task.successors:
 			# Run through all successors and check whether the phase of the task
 			# comes before the phase of a successor
-			if successor.phase > successor.phase:
+			if task.phase > successor.phase:
 				msg = ("The task {task} is specified as running before {other}, "
 				       "but its phase '{phase}' lies after the phase '{other_phase}'"
 				       .format(task=task, other=successor, phase=task.phase, other_phase=successor.phase))
