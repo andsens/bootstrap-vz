@@ -44,6 +44,8 @@ class EBSVolume(Volume):
 		while self.volume.attachment_state() is not None:
 			time.sleep(2)
 			self.volume.update()
+		del self.ec2_device_path
+		self.device_path = None
 
 	def _before_delete(self, e):
 		self.volume.delete()

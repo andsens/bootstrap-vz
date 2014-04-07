@@ -21,7 +21,7 @@ class LoopbackVolume(Volume):
 	def _before_detach(self, e):
 		log_check_call(['losetup', '--detach', self.loop_device_path])
 		del self.loop_device_path
-		del self.device_path
+		self.device_path = None
 
 	def _before_delete(self, e):
 		from os import remove

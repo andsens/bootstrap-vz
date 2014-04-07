@@ -46,7 +46,7 @@ class QEMUVolume(LoopbackVolume):
 	def _before_detach(self, e):
 		log_check_call(['qemu-nbd', '--disconnect', self.loop_device_path])
 		del self.loop_device_path
-		del self.device_path
+		self.device_path = None
 
 	def _module_loaded(self, module):
 		import re
