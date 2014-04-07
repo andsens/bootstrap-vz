@@ -89,15 +89,6 @@ class Manifest(object):
 		self.packages     = self.data['packages'] if 'packages' in self.data else {}
 		self.plugins      = self.data['plugins'] if 'plugins' in self.data else {}
 
-	def load_json(self, path):
-		"""Loads JSON. Unused and will be removed.
-		Use common.tools.load_json instead
-		"""
-		import json
-		from minify_json import json_minify
-		with open(path) as stream:
-			return json.loads(json_minify(stream.read(), False))
-
 	def schema_validator(self, data, schema_path):
 		"""This convenience function is passed around to all the validation functions
 		so that they may run a json-schema validation by giving it the data and a path to the schema.
