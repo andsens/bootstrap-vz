@@ -63,6 +63,10 @@ def load_json(path):
 	with open(path) as stream:
 		return json.loads(json_minify(stream.read(), False))
 
+def load_yaml(path):
+	import yaml
+	with open(path, 'r') as fobj:
+		return yaml.load(fobj)
 
 def config_get(path, config_path):
 	config = load_json(path)
