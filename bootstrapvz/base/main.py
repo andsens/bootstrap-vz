@@ -13,45 +13,57 @@ def main():
 		Exception
 	"""
 	# Get the commandline arguments
-	args = get_args()
+	opts = get_opts()
 	# Require root privileges, except when doing a dry-run where they aren't needed
 	import os
-	if os.geteuid() != 0 and not args.dry_run:
+	if os.geteuid() != 0 and not opts['--dry-run']:
 		raise Exception('This program requires root privileges.')
-	# Setup logging
+
 	import log
-	log_dir = log.create_log_dir()
-	log_filename = log.get_log_filename(args.manifest)
-	logfile = os.path.join(log_dir, log_filename)
-	log.setup_logger(logfile=logfile, debug=args.debug)
+	# Log to file unless --log is a single dash
+	if opts['--log'] != '-':
+		# Setup logging
+		if not os.path.exists(opts['--log']):
+			os.makedirs(opts['--log'])
+		log_filename = log.get_log_filename(opts['MANIFEST'])
+		logfile = os.path.join(opts['--log'], log_filename)
+	else:
+		logfile = None
+	log.setup_logger(logfile=logfile, debug=opts['--debug'])
+
 	# Everything has been set up, begin the bootstrapping process
-	run(args)
+	run(opts)
 
 
-def get_args():
+def get_opts():
 	"""Creates an argument parser and returns the arguments it has parsed
 	"""
-	from argparse import ArgumentParser
-	parser = ArgumentParser(description='Bootstrap Debian for the cloud.')
-	parser.add_argument('--debug', action='store_true',
-	                    help='Print debugging information')
-	parser.add_argument('--pause-on-error', action='store_true',
-	                    help='Pause on error, before rollback')
-	parser.add_argument('--dry-run', action='store_true',
-	                    help='Dont\'t actually run the tasks')
-	parser.add_argument('manifest', help='Manifest file to use for bootstrapping', metavar='MANIFEST')
-	return parser.parse_args()
+	from docopt import docopt
+	usage = """bootstrap-vz
+
+Usage: bootstrap-vz [options] MANIFEST
+
+Options:
+  --log <path>       Log to given directory [default: /var/log/bootstrap-vz]
+                     If <path> is `-' file logging will be disabled.
+  --pause-on-error   Pause on error, before rollback
+  --dry-run          Don't actually run the tasks
+  --debug            Print debugging information
+  -h, --help         show this help
+	"""
+	opts = docopt(usage)
+	return opts
 
 
-def run(args):
+def run(opts):
 	"""Runs the bootstrapping process
 
 	Args:
-		args (dict): Dictionary of arguments from the commandline
+		opts (dict): Dictionary of options from the commandline
 	"""
 	# Load the manifest
 	from manifest import Manifest
-	manifest = Manifest(args.manifest)
+	manifest = Manifest(opts['MANIFEST'])
 
 	# Get the tasklist
 	from tasklist import TaskList
@@ -61,17 +73,17 @@ def run(args):
 
 	# Create the bootstrap information object that'll be used throughout the bootstrapping process
 	from bootstrapinfo import BootstrapInformation
-	bootstrap_info = BootstrapInformation(manifest=manifest, debug=args.debug)
+	bootstrap_info = BootstrapInformation(manifest=manifest, debug=opts['--debug'])
 
 	try:
 		# Run all the tasks the tasklist has gathered
-		tasklist.run(info=bootstrap_info, dry_run=args.dry_run)
+		tasklist.run(info=bootstrap_info, dry_run=opts['--dry-run'])
 		# We're done! :-)
 		log.info('Successfully completed bootstrapping')
 	except (Exception, KeyboardInterrupt) as e:
 		# When an error occurs, log it and begin rollback
 		log.exception(e)
-		if args.pause_on_error:
+		if opts['--pause-on-error']:
 			# The --pause-on-error is useful when the user wants to inspect the volume before rollback
 			raw_input('Press Enter to commence rollback')
 		log.error('Rolling back')
@@ -96,6 +108,6 @@ def run(args):
 		rollback_tasklist.load('resolve_rollback_tasks', manifest, counter_task)
 
 		# Run the rollback tasklist
-		rollback_tasklist.run(info=bootstrap_info, dry_run=args.dry_run)
+		rollback_tasklist.run(info=bootstrap_info, dry_run=opts['--dry-run'])
 		log.info('Successfully completed rollback')
 		raise e
