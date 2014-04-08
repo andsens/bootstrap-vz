@@ -1,8 +1,8 @@
 {
 	"provider": "azure",
 	"bootstrapper": {
-		"workspace":      "/target",
-		"mirror": "http://ftp.fr.debian.org/debian/"
+		"workspace": "/target",
+		"mirror":    "http://ftp.fr.debian.org/debian/"
 	},
 	"image": {
 		"name":        "debian-{system.release}-{system.architecture}-{%y}{%m}{%d}",
