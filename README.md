@@ -22,3 +22,10 @@ and learn [how you create a manifest](http://andsens.github.io/bootstrap-vz/mani
 Developers
 ----------
 The API documentation can be found at [bootstrap-vz.readthedocs.org](http://bootstrap-vz.readthedocs.org).
+
+Contributing
+------------
+
+Contribution guidelines are described on the [CONTRIBUTING](CONTRIBUTING.md) file.
+There's also a [topic on the documentation](http://andsens.github.io/bootstrap-vz/development.html#coding_style)
+regarding the coding style.
