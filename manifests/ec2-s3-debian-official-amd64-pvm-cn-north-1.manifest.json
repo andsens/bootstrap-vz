@@ -33,7 +33,7 @@
 		"partitions": {
 			"type": "none",
 			"root": {
-				"size":       "1GiB",
+				"size":       "4GiB",
 				"filesystem": "ext4"
 			}
 		}
