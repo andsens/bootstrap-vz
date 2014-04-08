@@ -7,7 +7,7 @@ Do you want to contribute to the bootstrap-vz project? Nice! Here is the basic w
 * Make any changes you want/need.
 * Commit your changes.
 * Squash the commits if needed. For instance, it is fine if you have multiple commits describing atomic units
-of work, but theres no reason to have many commits just because of corrected typos.
+of work, but there's no reason to have many little commits just because of corrected typos.
 * Push to your fork, preferable on a topic branch.
 
 By this moment, there are two paths that you have to consider:
@@ -22,9 +22,10 @@ If it as a bug/security fix:
 * Send a pull request to the `master` branch.
 
 Please try to be very descriptive about your changes when you write a pull request, stating what it does, why
-it is needed, what use cases do you think it would be useful, etc. Also, be in mind that if you push a new
-commit to your pull request, we won't be notified just by this - that will happen only if you make a comment
-on the issue.
+it is needed, what use cases do you think it would be useful, etc. You could as well be asked to rebase your
+work on the current branch state, so it can be merged cleanly. Also, be in mind that if you push a new commit
+to your pull request, we won't be notified just by this - that will happen only if you make a comment on the
+issue.
 
 Be aware that your modifications needs to be properly documented and pushed to the `gh-pages` branch.
 
