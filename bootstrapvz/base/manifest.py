@@ -4,6 +4,7 @@ invocations should have etc..
 .. module:: manifest
 """
 from bootstrapvz.common.tools import load_json
+from bootstrapvz.common.tools import load_yaml
 import logging
 log = logging.getLogger(__name__)
 
@@ -34,7 +35,11 @@ class Manifest(object):
 		"""
 		# Load the manifest JSON using the loader in common.tools
 		# It strips comments (which are invalid in strict json) before loading the data.
-		self.data = load_json(self.path)
+		if self.path.endswith('.json'):
+			self.data = load_json(self.path)
+		elif self.path.endswith('.yml') or self.path.endswith('.yaml'):
+			self.data = load_yaml(self.path)
+
 		# Get the provider name from the manifest and load the corresponding module
 		provider_modname = 'bootstrapvz.providers.{provider}'.format(provider=self.data['provider'])
 		log.debug('Loading provider `{modname}\''.format(modname=provider_modname))
