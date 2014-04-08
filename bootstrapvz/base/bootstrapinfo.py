@@ -65,6 +65,14 @@ class BootstrapInformation(object):
 		# Lists of startup scripts that should be installed and disabled
 		self.initd = {'install': {}, 'disable': []}
 
+		# Add a dictionary that can be accessed via info._pluginname for the provider and every plugin
+		# Information specific to the module can be added to that 'namespace', this avoids clutter.
+		providername = manifest.modules['provider'].__name__.split('.')[-1]
+		setattr(self, '_' + providername, DictClass())
+		for plugin in manifest.modules['plugins']:
+			pluginname = plugin.__name__.split('.')[-1]
+			setattr(self, '_' + pluginname, DictClass())
+
 	def __create_manifest_vars(self, manifest, additional_vars={}):
 		def set_manifest_vars(obj, data):
 			"""Runs through the manifest and creates DictClasses for every key
@@ -111,3 +119,6 @@ class DictClass(dict):
 
 	def __setattr__(self, name, value):
 		self[name] = value
+
+	def __delattr__(self, name):
+		del self[name]
