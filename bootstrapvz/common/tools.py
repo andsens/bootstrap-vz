@@ -63,10 +63,12 @@ def load_json(path):
 	with open(path) as stream:
 		return json.loads(json_minify(stream.read(), False))
 
+
 def load_yaml(path):
 	import yaml
 	with open(path, 'r') as fobj:
 		return yaml.load(fobj)
+
 
 def config_get(path, config_path):
 	config = load_json(path)
@@ -74,7 +76,8 @@ def config_get(path, config_path):
 		config = config.get(key)
 	return config
 
-def copy_tree(from_path,to_path):
+
+def copy_tree(from_path, to_path):
 	from shutil import copy
 	import os
 	for abs_prefix, dirs, files in os.walk(from_path):
@@ -90,4 +93,3 @@ def copy_tree(from_path,to_path):
 		for path in files:
 			copy(os.path.join(abs_prefix, path),
 			     os.path.join(to_path, prefix, path))
-
