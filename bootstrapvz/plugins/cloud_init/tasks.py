@@ -52,7 +52,9 @@ class SetUsername(Task):
 
 class SetMetadataSource(Task):
 	description = 'Setting metadata source'
-	phase = phases.system_modification
+	#phase = phases.system_modification
+	phase = phases.package_installation
+        successors = [apt.AptUpdate]
 
 	@classmethod
 	def run(cls, info):
@@ -67,7 +69,7 @@ class SetMetadataSource(Task):
 				       'skipping selections setting.').format(info.manifest.provider)
 				logging.getLogger(__name__).warn(msg)
 				return
-		sources = "cloud-init      cloud-init/datasources  multiselect     " + sources
+		sources = "cloud-init	cloud-init/datasources	multiselect	" + sources
 		log_check_call(['chroot', info.root, 'debconf-set-selections'], sources)
 
 

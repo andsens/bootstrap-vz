@@ -14,7 +14,7 @@
 		"description": "Debian {system.release} {system.architecture}"
 	},
 	"system": {
-		"release":      "testing",
+		"release":      "squeeze",
 		"architecture": "amd64",
 		"bootloader":   "pvgrub",
 		"timezone":     "UTC",
@@ -35,9 +35,8 @@
 		}
 	},
 	"plugins": {
-		"cloud_init": {
-			"username": "admin",
-			"metadata_sources": "Ec2"
+		"admin_user": {
+			"username": "admin"
 		}
 	}
 }
