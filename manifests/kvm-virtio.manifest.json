@@ -35,7 +35,6 @@
 	},
 	"plugins": {
 		"root_password": {
-			"enabled": true,
 			"password": "test"
 		}
 	}
