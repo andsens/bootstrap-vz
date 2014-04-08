@@ -30,7 +30,7 @@ class TaskList(object):
 		# Call 'function' on the provider
 		getattr(manifest.modules['provider'], function)(self.tasks, manifest, *args)
 		for plugin in manifest.modules['plugins']:
-			# Plugins har not required to have whatever function we call
+			# Plugins are not required to have whatever function we call
 			fn = getattr(plugin, function, None)
 			if callable(fn):
 				fn(self.tasks, manifest, *args)

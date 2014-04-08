@@ -44,7 +44,8 @@ class Manifest(object):
 		provider_modname = 'bootstrapvz.providers.{provider}'.format(provider=self.data['provider'])
 		log.debug('Loading provider `{modname}\''.format(modname=provider_modname))
 		# Create a modules dict that contains the loaded provider and plugins
-		self.modules = {'provider': __import__(provider_modname, fromlist=['providers']),
+		import importlib
+		self.modules = {'provider': importlib.import_module(provider_modname),
 		                'plugins': [],
 		                }
 		# Run through all the plugins mentioned in the manifest and load them
@@ -52,7 +53,7 @@ class Manifest(object):
 			for plugin_name, plugin_data in self.data['plugins'].iteritems():
 				modname = 'bootstrapvz.plugins.{plugin}'.format(plugin=plugin_name)
 				log.debug('Loading plugin `{modname}\''.format(modname=modname))
-				plugin = __import__(modname, fromlist=['plugins'])
+				plugin = importlib.import_module(modname)
 				self.modules['plugins'].append(plugin)
 
 		# Run the initialize function on the provider and plugins
