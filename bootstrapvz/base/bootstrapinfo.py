@@ -38,46 +38,8 @@ class BootstrapInformation(object):
 		from bootstrapvz.common.tools import config_get
 		self.release_codename = config_get(release_codenames_path, [self.manifest.system['release']])
 
-		class DictClass(dict):
-			"""Tiny extension of dict to allow setting and getting keys via attributes
-			"""
-			def __getattr__(self, name):
-				return self[name]
-
-			def __setattr__(self, name, value):
-				self[name] = value
-
-		def set_manifest_vars(obj, data):
-			"""Runs through the manifest and creates DictClasses for every key
-
-			Args:
-				obj (dict): dictionary to set the values on
-				data (dict): dictionary of values to set on the obj
-			"""
-			for key, value in data.iteritems():
-				if isinstance(value, dict):
-					obj[key] = DictClass()
-					set_manifest_vars(obj[key], value)
-					continue
-				# Lists are not supported
-				if not isinstance(value, list):
-					obj[key] = value
-
-		# manifest_vars is a dictionary of all the manifest values,
-		# with it users can cross-reference values in the manifest, so that they do not need to be written twice
-		self.manifest_vars = {}
-		self.manifest_vars['apt_mirror'] = self.apt_mirror
-		set_manifest_vars(self.manifest_vars, self.manifest.data)
-
-		# Populate the manifest_vars with datetime information
-		# and map the datetime variables directly to the dictionary
-		from datetime import datetime
-		now = datetime.now()
-		time_vars = ['%a', '%A', '%b', '%B', '%c', '%d', '%f', '%H',
-		             '%I', '%j', '%m', '%M', '%p', '%S', '%U', '%w',
-		             '%W', '%x', '%X', '%y', '%Y', '%z', '%Z']
-		for key in time_vars:
-			self.manifest_vars[key] = now.strftime(key)
+		# Create the manifest_vars dictionary
+		self.manifest_vars = self.__create_manifest_vars(self.manifest, {'apt_mirror': self.apt_mirror})
 
 		# Keep a list of apt sources,
 		# so that tasks may add to that list without having to fiddle with apt source list files.
@@ -102,3 +64,50 @@ class BootstrapInformation(object):
 
 		# Lists of startup scripts that should be installed and disabled
 		self.initd = {'install': {}, 'disable': []}
+
+	def __create_manifest_vars(self, manifest, additional_vars={}):
+		def set_manifest_vars(obj, data):
+			"""Runs through the manifest and creates DictClasses for every key
+
+			Args:
+				obj (dict): dictionary to set the values on
+				data (dict): dictionary of values to set on the obj
+			"""
+			for key, value in data.iteritems():
+				if isinstance(value, dict):
+					obj[key] = DictClass()
+					set_manifest_vars(obj[key], value)
+					continue
+				# Lists are not supported
+				if not isinstance(value, list):
+					obj[key] = value
+
+		# manifest_vars is a dictionary of all the manifest values,
+		# with it users can cross-reference values in the manifest, so that they do not need to be written twice
+		manifest_vars = {}
+		set_manifest_vars(manifest_vars, manifest.data)
+
+		# Populate the manifest_vars with datetime information
+		# and map the datetime variables directly to the dictionary
+		from datetime import datetime
+		now = datetime.now()
+		time_vars = ['%a', '%A', '%b', '%B', '%c', '%d', '%f', '%H',
+		             '%I', '%j', '%m', '%M', '%p', '%S', '%U', '%w',
+		             '%W', '%x', '%X', '%y', '%Y', '%z', '%Z']
+		for key in time_vars:
+			manifest_vars[key] = now.strftime(key)
+
+		# Add any additional manifest variables
+		# They are added last so that they may override previous variables
+		set_manifest_vars(manifest_vars, additional_vars)
+		return manifest_vars
+
+
+class DictClass(dict):
+	"""Tiny extension of dict to allow setting and getting keys via attributes
+	"""
+	def __getattr__(self, name):
+		return self[name]
+
+	def __setattr__(self, name, value):
+		self[name] = value
