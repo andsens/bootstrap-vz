@@ -3,7 +3,8 @@ to determine which tasks should be added to the tasklist, what arguments various
 invocations should have etc..
 .. module:: manifest
 """
-from bootstrapvz.common.tools import load_json, load_yaml
+from bootstrapvz.common.tools import load_json
+from bootstrapvz.common.tools import load_yaml
 import logging
 log = logging.getLogger(__name__)
 
