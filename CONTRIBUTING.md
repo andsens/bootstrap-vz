@@ -22,7 +22,9 @@ If it as a bug/security fix:
 * Send a pull request to the `master` branch.
 
 Please try to be very descriptive about your changes when you write a pull request, stating what it does, why
-it is needed, what use cases do you think it would be useful, etc.
+it is needed, what use cases do you think it would be useful, etc. Also, be in mind that if you push a new
+commit to your pull request, we won't be notified just by this - that will happen only if you make a comment
+on the issue.
 
 Be aware that your modifications needs to be properly documented and pushed to the `gh-pages` branch.
 
