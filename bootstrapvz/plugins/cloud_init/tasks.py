@@ -67,7 +67,7 @@ class SetMetadataSource(Task):
 				       'skipping selections setting.').format(info.manifest.provider)
 				logging.getLogger(__name__).warn(msg)
 				return
-		sources = "cloud-init      cloud-init/datasources  multiselect     " + sources
+		sources = "cloud-init	cloud-init/datasources	multiselect	" + sources
 		log_check_call(['chroot', info.root, 'debconf-set-selections'], sources)
 
 
