@@ -20,7 +20,7 @@ class DefaultPackages(Task):
 		info.packages.add('python-pyasn1')
 		info.packages.add('git')
 		info.packages.add('sudo')
-		#info.packages.add('waagent')
+
 
 class Waagent(Task):
 	description = 'Add waagent'
@@ -33,19 +33,13 @@ class Waagent(Task):
 		import os
 		env = os.environ.copy()
 		env['GIT_SSL_NO_VERIFY'] = 'true'
-		status, out, err = log_call(['chroot', info.root,
-         'git','clone', 'https://github.com/WindowsAzure/WALinuxAgent.git',
-         '/root/WALinuxAgent'], env=env)
-		status, out, err = log_call(['chroot', info.root,
-         'cp','/root/WALinuxAgent/waagent','/usr/sbin/waagent'])
-		status, out, err = log_call(['chroot', info.root,
-         'chmod','755','/usr/sbin/waagent'])
-		status, out, err = log_call(['chroot', info.root,
-          '/usr/sbin/waagent','-install'])
+		log_call(['chroot', info.root,
+		          'git', 'clone', 'https://github.com/WindowsAzure/WALinuxAgent.git',
+		          '/root/WALinuxAgent'], env=env)
+		log_call(['chroot', info.root, 'cp', '/root/WALinuxAgent/waagent', '/usr/sbin/waagent'])
+		log_call(['chmod', '755', '/usr/sbin/waagent'])
+		log_call(['chroot', info.root, 'waagent', '-install'])
 		import os.path
 		if hasattr(info.manifest, 'azure') and info.manifest.azure['waagent']:
 			if os.path.isfile(info.manifest.azure['waagent']):
-				status, out, err = log_call(['cp',
-                                    info.manifest.azure['waagent'],
-                                    os.path.join(info.root,'etc/waagent.conf')])
-
+				log_call(['cp', info.manifest.azure['waagent'], os.path.join(info.root, 'etc/waagent.conf')])
