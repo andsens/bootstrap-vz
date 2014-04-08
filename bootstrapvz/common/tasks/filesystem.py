@@ -8,7 +8,7 @@ import volume
 
 
 class AddRequiredCommands(Task):
-	description = 'Adding commands required for formatting the partitions'
+	description = 'Adding commands required for formatting'
 	phase = phases.preparation
 	successors = [host.CheckExternalCommands]
 

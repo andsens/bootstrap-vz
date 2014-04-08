@@ -7,7 +7,7 @@ log = logging.getLogger(__name__)
 
 
 class AddRequiredCommands(Task):
-	description = 'Adding commands required bootstrapping Debian'
+	description = 'Adding commands required for bootstrapping Debian'
 	phase = phases.preparation
 	successors = [host.CheckExternalCommands]
 
