@@ -41,6 +41,6 @@ class Connect(Task):
 	@classmethod
 	def run(cls, info):
 		from boto.ec2 import connect_to_region
-		info.connection = connect_to_region(info.host['region'],
-		                                    aws_access_key_id=info.credentials['access-key'],
-		                                    aws_secret_access_key=info.credentials['secret-key'])
+		info._ec2.connection = connect_to_region(info._ec2.host['region'],
+		                                         aws_access_key_id=info.credentials['access-key'],
+		                                         aws_secret_access_key=info.credentials['secret-key'])

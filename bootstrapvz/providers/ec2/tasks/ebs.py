@@ -8,7 +8,7 @@ class Create(Task):
 
 	@classmethod
 	def run(cls, info):
-		info.volume.create(info.connection, info.host['availabilityZone'])
+		info.volume.create(info._ec2.connection, info._ec2.host['availabilityZone'])
 
 
 class Attach(Task):
@@ -18,7 +18,7 @@ class Attach(Task):
 
 	@classmethod
 	def run(cls, info):
-		info.volume.attach(info.host['instanceId'])
+		info.volume.attach(info._ec2.host['instanceId'])
 
 
 class Snapshot(Task):
@@ -27,4 +27,4 @@ class Snapshot(Task):
 
 	@classmethod
 	def run(cls, info):
-		info.snapshot = info.volume.snapshot()
+		info._ec2.snapshot = info.volume.snapshot()

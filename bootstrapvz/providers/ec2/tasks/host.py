@@ -25,5 +25,4 @@ class GetInfo(Task):
 		import json
 		metadata_url = 'http://169.254.169.254/latest/dynamic/instance-identity/document'
 		response = urllib2.urlopen(url=metadata_url, timeout=5)
-		info.host = json.load(response)
-		return info
+		info._ec2.host = json.load(response)
