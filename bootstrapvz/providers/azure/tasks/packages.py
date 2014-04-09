@@ -18,9 +18,7 @@ class DefaultPackages(Task):
 		info.packages.add('python-openssl')
 		info.packages.add('openssh-server')
 		info.packages.add('python-pyasn1')
-		info.packages.add('git')
 		info.packages.add('sudo')
-
 
 class Waagent(Task):
 	description = 'Add waagent'
@@ -29,17 +27,29 @@ class Waagent(Task):
 
 	@classmethod
 	def run(cls, info):
-		from bootstrapvz.common.tools import log_call
+		from bootstrapvz.common.tools import log_check_call
 		import os
-		env = os.environ.copy()
-		env['GIT_SSL_NO_VERIFY'] = 'true'
-		log_call(['chroot', info.root,
-		          'git', 'clone', 'https://github.com/WindowsAzure/WALinuxAgent.git',
-		          '/root/WALinuxAgent'], env=env)
-		log_call(['chroot', info.root, 'cp', '/root/WALinuxAgent/waagent', '/usr/sbin/waagent'])
-		log_call(['chmod', '755', '/usr/sbin/waagent'])
-		log_call(['chroot', info.root, 'waagent', '-install'])
+		waagent_version = info.manifest.system['waagent']['version']
+		waagent_file = 'WALinuxAgent-'+waagent_version+'.tar.gz'
+		waagent_url = 'https://github.com/Azure/WALinuxAgent/archive/' + waagent_file
+		log_check_call(['/usr/bin/wget', '-P', info.root, waagent_url])
 		import os.path
-		if hasattr(info.manifest, 'azure') and info.manifest.azure['waagent']:
-			if os.path.isfile(info.manifest.azure['waagent']):
-				log_call(['cp', info.manifest.azure['waagent'], os.path.join(info.root, 'etc/waagent.conf')])
+		waagent_directory = os.path.join(info.root, 'root')
+		log_check_call(['/bin/tar', 'xaf',
+                                os.path.join(info.root, waagent_file),
+                               '-C', waagent_directory])
+		os.remove(os.path.join(info.root, waagent_file))
+		waagent_script = '/root/WALinuxAgent-WALinuxAgent-' + \
+                                 waagent_version + '/waagent'
+		log_check_call(['chroot', info.root,
+                                'cp',waagent_script, '/usr/sbin/waagent'])
+		log_check_call(['chroot', info.root,
+                                'chmod','755','/usr/sbin/waagent'])
+		log_check_call(['chroot', info.root,
+                                '/usr/sbin/waagent','-install'])
+		import os.path
+		if info.manifest.system['waagent'].get('conf', False):
+			if os.path.isfile(info.manifest.system['waagent']['conf']):
+				log_check_call(['cp', info.manifest.system['waagent']['conf'],
+                                                os.path.join(info.root,'etc/waagent.conf')])
+
