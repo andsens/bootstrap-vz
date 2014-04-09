@@ -3,22 +3,27 @@
 	"title": "Azure manifest",
 	"type": "object",
 	"properties": {
-		"azure": {
-			"type": "object",
-			"properties": {
-				"waagent": {
-					"type": "string"
-				}
-			}
-		},
 		"system": {
 			"type": "object",
 			"properties": {
 				"bootloader": {
 					"type": "string",
 					"enum": ["grub", "extlinux"]
+				},
+				"waagent": {
+					"type": "object",
+					"properties": {
+						"conf": {
+							"type": "string"
+						},
+						"version": {
+							"type": "string"
+						}
+					},
+					"required": ["version"]
 				}
-			}
+			},
+			"required": ["waagent"]
 		},
 		"volume": {
 			"type": "object",
