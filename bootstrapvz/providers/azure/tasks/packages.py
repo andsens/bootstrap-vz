@@ -33,7 +33,6 @@ class Waagent(Task):
 		waagent_file = 'WALinuxAgent-' + waagent_version + '.tar.gz'
 		waagent_url = 'https://github.com/Azure/WALinuxAgent/archive/' + waagent_file
 		log_check_call(['/usr/bin/wget', '-P', info.root, waagent_url])
-		import os.path
 		waagent_directory = os.path.join(info.root, 'root')
 		log_check_call(['/bin/tar', 'xaf', os.path.join(info.root, waagent_file), '-C', waagent_directory])
 		os.remove(os.path.join(info.root, waagent_file))
@@ -41,7 +40,6 @@ class Waagent(Task):
 		log_check_call(['chroot', info.root, 'cp', waagent_script, '/usr/sbin/waagent'])
 		log_check_call(['chroot', info.root, 'chmod', '755', '/usr/sbin/waagent'])
 		log_check_call(['chroot', info.root, '/usr/sbin/waagent', '-install'])
-		import os.path
 		if info.manifest.system['waagent'].get('conf', False):
 			if os.path.isfile(info.manifest.system['waagent']['conf']):
 				log_check_call(['cp', info.manifest.system['waagent']['conf'],
