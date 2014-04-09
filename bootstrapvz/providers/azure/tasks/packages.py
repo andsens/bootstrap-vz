@@ -30,26 +30,19 @@ class Waagent(Task):
 		from bootstrapvz.common.tools import log_check_call
 		import os
 		waagent_version = info.manifest.system['waagent']['version']
-		waagent_file = 'WALinuxAgent-'+waagent_version+'.tar.gz'
+		waagent_file = 'WALinuxAgent-' + waagent_version + '.tar.gz'
 		waagent_url = 'https://github.com/Azure/WALinuxAgent/archive/' + waagent_file
 		log_check_call(['/usr/bin/wget', '-P', info.root, waagent_url])
 		import os.path
 		waagent_directory = os.path.join(info.root, 'root')
-		log_check_call(['/bin/tar', 'xaf',
-                                os.path.join(info.root, waagent_file),
-                               '-C', waagent_directory])
+		log_check_call(['/bin/tar', 'xaf', os.path.join(info.root, waagent_file), '-C', waagent_directory])
 		os.remove(os.path.join(info.root, waagent_file))
-		waagent_script = '/root/WALinuxAgent-WALinuxAgent-' + \
-                                 waagent_version + '/waagent'
-		log_check_call(['chroot', info.root,
-                                'cp',waagent_script, '/usr/sbin/waagent'])
-		log_check_call(['chroot', info.root,
-                                'chmod','755','/usr/sbin/waagent'])
-		log_check_call(['chroot', info.root,
-                                '/usr/sbin/waagent','-install'])
+		waagent_script = '/root/WALinuxAgent-WALinuxAgent-' + waagent_version + '/waagent'
+		log_check_call(['chroot', info.root, 'cp', waagent_script, '/usr/sbin/waagent'])
+		log_check_call(['chroot', info.root, 'chmod', '755', '/usr/sbin/waagent'])
+		log_check_call(['chroot', info.root, '/usr/sbin/waagent', '-install'])
 		import os.path
 		if info.manifest.system['waagent'].get('conf', False):
 			if os.path.isfile(info.manifest.system['waagent']['conf']):
 				log_check_call(['cp', info.manifest.system['waagent']['conf'],
-                                                os.path.join(info.root,'etc/waagent.conf')])
-
+				                      os.path.join(info.root,'etc/waagent.conf')])
