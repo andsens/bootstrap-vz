@@ -51,8 +51,7 @@ def resolve_tasks(tasklist, manifest):
 	                 tasks.boot.ConfigureGrub,
 	                 cleanup.ClearMOTD,
 	                 cleanup.CleanTMP,
-
-			 tasks.image.ConvertToVhd
+	                 tasks.image.ConvertToVhd,
 	                 ])
 
 	if manifest.bootstrapper.get('tarball', False):

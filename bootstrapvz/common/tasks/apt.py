@@ -26,10 +26,10 @@ class AddDefaultSources(Task):
 		sections = 'main'
 		if 'sections' in info.manifest.system:
 			sections = ' '.join(info.manifest.system['sections'])
-		info.source_lists.add('main', 'deb     {apt_mirror} {system.release} '+sections)
-		info.source_lists.add('main', 'deb-src {apt_mirror} {system.release} '+sections)
-		info.source_lists.add('main', 'deb     http://security.debian.org/  {system.release}/updates '+sections)
-		info.source_lists.add('main', 'deb-src http://security.debian.org/  {system.release}/updates '+sections)
+		info.source_lists.add('main', 'deb     {apt_mirror} {system.release} ' + sections)
+		info.source_lists.add('main', 'deb-src {apt_mirror} {system.release} ' + sections)
+		info.source_lists.add('main', 'deb     http://security.debian.org/  {system.release}/updates ' + sections)
+		info.source_lists.add('main', 'deb-src http://security.debian.org/  {system.release}/updates ' + sections)
 		if info.manifest.system['release'] not in {'testing', 'unstable'}:
 			info.source_lists.add('main', 'deb     {apt_mirror} {system.release}-updates ' + sections)
 			info.source_lists.add('main', 'deb-src {apt_mirror} {system.release}-updates ' + sections)

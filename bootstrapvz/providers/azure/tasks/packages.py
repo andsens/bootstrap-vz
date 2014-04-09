@@ -20,6 +20,7 @@ class DefaultPackages(Task):
 		info.packages.add('python-pyasn1')
 		info.packages.add('sudo')
 
+
 class Waagent(Task):
 	description = 'Add waagent'
 	phase = phases.package_installation
@@ -43,4 +44,4 @@ class Waagent(Task):
 		if info.manifest.system['waagent'].get('conf', False):
 			if os.path.isfile(info.manifest.system['waagent']['conf']):
 				log_check_call(['cp', info.manifest.system['waagent']['conf'],
-				                      os.path.join(info.root,'etc/waagent.conf')])
+				                os.path.join(info.root, 'etc/waagent.conf')])
