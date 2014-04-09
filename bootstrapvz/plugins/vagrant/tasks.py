@@ -21,8 +21,8 @@ class CheckBoxPath(Task):
 			from bootstrapvz.common.exceptions import TaskError
 			msg = 'The vagrant box `{name}\' already exists at `{path}\''.format(name=box_name, path=box_path)
 			raise TaskError(msg)
-		info._vagrant.box_name = box_name
-		info._vagrant.box_path = box_path
+		info._vagrant['box_name'] = box_name
+		info._vagrant['box_path'] = box_path
 
 
 class CreateVagrantBoxDir(Task):
@@ -32,8 +32,8 @@ class CreateVagrantBoxDir(Task):
 
 	@classmethod
 	def run(cls, info):
-		info._vagrant.folder = os.path.join(info.workspace, 'vagrant')
-		os.mkdir(info._vagrant.folder)
+		info._vagrant['folder'] = os.path.join(info.workspace, 'vagrant')
+		os.mkdir(info._vagrant['folder'])
 
 
 class AddPackages(Task):
@@ -137,7 +137,7 @@ class PackageBox(Task):
 	@classmethod
 	def run(cls, info):
 		vagrantfile_source = os.path.join(assets, 'Vagrantfile')
-		vagrantfile = os.path.join(info._vagrant.folder, 'Vagrantfile')
+		vagrantfile = os.path.join(info._vagrant['folder'], 'Vagrantfile')
 		shutil.copy(vagrantfile_source, vagrantfile)
 
 		import random
@@ -146,26 +146,26 @@ class PackageBox(Task):
 		sed_i(vagrantfile, '\\[MAC_ADDRESS\\]', mac_address)
 
 		metadata_source = os.path.join(assets, 'metadata.json')
-		metadata = os.path.join(info._vagrant.folder, 'metadata.json')
+		metadata = os.path.join(info._vagrant['folder'], 'metadata.json')
 		shutil.copy(metadata_source, metadata)
 
 		from bootstrapvz.common.tools import log_check_call
 		disk_name = 'box-disk1.{ext}'.format(ext=info.volume.extension)
-		disk_link = os.path.join(info._vagrant.folder, disk_name)
+		disk_link = os.path.join(info._vagrant['folder'], disk_name)
 		log_check_call(['ln', '-s', info.volume.image_path, disk_link])
 
-		ovf_path = os.path.join(info._vagrant.folder, 'box.ovf')
+		ovf_path = os.path.join(info._vagrant['folder'], 'box.ovf')
 		cls.write_ovf(info, ovf_path, mac_address, disk_name)
 
-		box_files = os.listdir(info._vagrant.folder)
+		box_files = os.listdir(info._vagrant['folder'])
 		log_check_call(['tar', '--create', '--gzip', '--dereference',
-		                '--file', info._vagrant.box_path,
-		                '--directory', info._vagrant.folder]
+		                '--file', info._vagrant['box_path'],
+		                '--directory', info._vagrant['folder']]
 		               + box_files
 		               )
 		import logging
 		logging.getLogger(__name__).info('The vagrant box has been placed at {box_path}'
-		                                 .format(box_path=info._vagrant.box_path))
+		                                 .format(box_path=info._vagrant['box_path']))
 
 	@classmethod
 	def write_ovf(cls, info, destination, mac_address, disk_name):
@@ -207,16 +207,16 @@ class PackageBox(Task):
 		attr(disk, 'ovf:uuid', volume_uuid)
 
 		[system] = root.findall('./ovf:VirtualSystem', namespaces)
-		attr(system, 'ovf:id', info._vagrant.box_name)
+		attr(system, 'ovf:id', info._vagrant['box_name'])
 
 		[sysid] = system.findall('./ovf:VirtualHardwareSection/ovf:System/'
 		                         'vssd:VirtualSystemIdentifier', namespaces)
-		sysid.text = info._vagrant.box_name
+		sysid.text = info._vagrant['box_name']
 
 		[machine] = system.findall('./vbox:Machine', namespaces)
 		import uuid
 		attr(machine, 'ovf:uuid', uuid.uuid4())
-		attr(machine, 'ovf:name', info._vagrant.box_name)
+		attr(machine, 'ovf:name', info._vagrant['box_name'])
 		from datetime import datetime
 		attr(machine, 'ovf:lastStateChange', datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ'))
 		[nic] = machine.findall('./ovf:Hardware/ovf:Network/ovf:Adapter', namespaces)
@@ -237,5 +237,5 @@ class RemoveVagrantBoxDir(Task):
 
 	@classmethod
 	def run(cls, info):
-		shutil.rmtree(info._vagrant.folder)
-		del info._vagrant.folder
+		shutil.rmtree(info._vagrant['folder'])
+		del info._vagrant['folder']
