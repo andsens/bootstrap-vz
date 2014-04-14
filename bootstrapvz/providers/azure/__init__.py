@@ -39,12 +39,16 @@ def resolve_tasks(tasklist, manifest):
 	if manifest.volume['partitions']['type'] != 'none':
 		tasklist.update(task_sets.partitioning_set)
 
+	if manifest.system.get('hostname', False):
+		tasklist.add(network.SetHostname)
+	else:
+		tasklist.add(network.RemoveHostname)
+
 	tasklist.update([tasks.packages.DefaultPackages,
 	                 loopback.Create,
 	                 security.EnableShadowConfig,
 	                 network.RemoveDNSInfo,
 	                 network.ConfigureNetworkIF,
-	                 network.RemoveHostname,
 	                 initd.AddSSHKeyGeneration,
 	                 initd.InstallInitScripts,
 	                 tasks.packages.Waagent,
