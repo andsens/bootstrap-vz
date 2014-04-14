@@ -16,9 +16,7 @@
 						}
 					}
 				}
-			},
-			"required": ["ntp"]
+			}
 		}
-	},
-	"required": ["plugins"]
+	}
 }

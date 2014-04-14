@@ -21,9 +21,7 @@
 					},
 					"required": ["address", "port"]
 				}
-			},
-			"required": ["apt_proxy"]
+			}
 		}
-	},
-	"required": ["plugins"]
+	}
 }
