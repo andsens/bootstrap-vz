@@ -14,18 +14,18 @@ By this moment, there are two paths that you have to consider:
 
 If you patch is a new feature, e.g.: plugin, provider, etc. then:
 
-* Send a pull request to the `development` branch. It will be merged to the `master` branch when we can make
+* Send a pull request to the `development` branch. It will be merged into the `master` branch when we can make
 sure that the code is stable.
 
-If it as a bug/security fix:
+If it is a bug/security fix:
 
 * Send a pull request to the `master` branch.
 
 Please try to be very descriptive about your changes when you write a pull request, stating what it does, why
 it is needed, what use cases do you think it would be useful, etc. You could as well be asked to rebase your
 work on the current branch state, so it can be merged cleanly. Also, be in mind that if you push a new commit
-to your pull request, we won't be notified just by this - that will happen only if you make a comment on the
-issue.
+to your pull request, we won't be notified just by this - that will happen only if you make a new comment on
+the issue.
 
 Be aware that your modifications needs to be properly documented and pushed to the `gh-pages` branch.
 
