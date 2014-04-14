@@ -61,6 +61,11 @@ def resolve_tasks(taskset, manifest):
 	if manifest.volume['partitions']['type'] != 'none':
 		taskset.update(task_sets.partitioning_set)
 
+	if manifest.system.get('hostname', False):
+		taskset.add(network.SetHostname)
+	else:
+		taskset.add(network.RemoveHostname)
+
 	taskset.update([tasks.host.AddExternalCommands,
 	                tasks.packages.DefaultPackages,
 	                tasks.connection.GetCredentials,
@@ -72,7 +77,6 @@ def resolve_tasks(taskset, manifest):
 	                boot.DisableGetTTYs,
 	                security.EnableShadowConfig,
 	                network.RemoveDNSInfo,
-	                network.RemoveHostname,
 	                network.ConfigureNetworkIF,
 	                tasks.network.EnableDHCPCDDNS,
 	                initd.AddExpandRoot,

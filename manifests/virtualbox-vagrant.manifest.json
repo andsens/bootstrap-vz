@@ -14,7 +14,8 @@
 		"bootloader":   "grub",
 		"timezone":     "UTC",
 		"locale":       "en_US",
-		"charmap":      "UTF-8"
+		"charmap":      "UTF-8",
+		"hostname":     "localhost"
 	},
 	"packages": {},
 	"volume": {
@@ -34,7 +35,6 @@
 	},
 	"plugins": {
 		"vagrant": {
-			"hostname": "localhost"
 		}
 	}
 }

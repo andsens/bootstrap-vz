@@ -13,13 +13,11 @@ def resolve_tasks(taskset, manifest):
 	from bootstrapvz.common.tasks import network
 	taskset.discard(security.DisableSSHPasswordAuthentication)
 	taskset.discard(loopback.MoveImage)
-	taskset.discard(network.RemoveHostname)
 
 	from bootstrapvz.common.tasks import volume
 	taskset.update([tasks.CheckBoxPath,
 	                tasks.CreateVagrantBoxDir,
 	                tasks.AddPackages,
-	                tasks.SetHostname,
 	                tasks.CreateVagrantUser,
 	                tasks.PasswordlessSudo,
 	                tasks.SetRootPassword,

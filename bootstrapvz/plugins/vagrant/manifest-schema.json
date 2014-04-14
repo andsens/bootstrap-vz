@@ -25,12 +25,7 @@
 				"vagrant": {
 					"type": "object",
 					"properties": {
-						"hostname": {
-							"type": "string",
-							"pattern": "^\\S+$"
-						}
-					},
-					"required": ["hostname"]
+					}
 				}
 			}
 		}
