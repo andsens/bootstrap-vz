@@ -67,7 +67,7 @@ def load_json(path):
 def load_yaml(path):
 	import yaml
 	with open(path, 'r') as fobj:
-		return yaml.load(fobj)
+		return yaml.safe_load(fobj)
 
 
 def config_get(path, config_path):
