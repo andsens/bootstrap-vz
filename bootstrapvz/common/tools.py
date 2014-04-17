@@ -6,18 +6,20 @@ def log_check_call(command, stdin=None, env=None, shell=False):
 	return stdout
 
 
+def stream_readline(args):
+	stream, q = args
+	for line in iter(stream.readline, ''):
+		q.put((stream, line.strip()))
+
 def log_call(command, stdin=None, env=None, shell=False):
 	import subprocess
-	import select
-
 	import logging
+	import Queue
+	from multiprocessing.dummy import Pool as ThreadPool
 	from os.path import realpath
 	command_log = realpath(command[0]).replace('/', '.')
 	log = logging.getLogger(__name__ + command_log)
 	log.debug('Executing: {command}'.format(command=' '.join(command)))
-	if stdin is not None:
-		log.debug('  stdin: {stdin}'.format(stdin=stdin))
-
 	popen_args = {'args':   command,
 	              'env':    env,
 	              'shell':  shell,
@@ -25,6 +27,7 @@ def log_call(command, stdin=None, env=None, shell=False):
 	              'stdout': subprocess.PIPE,
 	              'stderr': subprocess.PIPE, }
 	if stdin is not None:
+		log.debug('  stdin: {stdin}'.format(stdin=stdin))
 		popen_args['stdin'] = subprocess.PIPE
 		process = subprocess.Popen(**popen_args)
 		process.stdin.write(stdin + "\n")
@@ -34,19 +37,22 @@ def log_call(command, stdin=None, env=None, shell=False):
 		process = subprocess.Popen(**popen_args)
 	stdout = []
 	stderr = []
+	q = Queue.Queue()
+	pool = ThreadPool(2)
+	pool.map(stream_readline, [(process.stdout, q), (process.stderr, q)])
+	pool.close()
 	while True:
-		reads = [process.stdout.fileno(), process.stderr.fileno()]
-		ret = select.select(reads, [], [])
-		for fd in ret[0]:
-			if fd == process.stdout.fileno():
-				for line in iter(process.stdout.readline, ''):
-					log.debug(line.strip())
-					stdout.append(line.strip())
-			if fd == process.stderr.fileno():
-				for line in iter(process.stderr.readline, ''):
-					log.error(line.strip())
-					stderr.append(line.strip())
-		if process.poll() is not None:
+		try:
+			stream, output = q.get_nowait()
+			if stream is process.stdout:
+				log.debug(output)
+				stdout.append(output)
+			elif stream is process.stderr:
+				log.error(output)
+				stderr.append(output)
+		except Queue.Empty:
+			pool.join()
+			process.wait()
 			return process.returncode, stdout, stderr
 
 
