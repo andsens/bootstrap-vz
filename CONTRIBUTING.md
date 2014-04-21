@@ -27,6 +27,7 @@ work on the current branch state, so it can be merged cleanly. Also, be in mind 
 to your pull request, we won't be notified just by this - that will happen only if you make a new comment on
 the issue.
 
-Be aware that your modifications needs to be properly documented and pushed to the `gh-pages` branch.
+Be aware that your modifications needs to be properly documented and pushed to the `gh-pages` branch, if they
+concern anything done on `master`. Otherwise, they should be sent to the `gh-pages-dev`.
 
 Happy hacking! :-)
