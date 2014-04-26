@@ -25,17 +25,17 @@ def validate_manifest(data, validator, error):
 
 
 def resolve_tasks(taskset, manifest):
-	from bootstrapvz.common import task_sets
-	taskset.update(task_sets.base_set)
-	taskset.update(task_sets.volume_set)
-	taskset.update(task_sets.mounting_set)
-	taskset.update(task_sets.get_apt_set(manifest))
-	taskset.update(task_sets.locale_set)
+	from bootstrapvz.common import task_groups
+	taskset.update(task_groups.base_set)
+	taskset.update(task_groups.volume_set)
+	taskset.update(task_groups.mounting_set)
+	taskset.update(task_groups.get_apt_set(manifest))
+	taskset.update(task_groups.locale_set)
 
-	taskset.update(task_sets.bootloader_set.get(manifest.system['bootloader']))
+	taskset.update(task_groups.bootloader_set.get(manifest.system['bootloader']))
 
 	if manifest.volume['partitions']['type'] != 'none':
-		taskset.update(task_sets.partitioning_set)
+		taskset.update(task_groups.partitioning_set)
 
 	if manifest.system.get('hostname', False):
 		taskset.add(network.SetHostname)
@@ -67,10 +67,10 @@ def resolve_tasks(taskset, manifest):
 	if manifest.bootstrapper.get('tarball', False):
 		taskset.add(bootstrap.MakeTarball)
 
-	taskset.update(task_sets.get_fs_specific_set(manifest.volume['partitions']))
+	taskset.update(task_groups.get_fs_specific_set(manifest.volume['partitions']))
 
 	if 'boot' in manifest.volume['partitions']:
-		taskset.update(task_sets.boot_partition_set)
+		taskset.update(task_groups.boot_partition_set)
 
 
 def resolve_rollback_tasks(taskset, manifest, counter_task):

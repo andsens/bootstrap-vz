@@ -26,25 +26,25 @@ def validate_manifest(data, validator, error):
 			error('Only extlinux can boot from unpartitioned disks', ['system', 'bootloader'])
 
 
-def resolve_tasks(tasklist, manifest):
-	from bootstrapvz.common import task_sets
-	tasklist.update(task_sets.base_set)
-	tasklist.update(task_sets.volume_set)
-	tasklist.update(task_sets.mounting_set)
-	tasklist.update(task_sets.get_apt_set(manifest))
-	tasklist.update(task_sets.locale_set)
+def resolve_tasks(taskset, manifest):
+	from bootstrapvz.common import task_groups
+	taskset.update(task_groups.base_set)
+	taskset.update(task_groups.volume_set)
+	taskset.update(task_groups.mounting_set)
+	taskset.update(task_groups.get_apt_set(manifest))
+	taskset.update(task_groups.locale_set)
 
-	tasklist.update(task_sets.bootloader_set.get(manifest.system['bootloader']))
+	taskset.update(task_groups.bootloader_set.get(manifest.system['bootloader']))
 
 	if manifest.volume['partitions']['type'] != 'none':
-		tasklist.update(task_sets.partitioning_set)
+		taskset.update(task_groups.partitioning_set)
 
 	if manifest.system.get('hostname', False):
-		tasklist.add(network.SetHostname)
+		taskset.add(network.SetHostname)
 	else:
-		tasklist.add(network.RemoveHostname)
+		taskset.add(network.RemoveHostname)
 
-	tasklist.update([tasks.packages.DefaultPackages,
+	taskset.update([tasks.packages.DefaultPackages,
 	                 loopback.Create,
 	                 security.EnableShadowConfig,
 	                 network.RemoveDNSInfo,
@@ -59,15 +59,15 @@ def resolve_tasks(tasklist, manifest):
 	                 ])
 
 	if manifest.bootstrapper.get('tarball', False):
-		tasklist.add(bootstrap.MakeTarball)
+		taskset.add(bootstrap.MakeTarball)
 
-	tasklist.update(task_sets.get_fs_specific_set(manifest.volume['partitions']))
+	taskset.update(task_groups.get_fs_specific_set(manifest.volume['partitions']))
 
 	if 'boot' in manifest.volume['partitions']:
-		tasklist.update(task_sets.boot_partition_set)
+		taskset.update(task_groups.boot_partition_set)
 
 
-def resolve_rollback_tasks(tasklist, manifest, counter_task):
+def resolve_rollback_tasks(taskset, manifest, counter_task):
 	counter_task(loopback.Create, volume.Delete)
 	counter_task(filesystem.CreateMountDir, filesystem.DeleteMountDir)
 	counter_task(partitioning.MapPartitions, partitioning.UnmapPartitions)
