@@ -2,6 +2,8 @@ from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 from bootstrapvz.common.tools import log_check_call
 from bootstrapvz.common.tasks import apt
+from bootstrapvz.common.tasks import locale
+import logging
 import os.path
 
 
@@ -12,7 +14,6 @@ class AddBackports(Task):
 	@classmethod
 	def run(cls, info):
 		if info.source_lists.target_exists('{system.release}-backports'):
-			import logging
 			msg = ('{system.release}-backports target already exists').format(**info.manifest_vars)
 			logging.getLogger(__name__).info(msg)
 		else:
@@ -52,9 +53,9 @@ class SetUsername(Task):
 
 class SetMetadataSource(Task):
 	description = 'Setting metadata source'
-	#phase = phases.system_modification
 	phase = phases.package_installation
-        successors = [apt.AptUpdate]
+	predecessors = [locale.GenerateLocale]
+	successors = [apt.AptUpdate]
 
 	@classmethod
 	def run(cls, info):
@@ -64,9 +65,8 @@ class SetMetadataSource(Task):
 			source_mapping = {'ec2': 'Ec2'}
 			sources = source_mapping.get(info.manifest.provider, None)
 			if sources is None:
-				import logging
 				msg = ('No cloud-init metadata source mapping found for provider `{provider}\', '
-				       'skipping selections setting.').format(info.manifest.provider)
+				       'skipping selections setting.').format(provider=info.manifest.provider)
 				logging.getLogger(__name__).warn(msg)
 				return
 		sources = "cloud-init	cloud-init/datasources	multiselect	" + sources
