@@ -3,6 +3,7 @@ from .. import phases
 from ..exceptions import TaskError
 import host
 import logging
+import os.path
 log = logging.getLogger(__name__)
 
 
@@ -28,22 +29,26 @@ def get_bootstrap_args(info):
 	return executable, options, arguments
 
 
+def get_tarball_filename(info):
+	from hashlib import sha1
+	executable, options, arguments = get_bootstrap_args(info)
+	# Filter info.root which points at /target/volume-id, we won't ever hit anything with that in there.
+	hash_args = [arg for arg in arguments if arg != info.root]
+	tarball_id = sha1(repr(frozenset(options + hash_args))).hexdigest()[0:8]
+	tarball_filename = 'debootstrap-{id}.tar'.format(id=tarball_id)
+	return os.path.join(info.manifest.bootstrapper['workspace'], tarball_filename)
+
+
 class MakeTarball(Task):
 	description = 'Creating bootstrap tarball'
 	phase = phases.os_installation
 
 	@classmethod
 	def run(cls, info):
-		from hashlib import sha1
-		import os.path
 		executable, options, arguments = get_bootstrap_args(info)
-		# Filter info.root which points at /target/volume-id, we won't ever hit anything with that in there.
-		hash_args = [arg for arg in arguments if arg != info.root]
-		tarball_id = sha1(repr(frozenset(options + hash_args))).hexdigest()[0:8]
-		tarball_filename = 'debootstrap-{id}.tar'.format(id=tarball_id)
-		info.tarball = os.path.join(info.manifest.bootstrapper['workspace'], tarball_filename)
+		info.tarball = get_tarball_filename(info)
 		if os.path.isfile(info.tarball):
-			log.debug('Found matching tarball, skipping download')
+			log.debug('Found matching tarball, skipping creation')
 		else:
 			from ..tools import log_call
 			status, out, err = log_call(executable + options + ['--make-tarball=' + info.tarball] + arguments)
@@ -60,7 +65,11 @@ class Bootstrap(Task):
 	@classmethod
 	def run(cls, info):
 		executable, options, arguments = get_bootstrap_args(info)
-		if hasattr(info, 'tarball'):
+		info.tarball = get_tarball_filename(info)
+		if os.path.isfile(info.tarball):
+			if not info.manifest.bootstrapper.get('tarball', False):
+				# Only shows this message if it hasn't tried to create the tarball
+				log.debug('Found matching tarball, skipping download')
 			options.extend(['--unpack-tarball=' + info.tarball])
 
 		from ..tools import log_check_call
