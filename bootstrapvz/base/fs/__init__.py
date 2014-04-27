@@ -30,5 +30,5 @@ def load_volume(data, bootloader):
 	                   'vmdk': VirtualMachineDisk,
 	                   'ebs': EBSVolume
 	                   }
-	 # Create the volume with the partition map as an argument
+	# Create the volume with the partition map as an argument
 	return volume_backings.get(data['backing'])(partition_map)

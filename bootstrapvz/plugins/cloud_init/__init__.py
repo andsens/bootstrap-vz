@@ -14,9 +14,7 @@ def resolve_tasks(taskset, manifest):
 	if manifest.system['release'] in ['wheezy', 'stable']:
 		taskset.add(tasks.AddBackports)
 
-	taskset.update([ tasks.SetMetadataSource,
-			tasks.AddCloudInitPackages,
-	                ])
+	taskset.update([tasks.SetMetadataSource, tasks.AddCloudInitPackages])
 
 	options = manifest.plugins['cloud_init']
 	if 'username' in options:

@@ -1,7 +1,6 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common.tasks import apt
 from bootstrapvz.common import phases
-import os
 
 
 class AddBackports(Task):
@@ -17,6 +16,7 @@ class AddBackports(Task):
 		else:
 			info.source_lists.add('backports', 'deb     {apt_mirror} {system.release}-backports main')
 			info.source_lists.add('backports', 'deb-src {apt_mirror} {system.release}-backports main')
+
 
 class AddONEContextPackage(Task):
 	description = 'Adding the OpenNebula context package'

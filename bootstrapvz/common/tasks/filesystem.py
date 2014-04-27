@@ -144,10 +144,10 @@ class FStab(Task):
 		import os.path
 		p_map = info.volume.partition_map
 		mount_points = [{'path': '/',
-			               'partition': p_map.root,
-			               'dump': '1',
-			               'pass_num': '1',
-			                }]
+		                 'partition': p_map.root,
+		                 'dump': '1',
+		                 'pass_num': '1',
+		                 }]
 		if hasattr(p_map, 'boot'):
 			mount_points.append({'path': '/boot',
 			                     'partition': p_map.boot,
