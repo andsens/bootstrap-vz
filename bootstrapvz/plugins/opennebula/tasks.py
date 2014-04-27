@@ -1,7 +1,6 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common.tasks import apt
 from bootstrapvz.common import phases
-import os
 
 
 class AddBackports(Task):

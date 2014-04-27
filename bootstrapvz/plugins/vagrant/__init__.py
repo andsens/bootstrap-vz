@@ -10,7 +10,6 @@ def validate_manifest(data, validator, error):
 def resolve_tasks(taskset, manifest):
 	from bootstrapvz.common.tasks import security
 	from bootstrapvz.common.tasks import loopback
-	from bootstrapvz.common.tasks import network
 	taskset.discard(security.DisableSSHPasswordAuthentication)
 	taskset.discard(loopback.MoveImage)
 

@@ -45,18 +45,18 @@ def resolve_tasks(taskset, manifest):
 		taskset.add(network.RemoveHostname)
 
 	taskset.update([tasks.packages.DefaultPackages,
-	                 loopback.Create,
-	                 security.EnableShadowConfig,
-	                 network.RemoveDNSInfo,
-	                 network.ConfigureNetworkIF,
-	                 initd.AddSSHKeyGeneration,
-	                 initd.InstallInitScripts,
-	                 tasks.packages.Waagent,
-	                 tasks.boot.ConfigureGrub,
-	                 cleanup.ClearMOTD,
-	                 cleanup.CleanTMP,
-	                 tasks.image.ConvertToVhd,
-	                 ])
+	                loopback.Create,
+	                security.EnableShadowConfig,
+	                network.RemoveDNSInfo,
+	                network.ConfigureNetworkIF,
+	                initd.AddSSHKeyGeneration,
+	                initd.InstallInitScripts,
+	                tasks.packages.Waagent,
+	                tasks.boot.ConfigureGrub,
+	                cleanup.ClearMOTD,
+	                cleanup.CleanTMP,
+	                tasks.image.ConvertToVhd,
+	                ])
 
 	if manifest.bootstrapper.get('tarball', False):
 		taskset.add(bootstrap.MakeTarball)

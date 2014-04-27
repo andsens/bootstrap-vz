@@ -2,6 +2,7 @@ from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 from bootstrapvz.common.tasks import apt
 from bootstrapvz.common.tasks import network
+from bootstrapvz.common.tools import sed_i
 import os
 
 
@@ -82,7 +83,6 @@ class ApplyPuppetManifest(Task):
 		                'puppet', 'apply', manifest_path])
 		os.remove(manifest_dst)
 
-		from bootstrapvz.common.tools import sed_i
 		hosts_path = os.path.join(info.root, 'etc/hosts')
 		sed_i(hosts_path, '127.0.0.1\s*{hostname}\n?'.format(hostname=hostname), '')
 

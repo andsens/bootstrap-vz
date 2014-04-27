@@ -52,9 +52,8 @@ class SetUsername(Task):
 
 class SetMetadataSource(Task):
 	description = 'Setting metadata source'
-	#phase = phases.system_modification
 	phase = phases.package_installation
-        successors = [apt.AptUpdate]
+	successors = [apt.AptUpdate]
 
 	@classmethod
 	def run(cls, info):
