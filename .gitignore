@@ -5,8 +5,10 @@ _site/
 # When developing for ec2 `vagrant provision' is quite handy
 /Vagrantfile
 /.vagrant
+# Building the package
 /build
 /dist
 /bootstrap_vz.egg-info
-/.tox
+# Testing
 /.coverage
+/.tox
