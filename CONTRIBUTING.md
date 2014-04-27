@@ -5,6 +5,10 @@ Do you want to contribute to the bootstrap-vz project? Nice! Here is the basic w
 
 * Fork this repository.
 * Make any changes you want/need.
+* Check the coding style of your changes using [tox](http://tox.readthedocs.org/), running `tox -e flake8` and
+fixing any warnings that may appear. This will be done again by
+[Travis CI](https://travis-ci.org/andsens/bootstrap-vz) later when you send a pull request, so it's better if
+you check this before.
 * Commit your changes.
 * Squash the commits if needed. For instance, it is fine if you have multiple commits describing atomic units
 of work, but there's no reason to have many little commits just because of corrected typos.
