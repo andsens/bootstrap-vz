@@ -2,8 +2,8 @@
 provider: "ec2"
 virtualization: "pvm"
 credentials:
-    access-key: null
-    secret-key: null
+    access-key: ""
+    secret-key: ""
 bootstrapper:
     workspace: "/target"
 image:

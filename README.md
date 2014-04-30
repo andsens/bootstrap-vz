@@ -1,6 +1,5 @@
 bootstrap-vz
 ===========================================
-
 bootstrap-vz is a bootstrapping framework for Debian.
 It is is specifically targeted at bootstrapping systems for virtualized environments.
 bootstrap-vz runs without any user intervention and generates ready-to-boot images for
