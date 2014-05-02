@@ -1,0 +1,46 @@
+{
+	"provider": "gce",
+	"bootstrapper": {
+		"workspace":      "/target"
+	},
+	"image": {
+		"name":        "disk",
+		"description": "Debian {system.release} {system.architecture}"
+	},
+	"system": {
+		"release":      "wheezy",
+		"sections":     ["main", "contrib", "non-free"],
+		"architecture": "amd64",
+		"bootloader":   "grub",
+		"timezone":     "UTC",
+		"locale":       "en_US",
+		"charmap":      "UTF-8"
+	},
+	"packages": {
+		"mirror": "http://gce_debian_mirror.storage.googleapis.com/",
+		"preferences": {
+			"backport-kernel": [
+			{
+				"package": "linux-image-* initramfs-tools",
+				"pin": "release n=wheezy-backports",
+				"pin-priority": 500
+			}
+			]
+		}
+	},
+	"plugins": {
+		"ntp": {
+			"servers": ["metadata.google.internal"]
+		}
+	},
+	"volume": {
+		"backing": "raw",
+		"partitions": {
+			"type": "msdos",
+			"root": {
+				"size":       "10GiB",
+				"filesystem": "ext4"
+			}
+		}
+	}
+}
