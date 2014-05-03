@@ -12,6 +12,7 @@ from bootstrapvz.common.tasks import security
 from bootstrapvz.common.tasks import network
 from bootstrapvz.common.tasks import initd
 from bootstrapvz.common.tasks import workspace
+import bootstrapvz.plugins.cloud_init.tasks
 
 
 def initialize():
