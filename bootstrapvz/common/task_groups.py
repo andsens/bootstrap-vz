@@ -27,6 +27,7 @@ def get_standard_groups(manifest):
 	group.extend(get_fs_specific_group(manifest))
 	group.extend(get_network_group(manifest))
 	group.extend(get_apt_group(manifest))
+	group.extend(security_group)
 	group.extend(locale_group)
 	group.extend(bootloader_group.get(manifest.system['bootloader'], []))
 	group.extend(cleanup_group)
@@ -112,6 +113,7 @@ def get_apt_group(manifest):
 		group.append(packages.AddTaskselStandardPackages)
 	return group
 
+security_group = [security.EnableShadowConfig]
 
 locale_group = [locale.LocaleBootstrapPackage,
                 locale.GenerateLocale,

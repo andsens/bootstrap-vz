@@ -13,7 +13,6 @@ from bootstrapvz.common.tasks import boot
 from bootstrapvz.common.tasks import initd
 from bootstrapvz.common.tasks import partitioning
 from bootstrapvz.common.tasks import loopback
-from bootstrapvz.common.tasks import security
 from bootstrapvz.common.tasks import workspace
 
 
@@ -60,7 +59,6 @@ def resolve_tasks(taskset, manifest):
 
 	                boot.BlackListModules,
 	                boot.DisableGetTTYs,
-	                security.EnableShadowConfig,
 	                tasks.network.EnableDHCPCDDNS,
 	                initd.AddExpandRoot,
 	                initd.RemoveHWClock,

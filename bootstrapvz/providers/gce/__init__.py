@@ -6,7 +6,6 @@ import tasks.host
 import tasks.packages
 from bootstrapvz.common.tasks import loopback
 from bootstrapvz.common.tasks import ssh
-from bootstrapvz.common.tasks import security
 from bootstrapvz.common.tasks import initd
 import bootstrapvz.plugins.cloud_init.tasks
 
@@ -34,7 +33,6 @@ def resolve_tasks(tasklist, manifest):
 
 	                 tasks.configuration.GatherReleaseInformation,
 
-	                 security.EnableShadowConfig,
 	                 tasks.host.DisableIPv6,
 	                 tasks.boot.ConfigureGrub,
 	                 ssh.AddSSHKeyGeneration,
