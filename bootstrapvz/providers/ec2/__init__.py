@@ -52,19 +52,8 @@ def validate_manifest(data, validator, error):
 
 def resolve_tasks(taskset, manifest):
 	from bootstrapvz.common import task_groups
-	taskset.update(task_groups.base_set)
-	taskset.update(task_groups.mounting_set)
-	taskset.update(task_groups.get_apt_set(manifest))
-	taskset.update(task_groups.locale_set)
-	taskset.update(task_groups.ssh_set)
-
-	if manifest.volume['partitions']['type'] != 'none':
-		taskset.update(task_groups.partitioning_set)
-
-	if manifest.system.get('hostname', False):
-		taskset.add(network.SetHostname)
-	else:
-		taskset.add(network.RemoveHostname)
+	taskset.update(task_groups.get_standard_groups(manifest))
+	taskset.update(task_groups.ssh_group)
 
 	taskset.update([tasks.host.AddExternalCommands,
 	                tasks.packages.DefaultPackages,
@@ -75,8 +64,6 @@ def resolve_tasks(taskset, manifest):
 	                boot.BlackListModules,
 	                boot.DisableGetTTYs,
 	                security.EnableShadowConfig,
-	                network.RemoveDNSInfo,
-	                network.ConfigureNetworkIF,
 	                tasks.network.EnableDHCPCDDNS,
 	                initd.AddExpandRoot,
 	                initd.AddSSHKeyGeneration,
@@ -84,8 +71,6 @@ def resolve_tasks(taskset, manifest):
 	                tasks.initd.AddEC2InitScripts,
 	                initd.InstallInitScripts,
 	                initd.AdjustExpandRootScript,
-	                cleanup.ClearMOTD,
-	                cleanup.CleanTMP,
 
 	                tasks.ami.RegisterAMI,
 	                ])
@@ -93,35 +78,29 @@ def resolve_tasks(taskset, manifest):
 	if manifest.system['bootloader'] == 'pvgrub':
 		taskset.add(boot.AddGrubPackage)
 		taskset.add(tasks.boot.ConfigurePVGrub)
-	else:
-		taskset.update(task_groups.bootloader_set.get(manifest.system['bootloader']))
 
-	backing_specific_tasks = {'ebs': [tasks.host.GetInstanceMetadata,
-	                                  tasks.ebs.Create,
-	                                  tasks.ebs.Attach,
-	                                  filesystem.FStab,
-	                                  tasks.ebs.Snapshot],
-	                          's3': [loopback.AddRequiredCommands,
-	                                 tasks.host.SetRegion,
-	                                 loopback.Create,
-	                                 volume.Attach,
-	                                 tasks.filesystem.S3FStab,
-	                                 tasks.ami.BundleImage,
-	                                 tasks.ami.UploadImage,
-	                                 tasks.ami.RemoveBundle]}
-	taskset.update(backing_specific_tasks.get(manifest.volume['backing'].lower()))
+	if manifest.volume['backing'].lower() == 'ebs':
+		taskset.update([tasks.host.GetInstanceMetadata,
+		                tasks.ebs.Create,
+		                tasks.ebs.Snapshot,
+		                ])
+		taskset.add(tasks.ebs.Attach)
+		taskset.discard(volume.Attach)
+
+	if manifest.volume['backing'].lower() == 's3':
+		taskset.update([loopback.AddRequiredCommands,
+		                tasks.host.SetRegion,
+		                loopback.Create,
+		                tasks.filesystem.S3FStab,
+		                tasks.ami.BundleImage,
+		                tasks.ami.UploadImage,
+		                tasks.ami.RemoveBundle,
+		                ])
+		taskset.discard(filesystem.FStab)
+
 	taskset.update([filesystem.Format,
-	                volume.Detach,
 	                volume.Delete,
 	                ])
-
-	if manifest.bootstrapper.get('tarball', False):
-		taskset.add(bootstrap.MakeTarball)
-
-	taskset.update(task_groups.get_fs_specific_set(manifest.volume['partitions']))
-
-	if 'boot' in manifest.volume['partitions']:
-		taskset.update(task_groups.boot_partition_set)
 
 
 def resolve_rollback_tasks(taskset, manifest, counter_task):

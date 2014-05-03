@@ -4,14 +4,9 @@ import tasks.configuration
 import tasks.image
 import tasks.host
 import tasks.packages
-from bootstrapvz.common.tasks import volume
 from bootstrapvz.common.tasks import loopback
-from bootstrapvz.common.tasks import partitioning
-from bootstrapvz.common.tasks import filesystem
 from bootstrapvz.common.tasks import security
-from bootstrapvz.common.tasks import network
 from bootstrapvz.common.tasks import initd
-from bootstrapvz.common.tasks import workspace
 import bootstrapvz.plugins.cloud_init.tasks
 
 
@@ -26,17 +21,7 @@ def validate_manifest(data, validator, error):
 
 
 def resolve_tasks(tasklist, manifest):
-	import bootstrapvz.common.task_groups
-	tasklist.update(bootstrapvz.common.task_groups.base_set)
-	tasklist.update(bootstrapvz.common.task_groups.volume_set)
-	tasklist.update(bootstrapvz.common.task_groups.mounting_set)
-	tasklist.update(bootstrapvz.common.task_groups.get_apt_set(manifest))
-	tasklist.update(bootstrapvz.common.task_groups.locale_set)
-
-	tasklist.update(bootstrapvz.common.task_groups.bootloader_set.get(manifest.system['bootloader']))
-
-	if manifest.volume['partitions']['type'] != 'none':
-		tasklist.update(bootstrapvz.common.task_groups.partitioning_set)
+	tasklist.update(bootstrapvz.common.task_groups.get_standard_groups(manifest))
 
 	tasklist.update([bootstrapvz.plugins.cloud_init.tasks.AddBackports,
 	                 loopback.Create,
@@ -49,14 +34,9 @@ def resolve_tasks(tasklist, manifest):
 	                 tasks.configuration.GatherReleaseInformation,
 
 	                 security.EnableShadowConfig,
-	                 network.RemoveDNSInfo,
-	                 network.RemoveHostname,
-	                 network.ConfigureNetworkIF,
 	                 tasks.host.DisableIPv6,
-	                 tasks.host.SetHostname,
 	                 tasks.boot.ConfigureGrub,
 	                 initd.AddSSHKeyGeneration,
-	                 initd.InstallInitScripts,
 	                 tasks.apt.CleanGoogleRepositoriesAndKeys,
 
 	                 loopback.MoveImage,
@@ -67,11 +47,6 @@ def resolve_tasks(tasklist, manifest):
 		tasklist.add(tasks.image.UploadImage)
 		if 'gce_project' in manifest.image:
 			tasklist.add(tasks.image.RegisterImage)
-
-	tasklist.update(bootstrapvz.common.task_groups.get_fs_specific_set(manifest.volume['partitions']))
-
-	if 'boot' in manifest.volume['partitions']:
-		tasklist.update(bootstrapvz.common.task_groups.boot_partition_set)
 
 
 def resolve_rollback_tasks(tasklist, manifest, counter_task):
