@@ -11,30 +11,34 @@ def stream_readline(args):
 	for line in iter(stream.readline, ''):
 		q.put((stream, line.strip()))
 
+
 def log_call(command, stdin=None, env=None, shell=False):
 	import subprocess
 	import logging
 	import Queue
 	from multiprocessing.dummy import Pool as ThreadPool
 	from os.path import realpath
+
 	command_log = realpath(command[0]).replace('/', '.')
 	log = logging.getLogger(__name__ + command_log)
 	log.debug('Executing: {command}'.format(command=' '.join(command)))
-	popen_args = {'args':   command,
-	              'env':    env,
-	              'shell':  shell,
-	              'stdin':  subprocess.PIPE,
-	              'stdout': subprocess.PIPE,
-	              'stderr': subprocess.PIPE, }
+
+	process = subprocess.Popen(args=command, env=env, shell=shell,
+	                           stdin=subprocess.PIPE,
+	                           stdout=subprocess.PIPE,
+	                           stderr=subprocess.PIPE)
+
+	def stream_readline(args):
+		stream, q = args
+		for line in iter(stream.readline, ''):
+			q.put((stream, line.strip()))
+
 	if stdin is not None:
-		log.debug('  stdin: {stdin}'.format(stdin=stdin))
-		popen_args['stdin'] = subprocess.PIPE
-		process = subprocess.Popen(**popen_args)
-		process.stdin.write(stdin + "\n")
-		process.stdin.flush()
-		process.stdin.close()
-	else:
-		process = subprocess.Popen(**popen_args)
+	    log.debug('  stdin: {stdin}'.format(stdin=stdin))
+	    process.stdin.write(stdin + "\n")
+	    process.stdin.flush()
+	    process.stdin.close()
+
 	stdout = []
 	stderr = []
 	q = Queue.Queue()
