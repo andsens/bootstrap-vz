@@ -22,8 +22,6 @@ class GPTPartition(BasePartition):
 		# Create the partition and then set the name of the partition afterwards
 		super(GPTPartition, self)._before_create(e)
 		# partition name only works for gpt, for msdos that becomes the part-type (primary, extended, logical)
-		name_command = ('name {idx} {name}'
-		                .format(idx=self.get_index(),
-		                        name=self.name))
+		name_command = 'name {idx} {name}'.format(idx=self.get_index(), name=self.name)
 		log_check_call(['parted', '--script', e.volume.device_path,
 		                '--', name_command])

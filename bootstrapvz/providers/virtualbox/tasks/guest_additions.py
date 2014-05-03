@@ -31,7 +31,7 @@ class AddGuestAdditionsPackages(Task):
 		from bootstrapvz.common.tools import log_check_call
 		[kernel_version] = log_check_call(['chroot', info.root,
 		                                   'uname', '-r'])
-		kernel_headers_pkg = 'linux-headers-{version}'.format(version=kernel_version)
+		kernel_headers_pkg = 'linux-headers-' + kernel_version
 		info.packages.add(kernel_headers_pkg)
 
 

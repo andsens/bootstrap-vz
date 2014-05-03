@@ -21,7 +21,7 @@ class Bytes(object):
 		regex = re.compile('^(?P<qty>\d+)(?P<unit>[KMGT]i?B|B)$')
 		parsed = regex.match(qty_str)
 		if parsed is None:
-			raise UnitError('Unable to parse {str}'.format(str=qty_str))
+			raise UnitError('Unable to parse ' + qty_str)
 
 		qty = int(parsed.group('qty'))
 		unit = parsed.group('unit')
@@ -34,7 +34,7 @@ class Bytes(object):
 		if unit[0] in 'KMGT':
 			unit = unit[0] + 'iB'
 		if unit not in Bytes.units:
-			raise UnitError('Unrecognized unit `{unit}\''.format(unit=Bytes.magnitude))
+			raise UnitError('Unrecognized unit: ' + unit)
 		if self.qty % Bytes.units[unit] != 0:
 			msg = 'Unable to convert {qty} bytes to a whole number in {unit}'.format(qty=self.qty, unit=unit)
 			raise UnitError(msg)

@@ -19,7 +19,7 @@ class Task(object):
 			Returns:
 				string.
 			"""
-			return '{module}.{task}'.format(module=cls.__module__, task=cls.__name__)
+			return cls.__module__ + '.' + cls.__name__
 
 		def __str__(cls):
 			"""

@@ -84,7 +84,7 @@ class AbstractPartitionMap(FSMProxy):
 			for mapping in mappings:
 				match = regexp.match(mapping)
 				if match is None:
-					raise PartitionError('Unable to parse kpartx output: {line}'.format(line=mapping))
+					raise PartitionError('Unable to parse kpartx output: ' + mapping)
 				partition_path = os.path.join('/dev/mapper', match.group('name'))
 				p_idx = int(match.group('p_idx')) - 1
 				self.partitions[p_idx].map(partition_path)
@@ -92,7 +92,7 @@ class AbstractPartitionMap(FSMProxy):
 			# Check if any partition was not mapped
 			for idx, partition in enumerate(self.partitions):
 				if partition.fsm.current not in ['mapped', 'formatted']:
-					raise PartitionError('kpartx did not map partition #{idx}'.format(idx=idx + 1))
+					raise PartitionError('kpartx did not map partition #' + str(idx + 1))
 
 		except PartitionError as e:
 			# Revert any mapping and reraise the error

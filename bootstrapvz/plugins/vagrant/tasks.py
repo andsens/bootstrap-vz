@@ -15,7 +15,7 @@ class CheckBoxPath(Task):
 	@classmethod
 	def run(cls, info):
 		box_basename = info.manifest.image['name'].format(**info.manifest_vars)
-		box_name = '{name}.box'.format(name=box_basename)
+		box_name = box_basename + '.box'
 		box_path = os.path.join(info.manifest.bootstrapper['workspace'], box_name)
 		if os.path.exists(box_path):
 			from bootstrapvz.common.exceptions import TaskError
@@ -134,7 +134,7 @@ class PackageBox(Task):
 		shutil.copy(metadata_source, metadata)
 
 		from bootstrapvz.common.tools import log_check_call
-		disk_name = 'box-disk1.{ext}'.format(ext=info.volume.extension)
+		disk_name = 'box-disk1.' + info.volume.extension
 		disk_link = os.path.join(info._vagrant['folder'], disk_name)
 		log_check_call(['ln', '-s', info.volume.image_path, disk_link])
 
@@ -148,8 +148,7 @@ class PackageBox(Task):
 		               + box_files
 		               )
 		import logging
-		logging.getLogger(__name__).info('The vagrant box has been placed at {box_path}'
-		                                 .format(box_path=info._vagrant['box_path']))
+		logging.getLogger(__name__).info('The vagrant box has been placed at ' + info._vagrant['box_path'])
 
 	@classmethod
 	def write_ovf(cls, info, destination, mac_address, disk_name):

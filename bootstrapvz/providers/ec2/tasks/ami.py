@@ -36,7 +36,7 @@ class BundleImage(Task):
 
 	@classmethod
 	def run(cls, info):
-		bundle_name = 'bundle-{id}'.format(id=info.run_id)
+		bundle_name = 'bundle-' + info.run_id
 		info._ec2['bundle_path'] = os.path.join(info.workspace, bundle_name)
 		arch = {'i386': 'i386', 'amd64': 'x86_64'}.get(info.manifest.system['architecture'])
 		log_check_call(['euca-bundle-image',

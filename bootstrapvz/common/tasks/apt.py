@@ -72,7 +72,7 @@ class WriteSources(Task):
 				list_path = os.path.join(info.root, 'etc/apt/sources.list.d/', name + '.list')
 			with open(list_path, 'w') as source_list:
 				for source in sources:
-					source_list.write('{line}\n'.format(line=str(source)))
+					source_list.write(str(source) + '\n')
 
 
 class WritePreferences(Task):
@@ -89,7 +89,7 @@ class WritePreferences(Task):
 				list_path = os.path.join(info.root, 'etc/apt/preferences.d/', name)
 			with open(list_path, 'w') as preference_list:
 				for preference in preferences:
-					preference_list.write('{preference}\n'.format(preference=str(preference)))
+					preference_list.write(str(preference) + '\n')
 
 
 class DisableDaemonAutostart(Task):

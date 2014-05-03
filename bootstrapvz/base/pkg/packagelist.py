@@ -24,7 +24,7 @@ class PackageList(object):
 			if self.target is None:
 				return self.name
 			else:
-				return '{name}/{target}'.format(name=self.name, target=self.target)
+				return self.name + '/' + self.target
 
 	class Local(object):
 		"""A local package

@@ -21,7 +21,7 @@ def get_log_filename(manifest_path):
 	manifest_basename = os.path.basename(manifest_path)
 	manifest_name, _ = os.path.splitext(manifest_basename)
 	timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
-	filename = "{timestamp}_{name}.log".format(timestamp=timestamp, name=manifest_name)
+	filename = '{timestamp}_{name}.log'.format(timestamp=timestamp, name=manifest_name)
 	return filename
 
 

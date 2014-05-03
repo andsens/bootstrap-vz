@@ -9,7 +9,7 @@ class ConvertToVhd(Task):
 	@classmethod
 	def run(cls, info):
 		image_name = info.manifest.image['name'].format(**info.manifest_vars)
-		filename = '{image_name}.{ext}'.format(image_name=image_name, ext='vhd')
+		filename = image_name + '.vhd'
 		import os.path
 		destination = os.path.join(info.manifest.bootstrapper['workspace'], filename)
 
@@ -25,4 +25,4 @@ class ConvertToVhd(Task):
 		os.remove(info.volume.image_path)
 		import logging
 		log = logging.getLogger(__name__)
-		log.info('The volume image has been moved to {image_path}'.format(image_path=destination))
+		log.info('The volume image has been moved to ' + destination)

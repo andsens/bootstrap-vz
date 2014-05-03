@@ -19,7 +19,7 @@ class TaskListError(Exception):
 		self.message = message
 
 	def __str__(self):
-		return 'Error in tasklist: {msg}'.format(msg=self.message)
+		return 'Error in tasklist: ' + self.message
 
 
 class TaskError(Exception):

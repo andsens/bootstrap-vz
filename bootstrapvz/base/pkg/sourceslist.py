@@ -69,7 +69,7 @@ class Source(object):
 		match = regexp.match(line).groupdict()
 		if match is None:
 			from exceptions import SourceError
-			raise SourceError('Unable to parse source line `{line}\''.format(line=line))
+			raise SourceError('Unable to parse source line: ' + line)
 		self.type = match['type']
 		self.options = []
 		if match['options'] is not None:
@@ -95,7 +95,7 @@ class Source(object):
 		if len(self.components) > 0:
 			components = ' {components}'.format(components=' '.join(self.components))
 
-		return ('{type}{options} {uri}'
-		        ' {distribution}{components}').format(type=self.type, options=options,
-		                                              uri=self.uri, distribution=self.distribution,
-		                                              components=components)
+		return ('{type}{options} {uri} {distribution}{components}'
+		        .format(type=self.type, options=options,
+		                uri=self.uri, distribution=self.distribution,
+		                components=components))

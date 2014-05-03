@@ -14,7 +14,7 @@ class CreateTarball(Task):
 	def run(cls, info):
 		import datetime
 		image_name = info.manifest.image['name'].format(**info.manifest_vars)
-		filename = '{image_name}.{ext}'.format(image_name=image_name, ext=info.volume.extension)
+		filename = image_name + '.' + info.volume.extension
 		today = datetime.datetime.today()
 		name_suffix = today.strftime('%Y%m%d')
 		image_name_format = '{lsb_distribution}-{lsb_release}-{release}-v{name_suffix}'
@@ -26,7 +26,7 @@ class CreateTarball(Task):
 		image_name = image_name.lower()
 		image_name = image_name.replace(".", "-")
 		info._gce['image_name'] = image_name
-		tarball_name = '{image_name}.tar.gz'.format(image_name=image_name)
+		tarball_name = image_name + '.tar.gz'
 		tarball_path = os.path.join(info.manifest.bootstrapper['workspace'], tarball_name)
 		info._gce['tarball_name'] = tarball_name
 		info._gce['tarball_path'] = tarball_path
@@ -55,7 +55,7 @@ class RegisterImage(Task):
 		image_description = info._gce['lsb_description']
 		if 'description' in info.manifest.image:
 			image_description = info.manifest.image['description']
-		log_check_call(['gcutil', '--project={}'.format(info.manifest.image['gce_project']),
+		log_check_call(['gcutil', '--project=' + info.manifest.image['gce_project'],
 		                'addimage', info._gce['image_name'],
 		                info.manifest.image['gcs_destination'] + info._gce['tarball_name'],
-		                '--description={}'.format(image_description)])
+		                '--description=' + image_description])

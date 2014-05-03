@@ -45,7 +45,7 @@ class TaskList(object):
 		# Create a list for us to run
 		task_list = self.create_list()
 		# Output the tasklist
-		log.debug('Tasklist:\n\t{list}'.format(list='\n\t'.join(map(repr, task_list))))
+		log.debug('Tasklist:\n\t' + ('\n\t'.join(map(repr, task_list))))
 
 		for task in task_list:
 			# Tasks are not required to have a description
@@ -53,7 +53,7 @@ class TaskList(object):
 				log.info(task.description)
 			else:
 				# If there is no description, simply coerce the task into a string and print its name
-				log.info('Running {task}'.format(task=task))
+				log.info('Running ' + str(task))
 			if not dry_run:
 				# Run the task
 				task.run(info)
@@ -92,10 +92,10 @@ class TaskList(object):
 			# Node of 1 is also a strongly connected component but hardly a cycle, so we filter them out
 			if len(component) > 1:
 				cycles_found += 1
-				log.debug('Cycle: {list}\n'.format(list=', '.join(map(repr, component))))
+				log.debug('Cycle: {list}\n' + (', '.join(map(repr, component))))
 		if cycles_found > 0:
-			msg = ('{0} cycles were found in the tasklist, '
-			       'consult the logfile for more information.'.format(cycles_found))
+			msg = ('{num} cycles were found in the tasklist, '
+			       'consult the logfile for more information.'.format(num=cycles_found))
 			raise TaskListError(msg)
 
 		# Run a topological sort on the graph, returning an ordered list
@@ -141,7 +141,7 @@ class TaskList(object):
 		import inspect
 
 		def walk_error(module):
-			raise Exception('Unable to inspect module `{module}\''.format(module=module))
+			raise Exception('Unable to inspect module ' + module)
 		walker = pkgutil.walk_packages([path], prefix, walk_error)
 		for _, module_name, _ in walker:
 			module = importlib.import_module(module_name)

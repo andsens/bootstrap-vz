@@ -28,7 +28,7 @@ class Create(Task):
 	@classmethod
 	def run(cls, info):
 		import os.path
-		image_path = os.path.join(info.workspace, 'volume.{ext}'.format(ext=info.volume.extension))
+		image_path = os.path.join(info.workspace, 'volume.' + info.volume.extension)
 		info.volume.create(image_path)
 
 
@@ -39,7 +39,7 @@ class MoveImage(Task):
 	@classmethod
 	def run(cls, info):
 		image_name = info.manifest.image['name'].format(**info.manifest_vars)
-		filename = '{image_name}.{ext}'.format(image_name=image_name, ext=info.volume.extension)
+		filename = image_name + '.' + info.volume.extension
 
 		import os.path
 		destination = os.path.join(info.manifest.bootstrapper['workspace'], filename)
@@ -47,4 +47,4 @@ class MoveImage(Task):
 		shutil.move(info.volume.image_path, destination)
 		import logging
 		log = logging.getLogger(__name__)
-		log.info('The volume image has been moved to {image_path}'.format(image_path=destination))
+		log.info('The volume image has been moved to ' + destination)

@@ -22,7 +22,7 @@ class Snapshot(Task):
 		def mk_snapshot():
 			return info.volume.snapshot()
 		snapshot = remount(info.volume, mk_snapshot)
-		msg = 'A snapshot of the bootstrapped volume was created. ID: {id}'.format(id=snapshot.id)
+		msg = 'A snapshot of the bootstrapped volume was created. ID: ' + snapshot.id
 		log.info(msg)
 
 
@@ -58,7 +58,7 @@ class CopyImage(Task):
 		def mk_snapshot():
 			copyfile(info.volume.image_path, destination)
 		remount(info.volume, mk_snapshot)
-		msg = 'A copy of the bootstrapped volume was created. Path: {path}'.format(path=destination)
+		msg = 'A copy of the bootstrapped volume was created. Path: ' + destination
 		log.info(msg)
 
 
@@ -69,7 +69,7 @@ class CreateFromImage(Task):
 
 	@classmethod
 	def run(cls, info):
-		info.volume.image_path = os.path.join(info.workspace, 'volume.{ext}'.format(ext=info.volume.extension))
+		info.volume.image_path = os.path.join(info.workspace, 'volume.' + info.volume.extension)
 		loopback_backup_path = info.manifest.plugins['prebootstrapped']['image']
 		copyfile(loopback_backup_path, info.volume.image_path)
 

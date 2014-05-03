@@ -30,7 +30,7 @@ class ConfigurePVGrub(Task):
 		if not isinstance(info.volume.partition_map, NoPartitions):
 			from bootstrapvz.common.tools import sed_i
 			root_idx = info.volume.partition_map.root.get_index()
-			grub_device = 'GRUB_DEVICE=/dev/xvda{idx}'.format(idx=root_idx)
+			grub_device = 'GRUB_DEVICE=/dev/xvda' + str(root_idx)
 			sed_i(script_dst, '^GRUB_DEVICE=/dev/xvda$', grub_device)
 			grub_root = '\troot (hd0,{idx})'.format(idx=root_idx - 1)
 			sed_i(script_dst, '^\troot \(hd0\)$', grub_root)

@@ -28,7 +28,7 @@ def log_call(command, stdin=None, env=None, shell=False):
 			q.put((stream, line.strip()))
 
 	if stdin is not None:
-		log.debug('  stdin: {stdin}'.format(stdin=stdin))
+		log.debug('  stdin: ' + stdin)
 		process.stdin.write(stdin + "\n")
 		process.stdin.flush()
 	process.stdin.close()
