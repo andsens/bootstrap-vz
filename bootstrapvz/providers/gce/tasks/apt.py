@@ -12,13 +12,13 @@ class SetPackageRepositories(Task):
 
 	@classmethod
 	def run(cls, info):
-		sections = 'main'
-		if 'sections' in info.manifest.system:
-			sections = ' '.join(info.manifest.system['sections'])
-		info.source_lists.add('main', 'deb     http://http.debian.net/debian {system.release} ' + sections)
-		info.source_lists.add('main', 'deb-src http://http.debian.net/debian {system.release} ' + sections)
-		info.source_lists.add('backports', 'deb     http://http.debian.net/debian {system.release}-backports ' + sections)
-		info.source_lists.add('backports', 'deb-src http://http.debian.net/debian {system.release}-backports ' + sections)
+		components = 'main'
+		if 'components' in info.manifest.system:
+			components = ' '.join(info.manifest.system['components'])
+		info.source_lists.add('main', 'deb     http://http.debian.net/debian {system.release} ' + components)
+		info.source_lists.add('main', 'deb-src http://http.debian.net/debian {system.release} ' + components)
+		info.source_lists.add('backports', 'deb     http://http.debian.net/debian {system.release}-backports ' + components)
+		info.source_lists.add('backports', 'deb-src http://http.debian.net/debian {system.release}-backports ' + components)
 		info.source_lists.add('goog', 'deb http://goog-repo.appspot.com/debian pigeon main')
 
 
