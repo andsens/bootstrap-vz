@@ -43,8 +43,6 @@ def validate_manifest(data, validator, error):
 			error('Paravirtualized AMIs only support pvgrub as a bootloader', ['system', 'bootloader'])
 	if data['virtualization'] == 'hvm' and data['system']['bootloader'] == 'pvgrub':
 			error('HVM AMIs only support extlinux as a bootloader', ['system', 'bootloader'])
-	if data['volume']['partitions']['type'] == 'none' and data['system']['bootloader'] == 'grub':
-			error('Grub cannot boot from unpartitioned disks', ['system', 'bootloader'])
 
 
 def resolve_tasks(taskset, manifest):

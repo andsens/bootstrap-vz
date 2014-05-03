@@ -71,6 +71,12 @@ class Manifest(object):
 		from . import validate_manifest
 		# Validate the manifest with the base validation function in __init__
 		validate_manifest(self.data, self.schema_validator, self.validation_error)
+		# Check the bootloader/partitioning configuration.
+		# Doing this via the schema is a pain and does not output a useful error message.
+		# This should be put into a separat function if there is more that should be checked like this.
+		if self.data['system']['bootloader'] == 'grub' and self.data['volume']['partitions']['type'] == 'none':
+				self.validation_error('Grub cannot boot from unpartitioned disks', ['system', 'bootloader'])
+
 		# Run the provider validation
 		self.modules['provider'].validate_manifest(self.data, self.schema_validator, self.validation_error)
 		# Run the validation function for any plugin that has it
