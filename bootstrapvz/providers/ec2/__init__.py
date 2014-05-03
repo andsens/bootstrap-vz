@@ -10,13 +10,10 @@ import tasks.initd
 from bootstrapvz.common.tasks import volume
 from bootstrapvz.common.tasks import filesystem
 from bootstrapvz.common.tasks import boot
-from bootstrapvz.common.tasks import network
 from bootstrapvz.common.tasks import initd
 from bootstrapvz.common.tasks import partitioning
 from bootstrapvz.common.tasks import loopback
-from bootstrapvz.common.tasks import bootstrap
 from bootstrapvz.common.tasks import security
-from bootstrapvz.common.tasks import cleanup
 from bootstrapvz.common.tasks import workspace
 
 
