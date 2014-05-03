@@ -13,4 +13,3 @@ class DefaultPackages(Task):
 		kernels = {'amd64': 'linux-image-amd64',
 		           'i386':  'linux-image-686', }
 		info.packages.add(kernels.get(info.manifest.system['architecture']))
-		info.packages.add('openssh-server')

@@ -5,6 +5,7 @@ import tasks.image
 import tasks.host
 import tasks.packages
 from bootstrapvz.common.tasks import loopback
+from bootstrapvz.common.tasks import ssh
 from bootstrapvz.common.tasks import security
 from bootstrapvz.common.tasks import initd
 import bootstrapvz.plugins.cloud_init.tasks
@@ -36,7 +37,7 @@ def resolve_tasks(tasklist, manifest):
 	                 security.EnableShadowConfig,
 	                 tasks.host.DisableIPv6,
 	                 tasks.boot.ConfigureGrub,
-	                 initd.AddSSHKeyGeneration,
+	                 ssh.AddSSHKeyGeneration,
 	                 tasks.apt.CleanGoogleRepositoriesAndKeys,
 
 	                 loopback.MoveImage,

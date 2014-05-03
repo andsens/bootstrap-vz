@@ -66,7 +66,6 @@ def resolve_tasks(taskset, manifest):
 	                security.EnableShadowConfig,
 	                tasks.network.EnableDHCPCDDNS,
 	                initd.AddExpandRoot,
-	                initd.AddSSHKeyGeneration,
 	                initd.RemoveHWClock,
 	                tasks.initd.AddEC2InitScripts,
 	                initd.InstallInitScripts,

@@ -31,7 +31,6 @@ def resolve_tasks(taskset, manifest):
 	taskset.update([tasks.packages.DefaultPackages,
 	                loopback.Create,
 	                security.EnableShadowConfig,
-	                initd.AddSSHKeyGeneration,
 	                initd.InstallInitScripts,
 	                loopback.MoveImage,
 	                ])

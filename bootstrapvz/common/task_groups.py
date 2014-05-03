@@ -11,6 +11,8 @@ from tasks import apt
 from tasks import security
 from tasks import locale
 from tasks import network
+from tasks import initd
+from tasks import ssh
 
 
 def get_standard_groups(manifest):
@@ -67,9 +69,12 @@ mounting_group = [filesystem.CreateMountDir,
                   filesystem.DeleteMountDir,
                   ]
 
-ssh_group = [security.DisableSSHPasswordAuthentication,
-             security.DisableSSHDNSLookup,
-             cleanup.ShredHostkeys,
+ssh_group = [ssh.AddOpenSSHPackage,
+             ssh.DisableSSHPasswordAuthentication,
+             ssh.DisableSSHDNSLookup,
+             ssh.AddSSHKeyGeneration,
+             initd.InstallInitScripts,
+             ssh.ShredHostkeys,
              ]
 
 

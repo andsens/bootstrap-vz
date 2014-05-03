@@ -38,29 +38,6 @@ class AddExpandRoot(Task):
 		info.initd['install']['expand-root'] = os.path.join(init_scripts_dir, 'expand-root')
 
 
-class AddSSHKeyGeneration(Task):
-	description = 'Adding SSH private key generation init scripts'
-	phase = phases.system_modification
-	successors = [InstallInitScripts]
-
-	@classmethod
-	def run(cls, info):
-		init_scripts_dir = os.path.join(assets, 'init.d')
-		install = info.initd['install']
-		from subprocess import CalledProcessError
-		try:
-			log_check_call(['chroot', info.root,
-			                'dpkg-query', '-W', 'openssh-server'])
-			if info.manifest.system['release'] == 'squeeze':
-				install['generate-ssh-hostkeys'] = os.path.join(init_scripts_dir, 'squeeze/generate-ssh-hostkeys')
-			else:
-				install['generate-ssh-hostkeys'] = os.path.join(init_scripts_dir, 'generate-ssh-hostkeys')
-		except CalledProcessError:
-			import logging
-			logging.getLogger(__name__).warn('The OpenSSH server has not been installed, '
-			                                 'not installing SSH host key generation script.')
-
-
 class RemoveHWClock(Task):
 	description = 'Removing hardware clock init scripts'
 	phase = phases.system_modification

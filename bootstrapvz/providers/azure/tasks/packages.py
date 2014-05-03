@@ -16,7 +16,6 @@ class DefaultPackages(Task):
 		info.packages.add(kernels.get(info.manifest.system['architecture']))
 		info.packages.add('openssl')
 		info.packages.add('python-openssl')
-		info.packages.add('openssh-server')
 		info.packages.add('python-pyasn1')
 		info.packages.add('sudo')
 

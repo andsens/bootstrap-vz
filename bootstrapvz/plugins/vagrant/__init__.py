@@ -8,9 +8,12 @@ def validate_manifest(data, validator, error):
 
 
 def resolve_tasks(taskset, manifest):
-	from bootstrapvz.common.tasks import security
+	from bootstrapvz.common import task_groups
+	from bootstrapvz.common.tasks import ssh
+	taskset.update(task_groups.ssh_group)
+	taskset.discard(ssh.DisableSSHPasswordAuthentication)
+
 	from bootstrapvz.common.tasks import loopback
-	taskset.discard(security.DisableSSHPasswordAuthentication)
 	taskset.discard(loopback.MoveImage)
 
 	from bootstrapvz.common.tasks import volume

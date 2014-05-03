@@ -14,24 +14,6 @@ class ClearMOTD(Task):
 			pass
 
 
-class ShredHostkeys(Task):
-	description = 'Securely deleting ssh hostkeys'
-	phase = phases.system_cleaning
-
-	@classmethod
-	def run(cls, info):
-		ssh_hostkeys = ['ssh_host_dsa_key',
-		                'ssh_host_rsa_key']
-		if info.manifest.system['release'] != 'squeeze':
-			ssh_hostkeys.append('ssh_host_ecdsa_key')
-
-		private = [os.path.join(info.root, 'etc/ssh', name) for name in ssh_hostkeys]
-		public = [path + '.pub' for path in private]
-
-		from ..tools import log_check_call
-		log_check_call(['shred', '--remove'] + private + public)
-
-
 class CleanTMP(Task):
 	description = 'Removing temporary files'
 	phase = phases.system_cleaning

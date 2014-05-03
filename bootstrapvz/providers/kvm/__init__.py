@@ -7,6 +7,7 @@ from bootstrapvz.common.tasks import bootstrap
 from bootstrapvz.common.tasks import security
 from bootstrapvz.common.tasks import network
 from bootstrapvz.common.tasks import initd
+from bootstrapvz.common.tasks import ssh
 from bootstrapvz.common.tasks import cleanup
 from bootstrapvz.common.tasks import workspace
 
@@ -31,8 +32,10 @@ def resolve_tasks(taskset, manifest):
 	taskset.update([tasks.packages.DefaultPackages,
 	                loopback.Create,
 	                security.EnableShadowConfig,
-	                initd.AddSSHKeyGeneration,
 	                initd.InstallInitScripts,
+	                ssh.AddOpenSSHPackage,
+	                ssh.ShredHostkeys,
+	                ssh.AddSSHKeyGeneration,
 	                loopback.MoveImage,
 	                ])
 

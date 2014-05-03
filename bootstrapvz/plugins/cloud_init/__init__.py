@@ -10,6 +10,7 @@ def resolve_tasks(taskset, manifest):
 	import tasks
 	import bootstrapvz.providers.ec2.tasks.initd as initd_ec2
 	from bootstrapvz.common.tasks import initd
+	from bootstrapvz.common.tasks import ssh
 
 	if manifest.system['release'] in ['wheezy', 'stable']:
 		taskset.add(tasks.AddBackports)
@@ -27,4 +28,4 @@ def resolve_tasks(taskset, manifest):
 	taskset.discard(initd_ec2.AddEC2InitScripts)
 	taskset.discard(initd.AddExpandRoot)
 	taskset.discard(initd.AdjustExpandRootScript)
-	taskset.discard(initd.AddSSHKeyGeneration)
+	taskset.discard(ssh.AddSSHKeyGeneration)

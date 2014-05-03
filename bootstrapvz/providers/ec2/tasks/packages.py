@@ -10,7 +10,6 @@ class DefaultPackages(Task):
 
 	@classmethod
 	def run(cls, info):
-		info.packages.add('openssh-server')
 		info.packages.add('file')  # Needed for the init scripts
 		info.packages.add('dhcpcd')  # isc-dhcp-client doesn't work properly with ec2
 
