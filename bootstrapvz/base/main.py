@@ -105,7 +105,7 @@ def run(opts):
 				rollback_tasklist.tasks.add(counter)
 		# Ask the provider and plugins for tasks they'd like to add to the rollback tasklist
 		# Any additional arguments beyond the first two are passed directly to the provider and plugins
-		rollback_tasklist.load('resolve_rollback_tasks', manifest, counter_task)
+		rollback_tasklist.load('resolve_rollback_tasks', manifest, tasklist.tasks_completed, counter_task)
 
 		# Run the rollback tasklist
 		rollback_tasklist.run(info=bootstrap_info, dry_run=opts['--dry-run'])

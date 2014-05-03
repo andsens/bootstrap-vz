@@ -1,3 +1,4 @@
+import bootstrapvz.common.task_groups
 import tasks.apt
 import tasks.boot
 import tasks.configuration
@@ -48,10 +49,5 @@ def resolve_tasks(tasklist, manifest):
 			tasklist.add(tasks.image.RegisterImage)
 
 
-def resolve_rollback_tasks(tasklist, manifest, counter_task):
-	counter_task(loopback.Create, volume.Delete)
-	counter_task(filesystem.CreateMountDir, filesystem.DeleteMountDir)
-	counter_task(partitioning.MapPartitions, partitioning.UnmapPartitions)
-	counter_task(filesystem.MountRoot, filesystem.UnmountRoot)
-	counter_task(volume.Attach, volume.Detach)
-	counter_task(workspace.CreateWorkspace, workspace.DeleteWorkspace)
+def resolve_rollback_tasks(tasklist, manifest, completed, counter_task):
+	taskset.update(task_groups.get_standard_rollback_tasks(completed))

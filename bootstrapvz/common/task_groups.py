@@ -4,6 +4,7 @@ from tasks import host
 from tasks import boot
 from tasks import bootstrap
 from tasks import volume
+from tasks import loopback
 from tasks import filesystem
 from tasks import partitioning
 from tasks import cleanup
@@ -144,3 +145,23 @@ def get_fs_specific_group(manifest):
 cleanup_group = [cleanup.ClearMOTD,
                  cleanup.CleanTMP,
                  ]
+
+
+rollback_map = {workspace.CreateWorkspace:  workspace.DeleteWorkspace,
+                loopback.Create:            volume.Delete,
+                volume.Attach:              volume.Detach,
+                partitioning.MapPartitions: partitioning.UnmapPartitions,
+                filesystem.CreateMountDir:  filesystem.DeleteMountDir,
+                filesystem.MountRoot:       filesystem.UnmountRoot,
+                }
+
+
+def get_standard_rollback_tasks(completed):
+	rollback_tasks = set()
+	for task in completed:
+		if task not in rollback_map:
+			continue
+		counter = rollback_map[task]
+		if task in completed and counter not in completed:
+			rollback_tasks.add(counter)
+	return rollback_tasks

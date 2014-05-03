@@ -21,5 +21,5 @@ def resolve_tasks(taskset, manifest):
 		taskset.add(tasks.ShrinkVolume)
 
 
-def resolve_rollback_tasks(taskset, manifest, counter_task):
+def resolve_rollback_tasks(taskset, manifest, completed, counter_task):
 	counter_task(tasks.AddFolderMounts, tasks.RemoveFolderMounts)

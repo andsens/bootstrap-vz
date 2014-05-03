@@ -1,3 +1,4 @@
+from bootstrapvz.common import task_groups
 import tasks.packages
 from bootstrapvz.common.tasks import volume
 from bootstrapvz.common.tasks import loopback
@@ -22,7 +23,6 @@ def validate_manifest(data, validator, error):
 
 
 def resolve_tasks(taskset, manifest):
-	from bootstrapvz.common import task_groups
 	taskset.update(task_groups.get_standard_groups(manifest))
 
 	taskset.update([tasks.packages.DefaultPackages,
@@ -39,10 +39,5 @@ def resolve_tasks(taskset, manifest):
 		taskset.update([virtio.VirtIO])
 
 
-def resolve_rollback_tasks(taskset, manifest, counter_task):
-	counter_task(loopback.Create, volume.Delete)
-	counter_task(filesystem.CreateMountDir, filesystem.DeleteMountDir)
-	counter_task(partitioning.MapPartitions, partitioning.UnmapPartitions)
-	counter_task(filesystem.MountRoot, filesystem.UnmountRoot)
-	counter_task(volume.Attach, volume.Detach)
-	counter_task(workspace.CreateWorkspace, workspace.DeleteWorkspace)
+def resolve_rollback_tasks(taskset, manifest, completed, counter_task):
+	taskset.update(task_groups.get_standard_rollback_tasks(completed))

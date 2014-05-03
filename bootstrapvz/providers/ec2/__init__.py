@@ -1,3 +1,4 @@
+from bootstrapvz.common import task_groups
 import tasks.packages
 import tasks.connection
 import tasks.host
@@ -47,7 +48,6 @@ def validate_manifest(data, validator, error):
 
 
 def resolve_tasks(taskset, manifest):
-	from bootstrapvz.common import task_groups
 	taskset.update(task_groups.get_standard_groups(manifest))
 	taskset.update(task_groups.ssh_group)
 
@@ -97,17 +97,8 @@ def resolve_tasks(taskset, manifest):
 	                ])
 
 
-def resolve_rollback_tasks(taskset, manifest, counter_task):
+def resolve_rollback_tasks(taskset, manifest, completed, counter_task):
+	taskset.update(task_groups.get_standard_rollback_tasks(completed))
 	counter_task(tasks.ebs.Create, volume.Delete)
 	counter_task(tasks.ebs.Attach, volume.Detach)
-
-	counter_task(loopback.Create, volume.Delete)
-	counter_task(volume.Attach, volume.Detach)
-
-	counter_task(partitioning.MapPartitions, partitioning.UnmapPartitions)
-	counter_task(filesystem.CreateMountDir, filesystem.DeleteMountDir)
-
-	counter_task(filesystem.MountRoot, filesystem.UnmountRoot)
-	counter_task(volume.Attach, volume.Detach)
-	counter_task(workspace.CreateWorkspace, workspace.DeleteWorkspace)
 	counter_task(tasks.ami.BundleImage, tasks.ami.RemoveBundle)
