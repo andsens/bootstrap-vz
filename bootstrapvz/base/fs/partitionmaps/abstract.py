@@ -78,7 +78,7 @@ class AbstractPartitionMap(FSMProxy):
 			                    '(?P<start_blk>\d) (?P<num_blks>\d+) '
 			                    '{device_path} (?P<blk_offset>\d+)$'
 			                    .format(device_path=volume.device_path))
-			log_check_call(['kpartx', '-a', volume.device_path])
+			log_check_call(['kpartx', '-as', volume.device_path])
 			import os.path
 			# Run through the kpartx output and map the paths to the partitions
 			for mapping in mappings:
@@ -99,7 +99,7 @@ class AbstractPartitionMap(FSMProxy):
 			for partition in self.partitions:
 				if not partition.fsm.can('unmap'):
 					partition.unmap()
-			log_check_call(['kpartx', '-d', volume.device_path])
+			log_check_call(['kpartx', '-ds', volume.device_path])
 			raise e
 
 	def unmap(self, volume):
@@ -122,7 +122,7 @@ class AbstractPartitionMap(FSMProxy):
 				msg = 'The partition {partition} prevents the unmap procedure'.format(partition=partition)
 				raise PartitionError(msg)
 		# Actually unmap the partitions
-		log_check_call(['kpartx', '-d', volume.device_path])
+		log_check_call(['kpartx', '-ds', volume.device_path])
 		# Call unmap on all partitions
 		for partition in self.partitions:
 			partition.unmap()
