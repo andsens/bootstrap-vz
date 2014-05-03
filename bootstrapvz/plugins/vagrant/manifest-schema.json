@@ -7,6 +7,9 @@
 			"type": "string",
 			"enum": ["virtualbox"]
 		},
+		"system": {
+			"required": ["hostname"]
+		},
 		"volume": {
 			"type": "object",
 			"properties": {
@@ -14,7 +17,7 @@
 					"type": "string",
 					"enum": ["vmdk"]
 					// VirtualBox only supports vmdk or raw when importing via OVF:
-					// https://www.virtualbox.org/browser/vbox/trunk/src/VBox/Main/src-server/ApplianceImplImport.cpp#L636
+					// https://www.virtualbox.org/browser/vbox/trunk/src/VBox/Main/src-server/ApplianceImplImport.cpp?rev=51092#L636
 				}
 			},
 			"required": ["backing"]
