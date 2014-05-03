@@ -15,7 +15,8 @@
 	"image": {
 		"name":        "debian-{system.release}-{system.architecture}-{virtualization}-{%Y}-{%m}-{%d}",
 		"description": "Debian {system.release} {system.architecture} AMI",
-		"bucket":      "debian-amis-cn-north-1"
+		"bucket":      "debian-amis-cn-north-1",
+		"region":      "cn-north-1"
 	},
 	"system": {
 		"release":      "wheezy",
@@ -38,10 +39,10 @@
 			}
 		}
 	},
-        "plugins": {
-                "cloud_init": {
-                        "username": "admin",
-                        "disable_modules": [ "landscape", "byobu", "ssh-import-id" ]
-                }
-        }
+	"plugins": {
+		"cloud_init": {
+			"username": "admin",
+			"disable_modules": [ "landscape", "byobu", "ssh-import-id" ]
+		}
+	}
 }

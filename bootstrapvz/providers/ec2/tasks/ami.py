@@ -58,12 +58,12 @@ class UploadImage(Task):
 	@classmethod
 	def run(cls, info):
 		manifest_file = os.path.join(info._ec2['bundle_path'], info._ec2['ami_name'] + '.manifest.xml')
-		if info._ec2['host']['region'] == 'us-east-1':
+		if info._ec2['region'] == 'us-east-1':
 			s3_url = 'https://s3.amazonaws.com/'
-		elif info._ec2['host']['region'] == 'cn-north-1':
+		elif info._ec2['region'] == 'cn-north-1':
 			s3_url = 'https://s3.cn-north-1.amazonaws.com.cn'
 		else:
-			s3_url = 'https://s3-{region}.amazonaws.com/'.format(region=info._ec2['host']['region'])
+			s3_url = 'https://s3-{region}.amazonaws.com/'.format(region=info._ec2['region'])
 		info._ec2['manifest_location'] = info.manifest.image['bucket'] + '/' + info._ec2['ami_name'] + '.manifest.xml'
 		log_check_call(['euca-upload-bundle',
 		                '--bucket', info.manifest.image['bucket'],
@@ -71,7 +71,7 @@ class UploadImage(Task):
 		                '--access-key', info.credentials['access-key'],
 		                '--secret-key', info.credentials['secret-key'],
 		                '--url', s3_url,
-		                '--region', info._ec2['host']['region'],
+		                '--region', info._ec2['region'],
 		                '--ec2cert', cert_ec2])
 
 
@@ -119,7 +119,7 @@ class RegisterAMI(Task):
 			registration_params['virtualization_type'] = 'paravirtual'
 			akis_path = os.path.join(os.path.dirname(__file__), 'ami-akis.json')
 			from bootstrapvz.common.tools import config_get
-			registration_params['kernel_id'] = config_get(akis_path, [info._ec2['host']['region'],
+			registration_params['kernel_id'] = config_get(akis_path, [info._ec2['region'],
 			                                                          info.manifest.system['architecture']])
 
 		info._ec2['image'] = info._ec2['connection'].register_image(**registration_params)

@@ -15,7 +15,7 @@ class AddExternalCommands(Task):
 			info.host_dependencies['euca-upload-bundle'] = 'euca2ools'
 
 
-class GetInfo(Task):
+class GetInstanceMetadata(Task):
 	description = 'Retrieving instance metadata'
 	phase = phases.preparation
 
@@ -26,3 +26,13 @@ class GetInfo(Task):
 		metadata_url = 'http://169.254.169.254/latest/dynamic/instance-identity/document'
 		response = urllib2.urlopen(url=metadata_url, timeout=5)
 		info._ec2['host'] = json.load(response)
+		info._ec2['region'] = info._ec2['host']['region']
+
+
+class SetRegion(Task):
+	description = 'Setting the AWS region'
+	phase = phases.preparation
+
+	@classmethod
+	def run(cls, info):
+		info._ec2['region'] = info.manifest.image['region']

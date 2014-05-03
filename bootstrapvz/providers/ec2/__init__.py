@@ -69,7 +69,6 @@ def resolve_tasks(taskset, manifest):
 	taskset.update([tasks.host.AddExternalCommands,
 	                tasks.packages.DefaultPackages,
 	                tasks.connection.GetCredentials,
-	                tasks.host.GetInfo,
 	                tasks.ami.AMIName,
 	                tasks.connection.Connect,
 
@@ -97,11 +96,13 @@ def resolve_tasks(taskset, manifest):
 	else:
 		taskset.update(task_groups.bootloader_set.get(manifest.system['bootloader']))
 
-	backing_specific_tasks = {'ebs': [tasks.ebs.Create,
+	backing_specific_tasks = {'ebs': [tasks.host.GetInstanceMetadata,
+	                                  tasks.ebs.Create,
 	                                  tasks.ebs.Attach,
 	                                  filesystem.FStab,
 	                                  tasks.ebs.Snapshot],
 	                          's3': [loopback.AddRequiredCommands,
+	                                 tasks.host.SetRegion,
 	                                 loopback.Create,
 	                                 volume.Attach,
 	                                 tasks.filesystem.S3FStab,

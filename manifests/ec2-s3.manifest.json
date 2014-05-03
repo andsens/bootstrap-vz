@@ -15,7 +15,8 @@
 	"image": {
 		"name":        "debian-{system.release}-{system.architecture}-{virtualization}-{%y}{%m}{%d}",
 		"description": "Debian {system.release} {system.architecture} AMI",
-		"bucket":      "debian-amis"
+		"bucket":      "debian-amis",
+		"region":      "us-west-1"
 	},
 	"system": {
 		"release":      "wheezy",
