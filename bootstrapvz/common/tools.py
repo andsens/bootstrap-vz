@@ -6,12 +6,6 @@ def log_check_call(command, stdin=None, env=None, shell=False):
 	return stdout
 
 
-def stream_readline(args):
-	stream, q = args
-	for line in iter(stream.readline, ''):
-		q.put((stream, line.strip()))
-
-
 def log_call(command, stdin=None, env=None, shell=False):
 	import subprocess
 	import logging
@@ -34,10 +28,10 @@ def log_call(command, stdin=None, env=None, shell=False):
 			q.put((stream, line.strip()))
 
 	if stdin is not None:
-	    log.debug('  stdin: {stdin}'.format(stdin=stdin))
-	    process.stdin.write(stdin + "\n")
-	    process.stdin.flush()
-	    process.stdin.close()
+		log.debug('  stdin: {stdin}'.format(stdin=stdin))
+		process.stdin.write(stdin + "\n")
+		process.stdin.flush()
+	process.stdin.close()
 
 	stdout = []
 	stderr = []
