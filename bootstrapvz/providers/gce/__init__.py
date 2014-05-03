@@ -1,4 +1,4 @@
-import bootstrapvz.common.task_groups
+from bootstrapvz.common import task_groups
 import tasks.apt
 import tasks.boot
 import tasks.configuration
@@ -7,7 +7,6 @@ import tasks.host
 import tasks.packages
 from bootstrapvz.common.tasks import loopback
 from bootstrapvz.common.tasks import ssh
-from bootstrapvz.common.tasks import initd
 import bootstrapvz.plugins.cloud_init.tasks
 
 
@@ -21,33 +20,33 @@ def validate_manifest(data, validator, error):
 	validator(data, schema_path)
 
 
-def resolve_tasks(tasklist, manifest):
-	tasklist.update(bootstrapvz.common.task_groups.get_standard_groups(manifest))
+def resolve_tasks(taskset, manifest):
+	taskset.update(task_groups.get_standard_groups(manifest))
 
-	tasklist.update([bootstrapvz.plugins.cloud_init.tasks.AddBackports,
-	                 loopback.Create,
-	                 tasks.apt.SetPackageRepositories,
-	                 tasks.apt.ImportGoogleKey,
-	                 tasks.packages.DefaultPackages,
-	                 tasks.packages.GooglePackages,
-	                 tasks.packages.InstallGSUtil,
+	taskset.update([bootstrapvz.plugins.cloud_init.tasks.AddBackports,
+	                loopback.Create,
+	                tasks.apt.SetPackageRepositories,
+	                tasks.apt.ImportGoogleKey,
+	                tasks.packages.DefaultPackages,
+	                tasks.packages.GooglePackages,
+	                tasks.packages.InstallGSUtil,
 
-	                 tasks.configuration.GatherReleaseInformation,
+	                tasks.configuration.GatherReleaseInformation,
 
-	                 tasks.host.DisableIPv6,
-	                 tasks.boot.ConfigureGrub,
-	                 ssh.AddSSHKeyGeneration,
-	                 tasks.apt.CleanGoogleRepositoriesAndKeys,
+	                tasks.host.DisableIPv6,
+	                tasks.boot.ConfigureGrub,
+	                ssh.AddSSHKeyGeneration,
+	                tasks.apt.CleanGoogleRepositoriesAndKeys,
 
-	                 loopback.MoveImage,
-	                 tasks.image.CreateTarball,
-	                 ])
+	                loopback.MoveImage,
+	                tasks.image.CreateTarball,
+	                ])
 
 	if 'gcs_destination' in manifest.image:
-		tasklist.add(tasks.image.UploadImage)
+		taskset.add(tasks.image.UploadImage)
 		if 'gce_project' in manifest.image:
-			tasklist.add(tasks.image.RegisterImage)
+			taskset.add(tasks.image.RegisterImage)
 
 
-def resolve_rollback_tasks(tasklist, manifest, completed, counter_task):
+def resolve_rollback_tasks(taskset, manifest, completed, counter_task):
 	taskset.update(task_groups.get_standard_rollback_tasks(completed))

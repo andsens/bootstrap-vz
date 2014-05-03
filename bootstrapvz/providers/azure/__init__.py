@@ -2,13 +2,9 @@ from bootstrapvz.common import task_groups
 import tasks.packages
 import tasks.boot
 import tasks.image
-from bootstrapvz.common.tasks import volume
 from bootstrapvz.common.tasks import loopback
-from bootstrapvz.common.tasks import partitioning
-from bootstrapvz.common.tasks import filesystem
 from bootstrapvz.common.tasks import initd
 from bootstrapvz.common.tasks import ssh
-from bootstrapvz.common.tasks import workspace
 
 
 def initialize():

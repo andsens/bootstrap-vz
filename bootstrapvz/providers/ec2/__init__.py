@@ -12,9 +12,7 @@ from bootstrapvz.common.tasks import volume
 from bootstrapvz.common.tasks import filesystem
 from bootstrapvz.common.tasks import boot
 from bootstrapvz.common.tasks import initd
-from bootstrapvz.common.tasks import partitioning
 from bootstrapvz.common.tasks import loopback
-from bootstrapvz.common.tasks import workspace
 
 
 def initialize():
