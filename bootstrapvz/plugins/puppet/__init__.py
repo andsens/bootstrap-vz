@@ -15,3 +15,5 @@ def resolve_tasks(taskset, manifest):
 	if 'manifest' in manifest.plugins['puppet']:
 		taskset.add(tasks.CheckManifestPath)
 		taskset.add(tasks.ApplyPuppetManifest)
+	if manifest.plugins['puppet'].get('enable_agent', False):
+		taskset.add(tasks.EnableAgent)

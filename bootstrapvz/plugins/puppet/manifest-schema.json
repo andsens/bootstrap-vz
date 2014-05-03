@@ -10,7 +10,8 @@
 					"type": "object",
 					"properties": {
 						"manifest": { "$ref": "#/definitions/absolute_path" },
-						"assets": { "$ref": "#/definitions/absolute_path" }
+						"assets": { "$ref": "#/definitions/absolute_path" },
+						"enable_agent": { "type": "boolean" }
 					},
 					"minProperties": 1,
 					"additionalProperties": false
