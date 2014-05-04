@@ -9,7 +9,6 @@ def log_check_call(command, stdin=None, env=None, shell=False):
 def log_call(command, stdin=None, env=None, shell=False):
 	import subprocess
 	import logging
-	import Queue
 	from multiprocessing.dummy import Pool as ThreadPool
 	from os.path import realpath
 
@@ -22,11 +21,6 @@ def log_call(command, stdin=None, env=None, shell=False):
 	                           stdout=subprocess.PIPE,
 	                           stderr=subprocess.PIPE)
 
-	def stream_readline(args):
-		stream, q = args
-		for line in iter(stream.readline, ''):
-			q.put((stream, line.strip()))
-
 	if stdin is not None:
 		log.debug('  stdin: ' + stdin)
 		process.stdin.write(stdin + "\n")
@@ -35,23 +29,28 @@ def log_call(command, stdin=None, env=None, shell=False):
 
 	stdout = []
 	stderr = []
-	q = Queue.Queue()
+
+	def handle_stdout(line):
+		log.debug(line)
+		stdout.append(line)
+
+	def handle_stderr(line):
+		log.error(line)
+		stderr.append(line)
+
+	handlers = {process.stdout: handle_stdout,
+	            process.stderr: handle_stderr}
+
+	def stream_readline(stream):
+		for line in iter(stream.readline, ''):
+			handlers[stream](line.strip())
+
 	pool = ThreadPool(2)
-	pool.map(stream_readline, [(process.stdout, q), (process.stderr, q)])
+	pool.map(stream_readline, [process.stdout, process.stderr])
 	pool.close()
-	while True:
-		try:
-			stream, output = q.get_nowait()
-			if stream is process.stdout:
-				log.debug(output)
-				stdout.append(output)
-			elif stream is process.stderr:
-				log.error(output)
-				stderr.append(output)
-		except Queue.Empty:
-			pool.join()
-			process.wait()
-			return process.returncode, stdout, stderr
+	pool.join()
+	process.wait()
+	return process.returncode, stdout, stderr
 
 
 def sed_i(file_path, pattern, subst):

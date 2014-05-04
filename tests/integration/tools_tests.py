@@ -18,7 +18,7 @@ def setup_logger():
 	return output
 
 
-def test_log_call():
+def test_log_call_output_order():
 	logged = setup_logger()
 	fixture = """
 2 0.1 one\\\\n
