@@ -83,10 +83,9 @@ class IncludePackagesInBootstrap(Task):
 
 	@classmethod
 	def run(cls, info):
-		info.include_packages = \
-			info.include_packages.union(
-				set(info.manifest.bootstrapper['include_packages'])
-			)
+		info.include_packages.update(
+			set(info.manifest.bootstrapper['include_packages'])
+		)
 
 
 class ExcludePackagesInBootstrap(Task):
@@ -96,7 +95,6 @@ class ExcludePackagesInBootstrap(Task):
 
 	@classmethod
 	def run(cls, info):
-		info.exclude_packages = \
-			info.exclude_packages.union(
-				set(info.manifest.bootstrapper['exclude_packages'])
-			)
+		info.exclude_packages.update(
+			set(info.manifest.bootstrapper['exclude_packages'])
+		)
