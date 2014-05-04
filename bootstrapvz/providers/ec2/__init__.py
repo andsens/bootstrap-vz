@@ -39,7 +39,7 @@ def validate_manifest(data, validator, error):
 
 	if data['virtualization'] == 'pvm' and data['system']['bootloader'] != 'pvgrub':
 			error('Paravirtualized AMIs only support pvgrub as a bootloader', ['system', 'bootloader'])
-	if data['virtualization'] == 'hvm' and data['system']['bootloader'] == 'pvgrub':
+	if data['virtualization'] == 'hvm' and data['system']['bootloader'] != 'extlinux':
 			error('HVM AMIs only support extlinux as a bootloader', ['system', 'bootloader'])
 
 
