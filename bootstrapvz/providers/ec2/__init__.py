@@ -60,10 +60,12 @@ def resolve_tasks(taskset, manifest):
 	                initd.RemoveHWClock,
 	                tasks.initd.AddEC2InitScripts,
 	                initd.InstallInitScripts,
-	                initd.AdjustExpandRootScript,
 
 	                tasks.ami.RegisterAMI,
 	                ])
+
+	if manifest.volume['partitions']['type'] != 'none':
+		taskset.add(initd.AdjustExpandRootScript)
 
 	if manifest.system['bootloader'] == 'pvgrub':
 		taskset.add(boot.AddGrubPackage)
