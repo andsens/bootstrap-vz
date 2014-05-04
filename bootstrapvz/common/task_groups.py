@@ -44,6 +44,10 @@ def get_base_group(manifest):
 	         ]
 	if manifest.bootstrapper.get('tarball', False):
 		group.append(bootstrap.MakeTarball)
+	if manifest.bootstrapper.get('include_packages', False):
+		group.append(bootstrap.IncludePackagesInBootstrap)
+	if manifest.bootstrapper.get('exclude_packages', False):
+		group.append(bootstrap.ExcludePackagesInBootstrap)
 	return group
 
 

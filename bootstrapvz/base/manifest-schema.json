@@ -11,7 +11,23 @@
 			"properties": {
 				"workspace": { "$ref": "#/definitions/path" },
 				"mirror":    { "type": "string", "format": "uri" },
-				"tarball":   { "type": "boolean" }
+				"tarball":   { "type": "boolean" },
+				"include_packages": {
+					"type": "array",
+					"items": {
+					    "type": "string",
+						"pattern": "^[^/]+(/[^/]+)?$"
+					},
+					"minItems": 1
+				},
+				"exclude_packages": {
+					"type": "array",
+					"items": {
+					    "type": "string",
+						"pattern": "^[^/]+(/[^/]+)?$"
+					},
+					"minItems": 1
+				}
 			},
 			"required": ["workspace"]
 		},

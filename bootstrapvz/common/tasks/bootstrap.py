@@ -74,3 +74,29 @@ class Bootstrap(Task):
 
 		from ..tools import log_check_call
 		log_check_call(executable + options + arguments)
+
+
+class IncludePackagesInBootstrap(Task):
+	description = 'Add packages in the bootstrap phase'
+	phase = phases.preparation
+	successors = [Bootstrap]
+
+	@classmethod
+	def run(cls, info):
+		info.include_packages = \
+			info.include_packages.union(
+				set(info.manifest.bootstrapper['include_packages'])
+			)
+
+
+class ExcludePackagesInBootstrap(Task):
+	description = 'Remove packages from bootstrap phase'
+	phase = phases.preparation
+	successors = [Bootstrap]
+
+	@classmethod
+	def run(cls, info):
+		info.exclude_packages = \
+			info.exclude_packages.union(
+				set(info.manifest.bootstrapper['exclude_packages'])
+			)
