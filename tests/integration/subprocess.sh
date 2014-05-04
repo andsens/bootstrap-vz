@@ -6,9 +6,9 @@
 #
 # (cat <<EOF
 # 2 1 one\\\\n
-# 1 2 two\\\\n
-# 1 5 four
-# 1 6 \\\\rNo, three..\\\\n
+# 1 1 two\\\\n
+# 1 3 four
+# 1 1 \\\\rNo, three..\\\\n
 # EOF
 # ) | ./subprocess.sh
 #
@@ -24,6 +24,7 @@ while read line; do
 	rest=${line#* *}
 	delay=${rest%% *}
 	message=${rest#* }
-	eval "sleep $delay; printf \"$message\" >&$stream" &
+	sleep $delay
+	printf "$message" >&$stream
 done
 wait

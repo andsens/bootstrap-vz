@@ -21,19 +21,20 @@ def setup_logger():
 def test_log_call_output_order():
 	logged = setup_logger()
 	fixture = """
-2 0.1 one\\\\n
-1 0.2 two\\\\n
-1 0.5 four
-2 0.6 \\\\rNo, three..
-1 0.8 \\\\rthree
+2 0.00 one\\\\n
+1 0.02 two\\\\n
+1 0.02 four\\\\n
+2 0.02 No, three..\\\\n
+1 0.02 three\\\\n
 """
 	status, stdout, stderr = log_call([subprocess_path], stdin=fixture)
 	eq_(status, 0)
 	eq_(stderr, ['one', 'No, three..'])
-	eq_(stdout, ['two', 'four\rthree'])
+	eq_(stdout, ['two', 'four', 'three'])
 	expected_order = ['one',
 	                  'two',
-	                  'four\rthree',
+	                  'four',
 	                  'No, three..',
+	                  'three',
 	                  ]
-	eq_(logged.getvalue().split("\n")[8:-1], expected_order)
+	eq_(expected_order, logged.getvalue().split("\n")[8:-1])
