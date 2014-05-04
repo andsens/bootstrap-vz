@@ -33,7 +33,7 @@ def test_log_call():
 	eq_(stdout, ['two', 'four\rthree'])
 	expected_order = ['one',
 	                  'two',
-	                  'No, three..',  # The "four" is only recorded *after* the process is done (no newline)...
-	                  'four\rthree',  # .. which is why "No, three" comes first
+	                  'four\rthree',
+	                  'No, three..',
 	                  ]
 	eq_(logged.getvalue().split("\n")[8:-1], expected_order)
