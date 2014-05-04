@@ -48,12 +48,12 @@ class GPTPartitionMap(AbstractPartitionMap):
 
 		# We need to move the first partition to make space for the gpt offset
 		gpt_offset = Bytes('17KiB')
-		self.partitions[0].offset = gpt_offset
+		self.partitions[0].offset += gpt_offset
 
 		if hasattr(self, 'grub_boot'):
 			# grub_boot should not increase the size of the volume,
 			# so we reduce the size of the succeeding partition.
-			# gpt_offset is included here, because of the offset we added above
+			# gpt_offset is included here, because of the offset we added above (grub_boot is partition[0])
 			self.partitions[1].size -= self.grub_boot.get_end()
 		else:
 			# Avoid increasing the volume size because of gpt_offset

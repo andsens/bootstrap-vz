@@ -40,11 +40,17 @@ class MSDOSPartitionMap(AbstractPartitionMap):
 		# Mark boot as the boot partition, or root, if boot does not exist
 		getattr(self, 'boot', self.root).flags.append('boot')
 
-		# If we are using the grub bootloader, we will need to create a 2 MB offset at the beginning
-		# of the partitionmap and steal it from the first partition
+		# If we are using the grub bootloader, we will need to add a 2 MB offset
+		# at the beginning of the partitionmap and steal it from the first partition.
+		# The MBR offset is included in the grub offset, so if we don't use grub
+		# we should reduce the size of the first partition and move it by only 512 bytes.
 		if bootloader == 'grub':
-			self.partitions[0].offset = Bytes('2MiB')
-			self.partitions[0].size -= self.partitions[0].offset
+			offset = Bytes('2MiB')
+		else:
+			offset = Bytes('512B')
+
+		self.partitions[0].offset += offset
+		self.partitions[0].size -= offset
 
 		super(MSDOSPartitionMap, self).__init__(bootloader)
 
