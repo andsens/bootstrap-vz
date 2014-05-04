@@ -22,16 +22,12 @@ class GPTPartitionMap(AbstractPartitionMap):
 		def last_partition():
 			return self.partitions[-1] if len(self.partitions) > 0 else None
 
-		# GPT offset
-		gpt_offset = Bytes('17KiB')
-
 		# If we are using the grub bootloader we need to create an unformatted partition
 		# at the beginning of the map. Its size is 1007kb, which we will steal from the
 		# next partition.
 		if bootloader == 'grub':
 			from ..partitions.unformatted import UnformattedPartition
 			self.grub_boot = UnformattedPartition(Bytes('1007KiB'), last_partition())
-			self.grub_boot.offset = gpt_offset
 			# Mark the partition as a bios_grub partition
 			self.grub_boot.flags.append('bios_grub')
 			self.partitions.append(self.grub_boot)
@@ -50,13 +46,17 @@ class GPTPartitionMap(AbstractPartitionMap):
 		                         'root', last_partition())
 		self.partitions.append(self.root)
 
-		# Depending on whether we have a grub boot partition
-		# we will need to set the offset accordingly.
+		# We need to move the first partition to make space for the gpt offset
+		gpt_offset = Bytes('17KiB')
+		self.partitions[0].offset = gpt_offset
+
 		if hasattr(self, 'grub_boot'):
-			self.partitions[1].size -= gpt_offset
-			self.partitions[1].size -= self.grub_boot.size
+			# grub_boot should not increase the size of the volume,
+			# so we reduce the size of the succeeding partition.
+			# gpt_offset is included here, because of the offset we added above
+			self.partitions[1].size -= self.grub_boot.get_end()
 		else:
-			self.partitions[0].offset = gpt_offset
+			# Avoid increasing the volume size because of gpt_offset
 			self.partitions[0].size -= gpt_offset
 
 		super(GPTPartitionMap, self).__init__(bootloader)
