@@ -1,6 +1,5 @@
 """This module holds functions and classes responsible for formatting the log output
 both to a file and to the console.
-.. module:: log
 """
 import logging
 
@@ -9,11 +8,9 @@ def get_log_filename(manifest_path):
 	"""Returns the path to a logfile given a manifest
 	The logfile name is constructed from the current timestamp and the basename of the manifest
 
-	Args:
-		manifest_path (str): The path to the manifest
-
-	Returns:
-		str. The path to the logfile
+	:param str manifest_path: The path to the manifest
+	:return: The path to the logfile
+	:rtype: str
 	"""
 	import os.path
 	from datetime import datetime
@@ -28,9 +25,8 @@ def get_log_filename(manifest_path):
 def setup_logger(logfile=None, debug=False):
 	"""Sets up the python logger to log to both a file and the console
 
-	Args:
-		logfile (str): Path to a logfile
-		debug (bool): Whether to log debug output to the console
+	:param str logfile: Path to a logfile
+	:param bool debug: Whether to log debug output to the console
 	"""
 	root = logging.getLogger()
 	# Make sure all logging statements are processed by our handlers, they decide the log level

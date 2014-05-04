@@ -16,15 +16,14 @@ class Task(object):
 		"""
 		def __repr__(cls):
 			"""
-			Returns:
-				string.
+			:return str: The full module path to the Task
 			"""
 			return cls.__module__ + '.' + cls.__name__
 
 		def __str__(cls):
 			"""
-			Returns:
-				string.
+			:return: The full module path to the Task
+			:rtype: str
 			"""
 			return repr(cls)
 
@@ -32,7 +31,6 @@ class Task(object):
 	def run(cls, info):
 		"""The run function, all work is done inside this function
 
-		:param info: The bootstrap info object.
-		:type info: BootstrapInformation
+		:param BootstrapInformation info: The bootstrap info object.
 		"""
 		pass

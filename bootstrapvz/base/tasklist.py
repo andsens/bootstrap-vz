@@ -1,5 +1,4 @@
 """The tasklist module contains the TaskList class.
-.. module:: tasklist
 """
 
 from bootstrapvz.common.exceptions import TaskListError
@@ -22,10 +21,9 @@ class TaskList(object):
 		The function that is called shall accept the taskset as its first argument and the manifest
 		as its second argument.
 
-		Args:
-			function (str): Name of the function to call
-			manifest (Manifest): The manifest
-			\*args: Additional arguments that should be passed to the function that is called
+		:param str function: Name of the function to call
+		:param Manifest manifest: The manifest
+		:param list *args: Additional arguments that should be passed to the function that is called
 		"""
 		# Call 'function' on the provider
 		getattr(manifest.modules['provider'], function)(self.tasks, manifest, *args)
@@ -38,9 +36,8 @@ class TaskList(object):
 	def run(self, info, dry_run=False):
 		"""Converts the taskgraph into a list and runs all tasks in that list
 
-		Args:
-			info (dict): The bootstrap information object
-			dry_run (bool): Whether to actually run the tasks or simply step through them
+		:param dict info: The bootstrap information object
+		:param bool dry_run: Whether to actually run the tasks or simply step through them
 		"""
 		# Create a list for us to run
 		task_list = self.create_list()
@@ -109,8 +106,8 @@ class TaskList(object):
 	def get_all_tasks(self):
 		"""Gets a list of all task classes in the package
 
-		Returns:
-			list. A list of all tasks in the package
+		:return: A list of all tasks in the package
+		:rtype: list
 		"""
 		# Get a generator that returns all classes in the package
 		import os.path
@@ -126,15 +123,11 @@ class TaskList(object):
 	def get_all_classes(self, path=None, prefix=''):
 		""" Given a path to a package, this function retrieves all the classes in it
 
-		Args:
-			path (str): Path to the package
-			prefix (str): Name of the package followed by a dot
-
-		Returns:
-			generator. A generator that yields classes
-
-		Raises:
-			Exception
+		:param str path: Path to the package
+		:param str prefix: Name of the package followed by a dot
+		:return: A generator that yields classes
+		:rtype: generator
+		:raises Exception: If a module cannot be inspected.
 		"""
 		import pkgutil
 		import importlib
@@ -152,16 +145,14 @@ class TaskList(object):
 						yield obj
 
 	def check_ordering(self, task):
-		"""Checks the ordering of a task in relation to other tasks and their phases
+		"""Checks the ordering of a task in relation to other tasks and their phases.
+
 		This function checks for a subset of what the strongly connected components algorithm does,
 		but can deliver a more precise error message, namely that there is a conflict between
 		what a task has specified as its predecessors or successors and in which phase it is placed.
 
-		Args:
-			task (Task): The task to check the ordering for
-
-		Raises:
-			TaskListError
+		:param Task task: The task to check the ordering for
+		:raises TaskListError: If there is a conflict between task precedence and phase precedence
 		"""
 		for successor in task.successors:
 			# Run through all successors and check whether the phase of the task
@@ -182,13 +173,12 @@ class TaskList(object):
 
 	def strongly_connected_components(self, graph):
 		"""Find the strongly connected components in a graph using Tarjan's algorithm.
+
 		Source: http://www.logarithmic.net/pfh-files/blog/01208083168/sort.py
 
-		Args:
-			graph (dict): mapping of tasks to lists of successor tasks
-
-		Returns:
-			list. List of tuples that are strongly connected comoponents
+		:param dict graph: mapping of tasks to lists of successor tasks
+		:return: List of tuples that are strongly connected comoponents
+		:rtype: list
 		"""
 
 		result = []
@@ -221,14 +211,13 @@ class TaskList(object):
 		return result
 
 	def topological_sort(self, graph):
-		"""Runs a topological sort on a graph
+		"""Runs a topological sort on a graph.
+
 		Source: http://www.logarithmic.net/pfh-files/blog/01208083168/sort.py
 
-		Args:
-			graph (dict): mapping of tasks to lists of successor tasks
-
-		Returns:
-			list. A list of all tasks in the graph sorted according to ther dependencies
+		:param dict graph: mapping of tasks to lists of successor tasks
+		:return: A list of all tasks in the graph sorted according to ther dependencies
+		:rtype: list
 		"""
 		count = {}
 		for node in graph:

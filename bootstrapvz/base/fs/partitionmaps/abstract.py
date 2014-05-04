@@ -20,8 +20,7 @@ class AbstractPartitionMap(FSMProxy):
 
 	def __init__(self, bootloader):
 		"""
-		Args:
-			bootloader (str): Name of the bootloader we will use for bootstrapping
+		:param str bootloader: Name of the bootloader we will use for bootstrapping
 		"""
 		# Create the configuration for the state machine
 		cfg = {'initial': 'nonexistent', 'events': self.events, 'callbacks': {}}
@@ -30,16 +29,15 @@ class AbstractPartitionMap(FSMProxy):
 	def is_blocking(self):
 		"""Returns whether the partition map is blocking volume detach operations
 
-		Returns:
-			bool.
+		:rtype: bool
 		"""
 		return self.fsm.current == 'mapped'
 
 	def get_total_size(self):
 		"""Returns the total size the partitions occupy
 
-		Returns:
-			Bytes. The size of all the partitions
+		:return: The size of all partitions
+		:rtype: Bytes
 		"""
 		# We just need the endpoint of the last partition
 		return self.partitions[-1].get_end()
@@ -47,8 +45,7 @@ class AbstractPartitionMap(FSMProxy):
 	def create(self, volume):
 		"""Creates the partition map
 
-		Args:
-			volume (Volume): The volume to create the partition map on
+		:param Volume volume: The volume to create the partition map on
 		"""
 		self.fsm.create(volume=volume)
 
@@ -59,15 +56,13 @@ class AbstractPartitionMap(FSMProxy):
 	def map(self, volume):
 		"""Maps the partition map to device nodes
 
-		Args:
-			volume (Volume): The volume the partition map resides on
+		:param Volume volume: The volume the partition map resides on
 		"""
 		self.fsm.map(volume=volume)
 
 	def _before_map(self, event):
 		"""
-		Raises:
-			PartitionError
+		:raises PartitionError: In case a partition could not be mapped.
 		"""
 		volume = event.volume
 		try:
@@ -105,15 +100,13 @@ class AbstractPartitionMap(FSMProxy):
 	def unmap(self, volume):
 		"""Unmaps the partition
 
-		Args:
-			volume (Volume): The volume to unmap the partition map from
+		:param Volume volume: The volume to unmap the partition map from
 		"""
 		self.fsm.unmap(volume=volume)
 
 	def _before_unmap(self, event):
 		"""
-		Raises:
-			PartitionError
+		:raises PartitionError: If the a partition cannot be unmapped
 		"""
 		volume = event.volume
 		# Run through all partitions before unmapping and make sure they can all be unmapped

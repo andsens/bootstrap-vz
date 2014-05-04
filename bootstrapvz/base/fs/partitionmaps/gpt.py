@@ -10,9 +10,8 @@ class GPTPartitionMap(AbstractPartitionMap):
 
 	def __init__(self, data, bootloader):
 		"""
-		Args:
-			data (dict): volume.partitions part of the manifest
-			bootloader (str): Name of the bootloader we will use for bootstrapping
+		:param dict data: volume.partitions part of the manifest
+		:param str bootloader: Name of the bootloader we will use for bootstrapping
 		"""
 		from bootstrapvz.common.bytes import Bytes
 		# List of partitions

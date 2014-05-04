@@ -20,11 +20,10 @@ class BasePartition(AbstractPartition):
 
 	def __init__(self, size, filesystem, format_command, previous):
 		"""
-		Args:
-			size (Bytes): Size of the partition
-			filesystem (str): Filesystem the partition should be formatted with
-			format_command (list): Optional format command, valid variables are fs, device_path and size
-			previous (BasePartition): The partition that preceeds this one
+		:param Bytes size: Size of the partition
+		:param str filesystem: Filesystem the partition should be formatted with
+		:param list format_command: Optional format command, valid variables are fs, device_path and size
+		:param BasePartition previous: The partition that preceeds this one
 		"""
 		# By saving the previous partition we have
 		# a linked list that partitions can go backwards in to find the first partition.
@@ -39,16 +38,15 @@ class BasePartition(AbstractPartition):
 	def create(self, volume):
 		"""Creates the partition
 
-		Args:
-			volume (Volume): The volume to create the partition on
+		:param Volume volume: The volume to create the partition on
 		"""
 		self.fsm.create(volume=volume)
 
 	def get_index(self):
 		"""Gets the index of this partition in the partition map
 
-		Returns:
-			int. The index of the partition in the partition map
+		:return: The index of the partition in the partition map
+		:rtype: int
 		"""
 		if self.previous is None:
 			# Partitions are 1 indexed
@@ -60,8 +58,8 @@ class BasePartition(AbstractPartition):
 	def get_start(self):
 		"""Gets the starting byte of this partition
 
-		Returns:
-			Bytes. The starting byte of this partition
+		:return: The starting byte of this partition
+		:rtype: Bytes
 		"""
 		if self.previous is None:
 			# If there is no previous partition, this partition begins at the offset
@@ -73,8 +71,7 @@ class BasePartition(AbstractPartition):
 	def map(self, device_path):
 		"""Maps the partition to a device_path
 
-		Args:
-			device_path (str): The device patht his partition should be mapped to
+		:param str device_path: The device patht his partition should be mapped to
 		"""
 		self.fsm.map(device_path=device_path)
 

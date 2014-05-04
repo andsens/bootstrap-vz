@@ -6,8 +6,7 @@ class PreferenceLists(object):
 
 	def __init__(self, manifest_vars):
 		"""
-		Args:
-			manifest_vars (dict): The manifest variables
+		:param dict manifest_vars: The manifest variables
 		"""
 		# A dictionary with the name of the file in preferences.d as the key
 		# That values are lists of Preference objects
@@ -18,12 +17,11 @@ class PreferenceLists(object):
 	def add(self, name, preferences):
 		"""Adds a preference to the apt preferences list
 
-		Args:
-			name (str): Name of the file in preferences.list.d, may contain manifest vars references
-			preferences (object): The preferences
+		:param str name: Name of the file in preferences.list.d, may contain manifest vars references
+		:param object preferences: The preferences
 		"""
 		name = name.format(**self.manifest_vars)
-                self.preferences[name] = [Preference(p) for p in preferences]
+		self.preferences[name] = [Preference(p) for p in preferences]
 
 
 class Preference(object):
@@ -32,18 +30,13 @@ class Preference(object):
 
 	def __init__(self, preference):
 		"""
-		Args:
-			preference (dict): A apt preference dictionary
-
-		Raises:
-			PreferenceError
+		:param dict preference: A apt preference dictionary
 		"""
-                self.preference = preference
+		self.preference = preference
 
 	def __str__(self):
 		"""Convert the object into a preference block
 
-		Returns:
-			string.
+		:rtype: str
 		"""
-                return "Package: {package}\nPin: {pin}\nPin-Priority: {pin-priority}\n".format(**self.preference)
+		return "Package: {package}\nPin: {pin}\nPin-Priority: {pin-priority}\n".format(**self.preference)

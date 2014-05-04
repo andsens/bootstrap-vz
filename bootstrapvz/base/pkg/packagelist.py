@@ -9,17 +9,16 @@ class PackageList(object):
 		"""
 		def __init__(self, name, target):
 			"""
-			Args:
-				name (str): The name of the package
-				target (str): The name of the target release
+			:param str name: The name of the package
+			:param str target: The name of the target release
 			"""
 			self.name = name
 			self.target = target
 
 		def __str__(self):
 			"""Converts the package into somehting that apt-get install can parse
-			Returns:
-				string.
+
+			:rtype: str
 			"""
 			if self.target is None:
 				return self.name
@@ -31,23 +30,21 @@ class PackageList(object):
 		"""
 		def __init__(self, path):
 			"""
-			Args:
-				path (str): The path to the local package
+			:param str path: The path to the local package
 			"""
 			self.path = path
 
 		def __str__(self):
 			"""
-			Returns:
-				string. The path to the local package
+			:return: The path to the local package
+			:rtype: string
 			"""
 			return self.path
 
 	def __init__(self, manifest_vars, source_lists):
 		"""
-		Args:
-			manifest_vars (dict): The manifest variables
-			source_lists (SourceLists): The sourcelists for apt
+		:param dict manifest_vars: The manifest variables
+		:param SourceLists source_lists: The sourcelists for apt
 		"""
 		self.manifest_vars = manifest_vars
 		self.source_lists = source_lists
@@ -63,12 +60,11 @@ class PackageList(object):
 	def add(self, name, target=None):
 		"""Adds a package to the install list
 
-		Args:
-			name (str): The name of the package to install, may contain manifest vars references
-			target (str): The name of the target release for the package, may contain manifest vars references
+		:param str name: The name of the package to install, may contain manifest vars references
+		:param str target: The name of the target release for the package, may contain manifest vars references
 
-		Raises:
-			PackageError
+		:raises PackageError: When a package of the same name but with a different target has already been added.
+		:raises PackageError: When the specified target release could not be found.
 		"""
 		from exceptions import PackageError
 		name = name.format(**self.manifest_vars)
@@ -108,8 +104,7 @@ class PackageList(object):
 	def add_local(self, package_path):
 		"""Adds a local package to the installation list
 
-		Args:
-			package_path (str): Path to the local package, may contain manifest vars references
+		:param str package_path: Path to the local package, may contain manifest vars references
 		"""
 		package_path = package_path.format(**self.manifest_vars)
 		self.install.append(self.Local(package_path))

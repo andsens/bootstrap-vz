@@ -15,21 +15,21 @@ class Phase(object):
 	def pos(self):
 		"""Gets the position of the phase
 
-		Returns:
-			int. The positional index of the phase in relation to the other phases
+		:return: The positional index of the phase in relation to the other phases
+		:rtype: int
 		"""
 		from bootstrapvz.common.phases import order
 		return next(i for i, phase in enumerate(order) if phase is self)
 
 	def __cmp__(self, other):
 		"""Compares the phase order in relation to the other phases
+		:return int:
 		"""
 		return self.pos() - other.pos()
 
 	def __str__(self):
-		"""String representation of the phase, the name suffices
-
-		Returns:
-			string.
+		"""
+		:return: String representation of the phase
+		:rtype: str
 		"""
 		return self.name

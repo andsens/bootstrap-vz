@@ -14,8 +14,7 @@ class UnformattedPartition(BasePartition):
 
 	def __init__(self, size, previous):
 		"""
-		Args:
-			size (Bytes): Size of the partition
-			previous (BasePartition): The partition that preceeds this one
+		:param Bytes size: Size of the partition
+		:param BasePartition previous: The partition that preceeds this one
 		"""
 		super(UnformattedPartition, self).__init__(size, None, None, previous)

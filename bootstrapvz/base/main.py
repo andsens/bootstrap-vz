@@ -1,5 +1,4 @@
 """Main module containing all the setup necessary for running the bootstrapping process
-.. module:: main
 """
 
 import logging
@@ -9,8 +8,7 @@ log = logging.getLogger(__name__)
 def main():
 	"""Main function for invoking the bootstrap process
 
-	Raises:
-		Exception
+	:raises Exception: When the invoking user is not root and --dry-run isn't specified
 	"""
 	# Get the commandline arguments
 	opts = get_opts()
@@ -58,8 +56,7 @@ Options:
 def run(opts):
 	"""Runs the bootstrapping process
 
-	Args:
-		opts (dict): Dictionary of options from the commandline
+	:params dict opts: Dictionary of options from the commandline
 	"""
 	# Load the manifest
 	from manifest import Manifest
@@ -97,9 +94,8 @@ def run(opts):
 			"""counter_task() adds the second argument to the rollback tasklist
 			if the first argument is present in the list of completed tasks
 
-			Args:
-				task (Task): The task to look for in the completed tasks list
-				counter (Task): The task to add to the rollback tasklist
+			:param Task task: The task to look for in the completed tasks list
+			:param Task counter: The task to add to the rollback tasklist
 			"""
 			if task in tasklist.tasks_completed and counter not in tasklist.tasks_completed:
 				rollback_tasklist.tasks.add(counter)

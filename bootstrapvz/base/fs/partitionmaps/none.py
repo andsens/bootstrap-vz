@@ -9,9 +9,8 @@ class NoPartitions(object):
 
 	def __init__(self, data, bootloader):
 		"""
-		Args:
-			data (dict): volume.partitions part of the manifest
-			bootloader (str): Name of the bootloader we will use for bootstrapping
+		:param dict data: volume.partitions part of the manifest
+		:param str bootloader: Name of the bootloader we will use for bootstrapping
 		"""
 		from bootstrapvz.common.bytes import Bytes
 		# In the NoPartitions partitions map we only have a single 'partition'
@@ -22,15 +21,14 @@ class NoPartitions(object):
 	def is_blocking(self):
 		"""Returns whether the partition map is blocking volume detach operations
 
-		Returns:
-			bool.
+		:rtype: bool
 		"""
 		return self.root.fsm.current == 'mounted'
 
 	def get_total_size(self):
 		"""Returns the total size the partitions occupy
 
-		Returns:
-			Bytes. The size of all the partitions
+		:return: The size of all the partitions
+		:rtype: Bytes
 		"""
 		return self.root.get_end()

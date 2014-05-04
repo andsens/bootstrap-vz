@@ -9,9 +9,8 @@ class BootstrapInformation(object):
 	def __init__(self, manifest=None, debug=False):
 		"""Instantiates a new bootstrap info object.
 
-		Args:
-			manifest (Manifest): The manifest
-			debug (bool): Whether debugging is turned on
+		:param Manifest manifest: The manifest
+		:param bool debug: Whether debugging is turned on
 		"""
 		# Set the manifest attribute.
 		self.manifest = manifest
@@ -74,6 +73,14 @@ class BootstrapInformation(object):
 			setattr(self, '_' + pluginname, {})
 
 	def __create_manifest_vars(self, manifest, additional_vars={}):
+		"""Creates the manifest variables dictionary, based on the manifest contents
+		and additional data.
+
+		:param Manifest manifest: The Manifest
+		:param dict additional_vars: Additional values (they will take precedence and overwrite anything else)
+		:return: The manifest_vars dictionary
+		:rtype: dict
+		"""
 		class DictClass(dict):
 			"""Tiny extension of dict to allow setting and getting keys via attributes
 			"""
@@ -89,9 +96,8 @@ class BootstrapInformation(object):
 		def set_manifest_vars(obj, data):
 			"""Runs through the manifest and creates DictClasses for every key
 
-			Args:
-				obj (dict): dictionary to set the values on
-				data (dict): dictionary of values to set on the obj
+			:param dict obj: dictionary to set the values on
+			:param dict data: dictionary of values to set on the obj
 			"""
 			for key, value in data.iteritems():
 				if isinstance(value, dict):

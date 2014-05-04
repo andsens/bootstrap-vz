@@ -23,8 +23,7 @@ class Volume(FSMProxy):
 
 	def __init__(self, partition_map):
 		"""
-		Args:
-			partition_map (PartitionMap): The partition map for the volume
+		:param PartitionMap partition_map: The partition map for the volume
 		"""
 		# Path to the volume
 		self.device_path = None
@@ -50,10 +49,6 @@ class Volume(FSMProxy):
 		super(Volume, self).__init__(cfg)
 
 	def _after_create(self, e):
-		"""
-		Args:
-			e (_e_obj): Event object containing arguments to create()
-		"""
 		if isinstance(self.partition_map, NoPartitions):
 			# When the volume has no partitions, the virtual root partition
 			# is essentially created when the volume is created, forward that creation event.
@@ -62,11 +57,7 @@ class Volume(FSMProxy):
 	def _check_blocking(self, e):
 		"""Checks whether the volume is blocked
 
-		Args:
-			e (_e_obj): Event object containing arguments to create()
-
-		Raises:
-			VolumeError
+		:raises VolumeError: When the volume is blocked from being detached
 		"""
 		# Only the partition map can block the volume
 		if self.partition_map.is_blocking():
@@ -78,16 +69,16 @@ class Volume(FSMProxy):
 		Mainly it is used to fool grub into thinking that it is working with a real volume,
 		rather than a loopback device or a network block device.
 
-		Args:
-			e (_e_obj): Event object containing arguments to create()
-			            Arguments are:
-			            logical_start_sector (int): The sector the volume should start at in the new volume
-			            start_sector (int): The offset at which the volume should begin to be mapped in the new volume
-			            sectors (int): The number of sectors that should be mapped
-			            Read more at: http://manpages.debian.org/cgi-bin/man.cgi?query=dmsetup&apropos=0&sektion=0&manpath=Debian+7.0+wheezy&format=html&locale=en
+		:param _e_obj e: Event object containing arguments to create()
+		Keyword arguments to link_dm_node() are:
 
-		Raises:
-			VolumeError
+		:param int logical_start_sector: The sector the volume should start at in the new volume
+		:param int start_sector: The offset at which the volume should begin to be mapped in the new volume
+		:param int sectors: The number of sectors that should be mapped
+
+		Read more at: http://manpages.debian.org/cgi-bin/man.cgi?query=dmsetup&apropos=0&sektion=0&manpath=Debian+7.0+wheezy&format=html&locale=en
+
+		:raises VolumeError: When a free block device cannot be found.
 		"""
 		import os.path
 		from bootstrapvz.common.fs import get_partitions
@@ -134,9 +125,6 @@ class Volume(FSMProxy):
 
 	def _before_unlink_dm_node(self, e):
 		"""Unlinks the device mapping
-
-		Args:
-			e (_e_obj): Event object containing arguments to create()
 		"""
 		log_check_call(['dmsetup', 'remove', self.dm_node_name])
 		# Reset the device_path

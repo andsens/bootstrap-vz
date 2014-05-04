@@ -1,7 +1,6 @@
 """The Manifest module contains the manifest that providers and plugins use
 to determine which tasks should be added to the tasklist, what arguments various
 invocations should have etc..
-.. module:: manifest
 """
 from bootstrapvz.common.tools import load_json
 from bootstrapvz.common.tools import load_yaml
@@ -19,8 +18,7 @@ class Manifest(object):
 	def __init__(self, path):
 		"""Initializer: Given a path we load, validate and parse the manifest.
 
-		Args:
-			path (str): The path to the manifest
+		:param str path: The path to the manifest
 		"""
 		self.path = path
 		self.load()
@@ -100,9 +98,8 @@ class Manifest(object):
 		"""This convenience function is passed around to all the validation functions
 		so that they may run a json-schema validation by giving it the data and a path to the schema.
 
-		Args:
-			data (dict): Data to validate (normally the manifest data)
-			schema_path (str): Path to the json-schema to use for validation
+		:param dict data: Data to validate (normally the manifest data)
+		:param str schema_path: Path to the json-schema to use for validation
 		"""
 		import jsonschema
 		schema = load_json(schema_path)
@@ -115,9 +112,9 @@ class Manifest(object):
 		"""This function is passed to all validation functions so that they may
 		raise a validation error because a custom validation of the manifest failed.
 
-		Args:
-			message (str): Message to user about the error
-			json_path (list): A path to the location in the manifest where the error occurred
+		:param str message: Message to user about the error
+		:param list json_path: A path to the location in the manifest where the error occurred
+		:raises ManifestError: With absolute certainty
 		"""
 		from bootstrapvz.common.exceptions import ManifestError
 		raise ManifestError(message, self.path, json_path)

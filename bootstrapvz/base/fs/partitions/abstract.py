@@ -24,10 +24,9 @@ class AbstractPartition(FSMProxy):
 		"""
 		def __init__(self, source, destination, opts):
 			"""
-			Args:
-				source (str,AbstractPartition): The path from where we mount or a partition
-				destination (str): The path of the mountpoint
-				opts (list): List of options to pass to the mount command
+			:param str,AbstractPartition source: The path from where we mount or a partition
+			:param str destination: The path of the mountpoint
+			:param list opts: List of options to pass to the mount command
 			"""
 			self.source      = source
 			self.destination = destination
@@ -36,8 +35,7 @@ class AbstractPartition(FSMProxy):
 		def mount(self, prefix):
 			"""Performs the mount operation or forwards it to another partition
 
-			Args:
-				prefix (str): Path prefix of the mountpoint
+			:param str prefix: Path prefix of the mountpoint
 			"""
 			mount_dir = os.path.join(prefix, self.destination)
 			# If the source is another partition, we tell that partition to mount itself
@@ -59,10 +57,9 @@ class AbstractPartition(FSMProxy):
 
 	def __init__(self, size, filesystem, format_command):
 		"""
-		Args:
-			size (Bytes): Size of the partition
-			filesystem (str): Filesystem the partition should be formatted with
-			format_command (list): Optional format command, valid variables are fs, device_path and size
+		:param Bytes size: Size of the partition
+		:param str filesystem: Filesystem the partition should be formatted with
+		:param list format_command: Optional format command, valid variables are fs, device_path and size
 		"""
 		self.size           = size
 		self.filesystem     = filesystem
@@ -79,8 +76,8 @@ class AbstractPartition(FSMProxy):
 	def get_uuid(self):
 		"""Gets the UUID of the partition
 
-		Returns:
-			str. The UUID of the partition
+		:return: The UUID of the partition
+		:rtype: str
 		"""
 		[uuid] = log_check_call(['blkid', '-s', 'UUID', '-o', 'value', self.device_path])
 		return uuid
@@ -92,8 +89,8 @@ class AbstractPartition(FSMProxy):
 	def get_end(self):
 		"""Gets the end of the partition
 
-		Returns:
-			Bytes. The end of the partition
+		:return: The end of the partition
+		:rtype: Bytes
 		"""
 		return self.get_start() + self.size
 
@@ -141,10 +138,9 @@ class AbstractPartition(FSMProxy):
 		"""Associate a mount with this partition
 		Automatically mounts it
 
-		Args:
-			source (str,AbstractPartition): The source of the mount
-			destination (str): The path to the mountpoint
-			opts (list): Any options that should be passed to the mount command
+		:param str,AbstractPartition source: The source of the mount
+		:param str destination: The path to the mountpoint
+		:param list opts: Any options that should be passed to the mount command
 		"""
 		# Create a new mount object, mount it if the partition is mounted and put it in the mounts dict
 		mount = self.Mount(source, destination, opts)
@@ -156,8 +152,7 @@ class AbstractPartition(FSMProxy):
 		"""Remove a mount from this partition
 		Automatically unmounts it
 
-		Args:
-			destination (str): The mountpoint path of the mount that should be removed
+		:param str destination: The mountpoint path of the mount that should be removed
 		"""
 		# Unmount the mount if the partition is mounted and delete it from the mounts dict
 		# If the mount is already unmounted and the source is a partition, this will raise an exception

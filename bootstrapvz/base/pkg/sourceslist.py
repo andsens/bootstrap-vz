@@ -6,8 +6,7 @@ class SourceLists(object):
 
 	def __init__(self, manifest_vars):
 		"""
-		Args:
-			manifest_vars (dict): The manifest variables
+		:param dict manifest_vars: The manifest variables
 		"""
 		# A dictionary with the name of the file in sources.list.d as the key
 		# That values are lists of Source objects
@@ -18,9 +17,8 @@ class SourceLists(object):
 	def add(self, name, line):
 		"""Adds a source to the apt sources list
 
-		Args:
-			name (str): Name of the file in sources.list.d, may contain manifest vars references
-			line (str): The line for the source file, may contain manifest vars references
+		:param str name: Name of the file in sources.list.d, may contain manifest vars references
+		:param str line: The line for the source file, may contain manifest vars references
 		"""
 		name = name.format(**self.manifest_vars)
 		line = line.format(**self.manifest_vars)
@@ -31,11 +29,10 @@ class SourceLists(object):
 	def target_exists(self, target):
 		"""Checks whether the target exists in the sources list
 
-		Args:
-			target (str): Name of the target to check for, may contain manifest vars references
+		:param str target: Name of the target to check for, may contain manifest vars references
 
-		Returns:
-			bool. Whether the target exists
+		:return: Whether the target exists
+		:rtype: bool
 		"""
 		target = target.format(**self.manifest_vars)
 		# Run through all the sources and return True if the target exists
@@ -51,11 +48,9 @@ class Source(object):
 
 	def __init__(self, line):
 		"""
-		Args:
-			line (str): A apt source line
+		:param str line: A apt source line
 
-		Raises:
-			SourceError
+		:raises SourceError: When the source line cannot be parsed
 		"""
 		# Parse the source line and populate the class attributes with it
 		# The format is taken from `man sources.list`
@@ -84,8 +79,7 @@ class Source(object):
 		"""Convert the object into a source line
 		This is pretty much the reverse of what we're doing in the initialization function.
 
-		Returns:
-			string.
+		:rtype: str
 		"""
 		options = ''
 		if len(self.options) > 0:

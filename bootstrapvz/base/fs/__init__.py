@@ -2,12 +2,12 @@
 
 def load_volume(data, bootloader):
 	"""Instantiates a volume that corresponds to the data in the manifest
-	Args:
-		data (dict): The 'volume' section from the manifest
-		bootloader (str): Name of the bootloader the system will boot with
 
-	Returns:
-		Volume. The volume that represents all information pertaining to the volume we bootstrap on
+	:param dict data: The 'volume' section from the manifest
+	:param str bootloader: Name of the bootloader the system will boot with
+
+	:return: The volume that represents all information pertaining to the volume we bootstrap on.
+	:rtype: Volume
 	"""
 	# Create a mapping between valid partition maps in the manifest and their corresponding classes
 	from partitionmaps.gpt import GPTPartitionMap
