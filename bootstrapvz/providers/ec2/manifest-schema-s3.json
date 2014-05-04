@@ -28,17 +28,6 @@
 				}
 			},
 			"required": ["bucket", "region"]
-		},
-		"volume": {
-			"type": "object",
-			"properties": {
-				"partitions": {
-					"type": "object",
-					"properties": {
-						"type": { "enum": ["none"] }
-					}
-				}
-			}
 		}
 	},
 	"required": ["image"],

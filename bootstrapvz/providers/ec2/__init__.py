@@ -39,17 +39,24 @@ def validate_manifest(data, validator, error):
 
 	bootloader = data['system']['bootloader']
 	virtualization = data['virtualization']
+	backing = data['volume']['backing']
 	partition_type = data['volume']['partitions']['type']
 
 	if virtualization == 'pvm' and bootloader != 'pvgrub':
 		error('Paravirtualized AMIs only support pvgrub as a bootloader', ['system', 'bootloader'])
 
 	if virtualization == 'hvm':
+		if backing != 'ebs':
+			error('HVM AMIs currently only work when they are EBS backed', ['volume', 'backing'])
 		if bootloader != 'extlinux':
-			error('HVM AMIs only support extlinux as a bootloader', ['system', 'bootloader'])
+			error('HVM AMIs currently only work with extlinux as a bootloader', ['system', 'bootloader'])
 		if bootloader == 'extlinux' and partition_type not in ['none', 'msdos']:
-			error('HVM AMIs booted with extlinux currently only support the `none\' or `msdos\' partition type',
-			      ['system', 'bootloader'])
+			error('HVM AMIs booted with extlinux currently work with unpartitioned or msdos partitions volumes',
+			      ['volume', 'partitions', 'type'])
+
+	if backing == 's3':
+		if partition_type != 'none':
+			error('S3 backed AMIs currently only work with unpartitioned volumes', ['system', 'bootloader'])
 
 
 def resolve_tasks(taskset, manifest):
