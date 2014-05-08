@@ -23,14 +23,12 @@ class AddDefaultSources(Task):
 
 	@classmethod
 	def run(cls, info):
-		components = 'main'
-		if 'components' in info.manifest.system:
-			components = ' '.join(info.manifest.system['components'])
+		components = ' '.join(info.manifest.packages.get('components', ['main']))
 		info.source_lists.add('main', 'deb     {apt_mirror} {system.release} ' + components)
 		info.source_lists.add('main', 'deb-src {apt_mirror} {system.release} ' + components)
-		info.source_lists.add('main', 'deb     http://security.debian.org/  {system.release}/updates ' + components)
-		info.source_lists.add('main', 'deb-src http://security.debian.org/  {system.release}/updates ' + components)
-		if info.manifest.system['release'] not in {'testing', 'unstable'}:
+		if info.release_codename != 'sid':
+			info.source_lists.add('main', 'deb     http://security.debian.org/  {system.release}/updates ' + components)
+			info.source_lists.add('main', 'deb-src http://security.debian.org/  {system.release}/updates ' + components)
 			info.source_lists.add('main', 'deb     {apt_mirror} {system.release}-updates ' + components)
 			info.source_lists.add('main', 'deb-src {apt_mirror} {system.release}-updates ' + components)
 
