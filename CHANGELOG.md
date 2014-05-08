@@ -1,3 +1,7 @@
+2014-05-04:
+	Dhananjay Balan:
+		* Salt minion installation & configuration plugin
+		* Expose debootstrap --include-packages and --exclude-packages options to manifest
 2014-05-03:
 	Anders Ingemann:
 		* Require hostname setting for vagrant plugin
@@ -6,4 +10,3 @@
 2014-05-02:
 	Tomasz Rybak:
 		* Added Google Compute Engine Provider
-
