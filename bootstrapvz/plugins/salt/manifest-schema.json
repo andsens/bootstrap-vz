@@ -1,0 +1,38 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "Saltstack plugin manifest",
+	"type": "object",
+	"properties": {
+		"plugins": {
+			"type": "object",
+			"properties": {
+				"salt": {
+					"type": "object",
+					"properties": {
+						"master": {
+							"type": "string"
+						},
+                        "install_source": {
+                            "type": "string"
+                        },
+						"version": {
+							"type": "string"
+						},
+                        "grains": {
+                            "type": "object",
+                            "patternProperties": {
+						        "^[^\/\\0]+$": {
+							        "type": "string"
+						        }
+					        },
+                            "minItems": 1
+                        }
+					},
+					"required": ["install_source"]
+				}
+			},
+			"required": ["salt"]
+		}
+	},
+	"required": ["plugins"]
+}
