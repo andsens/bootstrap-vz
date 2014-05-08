@@ -15,16 +15,16 @@
 				"include_packages": {
 					"type": "array",
 					"items": {
-					    "type": "string",
-						"pattern": "^[^/]+(/[^/]+)?$"
+						"type":    "string",
+						"pattern": "^[^/]+$"
 					},
 					"minItems": 1
 				},
 				"exclude_packages": {
 					"type": "array",
 					"items": {
-					    "type": "string",
-						"pattern": "^[^/]+(/[^/]+)?$"
+						"type":    "string",
+						"pattern": "^[^/]+$"
 					},
 					"minItems": 1
 				}
