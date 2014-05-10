@@ -104,9 +104,8 @@ guidelines. There however a few exceptions:
 + Ignore ``E501``: The max line length is not 80 characters
 + Ignore ``W191``: Indent with tabs not spaces
 
-The codebase can be checked for any violations quite easily with:
+The codebase can be checked for any violations quite easily, since those rules are already specified in the
+`tox <http://tox.readthedocs.org/>`_ configuration file.
 ::
 
-    find . -name '*.py' | /usr/bin/grep -v minify_json | xargs pep8 --ignore=E101,E221,E241,E501,W191
-
-Note: ``common/minify_json.py`` is ignored since it is foreign code.
+    tox -e flake8
