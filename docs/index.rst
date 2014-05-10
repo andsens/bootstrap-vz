@@ -15,6 +15,7 @@ Contents:
    common/index
    plugins/index
    providers/index
+   guidelines
 
 Indices and tables
 ==================

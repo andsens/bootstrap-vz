@@ -1,3 +1,3 @@
 
-Common volume representations
+Volume representations
 =============================
