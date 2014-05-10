@@ -91,80 +91,6 @@ value to the bootstrap-vz codebase.
   Example: Use ``log_call(['wget', ...])`` instead of ``log_call(['/usr/bin/wget', ...])``.
 
 
-Commandline switches
---------------------
-As a developer, there are commandline switches available which can
-make your life a lot easier.
-
-+ ``--debug``: Enables debug output in the console. This includes output
-  from all commands that are invoked during bootstrapping.
-+ ``--pause-on-error``: Pauses the execution when an exception occurs
-  before rolling back. This allows you to debug by inspecting the volume
-  at the time the error occured.
-+ ``--dry-run``: Prevents the ``run()`` function from being called on all
-  tasks. This is useful if you want to see whether the task order is
-  correct.
-
-
-Logfile
--------
-Every run creates a new logfile in the ``logs/`` directory. The filename
-for each run consists of a timestamp (``%Y%m%d%H%M%S``) and the basename
-of the manifest used. The log also contains debugging statements
-regardless of whether the ``--debug`` switch was used.
-
-
-Inner workings
---------------
-
-Tasks
-~~~~~
-At its core bootstrap-vz is based on tasks that perform units of work.
-By keeping those tasks small and with a solid structure built around
-them a high degree of flexibility can be achieved. To ensure that
-tasks are executed in the right order, each task is placed in a
-dependency graph where directed edges dictate precedence. Each task is
-a simple class that defines its predecessor tasks and successor tasks
-via attributes. Here is an example:
-
-::
-
-    class MapPartitions(Task):
-    	description = 'Mapping volume partitions'
-    	phase = phases.volume_preparation
-    	predecessors = [PartitionVolume]
-    	successors = [filesystem.Format]
-    
-    	@classmethod
-    	def run(cls, info):
-    		info.volume.partition_map.map(info.volume)
-
-In this case the attributes define that the task at hand should run
-after the ``PartitionVolume`` task — i.e. after volume has been
-partitioned (``predecessors``) — but before formatting each
-partition (``successors``).
-It is also placed in the ``volume_preparation`` phase.
-Phases are ordered and group tasks together. All tasks in a phase are
-run before proceeding with the tasks in the next phase. They are a way
-of avoiding the need to list 50 different tasks as predecessors and
-successors.
-
-The final task list that will be executed is computed by enumerating
-all tasks in the package, placing them in the graph and
-`sorting them topoligcally <http://en.wikipedia.org/wiki/Topological_sort>`_.
-Subsequently the list returned is filtered to contain only the tasks the
-provider and the plugins added to the taskset.
-
-
-System abstractions
-~~~~~~~~~~~~~~~~~~~
-There are several abstractions in bootstrap-vz that make it possible
-to generalize things like volume creation, partitioning, mounting and
-package installation. As a rule these abstractions are located in the
-``base/`` folder, where the manifest parsing and task ordering algorithm
-are placed as well.
-
-
 Coding style
 ------------
 bootstrap-vz is coded to comply closely with the PEP8 style
@@ -180,7 +106,7 @@ guidelines. There however a few exceptions:
 
 The codebase can be checked for any violations quite easily with:
 ::
+
     find . -name '*.py' | /usr/bin/grep -v minify_json | xargs pep8 --ignore=E101,E221,E241,E501,W191
 
 Note: ``common/minify_json.py`` is ignored since it is foreign code.
-

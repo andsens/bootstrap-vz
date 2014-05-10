@@ -17,6 +17,9 @@ Contents:
    providers/index
    guidelines
    taskoverview
+   howitworks
+   switches
+   logging
 
 Indices and tables
 ==================
