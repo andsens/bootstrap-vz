@@ -1,0 +1,28 @@
+#taskoverview-graph {
+	g.hulls path {
+		opacity: 0.25;
+	}
+	g.hull-labels text {
+	}
+	g.nodes circle {
+		stroke: #000000;
+		opacity: .9;
+		stroke-width: 1.5px;
+	}
+	g.node-labels text {
+		pointer-events: none;
+		font: 10px sans-serif;
+		text-anchor: middle;
+		text-shadow: 0 0 2px #FFFFFF;
+		font-weight: bold;
+		opacity: 0;
+		&.hover {
+			transition: opacity .5s;
+			opacity: .9;
+		}
+	}
+	g.links line {
+		stroke: #999;
+		stroke-opacity: .6;
+	}
+}

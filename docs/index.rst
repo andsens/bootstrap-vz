@@ -16,6 +16,7 @@ Contents:
    plugins/index
    providers/index
    guidelines
+   taskoverview
 
 Indices and tables
 ==================
