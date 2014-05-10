@@ -113,6 +113,6 @@ def resolve_tasks(taskset, manifest):
 
 def resolve_rollback_tasks(taskset, manifest, completed, counter_task):
 	taskset.update(task_groups.get_standard_rollback_tasks(completed))
-	counter_task(tasks.ebs.Create, volume.Delete)
-	counter_task(tasks.ebs.Attach, volume.Detach)
-	counter_task(tasks.ami.BundleImage, tasks.ami.RemoveBundle)
+	counter_task(taskset, tasks.ebs.Create, volume.Delete)
+	counter_task(taskset, tasks.ebs.Attach, volume.Detach)
+	counter_task(taskset, tasks.ami.BundleImage, tasks.ami.RemoveBundle)

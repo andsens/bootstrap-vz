@@ -52,6 +52,6 @@ def resolve_tasks(taskset, manifest):
 
 def resolve_rollback_tasks(taskset, manifest, completed, counter_task):
 	if manifest.volume['backing'] == 'ebs':
-		counter_task(CreateFromSnapshot, volume.Delete)
+		counter_task(taskset, CreateFromSnapshot, volume.Delete)
 	else:
-		counter_task(CreateFromImage, volume.Delete)
+		counter_task(taskset, CreateFromImage, volume.Delete)

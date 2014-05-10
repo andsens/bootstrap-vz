@@ -22,4 +22,4 @@ def resolve_tasks(taskset, manifest):
 
 
 def resolve_rollback_tasks(taskset, manifest, completed, counter_task):
-	counter_task(tasks.AddFolderMounts, tasks.RemoveFolderMounts)
+	counter_task(taskset, tasks.AddFolderMounts, tasks.RemoveFolderMounts)

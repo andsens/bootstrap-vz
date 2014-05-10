@@ -63,10 +63,11 @@ def run(opts):
 	manifest = Manifest(opts['MANIFEST'])
 
 	# Get the tasklist
+	from tasklist import load_tasks
 	from tasklist import TaskList
-	tasklist = TaskList()
+	tasks = load_tasks('resolve_tasks', manifest)
+	tasklist = TaskList(tasks)
 	# 'resolve_tasks' is the name of the function to call on the provider and plugins
-	tasklist.load('resolve_tasks', manifest)
 
 	# Create the bootstrap information object that'll be used throughout the bootstrapping process
 	from bootstrapinfo import BootstrapInformation
@@ -85,23 +86,23 @@ def run(opts):
 			raw_input('Press Enter to commence rollback')
 		log.error('Rolling back')
 
-		# Create a new tasklist to gather the necessary tasks for rollback
-		rollback_tasklist = TaskList()
-
 		# Create a useful little function for the provider and plugins to use,
 		# when figuring out what tasks should be added to the rollback list.
-		def counter_task(task, counter):
+		def counter_task(taskset, task, counter):
 			"""counter_task() adds the second argument to the rollback tasklist
 			if the first argument is present in the list of completed tasks
 
+			:param set taskset: The taskset to add the rollback task to
 			:param Task task: The task to look for in the completed tasks list
 			:param Task counter: The task to add to the rollback tasklist
 			"""
 			if task in tasklist.tasks_completed and counter not in tasklist.tasks_completed:
-				rollback_tasklist.tasks.add(counter)
+				taskset.add(counter)
+
 		# Ask the provider and plugins for tasks they'd like to add to the rollback tasklist
 		# Any additional arguments beyond the first two are passed directly to the provider and plugins
-		rollback_tasklist.load('resolve_rollback_tasks', manifest, tasklist.tasks_completed, counter_task)
+		rollback_tasks = load_tasks('resolve_rollback_tasks', manifest, tasklist.tasks_completed, counter_task)
+		rollback_tasklist = TaskList(rollback_tasks)
 
 		# Run the rollback tasklist
 		rollback_tasklist.run(info=bootstrap_info, dry_run=opts['--dry-run'])
