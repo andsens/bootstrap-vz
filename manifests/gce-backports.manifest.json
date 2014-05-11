@@ -17,7 +17,23 @@
 		"charmap":      "UTF-8"
 	},
 	"packages": {
-		"mirror": "http://gce_debian_mirror.storage.googleapis.com/"
+		"mirror": "http://gce_debian_mirror.storage.googleapis.com/",
+		"preferences": {
+			"backport-kernel": [
+			{
+				"package": "linux-image-* initramfs-tools",
+				"pin": "release n=wheezy-backports",
+				"pin-priority": 500
+			}
+			],
+			"backport-ssh": [
+			{
+				"package": "init-system-helpers openssh-sftp-server openssh-client openssh-server",
+				"pin": "release n=wheezy-backports",
+				"pin-priority": 500
+			}
+			]
+		}
 	},
 	"plugins": {
 		"ntp": {
