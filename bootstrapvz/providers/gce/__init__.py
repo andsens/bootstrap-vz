@@ -6,6 +6,7 @@ import tasks.image
 import tasks.host
 import tasks.packages
 from bootstrapvz.common.tasks import loopback
+from bootstrapvz.common.tasks import initd
 from bootstrapvz.common.tasks import ssh
 import bootstrapvz.plugins.cloud_init.tasks
 
@@ -35,6 +36,7 @@ def resolve_tasks(taskset, manifest):
 
 	                tasks.host.DisableIPv6,
 	                tasks.boot.ConfigureGrub,
+	                initd.InstallInitScripts,
 	                ssh.AddSSHKeyGeneration,
 	                tasks.apt.CleanGoogleRepositoriesAndKeys,
 
