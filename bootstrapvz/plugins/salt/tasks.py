@@ -34,17 +34,14 @@ class BootstrapSaltMinion(Task):
 
 		# This is needed since bootstrap doesn't handle -X for debian distros properly.
 		# We disable checking for running services at end since we do not start them.
-		sed_i(
-			bootstrap_script, 'install_debian_check_services',
-			"disabled_debian_check_services")
+		sed_i(bootstrap_script, 'install_debian_check_services', 'disabled_debian_check_services')
 
-		bootstrap_command = [
-			'chroot', info.root, 'bash', 'install_salt.sh', '-X']
+		bootstrap_command = ['chroot', info.root, 'bash', 'install_salt.sh', '-X']
 
 		if 'master' in info.manifest.plugins['salt']:
 			bootstrap_command.extend(['-A', info.manifest.plugins['salt']['master']])
 
-		install_source = info.manifest.plugins['salt']['install_source']
+		install_source = info.manifest.plugins['salt'].get('install_source', 'stable')
 
 		bootstrap_command.append(install_source)
 		if install_source == 'git' and ('version' in info.manifest.plugins['salt']):
