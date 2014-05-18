@@ -154,7 +154,8 @@ class PurgeUnusedPackages(Task):
 	def run(cls, info):
 		log_check_call(['chroot', info.root,
 		                'apt-get', 'autoremove',
-		                           '--purge'])
+		                           '--purge',
+		                           '--assume-yes'])
 
 
 class AptClean(Task):
