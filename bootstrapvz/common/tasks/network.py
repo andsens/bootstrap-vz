@@ -5,7 +5,7 @@ import os
 
 class RemoveDNSInfo(Task):
 	description = 'Removing resolv.conf'
-	phase = phases.system_modification
+	phase = phases.system_cleaning
 
 	@classmethod
 	def run(cls, info):
@@ -15,7 +15,7 @@ class RemoveDNSInfo(Task):
 
 class RemoveHostname(Task):
 	description = 'Removing the hostname file'
-	phase = phases.system_modification
+	phase = phases.system_cleaning
 
 	@classmethod
 	def run(cls, info):
