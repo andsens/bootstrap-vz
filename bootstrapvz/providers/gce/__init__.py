@@ -25,6 +25,7 @@ def resolve_tasks(taskset, manifest):
 	taskset.update(task_groups.get_standard_groups(manifest))
 
 	taskset.update([bootstrapvz.plugins.cloud_init.tasks.AddBackports,
+	                loopback.AddRequiredCommands,
 	                loopback.Create,
 	                tasks.apt.SetPackageRepositories,
 	                tasks.apt.ImportGoogleKey,
