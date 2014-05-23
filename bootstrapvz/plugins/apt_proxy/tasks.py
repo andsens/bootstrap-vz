@@ -6,8 +6,8 @@ import urllib2
 
 
 class CheckAptProxy(Task):
-	description = 'Checking APT proxy server'
-	phase = phases.package_installation
+	description = 'Checking reachability of APT proxy server'
+	phase = phases.preparation
 
 	@classmethod
 	def run(cls, info):
@@ -23,13 +23,13 @@ class CheckAptProxy(Task):
 			else:
 				import logging
 				log = logging.getLogger(__name__)
-				log.error('The APT proxy server couldn\'t be reached. `apt-get` commands may fail from now on.')
+				log.warning('The APT proxy server couldn\'t be reached. `apt-get\' commands may fail.')
 
 
 class SetAptProxy(Task):
 	description = 'Setting proxy for APT'
 	phase = phases.package_installation
-	successors = [apt.AptUpdate, CheckAptProxy]
+	successors = [apt.AptUpdate]
 
 	@classmethod
 	def run(cls, info):
