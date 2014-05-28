@@ -110,7 +110,7 @@ class DisableDaemonAutostart(Task):
 class AptUpdate(Task):
 	description = 'Updating the package cache'
 	phase = phases.package_installation
-	predecessors = [locale.GenerateLocale, WriteSources]
+	predecessors = [locale.GenerateLocale, WritePreferences]
 
 	@classmethod
 	def run(cls, info):
