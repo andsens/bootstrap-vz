@@ -1,3 +1,6 @@
+2014-06-06:
+	Ilya Margolin:
+		* pip_install plugin
 2014-05-04:
 	Dhananjay Balan:
 		* Salt minion installation & configuration plugin
