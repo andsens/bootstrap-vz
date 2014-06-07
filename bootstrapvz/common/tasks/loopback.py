@@ -45,6 +45,7 @@ class MoveImage(Task):
 		destination = os.path.join(info.manifest.bootstrapper['workspace'], filename)
 		import shutil
 		shutil.move(info.volume.image_path, destination)
+		info.volume.image_path = destination
 		import logging
 		log = logging.getLogger(__name__)
 		log.info('The volume image has been moved to ' + destination)
