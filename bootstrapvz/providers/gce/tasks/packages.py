@@ -3,7 +3,6 @@ from bootstrapvz.common import phases
 from bootstrapvz.common.tasks import apt
 from bootstrapvz.common.tools import log_check_call
 import os
-import os.path
 
 
 class DefaultPackages(Task):
@@ -48,9 +47,12 @@ class InstallGSUtil(Task):
 
 	@classmethod
 	def run(cls, info):
-		log_check_call(['wget', 'http://storage.googleapis.com/pub/gsutil.tar.gz'])
+		gsutil_tarball = os.path.join(info.manifest.bootstrapper['workspace'], 'gsutil.tar.gz')
+		log_check_call(['wget', '--output-document', gsutil_tarball,
+		                'http://storage.googleapis.com/pub/gsutil.tar.gz'])
 		gsutil_directory = os.path.join(info.root, 'usr/local/share/google')
 		gsutil_binary = os.path.join(os.path.join(info.root, 'usr/local/bin'), 'gsutil')
 		os.makedirs(gsutil_directory)
-		log_check_call(['tar', 'xaf', 'gsutil.tar.gz', '-C', gsutil_directory])
+		log_check_call(['tar', 'xaf', gsutil_tarball, '-C', gsutil_directory])
+		os.remove(gsutil_tarball)
 		log_check_call(['ln', '-s', '../share/google/gsutil/gsutil', gsutil_binary])
