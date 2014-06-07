@@ -8,6 +8,7 @@ import tasks.packages
 from bootstrapvz.common.tasks import loopback
 from bootstrapvz.common.tasks import initd
 from bootstrapvz.common.tasks import ssh
+from bootstrapvz.common.tasks import volume
 import bootstrapvz.plugins.cloud_init.tasks
 
 
@@ -43,6 +44,7 @@ def resolve_tasks(taskset, manifest):
 
 	                loopback.MoveImage,
 	                tasks.image.CreateTarball,
+	                volume.Delete,
 	                ])
 
 	if 'gcs_destination' in manifest.image:
