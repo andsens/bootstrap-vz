@@ -41,7 +41,12 @@
 		"system": {
 			"type": "object",
 			"properties": {
-				"release":      { "enum": ["squeeze", "wheezy", "jessie", "testing", "unstable"] },
+				"release": {
+					"enum": [
+						"squeeze", "wheezy", "jessie", "sid",
+						"oldstable", "stable", "testing", "unstable"
+					]
+				},
 				"architecture": { "enum": ["i386", "amd64"] },
 				"bootloader":   { "enum": ["pvgrub", "grub", "extlinux"] },
 				"timezone":     { "type": "string" },
