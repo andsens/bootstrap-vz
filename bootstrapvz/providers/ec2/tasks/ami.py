@@ -21,7 +21,7 @@ class AMIName(Task):
 		ami_name = info.manifest.image['name'].format(**info.manifest_vars)
 		ami_description = info.manifest.image['description'].format(**info.manifest_vars)
 
-		images = info._ec2['connection'].get_all_images()
+		images = info._ec2['connection'].get_all_images(owner=['self'])
 		for image in images:
 			if ami_name == image.name:
 				msg = 'An image by the name {ami_name} already exists.'.format(ami_name=ami_name)
