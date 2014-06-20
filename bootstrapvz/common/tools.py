@@ -1,12 +1,12 @@
-def log_check_call(command, stdin=None, env=None, shell=False):
-	status, stdout, stderr = log_call(command, stdin, env, shell)
+def log_check_call(command, stdin=None, env=None, shell=False, cwd=None):
+	status, stdout, stderr = log_call(command, stdin, env, shell, cwd)
 	if status != 0:
 		from subprocess import CalledProcessError
 		raise CalledProcessError(status, ' '.join(command), '\n'.join(stderr))
 	return stdout
 
 
-def log_call(command, stdin=None, env=None, shell=False):
+def log_call(command, stdin=None, env=None, shell=False, cwd=None):
 	import subprocess
 	import logging
 	from multiprocessing.dummy import Pool as ThreadPool
@@ -16,7 +16,7 @@ def log_call(command, stdin=None, env=None, shell=False):
 	log = logging.getLogger(__name__ + command_log)
 	log.debug('Executing: {command}'.format(command=' '.join(command)))
 
-	process = subprocess.Popen(args=command, env=env, shell=shell,
+	process = subprocess.Popen(args=command, env=env, shell=shell, cwd=cwd,
 	                           stdin=subprocess.PIPE,
 	                           stdout=subprocess.PIPE,
 	                           stderr=subprocess.PIPE)
