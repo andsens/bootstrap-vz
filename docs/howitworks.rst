@@ -36,7 +36,7 @@ successors.
 
 The final task list that will be executed is computed by enumerating
 all tasks in the package, placing them in the graph and
-`sorting them topoligcally <http://en.wikipedia.org/wiki/Topological_sort>`_.
+`sorting them topologically <http://en.wikipedia.org/wiki/Topological_sort>`_.
 Subsequently the list returned is filtered to contain only the tasks the
 provider and the plugins added to the taskset.
 
