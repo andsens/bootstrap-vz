@@ -29,6 +29,15 @@ class GetCredentials(Task):
 			for key in keys:
 				creds[key] = getenv(env_key(key))
 			return creds
+
+		def provider_key(key):
+			return key.replace('-', '_')
+		import boto.provider
+		provider = boto.provider.Provider('aws')
+		if all(getattr(provider, provider_key(key)) is not None for key in keys):
+			for key in keys:
+				creds[key] = getattr(provider, provider_key(key))
+			return creds
 		raise RuntimeError(('No ec2 credentials found, they must all be specified '
 		                    'exclusively via environment variables or through the manifest.'))
 
