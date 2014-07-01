@@ -78,6 +78,7 @@ def run(opts):
 		tasklist.run(info=bootstrap_info, dry_run=opts['--dry-run'])
 		# We're done! :-)
 		log.info('Successfully completed bootstrapping')
+		return bootstrap_info
 	except (Exception, KeyboardInterrupt) as e:
 		# When an error occurs, log it and begin rollback
 		log.exception(e)
