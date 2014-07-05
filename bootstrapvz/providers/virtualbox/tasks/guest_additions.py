@@ -11,7 +11,7 @@ class CheckGuestAdditionsPath(Task):
 	@classmethod
 	def run(cls, info):
 		import os.path
-		guest_additions_path = info.manifest.bootstrapper['guest_additions']
+		guest_additions_path = info.manifest.provider['guest_additions']
 		if not os.path.exists(guest_additions_path):
 			msg = 'The file {file} does not exist.'.format(file=guest_additions_path)
 			raise TaskError(msg)
@@ -43,7 +43,7 @@ class InstallGuestAdditions(Task):
 	@classmethod
 	def run(cls, info):
 		import os
-		guest_additions_path = info.manifest.bootstrapper['guest_additions']
+		guest_additions_path = info.manifest.provider['guest_additions']
 		mount_dir = 'mnt/guest_additions'
 		mount_path = os.path.join(info.root, mount_dir)
 		os.mkdir(mount_path)

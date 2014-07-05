@@ -1,8 +1,10 @@
 {
-	"provider": "virtualbox",
+	"provider": {
+		"name":            "virtualbox",
+		"guest_additions": "/root/images/VBoxGuestAdditions.iso"
+	},
 	"bootstrapper": {
-		"workspace":      "/target"
-		// "guest_additions": "/root/images/VBoxGuestAdditions.iso"
+		"workspace": "/target"
 	},
 	"image": {
 		"name":        "debian-{system.release}-{system.architecture}-{%y}{%m}{%d}",

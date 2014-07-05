@@ -1,9 +1,11 @@
 {
-	"provider":       "ec2",
-	"virtualization": "pvm",
-	"credentials":    {
-		// "access-key": null,
-		// "secret-key": null
+	"provider": {
+		"name": "ec2",
+		"virtualization": "pvm",
+		"credentials":    {
+			// "access-key": null,
+			// "secret-key": null
+		}
 	},
 
 	"bootstrapper": {

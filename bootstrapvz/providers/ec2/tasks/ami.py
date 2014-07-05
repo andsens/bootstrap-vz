@@ -103,7 +103,7 @@ class RegisterAMI(Task):
 			registration_params['image_location'] = info._ec2['manifest_location']
 		else:
 			root_dev_name = {'pvm': '/dev/sda',
-			                 'hvm': '/dev/xvda'}.get(info.manifest.data['virtualization'])
+			                 'hvm': '/dev/xvda'}.get(info.manifest.provider['virtualization'])
 			registration_params['root_device_name'] = root_dev_name
 
 			from boto.ec2.blockdevicemapping import BlockDeviceType
@@ -113,7 +113,7 @@ class RegisterAMI(Task):
 			registration_params['block_device_map'] = BlockDeviceMapping()
 			registration_params['block_device_map'][root_dev_name] = block_device
 
-		if info.manifest.data['virtualization'] == 'hvm':
+		if info.manifest.provider['virtualization'] == 'hvm':
 			registration_params['virtualization_type'] = 'hvm'
 		else:
 			registration_params['virtualization_type'] = 'paravirtual'

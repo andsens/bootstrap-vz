@@ -3,22 +3,28 @@
 	"title": "EC2 manifest",
 	"type": "object",
 	"properties": {
-		"virtualization": { "enum": ["pvm", "hvm"] },
+		"provider": {
+			"type": "object",
+			"properties": {
+				"virtualization": { "enum": ["pvm", "hvm"] },
+				"credentials": {
+					"type": "object",
+					"properties": {
+						"access-key": {
+							"type": "string"
+						},
+						"secret-key": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"required": ["virtualization"]
+		},
 		"image": {
 			"type": "object",
 			"properties": {
 				"description": {
-					"type": "string"
-				}
-			}
-		},
-		"credentials": {
-			"type": "object",
-			"properties": {
-				"access-key": {
-					"type": "string"
-				},
-				"secret-key": {
 					"type": "string"
 				}
 			}

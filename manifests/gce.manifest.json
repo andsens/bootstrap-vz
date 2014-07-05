@@ -1,7 +1,9 @@
 {
-	"provider": "gce",
+	"provider": {
+		"name": "gce"
+	},
 	"bootstrapper": {
-		"workspace":      "/target"
+		"workspace": "/target"
 	},
 	"image": {
 		"name":        "disk",

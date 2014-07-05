@@ -1,11 +1,12 @@
 {
-	"provider":       "ec2",
-	"virtualization": "hvm",
-	"credentials":    {
-		// "access-key": null,
-		// "secret-key": null
+	"provider": {
+		"name": "ec2",
+		"virtualization": "hvm",
+		"credentials":    {
+			// "access-key": null,
+			// "secret-key": null
+		}
 	},
-
 	"bootstrapper": {
 		"workspace": "/target"
 	},

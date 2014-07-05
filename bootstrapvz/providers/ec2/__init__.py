@@ -38,7 +38,7 @@ def validate_manifest(data, validator, error):
 		validator(data, os.path.join(os.path.dirname(__file__), 'manifest-schema-s3.json'))
 
 	bootloader = data['system']['bootloader']
-	virtualization = data['virtualization']
+	virtualization = data['provider']['virtualization']
 	backing = data['volume']['backing']
 	partition_type = data['volume']['partitions']['type']
 

@@ -28,7 +28,7 @@ def resolve_tasks(taskset, manifest):
 	                loopback.MoveImage,
 	                ])
 
-	if manifest.bootstrapper.get('virtio', []):
+	if manifest.provider.get('virtio', []):
 		from tasks import virtio
 		taskset.update([virtio.VirtIO])
 

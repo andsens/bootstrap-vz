@@ -63,10 +63,10 @@ class SetMetadataSource(Task):
 			sources = info.manifest.plugins['cloud_init']['metadata_sources']
 		else:
 			source_mapping = {'ec2': 'Ec2'}
-			sources = source_mapping.get(info.manifest.provider, None)
+			sources = source_mapping.get(info.manifest.provider['name'], None)
 			if sources is None:
 				msg = ('No cloud-init metadata source mapping found for provider `{provider}\', '
-				       'skipping selections setting.').format(provider=info.manifest.provider)
+				       'skipping selections setting.').format(provider=info.manifest.provider['name'])
 				logging.getLogger(__name__).warn(msg)
 				return
 		sources = "cloud-init	cloud-init/datasources	multiselect	" + sources

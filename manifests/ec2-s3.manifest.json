@@ -1,14 +1,15 @@
 {
-	"provider":       "ec2",
-	"virtualization": "pvm",
-	"credentials":    {
-		// "access-key":  null,
-		// "secret-key":  null,
-		// "certificate": null,
-		// "private-key": null,
-		// "user-id":     null
+	"provider": {
+		"name": "ec2",
+		"virtualization": "pvm",
+		"credentials":    {
+			// "access-key":  null,
+			// "secret-key":  null,
+			// "certificate": null,
+			// "private-key": null,
+			// "user-id":     null
+		}
 	},
-
 	"bootstrapper": {
 		"workspace": "/target"
 	},

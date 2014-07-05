@@ -22,7 +22,7 @@ def resolve_tasks(taskset, manifest):
 	                loopback.MoveImage,
 	                ])
 
-	if manifest.bootstrapper.get('guest_additions', False):
+	if manifest.provider.get('guest_additions', False):
 		from tasks import guest_additions
 		taskset.update([guest_additions.CheckGuestAdditionsPath,
 		                guest_additions.AddGuestAdditionsPackages,

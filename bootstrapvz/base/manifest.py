@@ -39,7 +39,7 @@ class Manifest(object):
 			self.data = load_yaml(self.path)
 
 		# Get the provider name from the manifest and load the corresponding module
-		provider_modname = 'bootstrapvz.providers.' + self.data['provider']
+		provider_modname = 'bootstrapvz.providers.' + self.data['provider']['name']
 		log.debug('Loading provider ' + provider_modname)
 		# Create a modules dict that contains the loaded provider and plugins
 		import importlib

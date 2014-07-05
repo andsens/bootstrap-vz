@@ -1,8 +1,9 @@
 {
-	"provider": "kvm",
+	"provider": {
+		"name": "kvm"
+	},
 	"bootstrapper": {
-		"workspace":      "/target",
-		"mirror": "http://ftp.fr.debian.org/debian/"
+		"workspace": "/target"
 	},
 	"image": {
 		"name":        "debian-{system.release}-{system.architecture}-{%y}{%m}{%d}",
