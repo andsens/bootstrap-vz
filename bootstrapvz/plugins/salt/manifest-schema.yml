@@ -1,0 +1,24 @@
+---
+$schema: http://json-schema.org/draft-04/schema#
+title: Saltstack plugin manifest
+type: object
+properties:
+  plugins:
+    type: object
+    properties:
+      salt:
+        type: object
+        properties:
+          grains:
+            type: object
+            patternProperties:
+              ^[^/\0]+$: {type: string}
+            minItems: 1
+          install_source:
+            enum:
+            - stable
+            - daily
+            - git
+          master: {type: string}
+          version: {type: string}
+        required: [install_source]

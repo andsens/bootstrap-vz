@@ -1,0 +1,24 @@
+---
+$schema: http://json-schema.org/draft-04/schema#
+title: Vagrant plugin manifest
+type: object
+properties:
+  provider:
+    type: object
+    properties:
+      name:
+        type: string
+        enum: [virtualbox]
+  system:
+    required: [hostname]
+  volume:
+    type: object
+    properties:
+      backing:
+        type: string
+        enum: [vmdk]
+    required: [backing]
+  plugins:
+    type: object
+    properties:
+      vagrant: {type: object}

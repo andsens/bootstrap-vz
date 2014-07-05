@@ -1,0 +1,13 @@
+---
+$schema: http://json-schema.org/draft-04/schema#
+title: Admin user plugin manifest
+type: object
+properties:
+  plugins:
+    type: object
+    properties:
+      admin_user:
+        type: object
+        properties:
+          username: {type: string}
+        required: [username]

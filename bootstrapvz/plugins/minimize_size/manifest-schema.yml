@@ -1,0 +1,15 @@
+---
+$schema: http://json-schema.org/draft-04/schema#
+properties:
+  plugins:
+    properties:
+      minimize_size:
+        properties:
+          shrink:
+            type: boolean
+          zerofree:
+            type: boolean
+        type: object
+    type: object
+title: Minimize size plugin manifest
+type: object

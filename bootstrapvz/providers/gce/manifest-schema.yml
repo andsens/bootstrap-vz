@@ -1,0 +1,29 @@
+---
+$schema: http://json-schema.org/draft-04/schema#
+title: GCE manifest
+type: object
+properties:
+  image:
+    type: object
+    properties:
+      description: {type: string}
+      gce_project: {type: string}
+      gcs_destination: {type: string}
+  system:
+    type: object
+    properties:
+      bootloader:
+        type: string
+        enum:
+        - grub
+        - extlinux
+  volume:
+    type: object
+    properties:
+      partitions:
+        type: object
+        properties:
+          type:
+            enum:
+            - msdos
+    required: [partitions]

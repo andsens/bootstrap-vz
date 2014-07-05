@@ -12,7 +12,7 @@ def validate_manifest(data, validator, error):
 	:param function error: The function tha raises an error when the validation fails
 	"""
 	import os.path
-	schema_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'manifest-schema.json'))
+	schema_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'manifest-schema.yml'))
 	validator(data, schema_path)
 
 	# Check the bootloader/partitioning configuration.

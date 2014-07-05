@@ -2,8 +2,7 @@
 to determine which tasks should be added to the tasklist, what arguments various
 invocations should have etc..
 """
-from bootstrapvz.common.tools import load_json
-from bootstrapvz.common.tools import load_yaml
+from bootstrapvz.common.tools import load_data
 import logging
 log = logging.getLogger(__name__)
 
@@ -31,12 +30,7 @@ class Manifest(object):
 		Once they are loaded, the initialize() function is called on each of them (if it exists).
 		The provider must have an initialize function.
 		"""
-		# Load the manifest JSON using the loader in common.tools
-		# It strips comments (which are invalid in strict json) before loading the data.
-		if self.path.endswith('.json'):
-			self.data = load_json(self.path)
-		elif self.path.endswith('.yml') or self.path.endswith('.yaml'):
-			self.data = load_yaml(self.path)
+		self.data = load_data(self.path)
 
 		# Get the provider name from the manifest and load the corresponding module
 		provider_modname = 'bootstrapvz.providers.' + self.data['provider']['name']
@@ -102,19 +96,20 @@ class Manifest(object):
 		:param str schema_path: Path to the json-schema to use for validation
 		"""
 		import jsonschema
-		schema = load_json(schema_path)
+
+		schema = load_data(schema_path)
 		try:
 			jsonschema.validate(data, schema)
 		except jsonschema.ValidationError as e:
 			self.validation_error(e.message, e.path)
 
-	def validation_error(self, message, json_path=None):
+	def validation_error(self, message, data_path=None):
 		"""This function is passed to all validation functions so that they may
 		raise a validation error because a custom validation of the manifest failed.
 
 		:param str message: Message to user about the error
-		:param list json_path: A path to the location in the manifest where the error occurred
+		:param list data_path: A path to the location in the manifest where the error occurred
 		:raises ManifestError: With absolute certainty
 		"""
 		from bootstrapvz.common.exceptions import ManifestError
-		raise ManifestError(message, self.path, json_path)
+		raise ManifestError(message, self.path, data_path)

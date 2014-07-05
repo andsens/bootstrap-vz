@@ -21,7 +21,7 @@ class DefaultPackages(Task):
 		info.packages.add('openssh-server')
 		info.packages.add('dhcpd')
 
-		kernel_packages_path = os.path.join(os.path.dirname(__file__), '../../ec2/tasks/packages-kernels.json')
+		kernel_packages_path = os.path.join(os.path.dirname(__file__), '../../ec2/tasks/packages-kernels.yml')
 		from bootstrapvz.common.tools import config_get
 		kernel_package = config_get(kernel_packages_path, [info.release_codename,
 		                                                   info.manifest.system['architecture']])

@@ -1,14 +1,10 @@
 import tasks
 import os.path
-from bootstrapvz.common.exceptions import ManifestError
 
 
 def validate_manifest(data, validator, error):
-	schema_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'manifest-schema.json'))
-	try:
-		validator(data, schema_path)
-	except ManifestError, e:
-		error('docker_daemon manifest validation failed: "%s"' % e.message, e.json_path)
+	schema_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'manifest-schema.yml'))
+	validator(data, schema_path)
 	if data.get('system', {}).get('release', None) in ['wheezy', 'stable']:
 		# prefs is a generator of apt preferences across files in the manifest
 		prefs = (item for vals in data.get('packages', {}).get('preferences', {}).values() for item in vals)

@@ -3,7 +3,7 @@ import tasks
 
 def validate_manifest(data, validator, error):
 	import os.path
-	schema_path = os.path.join(os.path.dirname(__file__), 'manifest-schema.json')
+	schema_path = os.path.join(os.path.dirname(__file__), 'manifest-schema.yml')
 	validator(data, schema_path)
 	if data['plugins']['minimize_size'].get('shrink', False) and data['volume']['backing'] != 'vmdk':
 		error('Can only shrink vmdk images', ['plugins', 'minimize_size', 'shrink'])

@@ -21,7 +21,7 @@ class DefaultPackages(Task):
 		info.exclude_packages.add('isc-dhcp-common')
 
 		import os.path
-		kernel_packages_path = os.path.join(os.path.dirname(__file__), 'packages-kernels.json')
+		kernel_packages_path = os.path.join(os.path.dirname(__file__), 'packages-kernels.yml')
 		from bootstrapvz.common.tools import config_get
 		kernel_package = config_get(kernel_packages_path, [info.release_codename,
 		                                                   info.manifest.system['architecture']])

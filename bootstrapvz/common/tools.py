@@ -1,3 +1,5 @@
+
+
 def log_check_call(command, stdin=None, env=None, shell=False, cwd=None):
 	status, stdout, stderr = log_call(command, stdin, env, shell, cwd)
 	if status != 0:
@@ -73,8 +75,21 @@ def load_yaml(path):
 		return yaml.safe_load(fobj)
 
 
+def load_data(path):
+	import os.path
+	filename, extension = os.path.splitext(path)
+	if not os.path.isfile(path):
+		raise Exception('The path {path} does not point to a file.'.format(path=path))
+	if extension == '.json':
+		return load_json(path)
+	elif extension == '.yml' or extension == '.yaml':
+		return load_yaml(path)
+	else:
+		raise Exception('Unrecognized extension: {ext}'.format(ext=extension))
+
+
 def config_get(path, config_path):
-	config = load_json(path)
+	config = load_data(path)
 	for key in config_path:
 		config = config.get(key)
 	return config

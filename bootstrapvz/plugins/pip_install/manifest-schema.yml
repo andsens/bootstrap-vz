@@ -1,0 +1,17 @@
+---
+$schema: http://json-schema.org/draft-04/schema#
+title: Pip install plugin manifest
+type: object
+properties:
+  plugins:
+    type: object
+    properties:
+      pip_install:
+        type: object
+        properties:
+          packages:
+            type: array
+            items:
+              type: string
+            minItems: 1
+            uniqueItems: true

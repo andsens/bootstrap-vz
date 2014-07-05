@@ -23,7 +23,7 @@ def initialize():
 
 def validate_manifest(data, validator, error):
 	import os.path
-	validator(data, os.path.join(os.path.dirname(__file__), 'manifest-schema.json'))
+	validator(data, os.path.join(os.path.dirname(__file__), 'manifest-schema.yml'))
 
 	from bootstrapvz.common.bytes import Bytes
 	if data['volume']['backing'] == 'ebs':
@@ -35,7 +35,7 @@ def validate_manifest(data, validator, error):
 			msg = ('The volume size must be a multiple of 1GiB when using EBS backing')
 			error(msg, ['volume', 'partitions'])
 	else:
-		validator(data, os.path.join(os.path.dirname(__file__), 'manifest-schema-s3.json'))
+		validator(data, os.path.join(os.path.dirname(__file__), 'manifest-schema-s3.yml'))
 
 	bootloader = data['system']['bootloader']
 	virtualization = data['provider']['virtualization']

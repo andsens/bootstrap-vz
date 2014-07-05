@@ -1,0 +1,38 @@
+---
+$schema: http://json-schema.org/draft-04/schema#
+title: Azure manifest
+type: object
+properties:
+  provider:
+    type: object
+    properties:
+      waagent:
+        type: object
+        properties:
+          conf: {type: string}
+          version: {type: string}
+        required: [version]
+    required: [waagent]
+  system:
+    type: object
+    properties:
+      bootloader:
+        type: string
+        enum:
+        - grub
+        - extlinux
+  volume:
+    type: object
+    properties:
+      backing:
+        type: string
+        enum: [raw]
+      partitions:
+        type: object
+        properties:
+          type:
+            enum:
+            - none
+            - msdos
+            - gpt
+    required: [backing]

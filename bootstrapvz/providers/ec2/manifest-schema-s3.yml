@@ -1,0 +1,38 @@
+---
+$schema: http://json-schema.org/draft-04/schema#
+title: EC2 manifest for instance store AMIs
+type: object
+properties:
+  image:
+    type: object
+    properties:
+      bucket: {type: string}
+      region: {$ref: '#/definitions/aws-region'}
+    required:
+    - bucket
+    - region
+  provider:
+    type: object
+    properties:
+      credentials:
+        type: object
+        properties:
+          certificate: {type: string}
+          private-key: {type: string}
+          user-id:
+            type: string
+            pattern: (^arn:aws:iam::\d*:user/\w.*$)|(^\d{4}-\d{4}-\d{4}$)
+required: [image]
+definitions:
+  aws-region:
+    enum:
+    - ap-northeast-1
+    - ap-southeast-1
+    - ap-southeast-2
+    - eu-west-1
+    - sa-east-1
+    - us-east-1
+    - us-gov-west-1
+    - us-west-1
+    - us-west-2
+    - cn-north-1

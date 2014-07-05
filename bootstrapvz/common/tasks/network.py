@@ -45,7 +45,7 @@ class ConfigureNetworkIF(Task):
 
 	@classmethod
 	def run(cls, info):
-		network_config_path = os.path.join(os.path.dirname(__file__), 'network-configuration.json')
+		network_config_path = os.path.join(os.path.dirname(__file__), 'network-configuration.yml')
 		from ..tools import config_get
 		if_config = config_get(network_config_path, [info.release_codename])
 

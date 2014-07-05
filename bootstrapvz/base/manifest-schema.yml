@@ -1,0 +1,177 @@
+---
+$schema: http://json-schema.org/draft-04/schema#
+title: Generic manifest
+type: object
+required: [provider, bootstrapper, system, volume]
+properties:
+  provider:
+    type: object
+    properties:
+      name: {type: string}
+    required: [name]
+  bootstrapper:
+    type: object
+    properties:
+      exclude_packages:
+        type: array
+        items:
+          type: string
+          pattern: '^[^/]+$'
+        minItems: 1
+      include_packages:
+        type: array
+        items:
+          type: string
+          pattern: '^[^/]+$'
+        minItems: 1
+      mirror:
+        type: string
+        format: uri
+      tarball: {type: boolean}
+      workspace:
+        $ref: '#/definitions/path'
+    required: [workspace]
+  image:
+    type: object
+    properties:
+      name: {type: string}
+    required: [name]
+  system:
+    properties:
+      architecture:
+        enum: [i386, amd64]
+      bootloader:
+        enum:
+        - pvgrub
+        - grub
+        - extlinux
+      charmap: {type: string}
+      hostname:
+        type: string
+        pattern: ^\S+$
+      locale: {type: string}
+      release:
+        enum:
+        - squeeze
+        - wheezy
+        - jessie
+        - sid
+        - oldstable
+        - stable
+        - testing
+        - unstable
+      timezone: {type: string}
+    required:
+    - release
+    - architecture
+    - bootloader
+    - timezone
+    - locale
+    - charmap
+    type: object
+  packages:
+    type: object
+    properties:
+      components:
+        type: array
+        items: {type: string}
+        minItems: 1
+      install:
+        type: array
+        items:
+          anyOf:
+          - pattern: ^[^/]+(/[^/]+)?$
+          - $ref: '#/definitions/absolute_path'
+        minItems: 1
+      install_standard: {type: boolean}
+      mirror:
+        type: string
+        format: uri
+      preferences:
+        type: object
+        patternProperties:
+          ^[^/\0]+$:
+            type: array
+            items:
+              type: object
+              properties:
+                package: {type: string}
+                pin: {type: string}
+                pin-priority: {type: integer}
+              required: [pin, package, pin-priority]
+              additionalProperties: false
+            minItems: 1
+        minItems: 1
+        additionalProperties: false
+      sources:
+        type: object
+        patternProperties:
+          ^[^/\0]+$:
+            items:
+              type: string
+              pattern: ^(deb|deb-src)\s+(\[\s*(.+\S)?\s*\]\s+)?\S+\s+\S+(\s+(.+\S))?\s*$
+            minItems: 1
+            type: array
+        minItems: 1
+        additionalProperties: false
+      trusted-keys:
+        type: array
+        items:
+          $ref: '#/definitions/absolute_path'
+        minItems: 1
+    additionalProperties: false
+  plugins:
+    type: object
+    patternProperties:
+      ^\w+$: {type: object}
+  volume:
+    type: object
+    properties:
+      backing: {type: string}
+      partitions:
+        type: object
+        oneOf:
+        - $ref: '#/definitions/no_partitions'
+        - $ref: '#/definitions/partition_table'
+    required: [partitions]
+definitions:
+  absolute_path:
+    type: string
+    pattern: ^/[^\0]+$
+  bytes:
+    pattern: ^\d+([KMGT]i?B|B)$
+    type: string
+  no_partitions:
+    type: object
+    properties:
+      root: {$ref: '#/definitions/partition'}
+      type: {enum: [none]}
+    required: [root]
+    additionalProperties: false
+  partition:
+    type: object
+    properties:
+      filesystem:
+        enum: [ext2, ext3, ext4, xfs]
+      format_command:
+        items: {type: string}
+        minItems: 1
+        type: array
+      size: {$ref: '#/definitions/bytes'}
+    required: [size, filesystem]
+  partition_table:
+    type: object
+    additionalProperties: false
+    properties:
+      boot: {$ref: '#/definitions/partition'}
+      root: {$ref: '#/definitions/partition'}
+      swap:
+        type: object
+        properties:
+          size: {$ref: '#/definitions/bytes'}
+        required: [size]
+      type: {enum: [msdos, gpt]}
+    required: [root]
+  path:
+    type: string
+    pattern: ^[^\0]+$
