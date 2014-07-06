@@ -25,12 +25,20 @@ class Manifest(object):
 		self.parse()
 
 	def load(self):
-		"""Loads the manifest.
-		This function not only reads the manifest but also loads the specified provider and plugins.
-		Once they are loaded, the initialize() function is called on each of them (if it exists).
+		"""Loads the manifest and performs a basic validation.
+		This function reads the manifest, loads the specified provider and plugins, and performs
+		some basic validation of the manifest itself to ensure that the properties
+		required for initalization are accessible
+		(otherwise the user would be presented with some cryptic error messages).
+		Once the provider and plugins are loaded,
+		the initialize() function is called on each of them (if it exists).
 		The provider must have an initialize function.
 		"""
 		self.data = load_data(self.path)
+
+		from . import validate_manifest
+		# Validate the manifest with the base validation function in __init__
+		validate_manifest(self.data, self.schema_validator, self.validation_error)
 
 		# Get the provider name from the manifest and load the corresponding module
 		provider_modname = 'bootstrapvz.providers.' + self.data['provider']['name']
@@ -57,12 +65,9 @@ class Manifest(object):
 				init()
 
 	def validate(self):
-		"""Validates the manifest using the base, provider and plugin validation functions.
+		"""Validates the manifest using the provider and plugin validation functions.
 		Plugins are not required to have a validate_manifest function
 		"""
-		from . import validate_manifest
-		# Validate the manifest with the base validation function in __init__
-		validate_manifest(self.data, self.schema_validator, self.validation_error)
 
 		# Run the provider validation
 		self.modules['provider'].validate_manifest(self.data, self.schema_validator, self.validation_error)
