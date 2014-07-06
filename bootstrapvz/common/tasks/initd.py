@@ -45,7 +45,7 @@ class RemoveHWClock(Task):
 	@classmethod
 	def run(cls, info):
 		info.initd['disable'].append('hwclock.sh')
-		if info.manifest.system['release'] == 'squeeze':
+		if info.release_codename == 'squeeze':
 			info.initd['disable'].append('hwclockfirst.sh')
 
 

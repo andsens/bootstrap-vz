@@ -31,11 +31,8 @@ class BootstrapInformation(object):
 		# The default apt mirror
 		self.apt_mirror = self.manifest.packages.get('mirror', 'http://http.debian.net/debian')
 
-		# Normalize the release codenames so that tasks may query for release codenames rather than
-		# 'stable', 'unstable' etc. This is useful when handling cases that are specific to a release.
-		release_codenames_path = os.path.join(os.path.dirname(__file__), 'release-codenames.yml')
-		from bootstrapvz.common.tools import config_get
-		self.release_codename = config_get(release_codenames_path, [self.manifest.system['release']])
+		from bootstrapvz.common.tools import get_codename
+		self.release_codename = get_codename(self.manifest.system['release'])
 
 		# Create the manifest_vars dictionary
 		self.manifest_vars = self.__create_manifest_vars(self.manifest, {'apt_mirror': self.apt_mirror})

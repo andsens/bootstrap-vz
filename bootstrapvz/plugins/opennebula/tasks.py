@@ -26,6 +26,6 @@ class AddONEContextPackage(Task):
 	@classmethod
 	def run(cls, info):
 		target = None
-		if info.manifest.system['release'] in ['wheezy', 'stable']:
+		if info.release_codename == 'wheezy':
 			target = '{system.release}-backports'
 		info.packages.add('opennebula-context', target)

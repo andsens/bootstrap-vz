@@ -12,7 +12,8 @@ def resolve_tasks(taskset, manifest):
 	from bootstrapvz.common.tasks import initd
 	from bootstrapvz.common.tasks import ssh
 
-	if manifest.system['release'] in ['wheezy', 'stable']:
+	from bootstrapvz.common.tools import get_codename
+	if get_codename(manifest.system['release']) == 'wheezy':
 		taskset.add(tasks.AddBackports)
 
 	taskset.update([tasks.SetMetadataSource,

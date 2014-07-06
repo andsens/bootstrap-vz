@@ -30,7 +30,7 @@ class AddSSHKeyGeneration(Task):
 		try:
 			log_check_call(['chroot', info.root,
 			                'dpkg-query', '-W', 'openssh-server'])
-			if info.manifest.system['release'] == 'squeeze':
+			if info.release_codename == 'squeeze':
 				install['generate-ssh-hostkeys'] = os.path.join(init_scripts_dir, 'squeeze/generate-ssh-hostkeys')
 			else:
 				install['generate-ssh-hostkeys'] = os.path.join(init_scripts_dir, 'generate-ssh-hostkeys')
@@ -70,7 +70,7 @@ class ShredHostkeys(Task):
 	def run(cls, info):
 		ssh_hostkeys = ['ssh_host_dsa_key',
 		                'ssh_host_rsa_key']
-		if info.manifest.system['release'] != 'squeeze':
+		if info.release_codename != 'squeeze':
 			ssh_hostkeys.append('ssh_host_ecdsa_key')
 
 		private = [os.path.join(info.root, 'etc/ssh', name) for name in ssh_hostkeys]
