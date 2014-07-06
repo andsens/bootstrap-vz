@@ -11,10 +11,11 @@ class EnableDHCPCDDNS(Task):
 	@classmethod
 	def run(cls, info):
 		# The dhcp client that ships with debian sets the DNS servers per default.
-		# For dhcpcd we need to configure it to do that.
-		from bootstrapvz.common.tools import sed_i
-		dhcpcd = os.path.join(info.root, 'etc/default/dhcpcd')
-		sed_i(dhcpcd, '^#*SET_DNS=.*', 'SET_DNS=\'yes\'')
+		# For dhcpcd in Wheezy and earlier we need to configure it to do that.
+		if info.release_codename not in {'jessie', 'sid'}:
+			from bootstrapvz.common.tools import sed_i
+			dhcpcd = os.path.join(info.root, 'etc/default/dhcpcd')
+			sed_i(dhcpcd, '^#*SET_DNS=.*', 'SET_DNS=\'yes\'')
 
 
 class AddBuildEssentialPackage(Task):
