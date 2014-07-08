@@ -7,9 +7,9 @@
 	{"i386":  "linux-image-686",
 	 "amd64": "linux-image-amd64"},
 "jessie":
-	{"i386":  "linux-image-686",
+	{"i386":  "linux-image-686-pae",
 	 "amd64": "linux-image-amd64"},
 "sid":
-	{"i386":  "linux-image-686",
+	{"i386":  "linux-image-686-pae",
 	 "amd64": "linux-image-amd64"}
 }
