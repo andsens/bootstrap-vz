@@ -20,8 +20,12 @@ def main():
 	# Set up logging
 	setup_loggers(opts)
 
+	# Load the manifest
+	from manifest import Manifest
+	manifest = Manifest(path=opts['MANIFEST'])
+
 	# Everything has been set up, begin the bootstrapping process
-	run(opts['MANIFEST'],
+	run(manifest,
 	    debug=opts['--debug'],
 	    pause_on_error=opts['--pause-on-error'],
 	    dry_run=opts['--dry-run'])
@@ -68,15 +72,11 @@ def setup_loggers(opts):
 	root.addHandler(console_handler)
 
 
-def run(manifest_path, debug=False, pause_on_error=False, dry_run=False):
+def run(manifest, debug=False, pause_on_error=False, dry_run=False):
 	"""Runs the bootstrapping process
 
 	:params dict opts: Dictionary of options from the commandline
 	"""
-	# Load the manifest
-	from manifest import Manifest
-	manifest = Manifest(manifest_path)
-
 	# Get the tasklist
 	from tasklist import load_tasks
 	from tasklist import TaskList

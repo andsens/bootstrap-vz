@@ -2,6 +2,7 @@
 to determine which tasks should be added to the tasklist, what arguments various
 invocations should have etc..
 """
+from bootstrapvz.common.exceptions import ManifestError
 from bootstrapvz.common.tools import load_data
 import logging
 log = logging.getLogger(__name__)
@@ -14,32 +15,44 @@ class Manifest(object):
 	Currently, immutability is not enforced and it would require a fair amount of code
 	to enforce it, instead we just rely on tasks behaving properly.
 	"""
-	def __init__(self, path):
+	def __init__(self, path=None, data=None):
 		"""Initializer: Given a path we load, validate and parse the manifest.
+		To create the manifest from dynamic data instead of the contents of a file,
+		provide a properly constructed dict as the data argument.
 
-		:param str path: The path to the manifest
+		:param str path: The path to the manifest (ignored, when `data' is provided)
+		:param str data: The manifest data, if it is not None, it will be used instead of the contents of `path'
 		"""
+		if path is None and data is None:
+			raise ManifestError('`path\' or `data\' must be provided')
 		self.path = path
-		self.load()
+		self.load(data)
+		self.initialize()
 		self.validate()
 		self.parse()
 
-	def load(self):
+	def load(self, data=None):
 		"""Loads the manifest and performs a basic validation.
-		This function reads the manifest, loads the specified provider and plugins, and performs
-		some basic validation of the manifest itself to ensure that the properties
-		required for initalization are accessible
+		This function reads the manifest and performs some basic validation of
+		the manifest itself to ensure that the properties required for initalization are accessible
 		(otherwise the user would be presented with some cryptic error messages).
-		Once the provider and plugins are loaded,
-		the initialize() function is called on each of them (if it exists).
-		The provider must have an initialize function.
 		"""
-		self.data = load_data(self.path)
+		if data is None:
+			self.data = load_data(self.path)
+		else:
+			self.data = data
 
 		from . import validate_manifest
 		# Validate the manifest with the base validation function in __init__
 		validate_manifest(self.data, self.schema_validator, self.validation_error)
 
+	def initialize(self):
+		"""Initializes the provider and the plugins.
+		This function loads the specified provider and plugins.
+		Once the provider and plugins are loaded,
+		the initialize() function is called on each of them (if it exists).
+		The provider must have an initialize function.
+		"""
 		# Get the provider name from the manifest and load the corresponding module
 		provider_modname = 'bootstrapvz.providers.' + self.data['provider']['name']
 		log.debug('Loading provider ' + provider_modname)
@@ -116,5 +129,4 @@ class Manifest(object):
 		:param list data_path: A path to the location in the manifest where the error occurred
 		:raises ManifestError: With absolute certainty
 		"""
-		from bootstrapvz.common.exceptions import ManifestError
 		raise ManifestError(message, self.path, data_path)

@@ -29,7 +29,7 @@ def validate_manifests(path):
     and checks that all the data values have successfully
     been created.
     """
-    manifest = Manifest(path)
+    manifest = Manifest(path=path)
 
     assert_true(manifest.data)
     assert_true(manifest.data['provider'])
