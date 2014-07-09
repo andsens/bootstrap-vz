@@ -75,7 +75,10 @@ def setup_loggers(opts):
 def run(manifest, debug=False, pause_on_error=False, dry_run=False):
 	"""Runs the bootstrapping process
 
-	:params dict opts: Dictionary of options from the commandline
+	:params Manifest manifest: The manifest to run the bootstrapping process for
+	:params bool debug: Whether to turn debugging mode on
+	:params bool pause_on_error: Whether to pause on error, before rollback
+	:params bool dry_run: Don't actually run the tasks
 	"""
 	# Get the tasklist
 	from tasklist import load_tasks
@@ -93,7 +96,6 @@ def run(manifest, debug=False, pause_on_error=False, dry_run=False):
 		tasklist.run(info=bootstrap_info, dry_run=dry_run)
 		# We're done! :-)
 		log.info('Successfully completed bootstrapping')
-		return bootstrap_info
 	except (Exception, KeyboardInterrupt) as e:
 		# When an error occurs, log it and begin rollback
 		log.exception(e)
@@ -124,3 +126,4 @@ def run(manifest, debug=False, pause_on_error=False, dry_run=False):
 		rollback_tasklist.run(info=bootstrap_info, dry_run=dry_run)
 		log.info('Successfully completed rollback')
 		raise e
+	return bootstrap_info
