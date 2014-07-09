@@ -1,3 +1,21 @@
+2014-07-09:
+	Anders Ingemann:
+		* Allow passing data into the manifest
+		* Refactor logging setup to be more modular
+		* Convert every JSON file to YAML
+		* Convert "provider" into provider specific section 
+2014-07-02:
+	Vladimir Vitkov:
+		* Improve grub options to work better with virtual machines
+2014-06-30:
+	Tomasz Rybak:
+		* Return information about created image
+2014-06-22:
+	Victor Marmol:
+		* Enable the memory cgroup for the Docker plugin
+2014-06-19:
+	Vladimir Vitkov:
+		* Improve ami listing performance
 2014-06-06:
 	Ilya Margolin:
 		* pip_install plugin
