@@ -7,7 +7,7 @@ import os.path
 class ConfigureGrub(Task):
 	description = 'Change grub configuration to allow for ttyS0 output'
 	phase = phases.system_modification
-	successors = [boot.InstallGrub]
+	successors = [boot.InstallGrub_1_99, boot.InstallGrub_2]
 
 	@classmethod
 	def run(cls, info):

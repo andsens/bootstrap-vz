@@ -30,7 +30,7 @@ def get_standard_groups(manifest):
 	group.extend(get_apt_group(manifest))
 	group.extend(security_group)
 	group.extend(locale_group)
-	group.extend(bootloader_group.get(manifest.system['bootloader'], []))
+	group.extend(get_bootloader_group(manifest))
 	group.extend(cleanup_group)
 	return group
 
@@ -126,9 +126,20 @@ locale_group = [locale.LocaleBootstrapPackage,
                 ]
 
 
-bootloader_group = {'grub':     [boot.AddGrubPackage, boot.ConfigureGrub, boot.InstallGrub],
-                    'extlinux': [boot.AddExtlinuxPackage, boot.InstallExtLinux],
-                    }
+def get_bootloader_group(manifest):
+	group = []
+	if manifest.system['bootloader'] == 'grub':
+		group.extend([boot.AddGrubPackage,
+		              boot.ConfigureGrub])
+		from bootstrapvz.common.tools import get_codename
+		if get_codename(manifest.system['release']) in ['squeeze', 'wheezy']:
+			group.append(boot.InstallGrub_1_99)
+		else:
+			group.append(boot.InstallGrub_2)
+	if manifest.system['bootloader'] == 'extlinux':
+		group.extend([boot.AddExtlinuxPackage,
+		              boot.InstallExtLinux])
+	return group
 
 
 def get_fs_specific_group(manifest):

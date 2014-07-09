@@ -1,5 +1,6 @@
 from bootstrapvz.base import Task
 from .. import phases
+from ..tools import log_check_call
 import apt
 import filesystem
 from bootstrapvz.base.fs import partitionmaps
@@ -58,18 +59,13 @@ class ConfigureGrub(Task):
 		                'GRUB_CMDLINE_LINUX_DEFAULT="console=ttyS0"')
 
 
-class InstallGrub(Task):
-	description = 'Installing grub'
+class InstallGrub_1_99(Task):
+	description = 'Installing grub 1.99'
 	phase = phases.system_modification
 	predecessors = [filesystem.FStab]
 
 	@classmethod
 	def run(cls, info):
-		from ..fs.loopbackvolume import LoopbackVolume
-		from ..tools import log_check_call
-
-		boot_dir = os.path.join(info.root, 'boot')
-		grub_dir = os.path.join(boot_dir, 'grub')
 
 		from ..fs import remount
 		p_map = info.volume.partition_map
@@ -87,11 +83,12 @@ class InstallGrub(Task):
 		# GRUB cannot deal with installing to loopback devices
 		# so we fake a real harddisk with dmsetup.
 		# Guide here: http://ebroder.net/2009/08/04/installing-grub-onto-a-disk-image/
+		from ..fs.loopbackvolume import LoopbackVolume
 		if isinstance(info.volume, LoopbackVolume):
 			remount(info.volume, link_fn)
 		try:
 			[device_path] = log_check_call(['readlink', '-f', info.volume.device_path])
-			device_map_path = os.path.join(grub_dir, 'device.map')
+			device_map_path = os.path.join(info.root, 'boot/grub/device.map')
 			partition_prefix = 'msdos'
 			if isinstance(p_map, partitionmaps.gpt.GPTPartitionMap):
 				partition_prefix = 'gpt'
@@ -105,8 +102,7 @@ class InstallGrub(Task):
 						                         idx=idx + 1))
 
 			# Install grub
-			log_check_call(['chroot', info.root,
-			                'grub-install', device_path])
+			log_check_call(['chroot', info.root, 'grub-install', device_path])
 			log_check_call(['chroot', info.root, 'update-grub'])
 		except Exception as e:
 			if isinstance(info.volume, LoopbackVolume):
@@ -115,6 +111,17 @@ class InstallGrub(Task):
 
 		if isinstance(info.volume, LoopbackVolume):
 			remount(info.volume, unlink_fn)
+
+
+class InstallGrub_2(Task):
+	description = 'Installing grub 2'
+	phase = phases.system_modification
+	predecessors = [filesystem.FStab]
+
+	@classmethod
+	def run(cls, info):
+		log_check_call(['chroot', info.root, 'grub-install', info.volume.device_path])
+		log_check_call(['chroot', info.root, 'update-grub'])
 
 
 class AddExtlinuxPackage(Task):
@@ -136,7 +143,6 @@ class InstallExtLinux(Task):
 
 	@classmethod
 	def run(cls, info):
-		from ..tools import log_check_call
 		if isinstance(info.volume.partition_map, partitionmaps.gpt.GPTPartitionMap):
 			bootloader = '/usr/lib/syslinux/gptmbr.bin'
 		else:
