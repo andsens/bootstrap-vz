@@ -17,20 +17,14 @@ def main():
 	if os.geteuid() != 0 and not opts['--dry-run']:
 		raise Exception('This program requires root privileges.')
 
-	import log
-	# Log to file unless --log is a single dash
-	if opts['--log'] != '-':
-		# Setup logging
-		if not os.path.exists(opts['--log']):
-			os.makedirs(opts['--log'])
-		log_filename = log.get_log_filename(opts['MANIFEST'])
-		logfile = os.path.join(opts['--log'], log_filename)
-	else:
-		logfile = None
-	log.setup_logger(logfile=logfile, debug=opts['--debug'])
+	# Set up logging
+	setup_loggers(opts)
 
 	# Everything has been set up, begin the bootstrapping process
-	run(opts)
+	run(opts['MANIFEST'],
+	    debug=opts['--debug'],
+	    pause_on_error=opts['--pause-on-error'],
+	    dry_run=opts['--dry-run'])
 
 
 def get_opts():
@@ -49,18 +43,39 @@ Options:
   --debug            Print debugging information
   -h, --help         show this help
 	"""
-	opts = docopt(usage)
-	return opts
+	return docopt(usage)
 
 
-def run(opts):
+def setup_loggers(opts):
+	"""Sets up the file and console loggers
+
+	:params dict opts: Dictionary of options from the commandline
+	"""
+	import logging
+	root = logging.getLogger()
+	root.setLevel(logging.NOTSET)
+
+	import log
+	# Log to file unless --log is a single dash
+	if opts['--log'] != '-':
+		import os.path
+		log_filename = log.get_log_filename(opts['MANIFEST'])
+		logpath = os.path.join(opts['--log'], log_filename)
+		file_handler = log.get_file_handler(path=logpath, debug=True)
+		root.addHandler(file_handler)
+
+	console_handler = log.get_console_handler(debug=opts['--debug'])
+	root.addHandler(console_handler)
+
+
+def run(manifest_path, debug=False, pause_on_error=False, dry_run=False):
 	"""Runs the bootstrapping process
 
 	:params dict opts: Dictionary of options from the commandline
 	"""
 	# Load the manifest
 	from manifest import Manifest
-	manifest = Manifest(opts['MANIFEST'])
+	manifest = Manifest(manifest_path)
 
 	# Get the tasklist
 	from tasklist import load_tasks
@@ -71,18 +86,18 @@ def run(opts):
 
 	# Create the bootstrap information object that'll be used throughout the bootstrapping process
 	from bootstrapinfo import BootstrapInformation
-	bootstrap_info = BootstrapInformation(manifest=manifest, debug=opts['--debug'])
+	bootstrap_info = BootstrapInformation(manifest=manifest, debug=debug)
 
 	try:
 		# Run all the tasks the tasklist has gathered
-		tasklist.run(info=bootstrap_info, dry_run=opts['--dry-run'])
+		tasklist.run(info=bootstrap_info, dry_run=dry_run)
 		# We're done! :-)
 		log.info('Successfully completed bootstrapping')
 		return bootstrap_info
 	except (Exception, KeyboardInterrupt) as e:
 		# When an error occurs, log it and begin rollback
 		log.exception(e)
-		if opts['--pause-on-error']:
+		if pause_on_error:
 			# The --pause-on-error is useful when the user wants to inspect the volume before rollback
 			raw_input('Press Enter to commence rollback')
 		log.error('Rolling back')
@@ -106,6 +121,6 @@ def run(opts):
 		rollback_tasklist = TaskList(rollback_tasks)
 
 		# Run the rollback tasklist
-		rollback_tasklist.run(info=bootstrap_info, dry_run=opts['--dry-run'])
+		rollback_tasklist.run(info=bootstrap_info, dry_run=dry_run)
 		log.info('Successfully completed rollback')
 		raise e

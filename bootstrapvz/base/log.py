@@ -4,6 +4,48 @@ both to a file and to the console.
 import logging
 
 
+def get_console_handler(debug):
+	"""Returns a log handler for the console
+	The handler color codes the different log levels
+
+	:params bool debug: Whether to set the log level to DEBUG (otherwise INFO)
+	:return: The console logging handler
+	"""
+	# Create a console log handler
+	import sys
+	console_handler = logging.StreamHandler(sys.stderr)
+	# We want to colorize the output to the console, so we add a formatter
+	console_handler.setFormatter(ConsoleFormatter())
+	# Set the log level depending on the debug argument
+	if debug:
+		console_handler.setLevel(logging.DEBUG)
+	else:
+		console_handler.setLevel(logging.INFO)
+	return console_handler
+
+
+def get_file_handler(path, debug):
+	"""Returns a log handler for the given path
+	If the parent directory of the logpath does not exist it will be created
+	The handler outputs relative timestamps (to when it was created)
+
+	:params str path: The full path to the logfile
+	:params bool debug: Whether to set the log level to DEBUG (otherwise INFO)
+	:return: The file logging handler
+	"""
+	import os.path
+	if not os.path.exists(os.path.dirname(path)):
+		os.makedirs(os.path.dirname(path))
+	# Create the log handler
+	file_handler = logging.FileHandler(path)
+	# Absolute timestamps are rather useless when bootstrapping, it's much more interesting
+	# to see how long things take, so we log in a relative format instead
+	file_handler.setFormatter(FileFormatter('[%(relativeCreated)s] %(levelname)s: %(message)s'))
+	# The file log handler always logs everything
+	file_handler.setLevel(logging.DEBUG)
+	return file_handler
+
+
 def get_log_filename(manifest_path):
 	"""Returns the path to a logfile given a manifest
 	The logfile name is constructed from the current timestamp and the basename of the manifest
@@ -20,40 +62,6 @@ def get_log_filename(manifest_path):
 	timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
 	filename = '{timestamp}_{name}.log'.format(timestamp=timestamp, name=manifest_name)
 	return filename
-
-
-def setup_logger(logfile=None, debug=False):
-	"""Sets up the python logger to log to both a file and the console
-
-	:param str logfile: Path to a logfile
-	:param bool debug: Whether to log debug output to the console
-	"""
-	root = logging.getLogger()
-	# Make sure all logging statements are processed by our handlers, they decide the log level
-	root.setLevel(logging.NOTSET)
-
-	# Only enable logging to file if a destination was supplied
-	if logfile is not None:
-		# Create a file log handler
-		file_handler = logging.FileHandler(logfile)
-		# Absolute timestamps are rather useless when bootstrapping, it's much more interesting
-		# to see how long things take, so we log in a relative format instead
-		file_handler.setFormatter(FileFormatter('[%(relativeCreated)s] %(levelname)s: %(message)s'))
-		# The file log handler always logs everything
-		file_handler.setLevel(logging.DEBUG)
-		root.addHandler(file_handler)
-
-	# Create a console log handler
-	import sys
-	console_handler = logging.StreamHandler(sys.stderr)
-	# We want to colorize the output to the console, so we add a formatter
-	console_handler.setFormatter(ConsoleFormatter())
-	# Set the log level depending on the debug argument
-	if debug:
-		console_handler.setLevel(logging.DEBUG)
-	else:
-		console_handler.setLevel(logging.INFO)
-	root.addHandler(console_handler)
 
 
 class ConsoleFormatter(logging.Formatter):
