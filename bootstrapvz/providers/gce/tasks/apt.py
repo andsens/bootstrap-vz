@@ -6,19 +6,12 @@ import os
 
 
 class SetPackageRepositories(Task):
-	description = 'Adding apt sources'
+	description = 'Adding goog apt source'
 	phase = phases.preparation
 	successors = [apt.AddManifestSources]
 
 	@classmethod
 	def run(cls, info):
-		components = 'main'
-		if 'components' in info.manifest.system:
-			components = ' '.join(info.manifest.system['components'])
-		info.source_lists.add('main', 'deb     http://http.debian.net/debian {system.release} ' + components)
-		info.source_lists.add('main', 'deb-src http://http.debian.net/debian {system.release} ' + components)
-		info.source_lists.add('backports', 'deb     http://http.debian.net/debian {system.release}-backports ' + components)
-		info.source_lists.add('backports', 'deb-src http://http.debian.net/debian {system.release}-backports ' + components)
 		info.source_lists.add('goog', 'deb http://goog-repo.appspot.com/debian pigeon main')
 
 
