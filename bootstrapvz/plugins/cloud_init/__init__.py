@@ -7,6 +7,7 @@ def validate_manifest(data, validator, error):
 
 
 def resolve_tasks(taskset, manifest):
+	import tasks
 	import bootstrapvz.providers.ec2.tasks.initd as initd_ec2
 	from bootstrapvz.common.tasks import apt
 	from bootstrapvz.common.tasks import initd
