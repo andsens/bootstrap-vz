@@ -11,7 +11,7 @@ provider:
 bootstrapper:
   workspace: /target
 image:
-  name: debian-{system.release}-{system.architecture}-{virtualization}-{%y}{%m}{%d}
+  name: debian-{system.release}-{system.architecture}-{provider.virtualization}-{%y}{%m}{%d}
   description: Debian {system.release} {system.architecture} AMI
   bucket: debian-amis
   region: us-west-1

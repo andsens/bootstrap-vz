@@ -8,7 +8,7 @@ provider:
 bootstrapper:
   workspace: /target
 image:
-  name: debian-{system.release}-{system.architecture}-{virtualization}-{%Y}-{%m}-{%d}-ebs
+  name: debian-{system.release}-{system.architecture}-{provider.virtualization}-{%Y}-{%m}-{%d}-ebs
   description: Debian {system.release} {system.architecture}
 system:
   release: wheezy
