@@ -18,10 +18,11 @@ class GetCredentials(Task):
 	def get_credentials(cls, manifest, keys):
 		from os import getenv
 		creds = {}
-		if all(key in manifest.provider['credentials'] for key in keys):
-			for key in keys:
-				creds[key] = manifest.provider['credentials'][key]
-			return creds
+		if 'credentials' in manifest.provider:
+			if all(key in manifest.provider['credentials'] for key in keys):
+				for key in keys:
+					creds[key] = manifest.provider['credentials'][key]
+				return creds
 
 		def env_key(key):
 			return ('aws-' + key).upper().replace('-', '_')
