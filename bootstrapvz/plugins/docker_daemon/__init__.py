@@ -1,11 +1,12 @@
-import tasks
 import os.path
+import tasks
+from bootstrapvz.common.tasks import apt
+from bootstrapvz.common.tools import get_codename
 
 
 def validate_manifest(data, validator, error):
 	schema_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'manifest-schema.yml'))
 	validator(data, schema_path)
-	from bootstrapvz.common.tools import get_codename
 	if get_codename(data['system']['release']) == 'wheezy':
 		# prefs is a generator of apt preferences across files in the manifest
 		prefs = (item for vals in data.get('packages', {}).get('preferences', {}).values() for item in vals)
@@ -15,6 +16,8 @@ def validate_manifest(data, validator, error):
 
 
 def resolve_tasks(taskset, manifest):
+	if get_codename(manifest.system['release']) == 'wheezy':
+		taskset.add(apt.AddBackports)
 	taskset.add(tasks.AddDockerDeps)
 	taskset.add(tasks.AddDockerBinary)
 	taskset.add(tasks.AddDockerInit)

@@ -5,6 +5,7 @@ import tasks.configuration
 import tasks.image
 import tasks.host
 import tasks.packages
+from bootstrapvz.common.tasks import apt
 from bootstrapvz.common.tasks import loopback
 from bootstrapvz.common.tasks import initd
 from bootstrapvz.common.tasks import ssh
@@ -25,7 +26,7 @@ def validate_manifest(data, validator, error):
 def resolve_tasks(taskset, manifest):
 	taskset.update(task_groups.get_standard_groups(manifest))
 
-	taskset.update([bootstrapvz.plugins.cloud_init.tasks.AddBackports,
+	taskset.update([apt.AddBackports,
 	                loopback.AddRequiredCommands,
 	                loopback.Create,
 	                tasks.apt.SetPackageRepositories,

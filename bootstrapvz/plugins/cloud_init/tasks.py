@@ -7,24 +7,10 @@ import logging
 import os.path
 
 
-class AddBackports(Task):
-	description = 'Adding backports to the apt sources'
-	phase = phases.preparation
-
-	@classmethod
-	def run(cls, info):
-		if info.source_lists.target_exists('{system.release}-backports'):
-			msg = ('{system.release}-backports target already exists').format(**info.manifest_vars)
-			logging.getLogger(__name__).info(msg)
-		else:
-			info.source_lists.add('backports', 'deb     {apt_mirror} {system.release}-backports main')
-			info.source_lists.add('backports', 'deb-src {apt_mirror} {system.release}-backports main')
-
-
 class AddCloudInitPackages(Task):
 	description = 'Adding cloud-init package and sudo'
 	phase = phases.preparation
-	predecessors = [apt.AddDefaultSources, AddBackports]
+	predecessors = [apt.AddDefaultSources, apt.AddBackports]
 
 	@classmethod
 	def run(cls, info):

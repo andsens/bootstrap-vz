@@ -7,14 +7,14 @@ def validate_manifest(data, validator, error):
 
 
 def resolve_tasks(taskset, manifest):
-	import tasks
 	import bootstrapvz.providers.ec2.tasks.initd as initd_ec2
+	from bootstrapvz.common.tasks import apt
 	from bootstrapvz.common.tasks import initd
 	from bootstrapvz.common.tasks import ssh
 
 	from bootstrapvz.common.tools import get_codename
 	if get_codename(manifest.system['release']) == 'wheezy':
-		taskset.add(tasks.AddBackports)
+		taskset.add(apt.AddBackports)
 
 	taskset.update([tasks.SetMetadataSource,
 	                tasks.AddCloudInitPackages,
