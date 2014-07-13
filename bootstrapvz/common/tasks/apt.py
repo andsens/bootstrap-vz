@@ -1,25 +1,9 @@
 from bootstrapvz.base import Task
-from .. import phases
-from ..tools import log_check_call
+from bootstrapvz.common import phases
+from bootstrapvz.common.tools import log_check_call
 import locale
 import logging
 import os
-
-
-class AddBackports(Task):
-	description = 'Adding backports to the apt sources'
-	phase = phases.preparation
-
-	@classmethod
-	def run(cls, info):
-		if info.source_lists.target_exists('{system.release}-backports'):
-			msg = ('{system.release}-backports target already exists').format(**info.manifest_vars)
-			logging.getLogger(__name__).info(msg)
-		elif info.release_codename == 'sid':
-			logging.getLogger(__name__).info('There are no backports for sid/unstable')
-		else:
-			info.source_lists.add('backports', 'deb     {apt_mirror} {system.release}-backports main')
-			info.source_lists.add('backports', 'deb-src {apt_mirror} {system.release}-backports main')
 
 
 class AddManifestSources(Task):
@@ -48,6 +32,23 @@ class AddDefaultSources(Task):
 			info.source_lists.add('main', 'deb-src http://security.debian.org/  {system.release}/updates ' + components)
 			info.source_lists.add('main', 'deb     {apt_mirror} {system.release}-updates ' + components)
 			info.source_lists.add('main', 'deb-src {apt_mirror} {system.release}-updates ' + components)
+
+
+class AddBackports(Task):
+	description = 'Adding backports to the apt sources'
+	phase = phases.preparation
+	predecessors = [AddDefaultSources]
+
+	@classmethod
+	def run(cls, info):
+		if info.source_lists.target_exists('{system.release}-backports'):
+			msg = ('{system.release}-backports target already exists').format(**info.manifest_vars)
+			logging.getLogger(__name__).info(msg)
+		elif info.release_codename == 'sid':
+			logging.getLogger(__name__).info('There are no backports for sid/unstable')
+		else:
+			info.source_lists.add('backports', 'deb     {apt_mirror} {system.release}-backports main')
+			info.source_lists.add('backports', 'deb-src {apt_mirror} {system.release}-backports main')
 
 
 class AddManifestPreferences(Task):
@@ -155,7 +156,6 @@ class AptUpgrade(Task):
 			                           '--assume-yes'])
 		except CalledProcessError as e:
 			if e.returncode == 100:
-				import logging
 				msg = ('apt exited with status code 100. '
 				       'This can sometimes occur when package retrieval times out or a package extraction failed. '
 				       'apt might succeed if you try bootstrapping again.')
