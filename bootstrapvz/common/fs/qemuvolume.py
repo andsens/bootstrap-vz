@@ -23,7 +23,8 @@ class QEMUVolume(LoopbackVolume):
 			num_partitions = len(self.partition_map.partitions)
 			if not self._module_loaded('nbd'):
 				msg = ('The kernel module `nbd\' must be loaded '
-				       '(`modprobe nbd max_part={num_partitions}\') to attach .{extension} images'
+				       '(run `modprobe nbd max_part={num_partitions}\') '
+				       'to attach .{extension} images'
 				       .format(num_partitions=num_partitions, extension=self.extension))
 				raise VolumeError(msg)
 			nbd_max_part = int(self._module_param('nbd', 'max_part'))
