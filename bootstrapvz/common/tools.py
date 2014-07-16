@@ -72,8 +72,8 @@ def load_json(path):
 
 def load_yaml(path):
 	import yaml
-	with open(path, 'r') as fobj:
-		return yaml.safe_load(fobj)
+	with open(path, 'r') as stream:
+		return yaml.safe_load(stream)
 
 
 def load_data(path):
