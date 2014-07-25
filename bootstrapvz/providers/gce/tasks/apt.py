@@ -1,6 +1,7 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 from bootstrapvz.common.tasks import apt
+from bootstrapvz.common.tasks import network
 from bootstrapvz.common.tools import log_check_call
 import os
 
@@ -8,7 +9,7 @@ import os
 class SetPackageRepositories(Task):
 	description = 'Adding apt sources'
 	phase = phases.preparation
-	successors = [apt.AddManifestSources]
+	predecessors = [apt.AddManifestSources]
 
 	@classmethod
 	def run(cls, info):
@@ -39,7 +40,7 @@ class ImportGoogleKey(Task):
 class CleanGoogleRepositoriesAndKeys(Task):
 	description = 'Removing Google key and apt source files'
 	phase = phases.system_cleaning
-	successors = [apt.AptClean]
+	successors = [apt.AptClean, network.RemoveDNSInfo]
 
 	@classmethod
 	def run(cls, info):

@@ -37,6 +37,7 @@ def resolve_tasks(taskset, manifest):
 	                tasks.configuration.GatherReleaseInformation,
 
 	                tasks.host.DisableIPv6,
+	                tasks.host.SetHostname,
 	                tasks.boot.ConfigureGrub,
 	                initd.InstallInitScripts,
 	                ssh.AddSSHKeyGeneration,
