@@ -20,6 +20,7 @@ class DefaultPackages(Task):
 		info.packages.add('openssh-client')
 		info.packages.add('openssh-server')
 		info.packages.add('dhcpd')
+		info.packages.add('ca-certificates')
 
 		kernel_packages_path = os.path.join(os.path.dirname(__file__), 'packages-kernels.yml')
 		from bootstrapvz.common.tools import config_get
