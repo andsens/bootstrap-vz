@@ -36,6 +36,7 @@ packages:
       pin: release n=wheezy-backports
       pin-priority: 500
 plugins:
+  google_cloud_sdk: {}
   ntp:
     servers:
     - metadata.google.internal
