@@ -27,6 +27,7 @@ packages:
   - contrib
   - non-free
 plugins:
+  google_cloud_sdk: {}
   ntp:
     servers:
     - metadata.google.internal
