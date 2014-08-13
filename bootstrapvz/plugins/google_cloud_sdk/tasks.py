@@ -52,7 +52,6 @@ class InstallCloudSDK(Task):
 
 		cloudsdk_directory = os.path.join(info.root, 'usr/local/share/google')
 		os.makedirs(cloudsdk_directory)
-		log_check_call(['file', cloudsdk_download_dest, cloudsdk_directory])
 		log_check_call(['tar', 'xaf', cloudsdk_download_dest, '-C', cloudsdk_directory])
 
 		# We need to symlink certain programs from the Cloud SDK bin directory into /usr/local/bin.
