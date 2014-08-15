@@ -40,6 +40,7 @@ def resolve_tasks(taskset, manifest):
 	                tasks.boot.ConfigureGrub,
 	                initd.InstallInitScripts,
 	                ssh.AddSSHKeyGeneration,
+	                ssh.DisableSSHPasswordAuthentication,
 	                tasks.apt.CleanGoogleRepositoriesAndKeys,
 
 	                loopback.MoveImage,
