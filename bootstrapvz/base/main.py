@@ -44,6 +44,8 @@ Options:
                      If <path> is `-' file logging will be disabled.
   --pause-on-error   Pause on error, before rollback
   --dry-run          Don't actually run the tasks
+  --color=auto|always|never
+                     Colorize the console output [default: auto]
   --debug            Print debugging information
   -h, --help         show this help
 	"""
@@ -68,7 +70,15 @@ def setup_loggers(opts):
 		file_handler = log.get_file_handler(path=logpath, debug=True)
 		root.addHandler(file_handler)
 
-	console_handler = log.get_console_handler(debug=opts['--debug'])
+	if opts['--color'] == 'never':
+		colorize = False
+	elif opts['--color'] == 'always':
+		colorize = True
+	else:
+		# If --color=auto (default), decide whether to colorize by whether stderr is a tty.
+		import os
+		colorize = os.isatty(2)
+	console_handler = log.get_console_handler(debug=opts['--debug'], colorize=colorize)
 	root.addHandler(console_handler)
 
 

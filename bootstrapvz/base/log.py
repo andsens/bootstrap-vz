@@ -4,18 +4,20 @@ both to a file and to the console.
 import logging
 
 
-def get_console_handler(debug):
+def get_console_handler(debug, colorize):
 	"""Returns a log handler for the console
 	The handler color codes the different log levels
 
 	:params bool debug: Whether to set the log level to DEBUG (otherwise INFO)
+	:params bool colorize: Whether to colorize console output
 	:return: The console logging handler
 	"""
 	# Create a console log handler
 	import sys
 	console_handler = logging.StreamHandler(sys.stderr)
-	# We want to colorize the output to the console, so we add a formatter
-	console_handler.setFormatter(ConsoleFormatter())
+	if colorize:
+		# We want to colorize the output to the console, so we add a formatter
+		console_handler.setFormatter(ConsoleFormatter())
 	# Set the log level depending on the debug argument
 	if debug:
 		console_handler.setLevel(logging.DEBUG)
