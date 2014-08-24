@@ -34,7 +34,7 @@ def main():
 def get_opts():
 	"""Creates an argument parser and returns the arguments it has parsed
 	"""
-	from docopt import docopt
+	import docopt
 	usage = """bootstrap-vz
 
 Usage: bootstrap-vz [options] MANIFEST
@@ -49,7 +49,10 @@ Options:
   --debug            Print debugging information
   -h, --help         show this help
 	"""
-	return docopt(usage)
+	opts = docopt.docopt(usage)
+	if opts['--color'] not in ('auto', 'always', 'never'):
+		raise docopt.DocoptExit('Value of --color must be one of auto, always or never.')
+	return opts
 
 
 def setup_loggers(opts):
