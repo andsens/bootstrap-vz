@@ -1,6 +1,5 @@
 from phase import Phase
 from task import Task
-from main import main
 
 __all__ = ['Phase', 'Task', 'main']
 

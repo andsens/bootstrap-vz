@@ -1,0 +1,7 @@
+---
+volume:
+  type: none
+  partitions:
+    root:
+      filesystem: ext4
+      size: 1GiB

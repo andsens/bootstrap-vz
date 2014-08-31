@@ -1,0 +1,23 @@
+virtualbox:
+  can_bootstrap:
+    - virtualbox
+    - ec2-s3
+  address: 127.0.0.1
+  port: 2222
+  username: vagrant
+  password: vagrant
+  root_password: vagrant
+  keyfile: /Users/anders/.vagrant.d/insecure_private_key
+  server-bin: /root/bootstrap/bootstrap-vz-server
+ec2:
+  can_bootstrap:
+    - virtualbox
+    - ec2-ebs
+    - ec2-s3
+  address: 127.0.0.1
+  port: 2222
+  username: vagrant
+  password: vagrant
+  root_password: vagrant
+  keyfile: /Users/anders/.vagrant.d/insecure_private_key
+  server-bin: /root/bootstrap/bootstrap-vz-server

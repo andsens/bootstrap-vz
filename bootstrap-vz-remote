@@ -1,5 +1,5 @@
 #!/usr/bin/env python
 
 if __name__ == '__main__':
-	from bootstrapvz.base.main import main
+	from bootstrapvz.base.remote import main
 	main()
