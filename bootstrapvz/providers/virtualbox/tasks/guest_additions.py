@@ -27,11 +27,11 @@ class AddGuestAdditionsPackages(Task):
 		info.packages.add('bzip2')
 		info.packages.add('build-essential')
 		info.packages.add('dkms')
-
-		from bootstrapvz.common.tools import log_check_call
-		[kernel_version] = log_check_call(['chroot', info.root,
-		                                   'uname', '-r'])
-		kernel_headers_pkg = 'linux-headers-' + kernel_version
+		kernel_headers_pkg = 'linux-headers-'
+		if info.manifest.system['architecture'] == 'i386':
+			kernel_headers_pkg += '686-pae'
+		else:
+			kernel_headers_pkg += 'amd64'
 		info.packages.add(kernel_headers_pkg)
 
 
