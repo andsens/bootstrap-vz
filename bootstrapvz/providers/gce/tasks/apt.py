@@ -9,7 +9,7 @@ import os
 class SetPackageRepositories(Task):
 	description = 'Adding apt sources'
 	phase = phases.preparation
-	predecessors = [apt.AddManifestSources]
+	predecessors = [apt.AddManifestSources, apt.AddBackports]
 
 	@classmethod
 	def run(cls, info):
