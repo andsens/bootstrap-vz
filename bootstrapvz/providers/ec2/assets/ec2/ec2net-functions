@@ -1,0 +1,236 @@
+# -*-Shell-script-*-
+
+# Copyright (C) 2012 Amazon.com, Inc. or its affiliates.
+# All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License").
+# You may not use this file except in compliance with the License.
+# A copy of the License is located at
+#
+#    http://aws.amazon.com/apache2.0/
+#
+# or in the "license" file accompanying this file. This file is
+# distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
+# OF ANY KIND, either express or implied. See the License for the
+# specific language governing permissions and limitations under the
+# License.
+
+# This file is not a stand-alone shell script; it provides functions
+# to ec2 network scripts that source it.
+
+# Set up a default search path.
+PATH="/sbin:/usr/sbin:/bin:/usr/bin"
+export PATH
+
+# metadata query requires an interface and hardware address
+if [ -z "${INTERFACE}" ]; then
+  exit
+fi
+HWADDR=$(cat /sys/class/net/${INTERFACE}/address 2>/dev/null)
+if [ -z "${HWADDR}" ] && [ "${ACTION}" != "remove" ]; then
+  exit
+fi
+export HWADDR
+
+# generate a routing table number
+RTABLE=${INTERFACE#eth}
+let RTABLE+=10000
+
+metadata_base="http://169.254.169.254/latest/meta-data/network/interfaces/macs"
+config_file="/etc/sysconfig/network-scripts/ifcfg-${INTERFACE}"
+route_file="/etc/sysconfig/network-scripts/route-${INTERFACE}"
+dhclient_file="/etc/dhcp/dhclient-${INTERFACE}.conf"
+
+# make no changes to unmanaged interfaces
+if [ -s ${config_file} ]; then
+  unmanaged=$(LANG=C grep -l "^[[:space:]]*EC2SYNC=no\([[:space:]#]\|$\)" $config_file)
+  if [ "${config_file}" == "${unmanaged}" ]; then
+    exit
+  fi
+fi
+
+get_meta() {
+  attempts=10
+  false
+  while [ "${?}" -gt 0 ]; do
+    [ "${attempts}" -eq 0 ] && return
+    meta=$(curl -s -f ${metadata_base}/${HWADDR}/${1})
+    if [ "${?}" -gt 0 ]; then
+      let attempts--
+      sleep 3
+      false
+    fi
+  done
+  echo "${meta}"
+}
+
+get_cidr() {
+  cidr=$(get_meta 'subnet-ipv4-cidr-block')
+  echo "${cidr}"
+}
+
+get_ipv4s() {
+  ipv4s=$(get_meta 'local-ipv4s')
+  echo "${ipv4s}"
+}
+
+get_primary_ipv4() {
+  ipv4s=($(get_ipv4s))
+  echo "${ipv4s[0]}"
+}
+
+get_secondary_ipv4s() {
+  ipv4s=($(get_ipv4s))
+  echo "${ipv4s[@]:1}"
+}
+
+remove_primary() {
+  if [ "${INTERFACE}" == "eth0" ]; then
+    return
+  fi
+  rm -f ${config_file}
+  rm -f ${route_file}
+  rm -f ${dhclient_file}
+}
+
+rewrite_primary() {
+  if [ "${INTERFACE}" == "eth0" ]; then
+    return
+  fi
+  cidr=$(get_cidr)
+  if [ -z ${cidr} ]; then
+    return
+  fi
+  network=$(echo ${cidr}|cut -d/ -f1)
+  router=$(( $(echo ${network}|cut -d. -f4) + 1))
+  gateway="$(echo ${network}|cut -d. -f1-3).${router}"
+  cat <<- EOF > ${config_file}
+        DEVICE=${INTERFACE}
+        BOOTPROTO=dhcp
+        ONBOOT=yes
+        TYPE=Ethernet
+        USERCTL=yes
+        PEERDNS=no
+        IPV6INIT=no
+        PERSISTENT_DHCLIENT=yes
+        HWADDR=${HWADDR}
+        DEFROUTE=no
+        EC2SYNC=yes
+EOF
+  cat <<- EOF > ${route_file}
+        default via ${gateway} dev ${INTERFACE} table ${RTABLE}
+        default via ${gateway} dev ${INTERFACE} metric ${RTABLE}
+EOF
+  # Use broadcast address instead of unicast dhcp server address.
+  # Works around an issue with two interfaces on the same subnet.
+  # Unicast lease requests go out the first available interface,
+  # and dhclient ignores the response. Broadcast requests go out
+  # the expected interface, and dhclient accepts the lease offer.
+  cat <<- EOF > ${dhclient_file}
+        supersede dhcp-server-identifier 255.255.255.255;
+EOF
+}
+
+remove_aliases() {
+  /sbin/ip addr flush dev ${INTERFACE} secondary
+}
+
+rewrite_aliases() {
+  aliases=$(get_secondary_ipv4s)
+  if [ ${#aliases[*]} -eq 0 ]; then
+    remove_aliases
+    return
+  fi
+  # The network prefix can be provided in the environment by
+  # e.g. DHCP, but if it's not available then we need it to
+  # correctly configure secondary addresses.
+  if [ -z "${PREFIX}" ]; then
+    cidr=$(get_cidr)
+    PREFIX=$(echo ${cidr}|cut -d/ -f2)
+  fi
+  [ -n "${PREFIX##*[!0-9]*}" ] || return
+  # Retrieve a list of secondary IP addresses on the interface.
+  # Treat this as the stale list. For each IP address obtained
+  # from metadata, cross it off the stale list if present, or
+  # add it to the interface otherwise. Then, remove any address
+  # remaining in the stale list.
+  declare -A secondaries
+  for secondary in $(/sbin/ip addr list dev ${INTERFACE} secondary \
+                     |grep "inet .* secondary ${INTERFACE}" \
+                     |awk '{print $2}'|cut -d/ -f1); do
+    secondaries[${secondary}]=1
+  done
+  for alias in ${aliases}; do
+    if [[ ${secondaries[${alias}]} ]]; then
+      unset secondaries[${alias}]
+    else
+      /sbin/ip addr add ${alias}/${PREFIX} brd + dev ${INTERFACE}
+    fi
+  done
+  for secondary in "${!secondaries[@]}"; do
+    /sbin/ip addr del ${secondary}/${PREFIX} dev ${INTERFACE}
+  done
+}
+
+remove_rules() {
+  if [ "${INTERFACE}" == "eth0" ]; then
+    return
+  fi
+  for rule in $(/sbin/ip rule list \
+                |grep "from .* lookup ${RTABLE}" \
+                |awk -F: '{print $1}'); do
+    /sbin/ip rule delete pref "${rule}"
+  done
+}
+
+rewrite_rules() {
+  if [ "${INTERFACE}" == "eth0" ]; then
+    return
+  fi
+  ips=($(get_ipv4s))
+  if [ ${#ips[*]} -eq 0 ]; then
+    remove_rules
+    return
+  fi
+  # Retrieve a list of IP rules for the route table that belongs
+  # to this interface. Treat this as the stale list. For each IP
+  # address obtained from metadata, cross the corresponding rule
+  # off the stale list if present. Otherwise, add a rule sending
+  # outbound traffic from that IP to the interface route table.
+  # Then, remove all other rules found in the stale list.
+  declare -A rules
+  for rule in $(/sbin/ip rule list \
+                |grep "from .* lookup ${RTABLE}" \
+                |awk '{print $1$3}'); do
+    split=(${rule//:/ })
+    rules[${split[1]}]=${split[0]}
+  done
+  for ip in ${ips[@]}; do
+    if [[ ${rules[${ip}]} ]]; then
+      unset rules[${ip}]
+    else
+      /sbin/ip rule add from ${ip} lookup ${RTABLE}
+    fi
+  done
+  for rule in "${!rules[@]}"; do
+    /sbin/ip rule delete pref "${rules[${rule}]}"
+  done
+}
+
+plug_interface() {
+  rewrite_primary
+}
+
+unplug_interface() {
+  remove_rules
+  remove_aliases
+}
+
+activate_primary() {
+  /sbin/ifup ${INTERFACE}
+}
+
+deactivate_primary() {
+  /sbin/ifdown ${INTERFACE}
+}
+

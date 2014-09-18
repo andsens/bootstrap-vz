@@ -53,6 +53,8 @@ def validate_manifest(data, validator, error):
 
 
 def resolve_tasks(taskset, manifest):
+	from bootstrapvz.common.releases import wheezy
+
 	taskset.update(task_groups.get_standard_groups(manifest))
 	taskset.update(task_groups.ssh_group)
 
@@ -68,11 +70,12 @@ def resolve_tasks(taskset, manifest):
 	                initd.AddExpandRoot,
 	                initd.RemoveHWClock,
 	                initd.InstallInitScripts,
-
 	                tasks.ami.RegisterAMI,
 	                ])
 
-	from bootstrapvz.common.releases import wheezy
+	if manifest.release > wheezy:
+		taskset.add(tasks.network.InstallNetworkingUDevHotplugAndDHCPSubinterface)
+
 	if manifest.release <= wheezy:
 		# The default DHCP client `isc-dhcp' doesn't work properly on wheezy and earlier
 		taskset.add(tasks.network.InstallDHCPCD)
