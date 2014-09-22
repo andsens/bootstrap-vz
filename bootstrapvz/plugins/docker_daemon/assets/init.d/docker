@@ -83,7 +83,7 @@ case "$1" in
 		touch "$DOCKER_LOGFILE"
 		chgrp docker "$DOCKER_LOGFILE"
 
-		if [ -n $DOCKER_NOFILE ]; then
+		if [ -n "$DOCKER_NOFILE" ]; then
 			ulimit -n $DOCKER_NOFILE
 		fi
 
