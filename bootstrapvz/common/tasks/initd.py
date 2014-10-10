@@ -61,4 +61,4 @@ class AdjustExpandRootScript(Task):
 		script = os.path.join(info.root, 'etc/init.d/expand-root')
 		root_idx = info.volume.partition_map.root.get_index()
 		device_path = 'device_path="/dev/xvda{idx}"'.format(idx=root_idx)
-		sed_i(script, '^device_path="/dev/xvda$', device_path)
+		sed_i(script, '^device_path="/dev/xvda"$', device_path)
