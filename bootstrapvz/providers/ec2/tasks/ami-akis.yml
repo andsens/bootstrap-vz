@@ -13,6 +13,9 @@ ap-southeast-2:
 eu-west-1:
   amd64: aki-52a34525
   i386: aki-68a3451f
+eu-central-1:
+  i386: aki-3e4c7a23
+  amd64: aki-184c7a05
 sa-east-1:
   amd64: aki-5553f448
   i386: aki-5b53f446
