@@ -22,3 +22,4 @@ def resolve_tasks(taskset, manifest):
 	taskset.add(tasks.AddDockerBinary)
 	taskset.add(tasks.AddDockerInit)
 	taskset.add(tasks.EnableMemoryCgroup)
+	taskset.add(tasks.PullDockerImages)

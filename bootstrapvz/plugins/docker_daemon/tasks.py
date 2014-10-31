@@ -3,6 +3,7 @@ from bootstrapvz.common import phases
 from bootstrapvz.common.tasks import boot
 from bootstrapvz.common.tasks import initd
 from bootstrapvz.providers.gce.tasks import boot as gceboot
+from bootstrapvz.plugins.docker_daemon.pull import pull
 import os
 import os.path
 import shutil
@@ -65,3 +66,16 @@ class EnableMemoryCgroup(Task):
 		from bootstrapvz.common.tools import sed_i
 		grub_config = os.path.join(info.root, 'etc/default/grub')
 		sed_i(grub_config, r'^(GRUB_CMDLINE_LINUX*=".*)"\s*$', r'\1 cgroup_enable=memory"')
+
+class PullDockerImages(Task):
+	description = 'Pull docker images'
+	phase = phases.system_modification
+	predecessors = [AddDockerBinary]
+
+	@classmethod
+	def run(cls, info):
+                pull_images = info.manifest.plugins['docker_daemon'].get('pull_images', [])
+                if len(pull_images) == 0:
+                  return
+                pull_images_retries = info.manifest.plugins['docker_daemon'].get('pull_images_retries', 10)
+                pull(info, pull_images, pull_images_retries)
