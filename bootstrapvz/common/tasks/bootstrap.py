@@ -19,7 +19,8 @@ class AddRequiredCommands(Task):
 
 def get_bootstrap_args(info):
 	executable = ['debootstrap']
-	options = ['--arch=' + info.manifest.system['architecture']]
+	arch = info.manifest.system.get('userspace_architecture', info.manifest.system.get('architecture'))
+	options = ['--arch=' + arch]
 	if len(info.include_packages) > 0:
 		options.append('--include=' + ','.join(info.include_packages))
 	if len(info.exclude_packages) > 0:
