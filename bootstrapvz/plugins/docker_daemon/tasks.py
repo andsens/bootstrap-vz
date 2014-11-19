@@ -67,6 +67,7 @@ class EnableMemoryCgroup(Task):
 		grub_config = os.path.join(info.root, 'etc/default/grub')
 		sed_i(grub_config, r'^(GRUB_CMDLINE_LINUX*=".*)"\s*$', r'\1 cgroup_enable=memory"')
 
+
 class PullDockerImages(Task):
 	description = 'Pull docker images'
 	phase = phases.system_modification
