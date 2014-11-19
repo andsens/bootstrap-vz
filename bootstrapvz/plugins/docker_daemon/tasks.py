@@ -15,7 +15,7 @@ class AddDockerDeps(Task):
 	description = 'Add packages for docker deps'
 	phase = phases.package_installation
 	DOCKER_DEPS = ['aufs-tools', 'btrfs-tools', 'git', 'iptables',
-	               'procps', 'xz-utils', 'ca-certificates']
+	   	       'procps', 'xz-utils', 'ca-certificates']
 
 	@classmethod
 	def run(cls, info):
@@ -75,8 +75,8 @@ class PullDockerImages(Task):
 
 	@classmethod
 	def run(cls, info):
-                pull_images = info.manifest.plugins['docker_daemon'].get('pull_images', [])
-                if len(pull_images) == 0:
-                  return
-                pull_images_retries = info.manifest.plugins['docker_daemon'].get('pull_images_retries', 10)
-                pull(info, pull_images, pull_images_retries)
+   	   	pull_images = info.manifest.plugins['docker_daemon'].get('pull_images', [])
+   	   	if len(pull_images) == 0:
+   	   	  return
+   	   	pull_images_retries = info.manifest.plugins['docker_daemon'].get('pull_images_retries', 10)
+   	   	pull(info, pull_images, pull_images_retries)
