@@ -2,6 +2,7 @@ from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 from bootstrapvz.common.tasks import boot
 from bootstrapvz.common.tasks import initd
+from bootstrapvz.common.tools import log_check_call
 from bootstrapvz.providers.gce.tasks import boot as gceboot
 from bootstrapvz.plugins.docker_daemon.pull import pull
 import os
@@ -29,7 +30,6 @@ class AddDockerBinary(Task):
 
 	@classmethod
 	def run(cls, info):
-		from bootstrapvz.common.tools import log_check_call
 		docker_version = info.manifest.plugins['docker_daemon'].get('version', False)
 		docker_url = 'https://get.docker.io/builds/Linux/x86_64/docker-'
 		if docker_version:
@@ -75,8 +75,32 @@ class PullDockerImages(Task):
 
 	@classmethod
 	def run(cls, info):
-   	   	pull_images = info.manifest.plugins['docker_daemon'].get('pull_images', [])
+   	   	images = info.manifest.plugins['docker_daemon'].get('pull_images', [])
    	   	if len(pull_images) == 0:
    	   	  return
-   	   	pull_images_retries = info.manifest.plugins['docker_daemon'].get('pull_images_retries', 10)
-   	   	pull(info, pull_images, pull_images_retries)
+   	   	retries = info.manifest.plugins['docker_daemon'].get('pull_images_retries', 10)
+
+   	   	bin_docker = os.path.join(info.root, 'usr/bin/docker')
+   	   	graph_dir = os.path.join(info.root, 'var/lib/docker')
+   	   	socket = 'unix://' + os.path.join(info.workspace, 'docker.sock')
+   	   	pidfile = os.path.join(info.workspace, 'docker.pid')
+
+   	   	try:
+   	   	   	daemon = subprocess.Popen([bin_docker, '-d', '--graph', graph_dir, '-H', socket, '-p', pidfile])
+   	   	   	for _ in range(retries):
+   	   	   	   	if log_check_call([bin_docker, '-H', socket, 'version']) == 0:
+   	   	   	   	   	break
+   	   	   	   	time.sleep(1)
+   	   	   	for img in images:
+   	   	   	   	if img.endswith('.tar.gz') or img.endswith('.tgz'):
+   	   	   	   	   	cmd = [bin_docker, '-H', socket, 'load', '-i', img]
+   	   	   	   	   	if lock_check_call(cmd) != 0:
+   	   	   	   	   	   	msg = 'error loading docker image {img}.'.format(img=img)
+   	   	   	   	   	   	raise Exception(msg)
+   	   	   	   	else: # regular docker image
+   	   	   	   	   	cmd = [bin_docker, '-H', socket, 'pull', img]
+   	   	   	   	   	if lock_check_call(cmd) != 0:
+   	   	   	   	   	   	msg = 'error pulling docker image {img}.'.format(img=img)
+   	   	   	   	   	   	raise Exception(msg)
+   	   	finally:
+   	   	   	daemon.terminate()
