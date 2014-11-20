@@ -4,10 +4,11 @@ from bootstrapvz.common.tasks import boot
 from bootstrapvz.common.tasks import initd
 from bootstrapvz.common.tools import log_check_call
 from bootstrapvz.providers.gce.tasks import boot as gceboot
-from bootstrapvz.plugins.docker_daemon.pull import pull
 import os
 import os.path
 import shutil
+import subprocess
+import time
 
 ASSETS_DIR = os.path.normpath(os.path.join(os.path.dirname(__file__), 'assets'))
 
@@ -16,7 +17,7 @@ class AddDockerDeps(Task):
 	description = 'Add packages for docker deps'
 	phase = phases.package_installation
 	DOCKER_DEPS = ['aufs-tools', 'btrfs-tools', 'git', 'iptables',
-                       'procps', 'xz-utils', 'ca-certificates']
+	               'procps', 'xz-utils', 'ca-certificates']
 
 	@classmethod
 	def run(cls, info):
@@ -92,12 +93,12 @@ class PullDockerImages(Task):
    	   	   	for img in images:
    	   	   	   	if img.endswith('.tar.gz') or img.endswith('.tgz'):
    	   	   	   	   	cmd = [bin_docker, '-H', socket, 'load', '-i', img]
-   	   	   	   	   	if lock_check_call(cmd) != 0:
+   	   	   	   	   	if log_check_call(cmd) != 0:
    	   	   	   	   	   	msg = 'error loading docker image {img}.'.format(img=img)
    	   	   	   	   	   	raise Exception(msg)
-   	   	   	   	else: # regular docker image
+   	   	   	   	else:  # regular docker image
    	   	   	   	   	cmd = [bin_docker, '-H', socket, 'pull', img]
-   	   	   	   	   	if lock_check_call(cmd) != 0:
+   	   	   	   	   	if log_check_call(cmd) != 0:
    	   	   	   	   	   	msg = 'error pulling docker image {img}.'.format(img=img)
    	   	   	   	   	   	raise Exception(msg)
    	   	finally:
