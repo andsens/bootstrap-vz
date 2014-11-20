@@ -16,7 +16,7 @@ class AddDockerDeps(Task):
 	description = 'Add packages for docker deps'
 	phase = phases.package_installation
 	DOCKER_DEPS = ['aufs-tools', 'btrfs-tools', 'git', 'iptables',
-	   	       'procps', 'xz-utils', 'ca-certificates']
+                       'procps', 'xz-utils', 'ca-certificates']
 
 	@classmethod
 	def run(cls, info):
