@@ -76,8 +76,6 @@ class PullDockerImages(Task):
 	@classmethod
 	def run(cls, info):
    	   	images = info.manifest.plugins['docker_daemon'].get('pull_images', [])
-   	   	if len(pull_images) == 0:
-   	   	  return
    	   	retries = info.manifest.plugins['docker_daemon'].get('pull_images_retries', 10)
 
    	   	bin_docker = os.path.join(info.root, 'usr/bin/docker')
