@@ -2,10 +2,13 @@ from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 from bootstrapvz.common.tasks import boot
 from bootstrapvz.common.tasks import initd
+from bootstrapvz.common.tools import log_check_call
 from bootstrapvz.providers.gce.tasks import boot as gceboot
 import os
 import os.path
 import shutil
+import subprocess
+import time
 
 ASSETS_DIR = os.path.normpath(os.path.join(os.path.dirname(__file__), 'assets'))
 
@@ -28,7 +31,6 @@ class AddDockerBinary(Task):
 
 	@classmethod
 	def run(cls, info):
-		from bootstrapvz.common.tools import log_check_call
 		docker_version = info.manifest.plugins['docker_daemon'].get('version', False)
 		docker_url = 'https://get.docker.io/builds/Linux/x86_64/docker-'
 		if docker_version:
@@ -65,3 +67,45 @@ class EnableMemoryCgroup(Task):
 		from bootstrapvz.common.tools import sed_i
 		grub_config = os.path.join(info.root, 'etc/default/grub')
 		sed_i(grub_config, r'^(GRUB_CMDLINE_LINUX*=".*)"\s*$', r'\1 cgroup_enable=memory"')
+
+
+class PullDockerImages(Task):
+	description = 'Pull docker images'
+	phase = phases.system_modification
+	predecessors = [AddDockerBinary]
+
+	@classmethod
+	def run(cls, info):
+		from bootstrapvz.common.exceptions import TaskError
+		images = info.manifest.plugins['docker_daemon'].get('pull_images', [])
+		retries = info.manifest.plugins['docker_daemon'].get('pull_images_retries', 10)
+
+		bin_docker = os.path.join(info.root, 'usr/bin/docker')
+		graph_dir = os.path.join(info.root, 'var/lib/docker')
+		socket = 'unix://' + os.path.join(info.workspace, 'docker.sock')
+		pidfile = os.path.join(info.workspace, 'docker.pid')
+
+		try:
+			# start docker daemon temporarly.
+			daemon = subprocess.Popen([bin_docker, '-d', '--graph', graph_dir, '-H', socket, '-p', pidfile])
+			# wait for docker daemon to start.
+			for _ in range(retries):
+				if log_check_call([bin_docker, '-H', socket, 'version']) == 0:
+					break
+				time.sleep(1)
+			for img in images:
+				# docker load if tarball.
+				if img.endswith('.tar.gz') or img.endswith('.tgz'):
+					cmd = [bin_docker, '-H', socket, 'load', '-i', img]
+					if log_check_call(cmd) != 0:
+						msg = 'error loading docker image {img}.'.format(img=img)
+						raise TaskError(msg)
+				# docker pull if image name.
+				else:
+					cmd = [bin_docker, '-H', socket, 'pull', img]
+					if log_check_call(cmd) != 0:
+						msg = 'error pulling docker image {img}.'.format(img=img)
+						raise TaskError(msg)
+		finally:
+			# shutdown docker daemon.
+			daemon.terminate()
