@@ -86,21 +86,26 @@ class PullDockerImages(Task):
 		pidfile = os.path.join(info.workspace, 'docker.pid')
 
 		try:
+			# start docker daemon temporarly.
 			daemon = subprocess.Popen([bin_docker, '-d', '--graph', graph_dir, '-H', socket, '-p', pidfile])
+			# wait for docker daemon to start.
 			for _ in range(retries):
 				if log_check_call([bin_docker, '-H', socket, 'version']) == 0:
 					break
 				time.sleep(1)
 			for img in images:
+				# docker load if tarball.
 				if img.endswith('.tar.gz') or img.endswith('.tgz'):
 					cmd = [bin_docker, '-H', socket, 'load', '-i', img]
 					if log_check_call(cmd) != 0:
 						msg = 'error loading docker image {img}.'.format(img=img)
 						raise TaskError(msg)
-				else:  # regular docker image
+				# docker pull if image name.
+				else:
 					cmd = [bin_docker, '-H', socket, 'pull', img]
 					if log_check_call(cmd) != 0:
 						msg = 'error pulling docker image {img}.'.format(img=img)
 						raise TaskError(msg)
 		finally:
+			# shutdown docker daemon.
 			daemon.terminate()
