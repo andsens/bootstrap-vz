@@ -12,6 +12,8 @@ properties:
           version:
             pattern: '^\d\.\d{1,2}\.\d$'
             type: string
+          docker_opts:
+            type: string
   system:
     type: object
     properties:
