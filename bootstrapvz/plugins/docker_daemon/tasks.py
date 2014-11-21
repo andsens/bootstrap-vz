@@ -76,30 +76,31 @@ class PullDockerImages(Task):
 
 	@classmethod
 	def run(cls, info):
-   	   	images = info.manifest.plugins['docker_daemon'].get('pull_images', [])
-   	   	retries = info.manifest.plugins['docker_daemon'].get('pull_images_retries', 10)
+		from bootstrapvz.common.exceptions import TaskError
+		images = info.manifest.plugins['docker_daemon'].get('pull_images', [])
+		retries = info.manifest.plugins['docker_daemon'].get('pull_images_retries', 10)
 
-   	   	bin_docker = os.path.join(info.root, 'usr/bin/docker')
-   	   	graph_dir = os.path.join(info.root, 'var/lib/docker')
-   	   	socket = 'unix://' + os.path.join(info.workspace, 'docker.sock')
-   	   	pidfile = os.path.join(info.workspace, 'docker.pid')
+		bin_docker = os.path.join(info.root, 'usr/bin/docker')
+		graph_dir = os.path.join(info.root, 'var/lib/docker')
+		socket = 'unix://' + os.path.join(info.workspace, 'docker.sock')
+		pidfile = os.path.join(info.workspace, 'docker.pid')
 
-   	   	try:
-   	   	   	daemon = subprocess.Popen([bin_docker, '-d', '--graph', graph_dir, '-H', socket, '-p', pidfile])
-   	   	   	for _ in range(retries):
-   	   	   	   	if log_check_call([bin_docker, '-H', socket, 'version']) == 0:
-   	   	   	   	   	break
-   	   	   	   	time.sleep(1)
-   	   	   	for img in images:
-   	   	   	   	if img.endswith('.tar.gz') or img.endswith('.tgz'):
-   	   	   	   	   	cmd = [bin_docker, '-H', socket, 'load', '-i', img]
-   	   	   	   	   	if log_check_call(cmd) != 0:
-   	   	   	   	   	   	msg = 'error loading docker image {img}.'.format(img=img)
-   	   	   	   	   	   	raise Exception(msg)
-   	   	   	   	else:  # regular docker image
-   	   	   	   	   	cmd = [bin_docker, '-H', socket, 'pull', img]
-   	   	   	   	   	if log_check_call(cmd) != 0:
-   	   	   	   	   	   	msg = 'error pulling docker image {img}.'.format(img=img)
-   	   	   	   	   	   	raise Exception(msg)
-   	   	finally:
-   	   	   	daemon.terminate()
+		try:
+			daemon = subprocess.Popen([bin_docker, '-d', '--graph', graph_dir, '-H', socket, '-p', pidfile])
+			for _ in range(retries):
+				if log_check_call([bin_docker, '-H', socket, 'version']) == 0:
+					break
+				time.sleep(1)
+			for img in images:
+				if img.endswith('.tar.gz') or img.endswith('.tgz'):
+					cmd = [bin_docker, '-H', socket, 'load', '-i', img]
+					if log_check_call(cmd) != 0:
+						msg = 'error loading docker image {img}.'.format(img=img)
+						raise TaskError(msg)
+				else:  # regular docker image
+					cmd = [bin_docker, '-H', socket, 'pull', img]
+					if log_check_call(cmd) != 0:
+						msg = 'error pulling docker image {img}.'.format(img=img)
+						raise TaskError(msg)
+		finally:
+			daemon.terminate()
