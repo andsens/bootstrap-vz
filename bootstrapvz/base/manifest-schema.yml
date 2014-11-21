@@ -40,6 +40,8 @@ properties:
     properties:
       architecture:
         enum: [i386, amd64]
+      userspace_architecture:
+        enum: [i386]
       bootloader:
         enum:
         - pvgrub
