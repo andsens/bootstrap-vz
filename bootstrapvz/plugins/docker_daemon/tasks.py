@@ -3,6 +3,7 @@ from bootstrapvz.common import phases
 from bootstrapvz.common.tasks import boot
 from bootstrapvz.common.tasks import initd
 from bootstrapvz.common.tools import log_check_call
+from bootstrapvz.common.tools import sed_i
 from bootstrapvz.providers.gce.tasks import boot as gceboot
 import os
 import os.path
@@ -54,6 +55,9 @@ class AddDockerInit(Task):
 		default_src = os.path.join(ASSETS_DIR, 'default/docker')
 		default_dest = os.path.join(info.root, 'etc/default/docker')
 		shutil.copy(default_src, default_dest)
+		docker_opts = info.manifest.plugins['docker_daemon'].get('docker_opts')
+		if docker_opts:
+			sed_i(default_dest, r'^#*DOCKER_OPTS=.*$', 'DOCKER_OPTS="%s"' % docker_opts)
 
 
 class EnableMemoryCgroup(Task):
@@ -64,7 +68,6 @@ class EnableMemoryCgroup(Task):
 
 	@classmethod
 	def run(cls, info):
-		from bootstrapvz.common.tools import sed_i
 		grub_config = os.path.join(info.root, 'etc/default/grub')
 		sed_i(grub_config, r'^(GRUB_CMDLINE_LINUX*=".*)"\s*$', r'\1 cgroup_enable=memory"')
 
