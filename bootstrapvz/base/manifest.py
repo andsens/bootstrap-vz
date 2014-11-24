@@ -135,10 +135,3 @@ class Manifest(object):
 	def __getstate__(self):
 		return {'path': self.path,
 		        'data': self.data}
-
-	def __setstate__(self, vals):
-		self.path = vals.path
-		self.load(vals.data)
-		self.initialize()
-		self.validate()
-		self.parse()

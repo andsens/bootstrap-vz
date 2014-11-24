@@ -34,11 +34,10 @@ def main():
 		server = manager.rpc_server
 
 		# Everything has been set up, begin the bootstrapping process
-		ret = server.run(manifest,
-		                 debug=opts['--debug'],
-		                 pause_on_error=False,
-		                 dry_run=opts['--dry-run'])
-		logging.getLogger(__name__).info(ret)
+		server.run(manifest,
+		           debug=opts['--debug'],
+		           pause_on_error=False,
+		           dry_run=opts['--dry-run'])
 	finally:
 		manager.stop()
 
