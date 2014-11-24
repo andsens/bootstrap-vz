@@ -86,8 +86,7 @@ def setup_loggers(opts):
 
 
 def run(manifest, debug=False, pause_on_error=False, dry_run=False):
-	log.info('test')
-	return 'derp'
+	return manifest
 	"""Runs the bootstrapping process
 
 	:params Manifest manifest: The manifest to run the bootstrapping process for

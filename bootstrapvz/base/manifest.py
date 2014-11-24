@@ -15,6 +15,7 @@ class Manifest(object):
 	Currently, immutability is not enforced and it would require a fair amount of code
 	to enforce it, instead we just rely on tasks behaving properly.
 	"""
+
 	def __init__(self, path=None, data=None):
 		"""Initializer: Given a path we load, validate and parse the manifest.
 		To create the manifest from dynamic data instead of the contents of a file,
@@ -130,3 +131,14 @@ class Manifest(object):
 		:raises ManifestError: With absolute certainty
 		"""
 		raise ManifestError(message, self.path, data_path)
+
+	def __getstate__(self):
+		return {'path': self.path,
+		        'data': self.data}
+
+	def __setstate__(self, vals):
+		self.path = vals.path
+		self.load(vals.data)
+		self.initialize()
+		self.validate()
+		self.parse()
