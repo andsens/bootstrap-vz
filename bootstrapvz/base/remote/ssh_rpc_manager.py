@@ -60,7 +60,7 @@ class SSHRPCManager(object):
 		self.callback_server.start(self.rpc_server)
 
 	def stop(self):
+		self.rpc_server.stop()
 		if hasattr(self, 'callback_server'):
 			self.callback_server.stop()
-		self.rpc_server.stop()
 		self.process.terminate()
