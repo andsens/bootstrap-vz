@@ -13,6 +13,10 @@ class LogForwarder(logging.Handler):
 
 	def emit(self, record):
 		if self.server is not None:
+			if record.exc_info is not None:
+				import traceback
+				exc_type, exc_value, exc_traceback = record.exc_info
+				record.exc_info = traceback.print_exception(exc_type, exc_value, exc_traceback)
 			self.server.handle(pickle.dumps(record))
 
 
