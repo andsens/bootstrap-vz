@@ -8,7 +8,7 @@ def main():
 
 def setup_logging():
 	import logging
-	from log import LogForwarder
+	from bootstrapvz.base.log import LogForwarder
 	log_forwarder = LogForwarder()
 	root = logging.getLogger()
 	root.addHandler(log_forwarder)

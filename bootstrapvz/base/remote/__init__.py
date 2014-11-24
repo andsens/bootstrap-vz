@@ -32,12 +32,21 @@ def main():
 	try:
 		manager.start()
 		server = manager.rpc_server
+		from callback import CallbackServer
+		callback_server = CallbackServer(manager.local_callback_port)
+		from bootstrapvz.base.log import LogServer
+		log_server = LogServer()
+		try:
+			callback_server.start(log_server)
+			server.set_log_server(log_server)
 
-		# Everything has been set up, begin the bootstrapping process
-		server.run(manifest,
-		           debug=opts['--debug'],
-		           pause_on_error=False,
-		           dry_run=opts['--dry-run'])
+			# Everything has been set up, begin the bootstrapping process
+			server.run(manifest,
+			           debug=opts['--debug'],
+			           pause_on_error=False,
+			           dry_run=opts['--dry-run'])
+		finally:
+			callback_server.stop()
 	finally:
 		manager.stop()
 

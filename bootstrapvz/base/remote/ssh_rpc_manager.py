@@ -55,12 +55,6 @@ class SSHRPCManager(object):
 			self.process.terminate()
 			raise e
 
-		from callback import CallbackServer
-		self.callback_server = CallbackServer(self.local_callback_port)
-		self.callback_server.start(self.rpc_server)
-
 	def stop(self):
 		self.rpc_server.stop()
-		if hasattr(self, 'callback_server'):
-			self.callback_server.stop()
 		self.process.terminate()
