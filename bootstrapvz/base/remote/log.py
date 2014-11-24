@@ -1,6 +1,7 @@
 import logging
 import pickle
 
+
 class LogForwarder(logging.Handler):
 
 	def __init__(self, level=logging.NOTSET):

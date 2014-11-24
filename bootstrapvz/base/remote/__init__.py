@@ -34,12 +34,10 @@ def main():
 		server = manager.rpc_server
 
 		# Everything has been set up, begin the bootstrapping process
-		print('run')
 		server.run(None,
 		           debug=opts['--debug'],
 		           pause_on_error=False,
 		           dry_run=opts['--dry-run'])
-		print('hasrun')
 	finally:
 		manager.stop()
 
@@ -62,39 +60,3 @@ Options:
   -h, --help         show this help
 	"""
 	return docopt(usage)
-
-
-def setup_interrupt_server(manager):
-
-	def on_error(e):
-		raw_input('Press Enter to commence rollback')
-		return True
-
-	daemon = Pyro4.Daemon()
-	daemon.register(on_error)
-
-	def serve():
-		daemon.requestLoop(loopCondition=lambda: manager.current == 'rpc_started')
-
-	thread = Thread(target=serve)
-	thread.start()
-	return (thread, on_error)
-
-
-def setup_log_server(manager):
-	from log import LogServer
-	log_server = LogServer()
-	daemon = Pyro4.Daemon()
-	daemon.register(log_server)
-
-	def serve():
-		def check():
-			import logging
-			log = logging.getLogger(__name__)
-			log.info(stop)
-			return not stop
-		daemon.requestLoop(loopCondition=check)
-
-	thread = Thread(target=serve)
-	thread.start()
-	return (thread, log_server)

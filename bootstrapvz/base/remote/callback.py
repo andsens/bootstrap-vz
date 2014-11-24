@@ -26,6 +26,4 @@ class CallbackServer(object):
 	def stop(self):
 		self.stop_serving = True
 		if hasattr(self, 'thread'):
-			print('joining')
 			self.thread.join()
-			print('joined')

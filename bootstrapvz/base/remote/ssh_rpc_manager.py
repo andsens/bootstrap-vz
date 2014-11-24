@@ -52,7 +52,6 @@ class SSHRPCManager(object):
 					else:
 						raise e
 		except (Exception, KeyboardInterrupt) as e:
-			print('terminateE')
 			self.process.terminate()
 			raise e
 
@@ -61,7 +60,7 @@ class SSHRPCManager(object):
 		self.callback_server.start(self.rpc_server)
 
 	def stop(self):
-		print('terminate')
-		self.process.terminate()
 		if hasattr(self, 'callback_server'):
 			self.callback_server.stop()
+		self.rpc_server.stop()
+		self.process.terminate()

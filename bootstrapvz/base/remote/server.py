@@ -19,6 +19,9 @@ def setup_logging():
 def serve(opts, log_forwarder):
 	class Server(object):
 
+		def __init__(self):
+			self.stop_serving = False
+
 		def run(self, *args, **kwargs):
 			from bootstrapvz.base.main import run
 			return run(*args, **kwargs)
@@ -29,12 +32,16 @@ def serve(opts, log_forwarder):
 		def ping(self):
 			return 'pong'
 
-	server = Server()
+		def stop(self):
+			self.stop_serving = True
 
 	import Pyro4
+	Pyro4.config.COMMTIMEOUT = 0.5
 	daemon = Pyro4.Daemon('localhost', port=int(opts['--listen']), unixsocket=None)
+
+	server = Server()
 	daemon.register(server, 'server')
-	daemon.requestLoop()
+	daemon.requestLoop(loopCondition=lambda: not server.stop_serving)
 
 
 def getopts():
