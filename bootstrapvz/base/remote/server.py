@@ -11,6 +11,9 @@ def setup_logging():
 	from bootstrapvz.base.log import LogForwarder
 	log_forwarder = LogForwarder()
 	root = logging.getLogger()
+	from bootstrapvz.base import log
+	file_handler = log.get_file_handler(path='/var/log/bootstrap-vz/remote.log', debug=True)
+	root.addHandler(file_handler)
 	root.addHandler(log_forwarder)
 	root.setLevel(logging.NOTSET)
 	return log_forwarder

@@ -57,4 +57,5 @@ class SSHRPCManager(object):
 
 	def stop(self):
 		self.rpc_server.stop()
-		self.process.terminate()
+		self.rpc_server._pyroRelease()
+		self.process.wait()
