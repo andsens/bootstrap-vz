@@ -80,6 +80,7 @@ class PullDockerImages(Task):
 	@classmethod
 	def run(cls, info):
 		from bootstrapvz.common.exceptions import TaskError
+		from subprocess import CalledProcessError
 		images = info.manifest.plugins['docker_daemon'].get('pull_images', [])
 		retries = info.manifest.plugins['docker_daemon'].get('pull_images_retries', 10)
 
@@ -93,22 +94,29 @@ class PullDockerImages(Task):
 			daemon = subprocess.Popen([bin_docker, '-d', '--graph', graph_dir, '-H', socket, '-p', pidfile])
 			# wait for docker daemon to start.
 			for _ in range(retries):
-				if log_check_call([bin_docker, '-H', socket, 'version']) == 0:
+				try:
+					log_check_call([bin_docker, '-H', socket, 'version'])
 					break
-				time.sleep(1)
+				except CalledProcessError:
+					time.sleep(1)
 			for img in images:
 				# docker load if tarball.
 				if img.endswith('.tar.gz') or img.endswith('.tgz'):
 					cmd = [bin_docker, '-H', socket, 'load', '-i', img]
-					if log_check_call(cmd) != 0:
-						msg = 'error loading docker image {img}.'.format(img=img)
+					try:
+						log_check_call(cmd)
+					except CalledProcessError as e:
+						msg = 'error {e} loading docker image {img}.'.format(img=img, e=e)
 						raise TaskError(msg)
 				# docker pull if image name.
 				else:
 					cmd = [bin_docker, '-H', socket, 'pull', img]
-					if log_check_call(cmd) != 0:
-						msg = 'error pulling docker image {img}.'.format(img=img)
+					try:
+						log_check_call(cmd)
+					except CalledProcessError as e:
+						msg = 'error {e} pulling docker image {img}.'.format(img=img, e=e)
 						raise TaskError(msg)
 		finally:
 			# shutdown docker daemon.
 			daemon.terminate()
+			os.remove(os.path.join(info.workspace, 'docker.sock'))
