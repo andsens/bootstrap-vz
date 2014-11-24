@@ -90,6 +90,9 @@ class BootstrapInformation(object):
 			def __delattr__(self, name):
 				del self[name]
 
+			def __getstate__(self):
+				return self.__dict__
+
 		def set_manifest_vars(obj, data):
 			"""Runs through the manifest and creates DictClasses for every key
 
@@ -124,3 +127,15 @@ class BootstrapInformation(object):
 		# They are added last so that they may override previous variables
 		set_manifest_vars(manifest_vars, additional_vars)
 		return manifest_vars
+
+	def __getstate__(self):
+		state = self.__dict__.copy()
+		exclude_keys = ['volume', 'source_lists', 'preference_lists', 'packages']
+		for key in exclude_keys:
+			del state[key]
+		state['__class__'] = 'bootstrapvz.base.bootstrapinfo.BootstrapInformation'
+		return state
+
+	def __setstate__(self, state):
+		for key in state:
+			self.__dict__[key] = state[key]

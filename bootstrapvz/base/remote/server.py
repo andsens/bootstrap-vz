@@ -2,6 +2,8 @@
 
 def main():
 	opts = getopts()
+	from . import register_deserialization_handlers
+	register_deserialization_handlers()
 	log_forwarder = setup_logging()
 	serve(opts, log_forwarder)
 

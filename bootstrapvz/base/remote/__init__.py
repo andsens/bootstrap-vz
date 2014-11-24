@@ -1,13 +1,5 @@
-import Pyro4
-from threading import Thread
 """Remote module containing methods to bootstrap remotely
 """
-
-
-import logging
-log = logging.getLogger(__name__)
-
-stop = False
 
 
 def main():
@@ -27,6 +19,10 @@ def main():
 	from bootstrapvz.base.main import setup_loggers
 	setup_loggers(opts)
 
+	register_deserialization_handlers()
+
+	bootstrap_info = None
+
 	from ssh_rpc_manager import SSHRPCManager
 	manager = SSHRPCManager(build_servers[opts['SERVER']])
 	try:
@@ -41,14 +37,15 @@ def main():
 			server.set_log_server(log_server)
 
 			# Everything has been set up, begin the bootstrapping process
-			server.run(manifest,
-			           debug=opts['--debug'],
-			           pause_on_error=False,
-			           dry_run=opts['--dry-run'])
+			bootstrap_info = server.run(manifest,
+			                            debug=opts['--debug'],
+			                            pause_on_error=False,
+			                            dry_run=opts['--dry-run'])
 		finally:
 			callback_server.stop()
 	finally:
 		manager.stop()
+	return bootstrap_info
 
 
 def get_opts():
@@ -69,3 +66,21 @@ Options:
   -h, --help         show this help
 	"""
 	return docopt(usage)
+
+
+def register_deserialization_handlers():
+	from Pyro4.util import SerializerBase
+	SerializerBase.register_dict_to_class('bootstrapvz.base.manifest.Manifest', deserialize_manifest)
+	SerializerBase.register_dict_to_class('bootstrapvz.base.bootstrapinfo.BootstrapInformation', deserialize_bootstrapinfo)
+
+
+def deserialize_manifest(classname, state):
+	from bootstrapvz.base.manifest import Manifest
+	return Manifest(path=state['path'], data=state['data'])
+
+
+def deserialize_bootstrapinfo(classname, state):
+	from bootstrapvz.base.bootstrapinfo import BootstrapInformation
+	bootstrap_info = BootstrapInformation.__new__(BootstrapInformation)
+	bootstrap_info.__setstate__(state)
+	return bootstrap_info

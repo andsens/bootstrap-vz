@@ -21,8 +21,6 @@ class TaskList(object):
 		:param dict info: The bootstrap information object
 		:param bool dry_run: Whether to actually run the tasks or simply step through them
 		"""
-		logging.getLogger(__name__).debug('test')
-		return
 		# Create a list for us to run
 		task_list = create_list(self.tasks)
 		# Output the tasklist
