@@ -9,6 +9,9 @@ class SSHRPCManager(object):
 	def __init__(self, settings):
 		self.settings = settings
 
+		# We can't use :0 because
+		# A: It's quite hard to retrieve the port on the remote after the daemon has started
+		# B: SSH doesn't accept 0:localhost:0 as a port forwarding option
 		[self.local_server_port, self.local_callback_port] = self.getNPorts(2)
 		[self.remote_server_port, self.remote_callback_port] = self.getNPorts(2)
 
