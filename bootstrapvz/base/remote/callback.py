@@ -20,5 +20,7 @@ class CallbackServer(object):
 		self.thread.start()
 
 	def stop(self):
-		self.daemon.shutdown()
-		self.thread.join()
+		if hasattr(self, 'daemon'):
+			self.daemon.shutdown()
+		if hasattr(self, 'thread'):
+			self.thread.join()
