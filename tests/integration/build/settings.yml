@@ -1,8 +1,0 @@
-build_host:
-  address: 127.0.0.1
-  port: 2222
-  username: vagrant
-  password: vagrant
-  root_password: vagrant
-  keyfile: /Users/anders/.vagrant.d/insecure_private_key
-  server-bin: /root/bootstrap/tests/integration/build/server.py
