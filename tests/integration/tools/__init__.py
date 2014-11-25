@@ -1,4 +1,6 @@
+from bootstrapvz.common.tools import load_data
 
+build_servers = load_data('build_servers.yml')
 
 # Snatched from here: http://stackoverflow.com/a/7205107
 def merge_dicts(*args):
@@ -19,11 +21,20 @@ def merge_dicts(*args):
 	return reduce(merge, args, {})
 
 
-def bootstrap(manifest, build_settings):
+def bootstrap(manifest):
 	# if 'build_host' in build_settings:
 	# 	run = get_remote_run(build_settings)
 	# else:
 	# 	run = __import__('bootstrapvz.base.run')
 	# run(manifest)
+	from bootstrapvz.base.remote.remote import run
+	run(manifest,
+	    build_servers['virtualbox'],
+	    debug=True,
+	    dry_run=True)
+
 	from ..image import Image
 	return Image()
+
+def test_instance(instance):
+	pass

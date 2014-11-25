@@ -1,28 +1,29 @@
 import tools
-from . import manifests
+from manifests import partials
 from . import build_settings
 
 
 def test_virtualbox_unpartitioned_extlinux():
-	specific_settings = {}
-	specific_settings['provider'] = {'name': 'virtualbox',
-	                                 'guest_additions': build_settings['virtualbox']['guest_additions']}
-	specific_settings['system'] = {'release': 'wheezy',
-	                               'architecture': 'amd64',
-	                               'bootloader': 'extlinux'}
-	specific_settings['volume'] = {'backing': 'vdi',
-	                               'partitions': {'type': 'msdos'}}
-	manifest = tools.merge_dicts(manifests['base'], manifests['unpartitioned'], specific_settings)
+	import yaml
+	specific_settings = yaml.load("""
+provider:
+  name: virtualbox
+  guest_additions: {guest_additions}
+system:
+  bootloader: extlinux
+volume:
+  backing: vdi
+  partitions:
+    type: msdos
+""".format(guest_additions=build_settings['virtualbox']['guest_additions']))
+	manifest = tools.merge_dicts(partials['base'], partials['stable64'],
+	                             partials['unpartitioned'], specific_settings)
 
-	client = tools.get_client(build_settings['virtualbox'])
-
-	image = client.bootstrap(manifest, build_settings['virtualbox'])
+	image = tools.bootstrap(manifest)
 	instance = image.create_instance()
 	instance.boot()
 
-	tools.test_instance(instance, build_settings['virtualbox'])
+	tools.test_instance(instance)
 
 	instance.destroy()
 	image.destroy()
-
-	client.shutdown()

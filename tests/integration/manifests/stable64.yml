@@ -1,0 +1,4 @@
+---
+system:
+  release: wheezy
+  architecture: amd64

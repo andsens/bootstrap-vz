@@ -1,0 +1,3 @@
+---
+virtualbox:
+  guest_additions: /root/images/VBoxGuestAdditions.iso
