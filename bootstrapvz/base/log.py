@@ -17,7 +17,7 @@ def get_console_handler(debug, colorize):
 	console_handler = logging.StreamHandler(sys.stderr)
 	if colorize:
 		# We want to colorize the output to the console, so we add a formatter
-		console_handler.setFormatter(ConsoleFormatter())
+		console_handler.setFormatter(ColorFormatter())
 	# Set the log level depending on the debug argument
 	if debug:
 		console_handler.setLevel(logging.DEBUG)
@@ -66,8 +66,23 @@ def get_log_filename(manifest_path):
 	return filename
 
 
-class ConsoleFormatter(logging.Formatter):
-	"""Formats log statements for the console
+class SourceFormatter(logging.Formatter):
+	"""Adds a [source] tag to the log message if it exists
+	The python docs suggest using a LoggingAdapter, but that would mean we'd
+	have to use it everywhere we log something (and only when called remotely),
+	which is not feasible.
+	"""
+
+	def format(self, record):
+		extra = getattr(record, 'extra', {})
+		if 'source' in extra:
+			record.msg = '[{source}] {message}'.format(source=record.extra['source'],
+			                                           message=record.msg)
+		return super(SourceFormatter, self).format(record)
+
+
+class ColorFormatter(SourceFormatter):
+	"""Colorizes log messages depending on the loglevel
 	"""
 	level_colors = {logging.ERROR: 'red',
 	                logging.WARNING: 'magenta',
@@ -75,14 +90,13 @@ class ConsoleFormatter(logging.Formatter):
 	                }
 
 	def format(self, record):
-		if(record.levelno in self.level_colors):
-			# Colorize the message if we have a color for it (DEBUG has no color)
-			from termcolor import colored
-			record.msg = colored(record.msg, self.level_colors[record.levelno])
-		return super(ConsoleFormatter, self).format(record)
+		# Colorize the message if we have a color for it (DEBUG has no color)
+		from termcolor import colored
+		record.msg = colored(record.msg, self.level_colors.get(record.levelno, None))
+		return super(ColorFormatter, self).format(record)
 
 
-class FileFormatter(logging.Formatter):
+class FileFormatter(SourceFormatter):
 	"""Formats log statements for output to file
 	Currently this is just a stub
 	"""
@@ -116,4 +130,6 @@ class LogServer(object):
 		import pickle
 		record = pickle.loads(pickled_record)
 		log = logging.getLogger()
+		record.extra = getattr(record, 'extra', {})
+		record.extra['source'] = 'remote'
 		log.handle(record)
