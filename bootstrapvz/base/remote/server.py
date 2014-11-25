@@ -5,7 +5,8 @@ def main():
 	from . import register_deserialization_handlers
 	register_deserialization_handlers()
 	log_forwarder = setup_logging()
-	serve(opts, log_forwarder)
+	server = Server(opts, log_forwarder)
+	server.start()
 
 
 def setup_logging():
@@ -13,40 +14,9 @@ def setup_logging():
 	from bootstrapvz.base.log import LogForwarder
 	log_forwarder = LogForwarder()
 	root = logging.getLogger()
-	from bootstrapvz.base import log
-	file_handler = log.get_file_handler(path='/var/log/bootstrap-vz/remote.log', debug=True)
-	root.addHandler(file_handler)
 	root.addHandler(log_forwarder)
 	root.setLevel(logging.NOTSET)
 	return log_forwarder
-
-
-def serve(opts, log_forwarder):
-	class Server(object):
-
-		def __init__(self):
-			self.stop_serving = False
-
-		def run(self, *args, **kwargs):
-			from bootstrapvz.base.main import run
-			return run(*args, **kwargs)
-
-		def set_log_server(self, server):
-			return log_forwarder.set_server(server)
-
-		def ping(self):
-			return 'pong'
-
-		def stop(self):
-			self.stop_serving = True
-
-	import Pyro4
-	Pyro4.config.COMMTIMEOUT = 0.5
-	daemon = Pyro4.Daemon('localhost', port=int(opts['--listen']), unixsocket=None)
-
-	server = Server()
-	daemon.register(server, 'server')
-	daemon.requestLoop(loopCondition=lambda: not server.stop_serving)
 
 
 def getopts():
@@ -60,3 +30,32 @@ Options:
   -h, --help         show this help
 """
 	return docopt(usage)
+
+
+class Server(object):
+
+	def __init__(self, opts, log_forwarder):
+		self.stop_serving = False
+		self.log_forwarder = log_forwarder
+		self.listen_port = opts['--listen']
+
+	def start(self):
+		import Pyro4
+		Pyro4.config.COMMTIMEOUT = 0.5
+		daemon = Pyro4.Daemon('localhost', port=int(self.listen_port), unixsocket=None)
+
+		daemon.register(self, 'server')
+		daemon.requestLoop(loopCondition=lambda: not self.stop_serving)
+
+	def run(self, *args, **kwargs):
+		from bootstrapvz.base.main import run
+		return run(*args, **kwargs)
+
+	def set_log_server(self, server):
+		return self.log_forwarder.set_server(server)
+
+	def ping(self):
+		return 'pong'
+
+	def stop(self):
+		self.stop_serving = True
