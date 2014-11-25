@@ -27,7 +27,8 @@ def main():
 		manager.start()
 		server = manager.rpc_server
 		from callback import CallbackServer
-		callback_server = CallbackServer(manager.local_callback_port)
+		callback_server = CallbackServer(listen_port=manager.local_callback_port,
+		                                 remote_port=manager.remote_callback_port)
 		from bootstrapvz.base.log import LogServer
 		log_server = LogServer()
 		try:

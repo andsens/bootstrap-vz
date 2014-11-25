@@ -2,12 +2,15 @@
 
 class CallbackServer(object):
 
-	def __init__(self, listen_port):
+	def __init__(self, listen_port, remote_port):
 		self.listen_port = listen_port
+		self.remote_port = remote_port
 
 	def start(self, log_server):
 		import Pyro4
-		self.daemon = Pyro4.Daemon('localhost', port=self.listen_port, unixsocket=None)
+		self.daemon = Pyro4.Daemon(host='localhost', port=self.listen_port,
+		                           nathost='localhost', natport=self.remote_port,
+		                           unixsocket=None)
 		self.daemon.register(log_server)
 
 		def serve():

@@ -9,13 +9,19 @@ class SSHRPCManager(object):
 	def __init__(self, settings):
 		self.settings = settings
 
+		[self.local_server_port, self.local_callback_port] = self.getNPorts(2)
+		[self.remote_server_port, self.remote_callback_port] = self.getNPorts(2)
+
+	def getNPorts(self, n, port_range=(1024, 65535)):
 		import random
-		self.local_server_port = random.randrange(1024, 65535)
-		self.local_callback_port = random.randrange(1024, 65535)
-		# self.remote_server_port = random.randrange(1024, 65535)
-		# self.remote_callback_port = random.randrange(1024, 65535)
-		self.remote_server_port = self.local_server_port
-		self.remote_callback_port = self.local_callback_port
+		ports = []
+		for i in range(0, n):
+			while True:
+				port = random.randrange(*port_range)
+				if port not in ports:
+					ports.append(port)
+					break
+		return ports
 
 	def start(self):
 		log.debug('Opening SSH connection')

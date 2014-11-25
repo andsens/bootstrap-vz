@@ -5,7 +5,7 @@ def main():
 	from . import register_deserialization_handlers
 	register_deserialization_handlers()
 	log_forwarder = setup_logging()
-	server = Server(opts, log_forwarder)
+	server = Server(opts['--listen'], log_forwarder)
 	server.start()
 
 
@@ -34,10 +34,10 @@ Options:
 
 class Server(object):
 
-	def __init__(self, opts, log_forwarder):
+	def __init__(self, listen_port, log_forwarder):
 		self.stop_serving = False
 		self.log_forwarder = log_forwarder
-		self.listen_port = opts['--listen']
+		self.listen_port = listen_port
 
 	def start(self):
 		import Pyro4
