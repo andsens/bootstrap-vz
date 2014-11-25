@@ -1,9 +1,6 @@
 """Main module containing all the setup necessary for running the bootstrapping process
 """
 
-import logging
-log = logging.getLogger(__name__)
-
 
 def main():
 	"""Main function for invoking the bootstrap process
@@ -12,6 +9,7 @@ def main():
 	"""
 	# Get the commandline arguments
 	opts = get_opts()
+
 	# Require root privileges, except when doing a dry-run where they aren't needed
 	import os
 	if os.geteuid() != 0 and not opts['--dry-run']:
@@ -104,6 +102,8 @@ def run(manifest, debug=False, pause_on_error=False, dry_run=False):
 	from bootstrapinfo import BootstrapInformation
 	bootstrap_info = BootstrapInformation(manifest=manifest, debug=debug)
 
+	import logging
+	log = logging.getLogger(__name__)
 	try:
 		# Run all the tasks the tasklist has gathered
 		tasklist.run(info=bootstrap_info, dry_run=dry_run)

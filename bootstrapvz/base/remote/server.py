@@ -1,3 +1,5 @@
+import logging
+log = logging.getLogger(__name__)
 
 
 def main():
@@ -10,7 +12,6 @@ def main():
 
 
 def setup_logging():
-	import logging
 	from bootstrapvz.base.log import LogForwarder
 	log_forwarder = LogForwarder()
 	root = logging.getLogger()
@@ -52,7 +53,8 @@ class Server(object):
 		return run(*args, **kwargs)
 
 	def set_log_server(self, server):
-		return self.log_forwarder.set_server(server)
+		self.log_forwarder.set_server(server)
+		log.debug('Successfully set the log forwarding server')
 
 	def ping(self):
 		return 'pong'

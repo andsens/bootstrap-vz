@@ -1,3 +1,5 @@
+import logging
+log = logging.getLogger(__name__)
 
 
 class CallbackServer(object):
@@ -17,6 +19,7 @@ class CallbackServer(object):
 			self.daemon.requestLoop()
 		from threading import Thread
 		self.thread = Thread(target=serve)
+		log.debug('Starting the callback server')
 		self.thread.start()
 
 	def stop(self):

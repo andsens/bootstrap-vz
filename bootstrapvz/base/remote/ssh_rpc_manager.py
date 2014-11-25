@@ -37,7 +37,7 @@ class SSHRPCManager(object):
 		                  'sudo', self.settings['server-bin'],
 		                  '--listen', str(self.remote_server_port)]
 		import sys
-		self.process = subprocess.Popen(args=ssh_cmd, stdout=sys.stderr, stderr=sys.stderr)
+		self.ssh_process = subprocess.Popen(args=ssh_cmd, stdout=sys.stderr, stderr=sys.stderr)
 
 		# Check that we can connect to the server
 		try:
@@ -45,7 +45,7 @@ class SSHRPCManager(object):
 			server_uri = 'PYRO:server@localhost:{server_port}'.format(server_port=self.local_server_port)
 			self.rpc_server = Pyro4.Proxy(server_uri)
 
-			log.debug('Connecting to PYRO')
+			log.debug('Connecting to the RPC daemon')
 			remaining_retries = 5
 			while True:
 				try:
@@ -59,10 +59,14 @@ class SSHRPCManager(object):
 					else:
 						raise e
 		except (Exception, KeyboardInterrupt) as e:
-			self.process.terminate()
+			self.ssh_process.terminate()
 			raise e
 
 	def stop(self):
-		self.rpc_server.stop()
-		self.rpc_server._pyroRelease()
-		self.process.wait()
+		if hasattr(self, 'rpc_server'):
+			log.debug('Stopping the RPC daemon')
+			self.rpc_server.stop()
+			self.rpc_server._pyroRelease()
+		if hasattr(self, 'ssh_process'):
+			log.debug('Waiting for the SSH connection to terminate')
+			self.ssh_process.wait()
