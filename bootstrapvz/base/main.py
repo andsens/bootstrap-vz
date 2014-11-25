@@ -93,9 +93,6 @@ def run(manifest, debug=False, pause_on_error=False, dry_run=False):
 	:params bool pause_on_error: Whether to pause on error, before rollback
 	:params bool dry_run: Don't actually run the tasks
 	"""
-	if isinstance(manifest, dict):
-		from manifest import Manifest
-		manifest = Manifest(path=manifest['path'], data=manifest['data'])
 	# Get the tasklist
 	from tasklist import load_tasks
 	from tasklist import TaskList
