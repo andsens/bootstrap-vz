@@ -9,6 +9,9 @@
 # Use DOCKER_NOFILE to set ulimit -n before starting Docker.
 #DOCKER_NOFILE=65536
 
+# Use DOCKER_LOCKEDMEMORY to set ulimit -l before starting Docker.
+#DOCKER_LOCKEDMEMORY=unlimited
+
 # If you need Docker to use an HTTP proxy, it can also be specified here.
 #export http_proxy="http://127.0.0.1:3128/"
 
