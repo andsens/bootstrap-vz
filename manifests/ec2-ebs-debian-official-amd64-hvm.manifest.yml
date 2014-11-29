@@ -2,6 +2,7 @@
 provider:
   name: ec2
   virtualization: hvm
+  enhanced_networking: simple
   # credentials:
   #   access-key: AFAKEACCESSKEYFORAWS
   #   secret-key: thes3cr3tkeyf0ryourawsaccount/FS4d8Qdva

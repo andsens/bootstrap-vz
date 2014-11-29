@@ -122,4 +122,7 @@ class RegisterAMI(Task):
 			registration_params['kernel_id'] = config_get(akis_path, [info._ec2['region'],
 			                                                          info.manifest.system['architecture']])
 
+		if 'enhanced_networking' in info.manifest.provider and info.manifest.provider['enhanced_networking'] == 'simple':
+			registration_params['sriov_net_support'] = 'simple'
+
 		info._ec2['image'] = info._ec2['connection'].register_image(**registration_params)

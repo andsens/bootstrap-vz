@@ -13,6 +13,7 @@ from bootstrapvz.common.tasks import filesystem
 from bootstrapvz.common.tasks import boot
 from bootstrapvz.common.tasks import initd
 from bootstrapvz.common.tasks import loopback
+from bootstrapvz.common.tasks import kernel
 
 
 def initialize():
@@ -41,6 +42,7 @@ def validate_manifest(data, validator, error):
 	virtualization = data['provider']['virtualization']
 	backing = data['volume']['backing']
 	partition_type = data['volume']['partitions']['type']
+	enhanced_networking = data['provider']['enhanced_networking'] if 'enhanced_networking' in data['provider'] else None
 
 	if virtualization == 'pvm' and bootloader != 'pvgrub':
 		error('Paravirtualized AMIs only support pvgrub as a bootloader', ['system', 'bootloader'])
@@ -57,6 +59,10 @@ def validate_manifest(data, validator, error):
 	if backing == 's3':
 		if partition_type != 'none':
 			error('S3 backed AMIs currently only work with unpartitioned volumes', ['system', 'bootloader'])
+
+	if enhanced_networking == 'simple':
+		if virtualization != 'hvm':
+			error('Enhanced networking currently only works with HVM virtualization', ['provider', 'virtualization'])
 
 
 def resolve_tasks(taskset, manifest):
@@ -105,6 +111,11 @@ def resolve_tasks(taskset, manifest):
 		                tasks.ami.RemoveBundle,
 		                ])
 		taskset.discard(filesystem.FStab)
+
+	if 'enhanced_networking' in manifest.provider and manifest.provider['enhanced_networking'] == 'simple':
+		taskset.update([kernel.AddDKMSPackages,
+		                tasks.network.InstallEnhancedNetworking,
+		                kernel.UpdateInitramfs])
 
 	taskset.update([filesystem.Format,
 	                volume.Delete,

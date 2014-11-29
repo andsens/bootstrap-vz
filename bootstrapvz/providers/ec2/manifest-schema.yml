@@ -19,6 +19,10 @@ properties:
         enum:
         - pvm
         - hvm
+      enhanced_networking:
+        enum:
+        - none
+        - simple
     required: [virtualization]
   system:
     type: object
