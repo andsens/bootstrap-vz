@@ -34,7 +34,7 @@ class SSHRPCManager(object):
 		                  '-R' + str(self.remote_callback_port) + ':localhost:' + str(self.local_callback_port),
 		                  self.settings['username'] + '@' + self.settings['address'],
 		                  '--',
-		                  'sudo', self.settings['server-bin'],
+		                  'sudo', self.settings['server_bin'],
 		                  '--listen', str(self.remote_server_port)]
 		import sys
 		self.ssh_process = subprocess.Popen(args=ssh_cmd, stdout=sys.stderr, stderr=sys.stderr)

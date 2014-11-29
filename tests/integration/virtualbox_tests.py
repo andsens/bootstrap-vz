@@ -1,6 +1,5 @@
 import tools
 from manifests import partials
-from . import build_settings
 
 
 def test_virtualbox_unpartitioned_extlinux():
@@ -8,22 +7,40 @@ def test_virtualbox_unpartitioned_extlinux():
 	specific_settings = yaml.load("""
 provider:
   name: virtualbox
-  guest_additions: {guest_additions}
 system:
   bootloader: extlinux
 volume:
   backing: vdi
   partitions:
     type: msdos
-""".format(guest_additions=build_settings['virtualbox']['guest_additions']))
+""")
 	manifest = tools.merge_dicts(partials['base'], partials['stable64'],
 	                             partials['unpartitioned'], specific_settings)
 
-	image = tools.bootstrap(manifest)
-	instance = image.create_instance()
-	instance.boot()
+	build_server = tools.pick_build_server(manifest)
+	manifest['provider']['guest_additions'] = build_server.build_settings['guest_additions']
 
-	tools.test_instance(instance)
+	bootstrap_info = tools.bootstrap(manifest, build_server)
 
-	instance.destroy()
-	image.destroy()
+	if isinstance(build_server, tools.build_servers.LocalBuildServer):
+		image_path = bootstrap_info.volume.image_path
+	else:
+		import tempfile
+		handle, image_path = tempfile.mkstemp()
+		handle.close()
+		build_server.download(bootstrap_info.volume.image_path, image_path)
+		build_server.delete(bootstrap_info.volume.image_path)
+
+	try:
+		image = tools.images.VirtualBoxImage(manifest, image_path)
+
+		instance = tools.instances.VirtualBoxInstance(image)
+		instance.create()
+		instance.boot()
+
+		tools.test(instance)
+	finally:
+		if 'instance' in locals():
+			instance.destroy()
+		if 'image' in locals():
+			image.destroy()

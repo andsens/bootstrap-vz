@@ -1,6 +1,7 @@
 from bootstrapvz.common.tools import load_data
+from build_servers import LocalBuildServer
+from build_servers import RemoteBuildServer
 
-build_servers = load_data('build_servers.yml')
 
 # Snatched from here: http://stackoverflow.com/a/7205107
 def merge_dicts(*args):
@@ -21,20 +22,30 @@ def merge_dicts(*args):
 	return reduce(merge, args, {})
 
 
-def bootstrap(manifest):
-	# if 'build_host' in build_settings:
-	# 	run = get_remote_run(build_settings)
-	# else:
-	# 	run = __import__('bootstrapvz.base.run')
-	# run(manifest)
-	from bootstrapvz.base.remote.remote import run
-	run(manifest,
-	    build_servers['virtualbox'],
-	    debug=True,
-	    dry_run=True)
+def pick_build_server(manifest):
+	if manifest['provider']['name'] == 'ec2':
+		img_type = 'ec2-' + manifest['volume']['backing']
+	else:
+		img_type = manifest['provider']['name']
 
-	from ..image import Image
-	return Image()
+	# tox makes sure that the cwd is the project root
+	build_servers = load_data('build_servers.yml')
+	settings = next((server for name, server in build_servers.iteritems() if img_type in server['can_bootstrap']), None)
+	if settings['type'] == 'local':
+		return LocalBuildServer(settings)
+	else:
+		return RemoteBuildServer(settings)
 
-def test_instance(instance):
+
+def bootstrap(manifest, build_server):
+	if isinstance(build_server, LocalBuildServer):
+		from bootstrapvz.base.main import run
+		bootstrap_info = run(manifest)
+	else:
+		from bootstrapvz.base.remote.remote import run
+		bootstrap_info = run(manifest, build_server.settings)
+	return bootstrap_info
+
+
+def test(instance):
 	pass
