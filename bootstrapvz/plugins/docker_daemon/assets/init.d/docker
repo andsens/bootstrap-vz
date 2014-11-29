@@ -87,6 +87,10 @@ case "$1" in
 			ulimit -n $DOCKER_NOFILE
 		fi
 
+		if [ -n "$DOCKER_LOCKEDMEMORY" ]; then
+			ulimit -l $DOCKER_LOCKEDMEMORY
+		fi
+
 		log_begin_msg "Starting $DOCKER_DESC: $BASE"
 		start-stop-daemon --start --background \
 			--no-close \
