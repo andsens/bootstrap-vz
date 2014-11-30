@@ -26,12 +26,14 @@ volume:
 
 	bootstrap_info = tools.bootstrap(manifest, build_server)
 
-	if isinstance(build_server, tools.build_servers.LocalBuildServer):
+	from bootstrapvz.remote.build_servers import LocalBuildServer
+	if isinstance(build_server, LocalBuildServer):
 		image_path = bootstrap_info.volume.image_path
 	else:
 		import tempfile
 		handle, image_path = tempfile.mkstemp()
-		handle.close()
+		import os
+		os.close(handle)
 		build_server.download(bootstrap_info.volume.image_path, image_path)
 		build_server.delete(bootstrap_info.volume.image_path)
 

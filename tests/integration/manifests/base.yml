@@ -2,6 +2,7 @@
 provider: {}
 bootstrapper:
   workspace: /target
+  tarball: true
 image:
   name: debian-{system.release}-{system.architecture}-{%y}{%m}{%d}
   description: Debian {system.release} {system.architecture}
