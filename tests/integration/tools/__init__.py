@@ -2,6 +2,11 @@ from bootstrapvz.common.tools import load_data
 from build_servers import LocalBuildServer
 from build_servers import RemoteBuildServer
 
+# Register deserialization handlers for objects
+# that will pass between server and client
+from bootstrapvz.base.remote import register_deserialization_handlers
+register_deserialization_handlers()
+
 
 # Snatched from here: http://stackoverflow.com/a/7205107
 def merge_dicts(*args):

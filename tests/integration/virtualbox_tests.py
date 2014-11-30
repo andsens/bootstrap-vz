@@ -1,10 +1,11 @@
 import tools
 from manifests import partials
+from bootstrapvz.base.manifest import Manifest
 
 
 def test_virtualbox_unpartitioned_extlinux():
 	import yaml
-	specific_settings = yaml.load("""
+	manifest_data = yaml.load("""
 provider:
   name: virtualbox
 system:
@@ -14,11 +15,12 @@ volume:
   partitions:
     type: msdos
 """)
-	manifest = tools.merge_dicts(partials['base'], partials['stable64'],
-	                             partials['unpartitioned'], specific_settings)
+	manifest_data = tools.merge_dicts(partials['base'], partials['stable64'],
+	                                  partials['unpartitioned'], manifest_data)
 
-	build_server = tools.pick_build_server(manifest)
-	manifest['provider']['guest_additions'] = build_server.build_settings['guest_additions']
+	build_server = tools.pick_build_server(manifest_data)
+	manifest_data['provider']['guest_additions'] = build_server.build_settings['guest_additions']
+	manifest = Manifest(data=manifest_data)
 
 	bootstrap_info = tools.bootstrap(manifest, build_server)
 

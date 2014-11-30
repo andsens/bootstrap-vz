@@ -5,7 +5,7 @@ class BuildServer(object):
 
 	def __init__(self, settings):
 		self.settings = settings
-		self.build_settings = settings.get('build_settings', None)
+		self.build_settings = settings.get('build_settings', {})
 		self.can_bootstrap = settings['can_bootstrap']
 		self.release = settings.get('release', None)
 

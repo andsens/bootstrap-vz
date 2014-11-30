@@ -4,8 +4,6 @@
 
 def main():
 	"""Main function for invoking the bootstrap process remotely
-
-
 	"""
 	# Get the commandline arguments
 	opts = get_opts()
