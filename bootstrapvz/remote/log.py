@@ -15,18 +15,9 @@ class LogForwarder(logging.Handler):
 			if record.exc_info is not None:
 				import traceback
 				exc_type, exc_value, exc_traceback = record.exc_info
-				record.exc_info = traceback.print_exception(exc_type, exc_value, exc_traceback)
+				record.extra = getattr(record, 'extra', {})
+				record.extra['traceback'] = traceback.format_exception(exc_type, exc_value, exc_traceback)
+				record.exc_info = None
 			# TODO: Use serpent instead
 			import pickle
-			self.server.handle(pickle.dumps(record))
-
-
-class LogServer(object):
-
-	def handle(self, pickled_record):
-		import pickle
-		record = pickle.loads(pickled_record)
-		log = logging.getLogger()
-		record.extra = getattr(record, 'extra', {})
-		record.extra['source'] = 'remote'
-		log.handle(record)
+			self.server.handle_log(pickle.dumps(record))

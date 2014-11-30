@@ -136,3 +136,10 @@ class Manifest(object):
 		return {'__class__': 'bootstrapvz.base.manifest.Manifest',
 		        'path': self.path,
 		        'data': self.data}
+
+	def __setstate__(self, state):
+		self.path = state['path']
+		self.load(state['data'])
+		self.initialize()
+		self.validate()
+		self.parse()

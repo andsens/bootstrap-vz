@@ -1,20 +1,19 @@
+import Pyro4
 import logging
+
+Pyro4.config.REQUIRE_EXPOSE = True
 log = logging.getLogger(__name__)
 
 
 class CallbackServer(object):
 
 	def __init__(self, listen_port, remote_port):
-		self.listen_port = listen_port
-		self.remote_port = remote_port
-
-	def start(self, log_server):
-		import Pyro4
-		self.daemon = Pyro4.Daemon(host='localhost', port=self.listen_port,
-		                           nathost='localhost', natport=self.remote_port,
+		self.daemon = Pyro4.Daemon(host='localhost', port=listen_port,
+		                           nathost='localhost', natport=remote_port,
 		                           unixsocket=None)
-		self.daemon.register(log_server)
+		self.daemon.register(self)
 
+	def start(self):
 		def serve():
 			self.daemon.requestLoop()
 		from threading import Thread
@@ -27,3 +26,13 @@ class CallbackServer(object):
 			self.daemon.shutdown()
 		if hasattr(self, 'thread'):
 			self.thread.join()
+
+	@Pyro4.expose
+	def handle_log(self, pickled_record):
+		import pickle
+		record = pickle.loads(pickled_record)
+		log = logging.getLogger()
+		record.extra = getattr(record, 'extra', {})
+		record.extra['source'] = 'remote'
+		log.handle(record)
+

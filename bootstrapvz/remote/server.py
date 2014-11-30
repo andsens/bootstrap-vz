@@ -56,9 +56,10 @@ class Server(object):
 		return run(*args, **kwargs)
 
 	@Pyro4.expose
-	def set_log_server(self, server):
-		self.log_forwarder.set_server(server)
-		log.debug('Successfully set the log forwarding server')
+	def set_callback_server(self, server):
+		self.callback_server = server
+		self.log_forwarder.set_server(self.callback_server)
+		log.debug('Forwarding logs to the callback server now')
 
 	@Pyro4.expose
 	def ping(self):

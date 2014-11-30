@@ -82,13 +82,11 @@ def run(manifest, build_server, debug=False, dry_run=False):
 		from callback import CallbackServer
 		callback_server = CallbackServer(listen_port=build_server.local_callback_port,
 		                                 remote_port=build_server.remote_callback_port)
-		from log import LogServer
-		log_server = LogServer()
 		try:
 			# Start the callback server (in a background thread)
-			callback_server.start(log_server)
+			callback_server.start()
 			# Tell the RPC daemon about the callback server
-			connection.set_log_server(log_server)
+			connection.set_callback_server(callback_server)
 
 			# Everything has been set up, begin the bootstrapping process
 			bootstrap_info = connection.run(manifest,
