@@ -1,0 +1,49 @@
+---
+$schema: http://json-schema.org/draft-04/schema#
+title: Build server settings list
+type: object
+properties:
+  local:
+    type: object
+    properties:
+      type: {enum: [local]}
+      can_bootstrap: {$ref: '#/definitions/can_bootstrap'}
+      release: {type: string}
+      build_settings: {$ref: '#/definitions/build_settings'}
+    required: [type, can_bootstrap, release]
+patternProperties:
+  ^(?!local).*$: {$ref: '#/definitions/ssh'}
+
+definitions:
+  absolute_path:
+    type: string
+    pattern: ^/[^\0]+$
+
+  can_bootstrap:
+    type: array
+    items:
+      enum:
+      - virtualbox
+      - ec2-ebs
+      - ec2-s3
+
+  build_settings:
+    type: object
+    properties:
+      guest_additions: {$ref: '#/definitions/absolute_path'}
+
+  ssh:
+    type: object
+    properties:
+      type: {enum: [ssh]}
+      can_bootstrap: {$ref: '#/definitions/can_bootstrap'}
+      build_settings: {$ref: '#/definitions/build_settings'}
+      release: {type: string}
+      address: {type: string}
+      port: {type: integer}
+      username: {type: string}
+      password: {type: string}
+      root_password: {type: string}
+      keyfile: {$ref: '#/definitions/absolute_path'}
+      server_bin: {$ref: '#/definitions/absolute_path'}
+    required: [type, can_bootstrap, release]

@@ -18,7 +18,8 @@ volume:
 	manifest_data = tools.merge_dicts(partials['base'], partials['stable64'],
 	                                  partials['unpartitioned'], manifest_data)
 
-	build_server = tools.pick_build_server(manifest_data)
+	manifest = Manifest(data=manifest_data)
+	build_server = tools.pick_build_server(manifest)
 	manifest_data['provider']['guest_additions'] = build_server.build_settings['guest_additions']
 	manifest = Manifest(data=manifest_data)
 

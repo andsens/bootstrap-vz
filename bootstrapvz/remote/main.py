@@ -12,9 +12,17 @@ def main():
 	from bootstrapvz.base.manifest import Manifest
 	manifest = Manifest(path=opts['MANIFEST'])
 
-	# Load the build servers
+	# load the build servers file
 	from bootstrapvz.common.tools import load_data
 	build_servers = load_data(opts['--servers'])
+	# Pick a build server
+	from build_servers import pick_build_server
+	preferences = {}
+	if opts['--name'] is not None:
+		preferences['name'] = opts['--name']
+	if opts['--release'] is not None:
+		preferences['release'] = opts['--release']
+	build_server = pick_build_server(build_servers, preferences, manifest)
 
 	# Set up logging
 	from bootstrapvz.base.main import setup_loggers
@@ -27,7 +35,7 @@ def main():
 
 	# Everything has been set up, connect to the server and begin the bootstrapping process
 	run(manifest,
-	    build_servers[opts['SERVER']],
+	    build_server,
 	    debug=opts['--debug'],
 	    dry_run=opts['--dry-run'])
 
@@ -38,56 +46,54 @@ def get_opts():
 	from docopt import docopt
 	usage = """bootstrap-vz-remote
 
-Usage: bootstrap-vz-remote [options] --servers=<path> SERVER MANIFEST
+Usage: bootstrap-vz-remote [options] --servers=<path> MANIFEST
 
 Options:
-  --servers <path>   Path to list of build servers
-  --log <path>       Log to given directory [default: /var/log/bootstrap-vz]
-                     If <path> is `-' file logging will be disabled.
-  --pause-on-error   Pause on error, before rollback
-  --dry-run          Don't actually run the tasks
+  --servers <path>    Path to list of build servers
+  --name <name>       Selects specific server from the build servers list
+  --release <release> Require the build server OS to be a specific release
+  --log <path>        Log to given directory [default: /var/log/bootstrap-vz]
+                      If <path> is `-' file logging will be disabled.
+  --pause-on-error    Pause on error, before rollback
+  --dry-run           Don't actually run the tasks
   --color=auto|always|never
                      Colorize the console output [default: auto]
-  --debug            Print debugging information
-  -h, --help         show this help
+  --debug             Print debugging information
+  -h, --help          show this help
 	"""
 	return docopt(usage)
 
 
-def run(manifest, server, debug=False, dry_run=False):
+def run(manifest, build_server, debug=False, dry_run=False):
 	"""Connects to the remote build server, starts an RPC daemin
 	on the other side and initiates a remote bootstrapping procedure
 	"""
 	bootstrap_info = None
-
-	from ssh_rpc_manager import SSHRPCManager
-	manager = SSHRPCManager(server)
 	try:
-		# Connect to the build server and start the RPC daemon
-		manager.start()
-		server = manager.rpc_server
+		# Connect to the build server
+		connection = build_server.connect()
 		# Start a callback server on this side, so that we may receive log entries
 		from callback import CallbackServer
-		callback_server = CallbackServer(listen_port=manager.local_callback_port,
-		                                 remote_port=manager.remote_callback_port)
+		callback_server = CallbackServer(listen_port=build_server.local_callback_port,
+		                                 remote_port=build_server.remote_callback_port)
 		from bootstrapvz.base.log import LogServer
 		log_server = LogServer()
 		try:
 			# Start the callback server (in a background thread)
 			callback_server.start(log_server)
 			# Tell the RPC daemon about the callback server
-			server.set_log_server(log_server)
+			connection.set_log_server(log_server)
 
 			# Everything has been set up, begin the bootstrapping process
-			bootstrap_info = server.run(manifest,
-			                            debug=debug,
-			                            # We can't pause the bootstrapping process remotely, yet...
-			                            pause_on_error=False,
-			                            dry_run=dry_run)
+			bootstrap_info = connection.run(manifest,
+			                                debug=debug,
+			                                # We can't pause the bootstrapping process remotely, yet...
+			                                pause_on_error=False,
+			                                dry_run=dry_run)
 		finally:
 			# Stop the callback server
 			callback_server.stop()
 	finally:
 		# Stop the RPC daemon and close the SSH connection
-		manager.stop()
+		build_server.disconnect()
 	return bootstrap_info

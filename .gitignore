@@ -12,4 +12,4 @@
 # Testing
 /.coverage
 /.tox/
-/build_servers.yml
+/build-servers.yml

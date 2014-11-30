@@ -1,6 +1,4 @@
-from bootstrapvz.common.tools import load_data
 from bootstrapvz.remote.build_servers import LocalBuildServer
-from bootstrapvz.remote.build_servers import RemoteBuildServer
 
 # Register deserialization handlers for objects
 # that will pass between server and client
@@ -27,28 +25,13 @@ def merge_dicts(*args):
 	return reduce(merge, args, {})
 
 
-def pick_build_server(manifest):
-	if manifest['provider']['name'] == 'ec2':
-		img_type = 'ec2-' + manifest['volume']['backing']
-	else:
-		img_type = manifest['provider']['name']
-
-	# tox makes sure that the cwd is the project root
-	build_servers = load_data('build_servers.yml')
-	settings = next((server for name, server in build_servers.iteritems() if img_type in server['can_bootstrap']), None)
-	if settings['type'] == 'local':
-		return LocalBuildServer(settings)
-	else:
-		return RemoteBuildServer(settings)
-
-
 def bootstrap(manifest, build_server):
 	if isinstance(build_server, LocalBuildServer):
 		from bootstrapvz.base.main import run
 		bootstrap_info = run(manifest)
 	else:
 		from bootstrapvz.remote.main import run
-		bootstrap_info = run(manifest, build_server.settings)
+		bootstrap_info = run(manifest, build_server)
 	return bootstrap_info
 
 
