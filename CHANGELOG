@@ -1,3 +1,6 @@
+2014-11-23:
+	Noah Fontes:
+		* Add support for enhanced networking on EC2 images
 2014-07-12:
 	Tiago Ilieve:
 		* Fixes #96: AddBackports is now a common task

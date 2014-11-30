@@ -1,6 +1,7 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 from bootstrapvz.common.tasks import apt
+from bootstrapvz.common.tasks import kernel
 import os.path
 
 
@@ -29,30 +30,39 @@ class AddBuildEssentialPackage(Task):
 
 
 class InstallEnhancedNetworking(Task):
-	description = 'Installing network drivers for SR-IOV support'
-	phase = phases.package_installation
+	description = 'Installing enhanced networking kernel driver using DKMS'
+	phase = phases.system_modification
+	successors = [kernel.UpdateInitramfs]
 
 	@classmethod
 	def run(cls, info):
-		drivers_url = 'http://downloads.sourceforge.net/project/e1000/ixgbevf stable/2.11.3/ixgbevf-2.11.3.tar.gz'
-		archive = os.path.join(info.root, 'tmp', 'ixgbevf-2.11.3.tar.gz')
+		version = '2.15.3'
+		drivers_url = 'http://downloads.sourceforge.net/project/e1000/ixgbevf stable/%s/ixgbevf-%s.tar.gz' % (version, version)
+		archive = os.path.join(info.root, 'tmp', 'ixgbevf-%s.tar.gz' % (version))
+		module_path = os.path.join(info.root, 'usr', 'src', 'ixgbevf-%s' % (version))
 
 		import urllib
 		urllib.urlretrieve(drivers_url, archive)
 
 		from bootstrapvz.common.tools import log_check_call
-		log_check_call('tar', '--ungzip',
-		                      '--extract',
-		                      '--file', archive,
-		                      '--directory', os.path.join(info.root, 'tmp'))
+		log_check_call(['tar', '--ungzip',
+		                       '--extract',
+		                       '--file', archive,
+		                       '--directory', os.path.join(info.root, 'usr', 'src')])
 
-		src_dir = os.path.join('/tmp', os.path.basename(drivers_url), 'src')
-		log_check_call(['chroot', info.root,
-		                'make', '--directory', src_dir])
-		log_check_call(['chroot', info.root,
-		                'make', 'install',
-		                        '--directory', src_dir])
+		with open(os.path.join(module_path, 'dkms.conf'), 'w') as dkms_conf:
+			dkms_conf.write("""PACKAGE_NAME="ixgbevf"
+PACKAGE_VERSION="%s"
+CLEAN="cd src/; make clean"
+MAKE="cd src/; make BUILD_KERNEL=${kernelver}"
+BUILT_MODULE_LOCATION[0]="src/"
+BUILT_MODULE_NAME[0]="ixgbevf"
+DEST_MODULE_LOCATION[0]="/updates"
+DEST_MODULE_NAME[0]="ixgbevf"
+AUTOINSTALL="yes"
+""" % (version))
 
-		ixgbevf_conf_path = os.path.join(info.root, 'etc/modprobe.d/ixgbevf.conf')
-		with open(ixgbevf_conf_path, 'w') as ixgbevf_conf:
-			ixgbevf_conf.write('options ixgbevf InterruptThrottleRate=1,1,1,1,1,1,1,1')
+		for task in ['add', 'build', 'install']:
+			# Invoke DKMS task using specified kernel module (-m) and version (-v)
+			log_check_call(['chroot', info.root,
+			                'dkms', task, '-m', 'ixgbevf', '-v', version])
