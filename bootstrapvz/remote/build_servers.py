@@ -46,6 +46,8 @@ class BuildServer(object):
 	def apply_build_settings(self, manifest_data):
 		if manifest_data['provider']['name'] == 'virtualbox' and 'guest_additions' in manifest_data['provider']:
 			manifest_data['provider']['guest_additions'] = self.build_settings['guest_additions']
+		if 'apt_proxy' in self.build_settings:
+			manifest_data.get('plugins', {})['apt_proxy'] = self.build_settings['apt_proxy']
 		return manifest_data
 
 
@@ -75,7 +77,7 @@ class RemoteBuildServer(BuildServer):
 		log.debug('Opening SSH connection')
 		import subprocess
 
-		server_cmd = ['sudo', self.settings['server_bin'], '--listen', str(self.remote_server_port)]
+		server_cmd = ['sudo', self.server_bin, '--listen', str(self.remote_server_port)]
 
 		def set_process_group():
 			# Changes the process group of a command so that any SIGINT
@@ -85,8 +87,8 @@ class RemoteBuildServer(BuildServer):
 			os.setpgrp()
 
 		addr_arg = '{user}@{host}'.format(user=self.username, host=self.address)
-		ssh_cmd = ['ssh', '-i', self.settings['keyfile'],
-		                  '-p', str(self.settings['port']),
+		ssh_cmd = ['ssh', '-i', self.keyfile,
+		                  '-p', str(self.port),
 		                  '-L' + str(self.local_server_port) + ':localhost:' + str(self.remote_server_port),
 		                  '-R' + str(self.remote_callback_port) + ':localhost:' + str(self.local_callback_port),
 		                  addr_arg]
@@ -129,13 +131,13 @@ class RemoteBuildServer(BuildServer):
 			self.ssh_process.wait()
 
 	def download(self, src, dst):
-		src_arg = '{user}@{host}:{path}'.format(self.username, self.address, src)
-		log_check_call(['scp', '-i', self.keyfile, '-P', self.port,
+		src_arg = '{user}@{host}:{path}'.format(user=self.username, host=self.address, path=src)
+		log_check_call(['scp', '-i', self.keyfile, '-P', str(self.port),
 		                src_arg, dst])
 
 	def delete(self, path):
-		ssh_cmd = ['ssh', '-i', self.settings['keyfile'],
-		                  '-p', str(self.settings['port']),
+		ssh_cmd = ['ssh', '-i', self.keyfile,
+		                  '-p', str(self.port),
 		                  self.username + '@' + self.address,
 		                  '--',
 		                  'sudo', 'rm', path]
