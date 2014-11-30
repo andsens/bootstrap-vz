@@ -1,4 +1,7 @@
+import Pyro4
 import logging
+
+Pyro4.config.REQUIRE_EXPOSE = True
 log = logging.getLogger(__name__)
 
 
@@ -41,23 +44,26 @@ class Server(object):
 		self.listen_port = listen_port
 
 	def start(self):
-		import Pyro4
 		Pyro4.config.COMMTIMEOUT = 0.5
 		daemon = Pyro4.Daemon('localhost', port=int(self.listen_port), unixsocket=None)
 
 		daemon.register(self, 'server')
 		daemon.requestLoop(loopCondition=lambda: not self.stop_serving)
 
+	@Pyro4.expose
 	def run(self, *args, **kwargs):
 		from bootstrapvz.base.main import run
 		return run(*args, **kwargs)
 
+	@Pyro4.expose
 	def set_log_server(self, server):
 		self.log_forwarder.set_server(server)
 		log.debug('Successfully set the log forwarding server')
 
+	@Pyro4.expose
 	def ping(self):
 		return 'pong'
 
+	@Pyro4.expose
 	def stop(self):
 		self.stop_serving = True
