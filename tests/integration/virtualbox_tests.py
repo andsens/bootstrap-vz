@@ -1,6 +1,8 @@
 import tools
 from manifests import partials
 from bootstrapvz.base.manifest import Manifest
+from bootstrapvz.remote.build_servers import pick_build_server
+from . import build_servers
 
 
 def test_virtualbox_unpartitioned_extlinux():
@@ -18,9 +20,8 @@ volume:
 	manifest_data = tools.merge_dicts(partials['base'], partials['stable64'],
 	                                  partials['unpartitioned'], manifest_data)
 
-	manifest = Manifest(data=manifest_data)
-	build_server = tools.pick_build_server(manifest)
-	manifest_data['provider']['guest_additions'] = build_server.build_settings['guest_additions']
+	build_server = pick_build_server(build_servers, manifest_data)
+	manifest_data = build_server.apply_build_settings(manifest_data)
 	manifest = Manifest(data=manifest_data)
 
 	bootstrap_info = tools.bootstrap(manifest, build_server)

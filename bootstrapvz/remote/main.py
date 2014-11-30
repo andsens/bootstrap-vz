@@ -8,12 +8,11 @@ def main():
 	# Get the commandline arguments
 	opts = get_opts()
 
-	# Load the manifest
-	from bootstrapvz.base.manifest import Manifest
-	manifest = Manifest(path=opts['MANIFEST'])
+	from bootstrapvz.common.tools import load_data
+	# load the manifest data, we might want to modify it later on
+	manifest_data = load_data(opts['MANIFEST'])
 
 	# load the build servers file
-	from bootstrapvz.common.tools import load_data
 	build_servers = load_data(opts['--servers'])
 	# Pick a build server
 	from build_servers import pick_build_server
@@ -22,7 +21,14 @@ def main():
 		preferences['name'] = opts['--name']
 	if opts['--release'] is not None:
 		preferences['release'] = opts['--release']
-	build_server = pick_build_server(build_servers, preferences, manifest)
+	build_server = pick_build_server(build_servers, manifest_data, preferences)
+
+	# Apply the build server settings to the manifest (e.g. the virtualbox guest additions path)
+	manifest_data = build_server.apply_build_settings(manifest_data)
+
+	# Load the manifest
+	from bootstrapvz.base.manifest import Manifest
+	manifest = Manifest(path=opts['MANIFEST'], data=manifest_data)
 
 	# Set up logging
 	from bootstrapvz.base.main import setup_loggers

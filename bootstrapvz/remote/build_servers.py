@@ -3,7 +3,7 @@ import logging
 log = logging.getLogger(__name__)
 
 
-def pick_build_server(build_servers, preferences, manifest):
+def pick_build_server(build_servers, manifest, preferences={}):
 	# Validate the build servers list
 	from bootstrapvz.common.tools import load_data
 	import os.path
@@ -11,10 +11,10 @@ def pick_build_server(build_servers, preferences, manifest):
 	import jsonschema
 	jsonschema.validate(build_servers, schema)
 
-	if manifest.provider['name'] == 'ec2':
-		must_bootstrap = 'ec2-' + manifest.volume['backing']
+	if manifest['provider']['name'] == 'ec2':
+		must_bootstrap = 'ec2-' + manifest['volume']['backing']
 	else:
-		must_bootstrap = manifest.provider['name']
+		must_bootstrap = manifest['provider']['name']
 
 	def matches(name, settings):
 		if preferences.get('name', name) != name:
@@ -42,6 +42,11 @@ class BuildServer(object):
 		self.build_settings = settings.get('build_settings', {})
 		self.can_bootstrap = settings['can_bootstrap']
 		self.release = settings.get('release', None)
+
+	def apply_build_settings(self, manifest_data):
+		if manifest_data['provider']['name'] == 'virtualbox' and 'guest_additions' in manifest_data['provider']:
+			manifest_data['provider']['guest_additions'] = self.build_settings['guest_additions']
+		return manifest_data
 
 
 class LocalBuildServer(BuildServer):

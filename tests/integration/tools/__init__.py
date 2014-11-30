@@ -1,5 +1,3 @@
-from bootstrapvz.remote.build_servers import LocalBuildServer
-
 # Register deserialization handlers for objects
 # that will pass between server and client
 from bootstrapvz.remote import register_deserialization_handlers
@@ -26,6 +24,7 @@ def merge_dicts(*args):
 
 
 def bootstrap(manifest, build_server):
+	from bootstrapvz.remote.build_servers import LocalBuildServer
 	if isinstance(build_server, LocalBuildServer):
 		from bootstrapvz.base.main import run
 		bootstrap_info = run(manifest)
