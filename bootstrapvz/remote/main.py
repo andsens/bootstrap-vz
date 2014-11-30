@@ -46,6 +46,8 @@ Options:
                      If <path> is `-' file logging will be disabled.
   --pause-on-error   Pause on error, before rollback
   --dry-run          Don't actually run the tasks
+  --color=auto|always|never
+                     Colorize the console output [default: auto]
   --debug            Print debugging information
   -h, --help         show this help
 	"""

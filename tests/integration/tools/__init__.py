@@ -4,7 +4,7 @@ from build_servers import RemoteBuildServer
 
 # Register deserialization handlers for objects
 # that will pass between server and client
-from bootstrapvz.base.remote import register_deserialization_handlers
+from bootstrapvz.remote import register_deserialization_handlers
 register_deserialization_handlers()
 
 
@@ -47,7 +47,7 @@ def bootstrap(manifest, build_server):
 		from bootstrapvz.base.main import run
 		bootstrap_info = run(manifest)
 	else:
-		from bootstrapvz.base.remote.remote import run
+		from bootstrapvz.remote.main import run
 		bootstrap_info = run(manifest, build_server.settings)
 	return bootstrap_info
 
