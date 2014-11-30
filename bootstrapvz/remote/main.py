@@ -82,7 +82,7 @@ def run(manifest, build_server, debug=False, dry_run=False):
 		from callback import CallbackServer
 		callback_server = CallbackServer(listen_port=build_server.local_callback_port,
 		                                 remote_port=build_server.remote_callback_port)
-		from bootstrapvz.base.log import LogServer
+		from log import LogServer
 		log_server = LogServer()
 		try:
 			# Start the callback server (in a background thread)
