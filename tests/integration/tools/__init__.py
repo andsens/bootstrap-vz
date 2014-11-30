@@ -1,6 +1,6 @@
 from bootstrapvz.common.tools import load_data
-from build_servers import LocalBuildServer
-from build_servers import RemoteBuildServer
+from bootstrapvz.remote.build_servers import LocalBuildServer
+from bootstrapvz.remote.build_servers import RemoteBuildServer
 
 # Register deserialization handlers for objects
 # that will pass between server and client
