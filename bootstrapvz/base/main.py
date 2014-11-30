@@ -120,8 +120,8 @@ def run(manifest, debug=False, pause_on_error=False, dry_run=False):
 		# Create a useful little function for the provider and plugins to use,
 		# when figuring out what tasks should be added to the rollback list.
 		def counter_task(taskset, task, counter):
-			"""counter_task() adds the second argument to the rollback tasklist
-			if the first argument is present in the list of completed tasks
+			"""counter_task() adds the third argument to the rollback tasklist
+			if the second argument is present in the list of completed tasks
 
 			:param set taskset: The taskset to add the rollback task to
 			:param Task task: The task to look for in the completed tasks list
