@@ -52,7 +52,11 @@ class Server(object):
 
 	@Pyro4.expose
 	def run(self, *args, **kwargs):
+
+		def abort_run():
+			return not self.callback_server.get_abort_run()
 		from bootstrapvz.base.main import run
+		kwargs['check_continue'] = abort_run
 		return run(*args, **kwargs)
 
 	@Pyro4.expose

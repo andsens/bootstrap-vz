@@ -83,7 +83,7 @@ def setup_loggers(opts):
 	root.addHandler(console_handler)
 
 
-def run(manifest, debug=False, pause_on_error=False, dry_run=False):
+def run(manifest, debug=False, pause_on_error=False, dry_run=False, check_continue=None):
 	"""Runs the bootstrapping process
 
 	:params Manifest manifest: The manifest to run the bootstrapping process for
@@ -106,7 +106,7 @@ def run(manifest, debug=False, pause_on_error=False, dry_run=False):
 	log = logging.getLogger(__name__)
 	try:
 		# Run all the tasks the tasklist has gathered
-		tasklist.run(info=bootstrap_info, dry_run=dry_run)
+		tasklist.run(info=bootstrap_info, dry_run=dry_run, check_continue=check_continue)
 		# We're done! :-)
 		log.info('Successfully completed bootstrapping')
 	except (Exception, KeyboardInterrupt) as e:

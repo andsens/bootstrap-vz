@@ -77,6 +77,13 @@ class RemoteBuildServer(BuildServer):
 
 		server_cmd = ['sudo', self.settings['server_bin'], '--listen', str(self.remote_server_port)]
 
+		def set_process_group():
+			# Changes the process group of a command so that any SIGINT
+			# for the main thread will not be propagated to it.
+			# We'd like to handle SIGINT ourselves (i.e. propagate the shutdown to the serverside)
+			import os
+			os.setpgrp()
+
 		addr_arg = '{user}@{host}'.format(user=self.username, host=self.address)
 		ssh_cmd = ['ssh', '-i', self.settings['keyfile'],
 		                  '-p', str(self.settings['port']),
@@ -85,7 +92,8 @@ class RemoteBuildServer(BuildServer):
 		                  addr_arg]
 		full_cmd = ssh_cmd + ['--'] + server_cmd
 		import sys
-		self.ssh_process = subprocess.Popen(args=full_cmd, stdout=sys.stderr, stderr=sys.stderr)
+		self.ssh_process = subprocess.Popen(args=full_cmd, stdout=sys.stderr, stderr=sys.stderr,
+		                                    preexec_fn=set_process_group)
 
 		# Check that we can connect to the server
 		try:

@@ -15,7 +15,7 @@ class TaskList(object):
 		self.tasks = tasks
 		self.tasks_completed = []
 
-	def run(self, info, dry_run=False):
+	def run(self, info, dry_run=False, check_continue=None):
 		"""Converts the taskgraph into a list and runs all tasks in that list
 
 		:param dict info: The bootstrap information object
@@ -27,6 +27,9 @@ class TaskList(object):
 		log.debug('Tasklist:\n\t' + ('\n\t'.join(map(repr, task_list))))
 
 		for task in task_list:
+			# Check if we should abort the run (used for asynchronous run abortion through remote building)
+			if callable(check_continue) and not check_continue():
+				raise TaskListError('Run was aborted.')
 			# Tasks are not required to have a description
 			if hasattr(task, 'description'):
 				log.info(task.description)

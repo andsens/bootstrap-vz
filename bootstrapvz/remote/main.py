@@ -88,12 +88,23 @@ def run(manifest, build_server, debug=False, dry_run=False):
 			# Tell the RPC daemon about the callback server
 			connection.set_callback_server(callback_server)
 
+			# Replace the standard SIGINT handler with a remote call to the server
+			# so that it may abort the run.
+			def abort(signum, frame):
+				import logging
+				logging.getLogger(__name__).warn('SIGINT received, asking remote to abort.')
+				callback_server.abort_run()
+			import signal
+			orig_sigint = signal.signal(signal.SIGINT, abort)
+
 			# Everything has been set up, begin the bootstrapping process
 			bootstrap_info = connection.run(manifest,
 			                                debug=debug,
 			                                # We can't pause the bootstrapping process remotely, yet...
 			                                pause_on_error=False,
 			                                dry_run=dry_run)
+			# Restore the old SIGINT handler
+			signal.signal(signal.SIGINT, orig_sigint)
 		finally:
 			# Stop the callback server
 			callback_server.stop()
