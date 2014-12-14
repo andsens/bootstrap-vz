@@ -1,3 +1,4 @@
+import virtualbox
 
 
 class Image(object):
@@ -14,12 +15,11 @@ class VirtualBoxImage(Image):
 	def __init__(self, manifest, image_path):
 		super(VirtualBoxImage, self).__init__(manifest)
 		self.image_path = image_path
-		self.medium = self.vbox.open_medium(location=self.image.image_path,
-		                                    decive_type=self.vbox.library.DeviceType.HardDisk,
-		                                    access_mode=self.vbox.library.AccessMode.read_only,
-		                                    force_new_uuid=False)
+		self.vbox = virtualbox.VirtualBox()
+		self.medium = self.vbox.open_medium(self.image_path,  # location
+		                                    virtualbox.library.DeviceType.hard_disk,  # decive_type
+		                                    virtualbox.library.AccessMode.read_only,  # access_mode
+		                                    False)  # force_new_uuid
 
 	def destroy(self):
-		self.medium.delete_storage()
-		import os
-		os.remove(self.image_path)
+		self.medium.close()

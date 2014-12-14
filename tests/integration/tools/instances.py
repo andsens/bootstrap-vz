@@ -1,4 +1,5 @@
 from bootstrapvz.common.tools import log_check_call
+import virtualbox
 
 
 class Instance(object):
@@ -24,11 +25,12 @@ class VirtualBoxInstance(Instance):
 
 	def __init__(self, name, image):
 		super(VirtualBoxInstance, self).__init__(name, image)
-		import virtualbox
 		self.vbox = virtualbox.VirtualBox()
+		manager = virtualbox.Manager()
+		self.session = manager.get_session()
 
 	def create(self):
-		if self.image.manifest['system']['architecture'] == 'x86':
+		if self.image.manifest.system['architecture'] == 'x86':
 			os_type = 'Debian'
 		else:
 			os_type = 'Debian_64'
@@ -37,27 +39,19 @@ class VirtualBoxInstance(Instance):
 		self.machine.save_settings()
 		self.machine.cpu_count = self.cpus
 		self.machine.memory_size = self.memory
-		self.machine.attach_device(name='root', controller_port=0, device=0,
-		                           type_p=self.vbox.library.DeviceType.HardDisk,
-		                           medium=self.image.medium)
 		self.vbox.register_machine(self.machine)
-		# [self.uuid] = log_check_call(['VBoxManage', 'createvm'
-		#                               '--name', self.name])
-		# log_check_call(['VBoxManage', 'modifyvm', self.uuid,
-		#                 '--cpus', self.cpus,
-		#                 '--memory', self.memory])
-		# log_check_call(['VBoxManage', 'storageattach', self.uuid,
-		#                 '--storagectl', '"SATA Controller"',
-		#                 '--device', '0',
-		#                 '--port', '0',
-		#                 '--type', 'hdd',
-		#                 '--medium', self.image.image_path])
+		self.machine.lock_machine(self.session, virtualbox.library.LockType.write)
+		strg_ctrl = self.session.machine.add_storage_controller('SATA Controller',
+		                                                        virtualbox.library.StorageBus.sata)
+		strg_ctrl.port_count = 1
+		self.session.machine.attach_device(name='SATA Controller', controller_port=0, device=0,
+		                                   type_p=virtualbox.library.DeviceType.hard_disk,
+		                                   medium=self.image.medium)
+		self.session.machine.save_settings()
+		self.session.unlock_machine()
 
 	def boot(self):
-		self.session = self.vbox.Session()
 		self.machine.launch_vm_process(self.session, 'headless')
-		# log_check_call(['VBoxManage', 'startvm', self.uuid,
-		#                 '--type', 'headless'])
 
 	def shutdown(self):
 		self.session.console.power_down()
@@ -65,5 +59,10 @@ class VirtualBoxInstance(Instance):
 		                '--type', 'headless'])
 
 	def destroy(self):
-		self.machine.unregister(self.vbox.CleanupMode.full)
-		self.machine.remove(delete=True)
+		if hasattr(self, 'machine'):
+			self.machine.lock_machine(self.session, virtualbox.library.LockType.write)
+			self.session.machine.detach_device(name='SATA Controller', controller_port=0, device=0)
+			self.session.machine.save_settings()
+			self.session.unlock_machine()
+			self.machine.unregister(virtualbox.library.CleanupMode.unregister_only)
+			self.machine.remove(delete=True)

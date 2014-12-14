@@ -1,4 +1,6 @@
 import tools
+import tools.images
+import tools.instances
 from manifests import partials
 from bootstrapvz.base.manifest import Manifest
 from bootstrapvz.remote.build_servers import pick_build_server
@@ -39,14 +41,18 @@ volume:
 
 	try:
 		image = tools.images.VirtualBoxImage(manifest, image_path)
+		try:
+			instance = tools.instances.VirtualBoxInstance('unpartitioned_extlinux', image)
+			instance.create()
+			# instance.boot()
 
-		instance = tools.instances.VirtualBoxInstance(image)
-		instance.create()
-		instance.boot()
+			# tools.test(instance)
 
-		tools.test(instance)
+		finally:
+			if 'instance' in locals():
+				instance.destroy()
 	finally:
-		if 'instance' in locals():
-			instance.destroy()
 		if 'image' in locals():
 			image.destroy()
+		import os
+		os.remove(image_path)
