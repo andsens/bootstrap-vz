@@ -4,8 +4,8 @@ title: Puppet plugin manifest
 type: object
 properties:
   plugins:
-    properties:
     type: object
+    properties:
       puppet:
         type: object
         properties:
