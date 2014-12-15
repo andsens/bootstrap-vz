@@ -1,0 +1,44 @@
+---
+$schema: http://json-schema.org/draft-04/schema#
+properties:
+  plugins:
+    properties:
+      file_copy:
+        properties:
+          mkdirs:
+            items:
+              dir:
+                $ref: '#/definitions/absolute_path'
+              permissions:
+                type: string
+              owner:
+                type: string
+              group:
+                type: string
+          files:
+            items:
+              src:
+                $ref: '#/definitions/absolute_path'
+              dst:
+                $ref: '#/definitions/absolute_path'
+              permissions:
+                type: string
+              owner:
+                type: string
+              group:
+                type: string
+            minItems: 1
+            type: array
+            required:
+              - src
+              - dst
+        required:
+        - files
+        type: object
+    required:
+    - file_copy
+    type: object
+required:
+- plugins
+title: File copy plugin manifest
+type: object
