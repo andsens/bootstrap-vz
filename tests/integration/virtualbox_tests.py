@@ -44,7 +44,10 @@ volume:
 		try:
 			instance = tools.instances.VirtualBoxInstance('unpartitioned_extlinux', image)
 			instance.create()
-			# instance.boot()
+			try:
+				instance.boot()
+			finally:
+				instance.shutdown()
 
 			# tools.test(instance)
 

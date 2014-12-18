@@ -23,6 +23,16 @@ def merge_dicts(*args):
 	return reduce(merge, args, {})
 
 
+def waituntil(predicate, timeout=5, interval=0.05):
+	import time
+	threshhold = time.time() + timeout
+	while time.time() < threshhold:
+		if predicate():
+			return True
+		time.sleep(interval)
+	return False
+
+
 def bootstrap(manifest, build_server):
 	from bootstrapvz.remote.build_servers import LocalBuildServer
 	if isinstance(build_server, LocalBuildServer):
