@@ -20,7 +20,8 @@ volume:
     type: msdos
 """)
 	manifest_data = tools.merge_dicts(partials['base'], partials['stable64'],
-	                                  partials['unpartitioned'], manifest_data)
+	                                  partials['unpartitioned'], partials['root_password'],
+	                                  manifest_data)
 
 	build_server = pick_build_server(build_servers, manifest_data)
 	manifest_data = build_server.apply_build_settings(manifest_data)

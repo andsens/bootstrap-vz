@@ -12,4 +12,9 @@ for path in partial_json + partial_yaml:
 		msg = 'Error when loading partial manifests: The partial {key} exists twice'.format(key=key)
 		raise Exception(msg)
 	partials[key] = load_data(path)
-	
+
+import random
+import string
+pool = string.ascii_uppercase + string.ascii_lowercase + string.digits
+random_password = ''.join(random.choice(pool) for _ in range(16))
+partials['root_password']['plugins']['root_password']['password'] = random_password
