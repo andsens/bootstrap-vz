@@ -130,10 +130,10 @@ class BootstrapInformation(object):
 
 	def __getstate__(self):
 		state = self.__dict__.copy()
-		exclude_keys = ['volume', 'source_lists', 'preference_lists', 'packages']
+		exclude_keys = ['source_lists', 'preference_lists', 'packages']
 		for key in exclude_keys:
 			del state[key]
-		state['__class__'] = 'bootstrapvz.base.bootstrapinfo.BootstrapInformation'
+		state['__class__'] = self.__module__ + '.' + self.__class__.__name__
 		return state
 
 	def __setstate__(self, state):

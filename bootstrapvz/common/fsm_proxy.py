@@ -43,6 +43,19 @@ class FSMProxy(object):
 			if not hasattr(self, event):
 				setattr(self, event, make_proxy(fsm, event))
 
+	def __getstate__(self):
+		state = {}
+		for key, value in self.__dict__.iteritems():
+			if callable(value) or key == 'fsm':
+				continue
+			state[key] = value
+		state['__class__'] = self.__module__ + '.' + self.__class__.__name__
+		return state
+
+	def __setstate__(self, state):
+		for key in state:
+			self.__dict__[key] = state[key]
+
 
 class FSMProxyError(Exception):
 	pass

@@ -133,7 +133,7 @@ class Manifest(object):
 		raise ManifestError(message, self.path, data_path)
 
 	def __getstate__(self):
-		return {'__class__': 'bootstrapvz.base.manifest.Manifest',
+		return {'__class__': self.__module__ + '.' + self.__class__.__name__,
 		        'path': self.path,
 		        'data': self.data}
 

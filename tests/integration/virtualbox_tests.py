@@ -38,6 +38,7 @@ volume:
 		os.close(handle)
 		build_server.download(bootstrap_info.volume.image_path, image_path)
 		build_server.delete(bootstrap_info.volume.image_path)
+		# image_path = '/Users/anders/Workspace/cloud/images/debian-wheezy-amd64-141130.vmdk'
 
 	try:
 		image = tools.images.VirtualBoxImage(manifest, image_path)
@@ -46,11 +47,9 @@ volume:
 			instance.create()
 			try:
 				instance.boot()
+				# tools.reachable_with_ssh(instance)
 			finally:
 				instance.shutdown()
-
-			# tools.test(instance)
-
 		finally:
 			if 'instance' in locals():
 				instance.destroy()

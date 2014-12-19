@@ -77,3 +77,7 @@ class QEMUVolume(LoopbackVolume):
 			if not self._is_nbd_used(device_name):
 				return os.path.join('/dev', device_name)
 		raise VolumeError('Unable to find free nbd device.')
+
+	def __setstate__(self, state):
+		for key in state:
+			self.__dict__[key] = state[key]

@@ -126,6 +126,14 @@ class Bytes(object):
 			self.qty %= other
 		return self
 
+	def __getstate__(self):
+		return {'__class__': self.__module__ + '.' + self.__class__.__name__,
+		        'qty': self.qty,
+		        }
+
+	def __setstate__(self, state):
+		self.qty = state['qty']
+
 
 class UnitError(Exception):
 	pass
