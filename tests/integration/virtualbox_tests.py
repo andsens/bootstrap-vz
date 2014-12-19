@@ -39,7 +39,6 @@ volume:
 		os.close(handle)
 		build_server.download(bootstrap_info.volume.image_path, image_path)
 		build_server.delete(bootstrap_info.volume.image_path)
-		# image_path = '/Users/anders/Workspace/cloud/images/debian-wheezy-amd64-141130.vmdk'
 
 	try:
 		image = tools.images.VirtualBoxImage(manifest, image_path)
