@@ -15,11 +15,22 @@ def main():
 
 
 def setup_logging():
+	root = logging.getLogger()
+	root.setLevel(logging.NOTSET)
+
 	from log import LogForwarder
 	log_forwarder = LogForwarder()
-	root = logging.getLogger()
 	root.addHandler(log_forwarder)
-	root.setLevel(logging.NOTSET)
+
+	from datetime import datetime
+	import os.path
+	from bootstrapvz.base.log import get_file_handler
+	timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+	filename = '{timestamp}_remote.log'.format(timestamp=timestamp)
+	logfile_path = os.path.join('/var/log/bootstrap-vz', filename)
+	file_handler = get_file_handler(logfile_path, True)
+	root.addHandler(file_handler)
+
 	return log_forwarder
 
 
