@@ -45,14 +45,12 @@ volume:
 		image_path = '/Users/anders/Workspace/cloud/images/debian-wheezy-amd64-141130.vmdk'
 
 	image = VirtualBoxImage(manifest, image_path)
-	output = None
 	try:
 		instance = VirtualBoxInstance('unpartitioned_extlinux', image)
 		try:
 			instance.create()
 			try:
 				instance.boot()
-				output = instance.get_console_output()
 				# tools.reachable_with_ssh(instance)
 			finally:
 				instance.shutdown()

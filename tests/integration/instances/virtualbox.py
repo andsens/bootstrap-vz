@@ -50,24 +50,33 @@ class VirtualBoxInstance(Instance):
 
 	def boot(self):
 		self.machine.launch_vm_process(self.session, 'headless').wait_for_completion(-1)
+		self.console_output = self._read_console_output()
 
-	def get_console_output(self):
+	def _read_console_output(self):
 		import socket
 		import select
 		import errno
 		import sys
 		console = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
 		console.connect(self.serial_port_path)
-
 		console.setblocking(0)
+
+		runlvl_check = 'INIT: Entering runlevel: 2'
 		output = ''
+		ptr = 0
 		continue_select = True
 		while continue_select:
 			read_ready, _, _ = select.select([console], [], [])
 			if console in read_ready:
 				while True:
 					try:
-						sys.stdout.write(console.recv(1024))
+						read = console.recv(1024)
+						output += read
+						sys.stdout.write(read)
+						if runlvl_check in output[ptr:]:
+							continue_select = False
+						else:
+							ptr = len(output) - len(runlvl_check)
 						break
 					except socket.error, e:
 						if e.errno != errno.EWOULDBLOCK:
