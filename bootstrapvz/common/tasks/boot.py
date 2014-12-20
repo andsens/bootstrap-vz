@@ -148,7 +148,7 @@ class AddExtlinuxPackage(Task):
 			info.packages.add('syslinux-common')
 
 
-class ConfigureExtLinux(Task):
+class ConfigureExtlinux(Task):
 	description = 'Configuring extlinux'
 	phase = phases.system_modification
 	predecessors = [filesystem.FStab]
@@ -157,14 +157,14 @@ class ConfigureExtLinux(Task):
 	def run(cls, info):
 		from bootstrapvz.common.tools import sed_i
 		extlinux_def = os.path.join(info.root, 'etc/default/extlinux')
-		sed_i(extlinux_def, '^EXTLINUX_PARAMETERS="ro quiet"',
-		                    'EXTLINUX_PARAMETERS="ro console=ttyS0"')
+		sed_i(extlinux_def, r'^EXTLINUX_PARAMETERS="([^"]+)"$',
+		                    r'EXTLINUX_PARAMETERS="\1 console=ttyS0"')
 
 
 class InstallExtLinux(Task):
 	description = 'Installing extlinux'
 	phase = phases.system_modification
-	predecessors = [filesystem.FStab]
+	predecessors = [filesystem.FStab, ConfigureExtlinux]
 
 	@classmethod
 	def run(cls, info):
