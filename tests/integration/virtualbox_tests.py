@@ -45,23 +45,20 @@ volume:
 		image_path = '/Users/anders/Workspace/cloud/images/debian-wheezy-amd64-141130.vmdk'
 
 	image = VirtualBoxImage(manifest, image_path)
-	lines = []
+	output = None
 	try:
 		instance = VirtualBoxInstance('unpartitioned_extlinux', image)
 		try:
 			instance.create()
 			try:
 				instance.boot()
-				lines = instance.get_console_output()
+				output = instance.get_console_output()
 				# tools.reachable_with_ssh(instance)
 			finally:
 				instance.shutdown()
 		finally:
 			instance.destroy()
 	finally:
-		# pass
-		if len(lines) > 0:
-			raise Exception('\n'.join(lines))
-		# image.destroy()
-		# import os
-		# os.remove(image_path)
+		image.destroy()
+		import os
+		os.remove(image_path)

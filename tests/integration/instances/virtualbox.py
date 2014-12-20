@@ -45,11 +45,36 @@ class VirtualBoxInstance(Instance):
 			os.close(handle)
 			serial_port.path = self.serial_port_path
 			serial_port.host_mode = vboxapi.library.PortMode.host_pipe
-			# serial_port.server = True
+			serial_port.server = True  # Create the socket on startup
 			machine.save_settings()
 
 	def boot(self):
 		self.machine.launch_vm_process(self.session, 'headless').wait_for_completion(-1)
+
+	def get_console_output(self):
+		import socket
+		import select
+		import errno
+		import sys
+		console = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+		console.connect(self.serial_port_path)
+
+		console.setblocking(0)
+		output = ''
+		continue_select = True
+		while continue_select:
+			read_ready, _, _ = select.select([console], [], [])
+			if console in read_ready:
+				while True:
+					try:
+						sys.stdout.write(console.recv(1024))
+						break
+					except socket.error, e:
+						if e.errno != errno.EWOULDBLOCK:
+							raise Exception(e)
+						continue_select = False
+		console.close()
+		return output
 
 	def shutdown(self):
 		self.session.console.power_down().wait_for_completion(-1)
