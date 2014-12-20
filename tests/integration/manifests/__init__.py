@@ -29,9 +29,21 @@ def merge_manifest_data(standard_partials=[], custom=[]):
 
 # Snatched from here: http://stackoverflow.com/a/7205107
 def merge_dicts(*args):
-	def merge(a, b, path=None):
-		if path is None:
-			path = []
+	def clone(obj):
+		copy = obj
+		if isinstance(obj, dict):
+			copy = {}
+			for key, value in obj.iteritems():
+				copy[key] = clone(value)
+		if isinstance(obj, list):
+			copy = []
+			copy.extend(obj)
+		if isinstance(obj, set):
+			copy = set()
+			copy.update(obj)
+		return copy
+
+	def merge(a, b, path=[]):
 		for key in b:
 			if key in a:
 				if isinstance(a[key], dict) and isinstance(b[key], dict):
@@ -39,8 +51,8 @@ def merge_dicts(*args):
 				elif a[key] == b[key]:
 					pass
 				else:
-					raise Exception('Conflict at %s' % '.'.join(path + [str(key)]))
+					raise Exception('Conflict at `{path}\''.format(path='.'.join(path + [str(key)])))
 			else:
-						a[key] = b[key]
+				a[key] = clone(b[key])
 		return a
 	return reduce(merge, args, {})
