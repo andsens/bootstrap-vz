@@ -1,0 +1,5 @@
+---
+plugins:
+  apt_proxy:
+    address: 127.0.0.1
+    port: 3142
