@@ -56,11 +56,30 @@ def log_call(command, stdin=None, env=None, shell=False, cwd=None):
 	return process.returncode, stdout, stderr
 
 
-def sed_i(file_path, pattern, subst):
+def sed_i(file_path, pattern, subst, expected_replacements=1):
+	replacement_count = inline_replace(file_path, pattern, subst)
+	if replacement_count < expected_replacements:
+		from exceptions import NoMatchesError
+		msg = ('There were no matches for the expression `{exp}\' in the file `{path}\''
+		       .format(exp=pattern, path=file_path))
+		raise NoMatchesError(msg)
+	if replacement_count > expected_replacements:
+		from exceptions import TooManyMatchesError
+		msg = ('There were too many matches for the expression `{exp}\' in the file `{path}\''
+		       .format(exp=pattern, path=file_path))
+		raise TooManyMatchesError(msg)
+
+
+def inline_replace(file_path, pattern, subst):
 	import fileinput
 	import re
+	replacement_count = 0
 	for line in fileinput.input(files=file_path, inplace=True):
-		print re.sub(pattern, subst, line),
+		replacement = re.sub(pattern, subst, line)
+		if replacement != line:
+			replacement_count += 1
+		print replacement,
+	return replacement_count
 
 
 def load_json(path):

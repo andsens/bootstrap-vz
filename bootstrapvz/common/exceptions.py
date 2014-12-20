@@ -26,3 +26,11 @@ class TaskListError(Exception):
 
 class TaskError(Exception):
 	pass
+
+
+class NoMatchesError(Exception):
+	pass
+
+
+class TooManyMatchesError(Exception):
+	pass
