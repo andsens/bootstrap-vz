@@ -1,6 +1,8 @@
 from __future__ import absolute_import
 from . import Instance
 import virtualbox as vboxapi
+import logging
+log = logging.getLogger(__name__)
 
 
 class VirtualBoxInstance(Instance):
@@ -15,6 +17,7 @@ class VirtualBoxInstance(Instance):
 		self.session = manager.get_session()
 
 	def create(self):
+		log.debug('Creating vbox machine `{name}\''.format(name=self.name))
 		# create machine
 		os_type = {'x86': 'Debian',
 		           'amd64': 'Debian_64'}.get(self.image.manifest.system['architecture'])
@@ -26,6 +29,7 @@ class VirtualBoxInstance(Instance):
 		self.vbox.register_machine(self.machine)
 
 		# attach image
+		log.debug('Attaching SATA storage controller to vbox machine `{name}\''.format(name=self.name))
 		with self.Lock(self.machine, self.session) as machine:
 			strg_ctrl = machine.add_storage_controller('SATA Controller',
 			                                           vboxapi.library.StorageBus.sata)
@@ -36,6 +40,7 @@ class VirtualBoxInstance(Instance):
 			machine.save_settings()
 
 		# redirect serial port
+		log.debug('Enabling serial port on vbox machine `{name}\''.format(name=self.name))
 		with self.Lock(self.machine, self.session) as machine:
 			serial_port = machine.get_serial_port(0)
 			serial_port.enabled = True
@@ -49,24 +54,31 @@ class VirtualBoxInstance(Instance):
 			machine.save_settings()
 
 	def boot(self):
+		log.debug('Booting vbox machine `{name}\''.format(name=self.name))
 		self.machine.launch_vm_process(self.session, 'headless').wait_for_completion(-1)
 		from ..tools import read_from_socket
 		self.console_output = read_from_socket(self.serial_port_path, 'INIT: Entering runlevel: 2', 20)
 
 	def shutdown(self):
+		log.debug('Shutting down vbox machine `{name}\''.format(name=self.name))
 		self.session.console.power_down().wait_for_completion(-1)
 		self.Lock(self.machine, self.session).unlock()
 
 	def destroy(self):
+		log.debug('Destroying vbox machine `{name}\''.format(name=self.name))
 		if hasattr(self, 'machine'):
 			try:
+				log.debug('Detaching SATA storage controller from vbox machine `{name}\''.format(name=self.name))
 				with self.Lock(self.machine, self.session) as machine:
 					machine.detach_device(name='SATA Controller', controller_port=0, device=0)
 					machine.save_settings()
 			except vboxapi.library.VBoxErrorObjectNotFound:
 				pass
+			log.debug('Unregistering and removing vbox machine `{name}\''.format(name=self.name))
 			self.machine.unregister(vboxapi.library.CleanupMode.unregister_only)
 			self.machine.remove(delete=True)
+		else:
+			log.debug('vbox machine `{name}\' was not created, skipping destruction'.format(name=self.name))
 
 	def up(self):
 		try:

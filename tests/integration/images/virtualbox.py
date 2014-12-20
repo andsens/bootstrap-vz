@@ -1,6 +1,8 @@
 from __future__ import absolute_import
 from . import Image
 import virtualbox as vboxapi
+import logging
+log = logging.getLogger(__name__)
 
 
 class VirtualBoxImage(Image):
@@ -11,12 +13,14 @@ class VirtualBoxImage(Image):
 		self.vbox = vboxapi.VirtualBox()
 
 	def open(self):
+		log.debug('Opening vbox medium `{path}\''.format(path=self.image_path))
 		self.medium = self.vbox.open_medium(self.image_path,  # location
 		                                    vboxapi.library.DeviceType.hard_disk,  # decive_type
 		                                    vboxapi.library.AccessMode.read_only,  # access_mode
 		                                    False)  # force_new_uuid
 
 	def close(self):
+		log.debug('Closing vbox medium `{path}\''.format(path=self.image_path))
 		self.medium.close()
 
 	def get_instance(self):

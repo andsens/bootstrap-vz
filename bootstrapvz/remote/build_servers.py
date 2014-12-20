@@ -29,15 +29,16 @@ def pick_build_server(build_servers, manifest, preferences={}):
 		if not matches(name, settings):
 			continue
 		if settings['type'] == 'local':
-			return LocalBuildServer(settings)
+			return LocalBuildServer(name, settings)
 		else:
-			return RemoteBuildServer(settings)
+			return RemoteBuildServer(name, settings)
 	raise Exception('Unable to find a build server that matches your preferences.')
 
 
 class BuildServer(object):
 
-	def __init__(self, settings):
+	def __init__(self, name, settings):
+		self.name = name
 		self.settings = settings
 		self.build_settings = settings.get('build_settings', {})
 		self.can_bootstrap = settings['can_bootstrap']
@@ -57,8 +58,8 @@ class LocalBuildServer(BuildServer):
 
 class RemoteBuildServer(BuildServer):
 
-	def __init__(self, settings):
-		super(RemoteBuildServer, self).__init__(settings)
+	def __init__(self, name, settings):
+		super(RemoteBuildServer, self).__init__(name, settings)
 		self.address = settings['address']
 		self.port = settings['port']
 		self.username = settings['username']
@@ -74,7 +75,7 @@ class RemoteBuildServer(BuildServer):
 		[self.remote_server_port, self.remote_callback_port] = getNPorts(2)
 
 	def connect(self):
-		log.debug('Opening SSH connection')
+		log.debug('Opening SSH connection to build server `{name}\''.format(name=self.name))
 		import subprocess
 
 		server_cmd = ['sudo', self.server_bin, '--listen', str(self.remote_server_port)]
@@ -103,7 +104,7 @@ class RemoteBuildServer(BuildServer):
 			server_uri = 'PYRO:server@localhost:{server_port}'.format(server_port=self.local_server_port)
 			self.connection = Pyro4.Proxy(server_uri)
 
-			log.debug('Connecting to the RPC daemon')
+			log.debug('Connecting to the RPC daemon on build server `{name}\''.format(name=self.name))
 			remaining_retries = 5
 			while True:
 				try:
@@ -123,14 +124,15 @@ class RemoteBuildServer(BuildServer):
 
 	def disconnect(self):
 		if hasattr(self, 'connection'):
-			log.debug('Stopping the RPC daemon')
+			log.debug('Stopping the RPC daemon on build server `{name}\''.format(name=self.name))
 			self.connection.stop()
 			self.connection._pyroRelease()
 		if hasattr(self, 'ssh_process'):
-			log.debug('Waiting for the SSH connection to terminate')
+			log.debug('Waiting for SSH connection to build server `{name}\' to terminate'.format(name=self.name))
 			self.ssh_process.wait()
 
 	def download(self, src, dst):
+		log.debug('Downloading file `{path}\' from build server `{name}\''.format(path=src, name=self.name))
 		# Make sure we can read the file as {user}
 		self._remote_command(['sudo', 'chown', self.username, src])
 		src_arg = '{user}@{host}:{path}'.format(user=self.username, host=self.address, path=src)
@@ -138,6 +140,7 @@ class RemoteBuildServer(BuildServer):
 		                src_arg, dst])
 
 	def delete(self, path):
+		log.debug('Deleting file `{path}\' on build server `{name}\''.format(path=path, name=self.name))
 		self._remote_command(['sudo', 'rm', path])
 
 	def _remote_command(self, command):
