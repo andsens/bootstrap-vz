@@ -68,6 +68,29 @@ class VirtualBoxInstance(Instance):
 			self.machine.unregister(vboxapi.library.CleanupMode.unregister_only)
 			self.machine.remove(delete=True)
 
+	def up(self):
+		try:
+			self.create()
+			try:
+				self.boot()
+			except Exception as e:
+				self.shutdown()
+				raise e
+		except Exception as e:
+			self.destroy()
+			raise e
+
+	def down(self):
+		self.shutdown()
+		self.destroy()
+
+	def __enter__(self):
+		self.up()
+		return self
+
+	def __exit__(self, type, value, traceback):
+		self.down()
+
 	class Lock(object):
 		def __init__(self, machine, session):
 			self.machine = machine

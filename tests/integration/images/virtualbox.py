@@ -9,10 +9,26 @@ class VirtualBoxImage(Image):
 		super(VirtualBoxImage, self).__init__(manifest)
 		self.image_path = image_path
 		self.vbox = vboxapi.VirtualBox()
+
+	def open(self):
 		self.medium = self.vbox.open_medium(self.image_path,  # location
 		                                    vboxapi.library.DeviceType.hard_disk,  # decive_type
 		                                    vboxapi.library.AccessMode.read_only,  # access_mode
 		                                    False)  # force_new_uuid
 
-	def destroy(self):
+	def close(self):
 		self.medium.close()
+
+	def get_instance(self):
+		import hashlib
+		from ..instances.virtualbox import VirtualBoxInstance
+		image_hash = hashlib.sha1(self.image_path).hexdigest()
+		name = 'bootstrap-vz-{hash}'.format(hash=image_hash[:8])
+		return VirtualBoxInstance(name, self)
+
+	def __enter__(self):
+		self.open()
+		return self.get_instance()
+
+	def __exit__(self, type, value, traceback):
+		self.close()
