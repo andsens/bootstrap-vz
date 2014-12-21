@@ -1,4 +1,4 @@
 ---
 system:
   release: stable
-  architecture: amd64
+  architecture: x86
