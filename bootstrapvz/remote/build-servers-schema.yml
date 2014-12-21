@@ -31,6 +31,13 @@ definitions:
     type: object
     properties:
       guest_additions: {$ref: '#/definitions/absolute_path'}
+      apt_proxy:
+        type: object
+        properties:
+          address: {type: string}
+          port: {type: integer}
+          persistent: {type: boolean}
+        required: [address, port]
 
   ssh:
     type: object

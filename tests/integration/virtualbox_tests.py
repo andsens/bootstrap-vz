@@ -9,8 +9,7 @@ partials = {'vbox': 'provider: {name: virtualbox}',
 
 
 def test_unpartitioned_extlinux_oldstable():
-	std_partials = ['base', 'oldstable64', 'extlinux', 'unpartitioned',
-	                'root_password', 'apt_proxy']
+	std_partials = ['base', 'oldstable64', 'extlinux', 'unpartitioned', 'root_password']
 	custom_partials = [partials['vbox'], partials['vmdk']]
 	manifest_data = merge_manifest_data(std_partials, custom_partials)
 	with BootableManifest(manifest_data) as instance:
@@ -18,8 +17,7 @@ def test_unpartitioned_extlinux_oldstable():
 
 
 def test_partitioned_extlinux_oldstable():
-	std_partials = ['base', 'oldstable64', 'extlinux', 'msdos', 'single_partition',
-	                'root_password', 'apt_proxy']
+	std_partials = ['base', 'oldstable64', 'extlinux', 'msdos', 'single_partition', 'root_password']
 	custom_partials = [partials['vbox'], partials['vmdk']]
 	manifest_data = merge_manifest_data(std_partials, custom_partials)
 	with BootableManifest(manifest_data) as instance:
@@ -27,8 +25,7 @@ def test_partitioned_extlinux_oldstable():
 
 
 def test_partitioned_grub_oldstable():
-	std_partials = ['base', 'oldstable64', 'grub', 'msdos', 'single_partition',
-	                'root_password', 'apt_proxy']
+	std_partials = ['base', 'oldstable64', 'grub', 'msdos', 'single_partition', 'root_password']
 	custom_partials = [partials['vbox'], partials['vmdk']]
 	manifest_data = merge_manifest_data(std_partials, custom_partials)
 	with BootableManifest(manifest_data) as instance:
@@ -36,8 +33,7 @@ def test_partitioned_grub_oldstable():
 
 
 def test_unpartitioned_extlinux():
-	std_partials = ['base', 'stable64', 'extlinux', 'unpartitioned',
-	                'root_password', 'apt_proxy']
+	std_partials = ['base', 'stable64', 'extlinux', 'unpartitioned', 'root_password']
 	custom_partials = [partials['vbox'], partials['vmdk']]
 	manifest_data = merge_manifest_data(std_partials, custom_partials)
 	with BootableManifest(manifest_data) as instance:
@@ -45,8 +41,7 @@ def test_unpartitioned_extlinux():
 
 
 def test_partitioned_extlinux():
-	std_partials = ['base', 'stable64', 'extlinux', 'msdos', 'single_partition',
-	                'root_password', 'apt_proxy']
+	std_partials = ['base', 'stable64', 'extlinux', 'msdos', 'single_partition', 'root_password']
 	custom_partials = [partials['vbox'], partials['vmdk']]
 	manifest_data = merge_manifest_data(std_partials, custom_partials)
 	with BootableManifest(manifest_data) as instance:
@@ -54,8 +49,7 @@ def test_partitioned_extlinux():
 
 
 def test_partitioned_grub():
-	std_partials = ['base', 'stable64', 'grub', 'msdos', 'single_partition',
-	                'root_password', 'apt_proxy']
+	std_partials = ['base', 'stable64', 'grub', 'msdos', 'single_partition', 'root_password']
 	custom_partials = [partials['vbox'], partials['vmdk']]
 	manifest_data = merge_manifest_data(std_partials, custom_partials)
 	with BootableManifest(manifest_data) as instance:
@@ -64,8 +58,7 @@ def test_partitioned_grub():
 
 def test_unpartitioned_extlinux_unstable():
 	raise Skip('Jessie not yet working with extlinux')
-	std_partials = ['base', 'unstable64', 'extlinux', 'msdos', 'unpartitioned',
-	                'root_password', 'apt_proxy']
+	std_partials = ['base', 'unstable64', 'extlinux', 'msdos', 'unpartitioned', 'root_password']
 	custom_partials = [partials['vbox'], partials['vmdk']]
 	manifest_data = merge_manifest_data(std_partials, custom_partials)
 	with BootableManifest(manifest_data) as instance:
@@ -74,8 +67,7 @@ def test_unpartitioned_extlinux_unstable():
 
 def test_partitioned_extlinux_unstable():
 	raise Skip('Jessie not yet working with extlinux')
-	std_partials = ['base', 'unstable64', 'extlinux', 'msdos', 'single_partition',
-	                'root_password', 'apt_proxy']
+	std_partials = ['base', 'unstable64', 'extlinux', 'msdos', 'single_partition', 'root_password']
 	custom_partials = [partials['vbox'], partials['vmdk']]
 	manifest_data = merge_manifest_data(std_partials, custom_partials)
 	with BootableManifest(manifest_data) as instance:
@@ -83,8 +75,7 @@ def test_partitioned_extlinux_unstable():
 
 
 def test_partitioned_grub_unstable():
-	std_partials = ['base', 'unstable64', 'grub', 'msdos', 'single_partition',
-	                'root_password', 'apt_proxy']
+	std_partials = ['base', 'unstable64', 'grub', 'msdos', 'single_partition', 'root_password']
 	custom_partials = [partials['vbox'], partials['vmdk']]
 	manifest_data = merge_manifest_data(std_partials, custom_partials)
 	with BootableManifest(manifest_data) as instance:
