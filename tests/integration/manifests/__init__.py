@@ -32,15 +32,11 @@ def merge_dicts(*args):
 	def clone(obj):
 		copy = obj
 		if isinstance(obj, dict):
-			copy = {}
-			for key, value in obj.iteritems():
-				copy[key] = clone(value)
+			copy = {key: clone(value) for key, value in obj.iteritems()}
 		if isinstance(obj, list):
-			copy = []
-			copy.extend(obj)
+			copy = [clone(value) for value in obj]
 		if isinstance(obj, set):
-			copy = set()
-			copy.update(obj)
+			copy = set([clone(value) for value in obj])
 		return copy
 
 	def merge(a, b, path=[]):
