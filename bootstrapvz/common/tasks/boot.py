@@ -165,7 +165,7 @@ class ConfigureExtlinux(Task):
 		                    r'EXTLINUX_PARAMETERS="\1 console=ttyS0"')
 
 
-class InstallExtLinux(Task):
+class InstallExtlinux(Task):
 	description = 'Installing extlinux'
 	phase = phases.system_modification
 	predecessors = [filesystem.FStab, ConfigureExtlinux]
