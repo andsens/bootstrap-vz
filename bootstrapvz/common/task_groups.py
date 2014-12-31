@@ -1,7 +1,8 @@
 from tasks import workspace
 from tasks import packages
 from tasks import host
-from tasks import boot
+from tasks import grub
+from tasks import extlinux
 from tasks import bootstrap
 from tasks import volume
 from tasks import loopback
@@ -129,17 +130,17 @@ locale_group = [locale.LocaleBootstrapPackage,
 def get_bootloader_group(manifest):
 	group = []
 	if manifest.system['bootloader'] == 'grub':
-		group.extend([boot.AddGrubPackage,
-		              boot.ConfigureGrub])
+		group.extend([grub.AddGrubPackage,
+		              grub.ConfigureGrub])
 		from bootstrapvz.common.tools import get_codename
 		if get_codename(manifest.system['release']) in ['squeeze', 'wheezy']:
-			group.append(boot.InstallGrub_1_99)
+			group.append(grub.InstallGrub_1_99)
 		else:
-			group.append(boot.InstallGrub_2)
+			group.append(grub.InstallGrub_2)
 	if manifest.system['bootloader'] == 'extlinux':
-		group.extend([boot.AddExtlinuxPackage,
-		              boot.ConfigureExtlinux,
-		              boot.InstallExtlinux])
+		group.extend([extlinux.AddExtlinuxPackage,
+		              extlinux.ConfigureExtlinux,
+		              extlinux.InstallExtlinux])
 	return group
 
 

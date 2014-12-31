@@ -11,6 +11,7 @@ import tasks.initd
 from bootstrapvz.common.tasks import volume
 from bootstrapvz.common.tasks import filesystem
 from bootstrapvz.common.tasks import boot
+from bootstrapvz.common.tasks import grub
 from bootstrapvz.common.tasks import initd
 from bootstrapvz.common.tasks import loopback
 from bootstrapvz.common.tasks import kernel
@@ -90,7 +91,7 @@ def resolve_tasks(taskset, manifest):
 		taskset.add(initd.AdjustExpandRootScript)
 
 	if manifest.system['bootloader'] == 'pvgrub':
-		taskset.add(boot.AddGrubPackage)
+		taskset.add(grub.AddGrubPackage)
 		taskset.add(tasks.boot.ConfigurePVGrub)
 
 	if manifest.volume['backing'].lower() == 'ebs':

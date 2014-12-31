@@ -1,6 +1,6 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
-from bootstrapvz.common.tasks import boot
+from bootstrapvz.common.tasks import grub
 from bootstrapvz.common.tasks import initd
 from bootstrapvz.common.tools import log_check_call
 from bootstrapvz.common.tools import sed_i
@@ -63,8 +63,8 @@ class AddDockerInit(Task):
 class EnableMemoryCgroup(Task):
 	description = 'Change grub configuration to enable the memory cgroup'
 	phase = phases.system_modification
-	successors = [boot.InstallGrub_1_99, boot.InstallGrub_2]
-	predecessors = [boot.ConfigureGrub, gceboot.ConfigureGrub]
+	successors = [grub.InstallGrub_1_99, grub.InstallGrub_2]
+	predecessors = [grub.ConfigureGrub, gceboot.ConfigureGrub]
 
 	@classmethod
 	def run(cls, info):

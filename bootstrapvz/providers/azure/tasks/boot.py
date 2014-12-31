@@ -1,12 +1,12 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
-from bootstrapvz.common.tasks import boot
+from bootstrapvz.common.tasks import grub
 
 
 class ConfigureGrub(Task):
 	description = 'Change grub configuration to allow for ttyS0 output'
 	phase = phases.system_modification
-	successors = [boot.InstallGrub_1_99, boot.InstallGrub_2]
+	successors = [grub.InstallGrub_1_99, grub.InstallGrub_2]
 
 	@classmethod
 	def run(cls, info):
