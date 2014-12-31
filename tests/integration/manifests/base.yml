@@ -4,7 +4,7 @@ bootstrapper:
   workspace: /target
   tarball: true
 image:
-  name: debian-{system.release}-{system.architecture}-{%y}{%m}{%d}
+  name: deb-{system.release}-{system.architecture}-{system.bootloader}-{volume.partitions.type}-{%y}{%m}{%d}
   description: Debian {system.release} {system.architecture}
 system:
   charmap: UTF-8
