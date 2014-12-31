@@ -33,11 +33,18 @@ class DisableGetTTYs(Task):
 
 	@classmethod
 	def run(cls, info):
-		from ..tools import sed_i
-		inittab_path = os.path.join(info.root, 'etc/inittab')
-		tty1 = '1:2345:respawn:/sbin/getty 38400 tty1'
-		sed_i(inittab_path, '^' + tty1, '#' + tty1)
-		ttyx = ':23:respawn:/sbin/getty 38400 tty'
-		for i in range(2, 7):
-			i = str(i)
-			sed_i(inittab_path, '^' + i + ttyx + i, '#' + i + ttyx + i)
+		# Forward compatible check for jessie,
+		# we should probably get some version numbers up in dis bitch
+		if info.release_codename in ['squeeze', 'wheezy']:
+			from ..tools import sed_i
+			inittab_path = os.path.join(info.root, 'etc/inittab')
+			tty1 = '1:2345:respawn:/sbin/getty 38400 tty1'
+			sed_i(inittab_path, '^' + tty1, '#' + tty1)
+			ttyx = ':23:respawn:/sbin/getty 38400 tty'
+			for i in range(2, 7):
+				i = str(i)
+				sed_i(inittab_path, '^' + i + ttyx + i, '#' + i + ttyx + i)
+		else:
+			tty_path = 'etc/systemd/system/getty.target.wants/getty@tty{num}.service'
+			for i in range(2, 7):
+				os.remove(os.path.join(info.root, tty_path.format(num=i)))
