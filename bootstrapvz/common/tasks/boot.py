@@ -155,6 +155,10 @@ class ConfigureExtlinux(Task):
 
 	@classmethod
 	def run(cls, info):
+		if info.release_codename == 'squeeze':
+			# On squeeze /etc/default/extlinux is generated when running extlinux-update
+			log_check_call(['chroot', info.root,
+			                'extlinux-update'])
 		from bootstrapvz.common.tools import sed_i
 		extlinux_def = os.path.join(info.root, 'etc/default/extlinux')
 		sed_i(extlinux_def, r'^EXTLINUX_PARAMETERS="([^"]+)"$',
