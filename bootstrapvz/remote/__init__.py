@@ -51,7 +51,6 @@ def unregister_deserialization_handlers():
 
 def deserialize_exception(fq_classname, data):
 	class_object = get_class_object(fq_classname)
-	from Pyro4.util import SerializerBase
 	return SerializerBase.make_exception(class_object, data)
 
 
