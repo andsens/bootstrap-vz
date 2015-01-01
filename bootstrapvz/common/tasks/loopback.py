@@ -12,12 +12,12 @@ class AddRequiredCommands(Task):
 	@classmethod
 	def run(cls, info):
 		from ..fs.loopbackvolume import LoopbackVolume
-		if isinstance(info.volume, LoopbackVolume):
-			info.host_dependencies['qemu-img'] = 'qemu-utils'
-			info.host_dependencies['losetup'] = 'mount'
 		from ..fs.qemuvolume import QEMUVolume
-		if isinstance(info.volume, QEMUVolume):
+		if type(info.volume) is LoopbackVolume:
 			info.host_dependencies['losetup'] = 'mount'
+			info.host_dependencies['truncate'] = 'coreutils'
+		if isinstance(info.volume, QEMUVolume):
+			info.host_dependencies['qemu-img'] = 'qemu-utils'
 
 
 class Create(Task):
