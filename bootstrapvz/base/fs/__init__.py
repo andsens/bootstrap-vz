@@ -9,27 +9,33 @@ def load_volume(data, bootloader):
 	:return: The volume that represents all information pertaining to the volume we bootstrap on.
 	:rtype: Volume
 	"""
-	# Create a mapping between valid partition maps in the manifest and their corresponding classes
+	# Map valid partition maps in the manifest and their corresponding classes
 	from partitionmaps.gpt import GPTPartitionMap
 	from partitionmaps.msdos import MSDOSPartitionMap
 	from partitionmaps.none import NoPartitions
-	partition_maps = {'none': NoPartitions,
-	                  'gpt': GPTPartitionMap,
-	                  'msdos': MSDOSPartitionMap,
-	                  }
-	# Instantiate the partition map
-	partition_map = partition_maps.get(data['partitions']['type'])(data['partitions'], bootloader)
+	partition_map = {'none': NoPartitions,
+	                 'gpt': GPTPartitionMap,
+	                 'msdos': MSDOSPartitionMap,
+	                 }.get(data['partitions']['type'])
 
-	# Create a mapping between valid volume backings in the manifest and their corresponding classes
+	# Map valid volume backings in the manifest and their corresponding classes
 	from bootstrapvz.common.fs.loopbackvolume import LoopbackVolume
 	from bootstrapvz.providers.ec2.ebsvolume import EBSVolume
 	from bootstrapvz.common.fs.virtualdiskimage import VirtualDiskImage
 	from bootstrapvz.common.fs.virtualmachinedisk import VirtualMachineDisk
-	volume_backings = {'raw': LoopbackVolume,
-	                   's3':  LoopbackVolume,
-	                   'vdi': VirtualDiskImage,
-	                   'vmdk': VirtualMachineDisk,
-	                   'ebs': EBSVolume
-	                   }
+	volume_backing = {'raw': LoopbackVolume,
+	                  's3':  LoopbackVolume,
+	                  'vdi': VirtualDiskImage,
+	                  'vmdk': VirtualMachineDisk,
+	                  'ebs': EBSVolume
+	                  }.get(data['backing'])
+
+	# Instantiate the partition map
+	from bootstrapvz.common.bytes import Bytes
+	# Only operate with a physical sector size of 512 bytes for now,
+	# not sure if we can change that for some of the virtual disks
+	sector_size = Bytes('512B')
+	partition_map = partition_map(data['partitions'], sector_size, bootloader)
+
 	# Create the volume with the partition map as an argument
-	return volume_backings.get(data['backing'])(partition_map)
+	return volume_backing(partition_map)

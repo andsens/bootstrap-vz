@@ -34,3 +34,7 @@ class NoMatchesError(Exception):
 
 class TooManyMatchesError(Exception):
 	pass
+
+
+class UnitError(Exception):
+	pass

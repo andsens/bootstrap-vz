@@ -1,6 +1,7 @@
 from abstract import AbstractPartitionMap
 from ..partitions.gpt import GPTPartition
 from ..partitions.gpt_swap import GPTSwapPartition
+from ..partitions.gap import PartitionGap
 from bootstrapvz.common.tools import log_check_call
 
 
@@ -8,12 +9,14 @@ class GPTPartitionMap(AbstractPartitionMap):
 	"""Represents a GPT partition map
 	"""
 
-	def __init__(self, data, bootloader):
+	def __init__(self, data, sector_size, bootloader):
 		"""
 		:param dict data: volume.partitions part of the manifest
+		:param int sector_size: Sectorsize of the volume
 		:param str bootloader: Name of the bootloader we will use for bootstrapping
 		"""
-		from bootstrapvz.common.bytes import Bytes
+		from bootstrapvz.common.sectors import Sectors
+
 		# List of partitions
 		self.partitions = []
 
@@ -26,27 +29,27 @@ class GPTPartitionMap(AbstractPartitionMap):
 		# next partition.
 		if bootloader == 'grub':
 			from ..partitions.unformatted import UnformattedPartition
-			self.grub_boot = UnformattedPartition(Bytes('1007KiB'), last_partition())
+			self.grub_boot = UnformattedPartition(Sectors('1007KiB', sector_size), last_partition())
 			# Mark the partition as a bios_grub partition
 			self.grub_boot.flags.append('bios_grub')
 			self.partitions.append(self.grub_boot)
 
 		# The boot and swap partitions are optional
 		if 'boot' in data:
-			self.boot = GPTPartition(Bytes(data['boot']['size']),
+			self.boot = GPTPartition(Sectors(data['boot']['size'], sector_size),
 			                         data['boot']['filesystem'], data['boot'].get('format_command', None),
 			                         'boot', last_partition())
 			self.partitions.append(self.boot)
 		if 'swap' in data:
-			self.swap = GPTSwapPartition(Bytes(data['swap']['size']), last_partition())
+			self.swap = GPTSwapPartition(Sectors(data['swap']['size'], sector_size), last_partition())
 			self.partitions.append(self.swap)
-		self.root = GPTPartition(Bytes(data['root']['size']),
+		self.root = GPTPartition(Sectors(data['root']['size'], sector_size),
 		                         data['root']['filesystem'], data['root'].get('format_command', None),
 		                         'root', last_partition())
 		self.partitions.append(self.root)
 
 		# We need to move the first partition to make space for the gpt offset
-		gpt_offset = Bytes('17KiB')
+		gpt_offset = Sectors('17KiB', sector_size)
 		self.partitions[0].offset += gpt_offset
 
 		if hasattr(self, 'grub_boot'):
@@ -57,6 +60,10 @@ class GPTPartitionMap(AbstractPartitionMap):
 		else:
 			# Avoid increasing the volume size because of gpt_offset
 			self.partitions[0].size -= gpt_offset
+
+		# Leave the last sector unformatted
+		self.partitions[-1].size -= 1
+		self.partitions.append(PartitionGap(Sectors(1, sector_size), last_partition()))
 
 		super(GPTPartitionMap, self).__init__(bootloader)
 
@@ -70,4 +77,6 @@ class GPTPartitionMap(AbstractPartitionMap):
 		                '--', 'mklabel', 'gpt'])
 		# Create the partitions
 		for partition in self.partitions:
+			if isinstance(partition, PartitionGap):
+				continue
 			partition.create(volume)

@@ -7,14 +7,16 @@ class NoPartitions(object):
 	simply always deal with partition maps and then let the base abstract that away.
 	"""
 
-	def __init__(self, data, bootloader):
+	def __init__(self, data, sector_size, bootloader):
 		"""
 		:param dict data: volume.partitions part of the manifest
+		:param int sector_size: Sectorsize of the volume
 		:param str bootloader: Name of the bootloader we will use for bootstrapping
 		"""
-		from bootstrapvz.common.bytes import Bytes
+		from bootstrapvz.common.sectors import Sectors
+
 		# In the NoPartitions partitions map we only have a single 'partition'
-		self.root = SinglePartition(Bytes(data['root']['size']),
+		self.root = SinglePartition(Sectors(data['root']['size'], sector_size),
 		                            data['root']['filesystem'], data['root'].get('format_command', None))
 		self.partitions = [self.root]
 
@@ -29,7 +31,7 @@ class NoPartitions(object):
 		"""Returns the total size the partitions occupy
 
 		:return: The size of all the partitions
-		:rtype: Bytes
+		:rtype: Sectors
 		"""
 		return self.root.get_end()
 

@@ -25,9 +25,11 @@ class Format(Task):
 	@classmethod
 	def run(cls, info):
 		from bootstrapvz.base.fs.partitions.unformatted import UnformattedPartition
+		from bootstrapvz.base.fs.partitions.gap import PartitionGap
 		for partition in info.volume.partition_map.partitions:
-			if not isinstance(partition, UnformattedPartition):
-				partition.format()
+			if isinstance(partition, (UnformattedPartition, PartitionGap)):
+				continue
+			partition.format()
 
 
 class TuneVolumeFS(Task):
@@ -38,12 +40,14 @@ class TuneVolumeFS(Task):
 	@classmethod
 	def run(cls, info):
 		from bootstrapvz.base.fs.partitions.unformatted import UnformattedPartition
+		from bootstrapvz.base.fs.partitions.gap import PartitionGap
 		import re
 		# Disable the time based filesystem check
 		for partition in info.volume.partition_map.partitions:
-			if not isinstance(partition, UnformattedPartition):
-				if re.match('^ext[2-4]$', partition.filesystem) is not None:
-					log_check_call(['tune2fs', '-i', '0', partition.device_path])
+			if isinstance(partition, (UnformattedPartition, PartitionGap)):
+				continue
+			if re.match('^ext[2-4]$', partition.filesystem) is not None:
+				log_check_call(['tune2fs', '-i', '0', partition.device_path])
 
 
 class AddXFSProgs(Task):
