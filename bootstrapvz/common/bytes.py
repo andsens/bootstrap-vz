@@ -1,3 +1,14 @@
+from exceptions import UnitError
+
+
+def onlybytes(msg):
+	def decorator(func):
+		def check_other(self, other):
+			if not isinstance(other, Bytes):
+				raise UnitError(msg)
+			return func(self, other)
+		return check_other
+	return decorator
 
 
 class Bytes(object):
@@ -61,25 +72,48 @@ class Bytes(object):
 	def __long__(self):
 		return self.qty
 
+	def __abs__(self):
+		return self.qty
+
+	@onlybytes('Can only compare Bytes to Bytes')
+	def __lt__(self, other):
+		return self.qty < other.qty
+
+	@onlybytes('Can only compare Bytes to Bytes')
+	def __le__(self, other):
+		return self.qty <= other.qty
+
+	@onlybytes('Can only compare Bytes to Bytes')
+	def __eq__(self, other):
+		return self.qty == other.qty
+
+	@onlybytes('Can only compare Bytes to Bytes')
+	def __ne__(self, other):
+		return self.qty != other.qty
+
+	@onlybytes('Can only compare Bytes to Bytes')
+	def __ge__(self, other):
+		return self.qty >= other.qty
+
+	@onlybytes('Can only compare Bytes to Bytes')
+	def __gt__(self, other):
+		return self.qty > other.qty
+
+	@onlybytes('Can only add Bytes to Bytes')
 	def __add__(self, other):
-		if not isinstance(other, Bytes):
-			raise UnitError('Can only add Bytes to Bytes')
 		return Bytes(self.qty + other.qty)
 
+	@onlybytes('Can only add Bytes to Bytes')
 	def __iadd__(self, other):
-		if not isinstance(other, Bytes):
-			raise UnitError('Can only add Bytes to Bytes')
 		self.qty += other.qty
 		return self
 
+	@onlybytes('Can only subtract Bytes from Bytes')
 	def __sub__(self, other):
-		if not isinstance(other, Bytes):
-			raise UnitError('Can only subtract Bytes from Bytes')
 		return Bytes(self.qty - other.qty)
 
+	@onlybytes('Can only subtract Bytes from Bytes')
 	def __isub__(self, other):
-		if not isinstance(other, Bytes):
-			raise UnitError('Can only subtract Bytes from Bytes')
 		self.qty -= other.qty
 		return self
 
@@ -110,20 +144,13 @@ class Bytes(object):
 			self.qty /= other
 		return self
 
+	@onlybytes('Can only take modulus of Bytes with Bytes')
 	def __mod__(self, other):
-		if isinstance(other, Bytes):
-			return self.qty % other.qty
-		if not isinstance(other, (int, long)):
-			raise UnitError('Can only take modulus of Bytes with integers or Bytes')
-		return Bytes(self.qty % other)
+		return Bytes(self.qty % other.qty)
 
+	@onlybytes('Can only take modulus of Bytes with Bytes')
 	def __imod__(self, other):
-		if isinstance(other, Bytes):
-			self.qty %= other.qty
-		else:
-			if not isinstance(other, (int, long)):
-				raise UnitError('Can only divide Bytes with integers or Bytes')
-			self.qty %= other
+		self.qty %= other.qty
 		return self
 
 	def __getstate__(self):
@@ -133,7 +160,3 @@ class Bytes(object):
 
 	def __setstate__(self, state):
 		self.qty = state['qty']
-
-
-class UnitError(Exception):
-	pass
