@@ -33,7 +33,7 @@ def validate_manifest(data, validator, error):
 		for key, partition in data['volume']['partitions'].iteritems():
 			if key != 'type':
 				volume_size += Bytes(partition['size'])
-		if volume_size % Bytes('1GiB') != 0:
+		if int(volume_size % Bytes('1GiB')) != 0:
 			msg = ('The volume size must be a multiple of 1GiB when using EBS backing')
 			error(msg, ['volume', 'partitions'])
 	else:
