@@ -123,6 +123,6 @@ def test_imod_int():
 	s %= 5
 
 
-def test_abs():
+def test_convert_int():
 	secsize = 512
-	eq_(pow(1024, 3) / secsize, abs(Sectors('1GiB', secsize)))
+	eq_(pow(1024, 3) / secsize, int(Sectors('1GiB', secsize)))

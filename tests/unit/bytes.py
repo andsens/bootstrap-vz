@@ -104,5 +104,5 @@ def test_imod_int():
 	b %= 5
 
 
-def test_abs():
-	eq_(pow(1024, 3), abs(Bytes('1GiB')))
+def test_convert_int():
+	eq_(pow(1024, 3), int(Bytes('1GiB')))
