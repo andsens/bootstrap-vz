@@ -67,8 +67,6 @@ def deserialize(fq_classname, data):
 			state[key] = ser.recreate_classes(value)
 		except SecurityError as e:
 			msg = 'Unable to deserialize key `{key}\' on {class_name}'.format(key=key, class_name=fq_classname)
-			import pprint
-			msg += pprint.pformat(data)
 			raise Exception(msg, e)
 
 	instance = class_object.__new__(class_object)
