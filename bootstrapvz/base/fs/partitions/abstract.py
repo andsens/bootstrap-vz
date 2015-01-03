@@ -53,7 +53,7 @@ class AbstractPartition(FSMProxy):
 		"""Gets the end of the partition
 
 		:return: The end of the partition
-		:rtype: Bytes
+		:rtype: Sectors
 		"""
 		return self.get_start() + self.size
 

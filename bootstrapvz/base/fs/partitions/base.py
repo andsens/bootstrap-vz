@@ -59,7 +59,7 @@ class BasePartition(AbstractPartition):
 		"""Gets the starting byte of this partition
 
 		:return: The starting byte of this partition
-		:rtype: Bytes
+		:rtype: Sectors
 		"""
 		if self.previous is None:
 			# If there is no previous partition, this partition begins at the offset

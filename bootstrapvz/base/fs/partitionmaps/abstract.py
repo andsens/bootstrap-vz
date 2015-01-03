@@ -38,7 +38,7 @@ class AbstractPartitionMap(FSMProxy):
 		"""Returns the total size the partitions occupy
 
 		:return: The size of all partitions
-		:rtype: Bytes
+		:rtype: Sectors
 		"""
 		# We just need the endpoint of the last partition
 		return self.partitions[-1].get_end()
