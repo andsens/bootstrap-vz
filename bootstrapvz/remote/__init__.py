@@ -21,6 +21,7 @@ supported_classes = ['bootstrapvz.base.manifest.Manifest',
                      'bootstrapvz.base.fs.partitions.single.SinglePartition',
                      'bootstrapvz.base.fs.partitions.unformatted.UnformattedPartition',
                      'bootstrapvz.common.bytes.Bytes',
+                     'bootstrapvz.common.sectors.Sectors',
                      ]
 
 supported_exceptions = ['bootstrapvz.common.exceptions.ManifestError',
