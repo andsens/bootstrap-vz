@@ -18,6 +18,20 @@ There, you can discover [what the dependencies](http://andsens.github.io/bootstr
 for a specific cloud provider are, [see a list of available plugins](http://andsens.github.io/bootstrap-vz/plugins.html)
 and learn [how you create a manifest](http://andsens.github.io/bootstrap-vz/manifest.html).
 
+Installation
+------------
+
+bootstrap-vz has a master branch for stable releases and a development for, well, development.  
+After checking out the branch of your choice you can install the python dependencies by running
+`python setup.py install`. However, depending on what kind of image you'd like to bootstrap,
+there are other debian package dependencies as well, at the very least you will need `debootstrap`.  
+[The documentation](http://andsens.github.io/bootstrap-vz/) explains this in more detail.
+
+Note that bootstrap-vz will tell you which tools it requires when they aren't
+present (the different packages are mentioned in the error message), so you can
+simply run bootstrap-vz once to get a list of the packages, install them,
+and then re-run.
+
 Developers
 ----------
 The API documentation, development guidelines and an explanation of bootstrap-vz internals
