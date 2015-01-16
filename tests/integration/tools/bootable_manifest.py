@@ -55,3 +55,4 @@ class BootableManifest(object):
 			self.instance.down()
 		if hasattr(self, 'image'):
 			self.image.close()
+			self.image.destroy()

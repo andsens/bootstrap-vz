@@ -23,6 +23,12 @@ class VirtualBoxImage(Image):
 		log.debug('Closing vbox medium `{path}\''.format(path=self.image_path))
 		self.medium.close()
 
+	def destroy(self):
+		log.debug('Deleting vbox image `{path}\''.format(path=self.image_path))
+		import os
+		os.remove(self.image_path)
+		del self.image_path
+
 	def get_instance(self):
 		import hashlib
 		from ..instances.virtualbox import VirtualBoxInstance
