@@ -15,7 +15,7 @@ class VirtualBoxImage(Image):
 	def open(self):
 		log.debug('Opening vbox medium `{path}\''.format(path=self.image_path))
 		self.medium = self.vbox.open_medium(self.image_path,  # location
-		                                    vboxapi.library.DeviceType.hard_disk,  # decive_type
+		                                    vboxapi.library.DeviceType.hard_disk,  # device_type
 		                                    vboxapi.library.AccessMode.read_only,  # access_mode
 		                                    False)  # force_new_uuid
 
