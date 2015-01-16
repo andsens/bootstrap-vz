@@ -115,7 +115,6 @@ class VirtualBoxInstance(Instance):
 			return self.unlock()
 
 		def lock(self):
-			self.unlock()
 			self.machine.lock_machine(self.session, vboxapi.library.LockType.write)
 			return self.session.machine
 
