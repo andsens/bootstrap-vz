@@ -132,7 +132,9 @@ class RemoteBuildServer(BuildServer):
 			self.ssh_process.wait()
 
 	def download(self, src, dst):
-		log.debug('Downloading file `{path}\' from build server `{name}\''.format(path=src, name=self.name))
+		log.debug('Downloading file `{src}\' from '
+		          'build server `{name}\' to `{dst}\''
+		          .format(src=src, dst=dst, name=self.name))
 		# Make sure we can read the file as {user}
 		self._remote_command(['sudo', 'chown', self.username, src])
 		src_arg = '{user}@{host}:{path}'.format(user=self.username, host=self.address, path=src)
