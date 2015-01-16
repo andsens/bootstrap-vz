@@ -164,7 +164,7 @@ class AptUpgrade(Task):
 				       'This can sometimes occur when package retrieval times out or a package extraction failed. '
 				       'apt might succeed if you try bootstrapping again.')
 				logging.getLogger(__name__).warn(msg)
-			raise e
+			raise
 
 
 class PurgeUnusedPackages(Task):

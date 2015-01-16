@@ -92,13 +92,13 @@ class AbstractPartitionMap(FSMProxy):
 				if partition.fsm.current not in ['mapped', 'formatted']:
 					raise PartitionError('kpartx did not map partition #' + str(idx + 1))
 
-		except PartitionError as e:
+		except PartitionError:
 			# Revert any mapping and reraise the error
 			for partition in self.partitions:
 				if not partition.fsm.can('unmap'):
 					partition.unmap()
 			log_check_call(['kpartx', '-ds', volume.device_path])
-			raise e
+			raise
 
 	def unmap(self, volume):
 		"""Unmaps the partition

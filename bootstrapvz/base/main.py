@@ -138,5 +138,5 @@ def run(manifest, debug=False, pause_on_error=False, dry_run=False, check_contin
 		# Run the rollback tasklist
 		rollback_tasklist.run(info=bootstrap_info, dry_run=dry_run)
 		log.info('Successfully completed rollback')
-		raise e
+		raise
 	return bootstrap_info

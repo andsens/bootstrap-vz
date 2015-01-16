@@ -76,10 +76,10 @@ class InstallGrub_1_99(Task):
 			# Install grub
 			log_check_call(['chroot', info.root, 'grub-install', device_path])
 			log_check_call(['chroot', info.root, 'update-grub'])
-		except Exception as e:
+		except Exception:
 			if isinstance(info.volume, LoopbackVolume):
 				remount(info.volume, unlink_fn)
-			raise e
+			raise
 
 		if isinstance(info.volume, LoopbackVolume):
 			remount(info.volume, unlink_fn)

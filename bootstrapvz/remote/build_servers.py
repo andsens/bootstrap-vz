@@ -110,16 +110,16 @@ class RemoteBuildServer(BuildServer):
 				try:
 					self.connection.ping()
 					break
-				except (Pyro4.errors.ConnectionClosedError, Pyro4.errors.CommunicationError) as e:
+				except (Pyro4.errors.ConnectionClosedError, Pyro4.errors.CommunicationError):
 					if remaining_retries > 0:
 						remaining_retries -= 1
 						from time import sleep
 						sleep(2)
 					else:
-						raise e
-		except (Exception, KeyboardInterrupt) as e:
+						raise
+		except (Exception, KeyboardInterrupt):
 			self.ssh_process.terminate()
-			raise e
+			raise
 		return self.connection
 
 	def disconnect(self):

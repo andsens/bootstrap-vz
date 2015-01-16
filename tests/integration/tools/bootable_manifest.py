@@ -54,11 +54,11 @@ class BootableManifest(object):
 			self.image.open()
 			self.instance = self.image.get_instance()
 			self.instance.up()
-		except (Exception, KeyboardInterrupt) as e:
+		except (Exception, KeyboardInterrupt):
 			if hasattr(self, 'image'):
 				self.image.close()
 				self.image.destroy()
-			raise e
+			raise
 		return self.instance
 
 	def __exit__(self, type, value, traceback):
