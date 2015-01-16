@@ -15,6 +15,7 @@ from tasks import locale
 from tasks import network
 from tasks import initd
 from tasks import ssh
+from tasks import kernel
 
 
 def get_standard_groups(manifest):
@@ -26,6 +27,7 @@ def get_standard_groups(manifest):
 	if 'boot' in manifest.volume['partitions']:
 		group.extend(boot_partition_group)
 	group.extend(mounting_group)
+	group.extend(kernel_group)
 	group.extend(get_fs_specific_group(manifest))
 	group.extend(get_network_group(manifest))
 	group.extend(get_apt_group(manifest))
@@ -75,6 +77,9 @@ mounting_group = [filesystem.CreateMountDir,
                   filesystem.UnmountRoot,
                   filesystem.DeleteMountDir,
                   ]
+
+kernel_group = [kernel.DetermineKernelVersion,
+                ]
 
 ssh_group = [ssh.AddOpenSSHPackage,
              ssh.DisableSSHPasswordAuthentication,
