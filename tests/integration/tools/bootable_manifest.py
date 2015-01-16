@@ -35,19 +35,30 @@ class BootableManifest(object):
 			handle, image_path = tempfile.mkstemp()
 			import os
 			os.close(handle)
-			build_server.download(bootstrap_info.volume.image_path, image_path)
-			build_server.delete(bootstrap_info.volume.image_path)
+			try:
+				build_server.download(bootstrap_info.volume.image_path, image_path)
+			except (Exception, KeyboardInterrupt) as e:
+				os.remove(image_path)
+				raise e
+			finally:
+				build_server.delete(bootstrap_info.volume.image_path)
 		image_type = {'virtualbox': VirtualBoxImage}
 		return image_type.get(self.manifest_data['provider']['name'])(manifest, image_path)
 
 	def __enter__(self):
-		self.build_server = self.pick_build_server()
-		self.manifest = self.get_manifest(self.build_server)
-		self.bootstrap_info = self.bootstrap(self.manifest, self.build_server)
-		self.image = self.get_image(self.build_server, self.bootstrap_info, self.manifest)
-		self.image.open()
-		self.instance = self.image.get_instance()
-		self.instance.up()
+		try:
+			self.build_server = self.pick_build_server()
+			self.manifest = self.get_manifest(self.build_server)
+			self.bootstrap_info = self.bootstrap(self.manifest, self.build_server)
+			self.image = self.get_image(self.build_server, self.bootstrap_info, self.manifest)
+			self.image.open()
+			self.instance = self.image.get_instance()
+			self.instance.up()
+		except (Exception, KeyboardInterrupt) as e:
+			if hasattr(self, 'image'):
+				self.image.close()
+				self.image.destroy()
+			raise e
 		return self.instance
 
 	def __exit__(self, type, value, traceback):

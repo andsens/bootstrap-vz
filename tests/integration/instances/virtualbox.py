@@ -85,10 +85,10 @@ class VirtualBoxInstance(Instance):
 			self.create()
 			try:
 				self.boot()
-			except Exception as e:
+			except (Exception, KeyboardInterrupt) as e:
 				self.shutdown()
 				raise e
-		except Exception as e:
+		except (Exception, KeyboardInterrupt) as e:
 			self.destroy()
 			raise e
 
