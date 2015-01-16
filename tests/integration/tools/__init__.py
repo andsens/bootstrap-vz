@@ -14,7 +14,7 @@ def waituntil(predicate, timeout=5, interval=0.05):
 	return False
 
 
-def read_from_socket(socket_path, termination_string, timeout):
+def read_from_socket(socket_path, termination_string, timeout, read_timeout=0.5):
 		import socket
 		import select
 		import errno
@@ -22,15 +22,15 @@ def read_from_socket(socket_path, termination_string, timeout):
 		console.connect(socket_path)
 		console.setblocking(0)
 
+		from timeit import default_timer
+		start = default_timer()
+
 		output = ''
 		ptr = 0
 		continue_select = True
-		nooutput_for = 0
-		select_timeout = .5
 		while continue_select:
-			read_ready, _, _ = select.select([console], [], [], select_timeout)
+			read_ready, _, _ = select.select([console], [], [], read_timeout)
 			if console in read_ready:
-				nooutput_for = 0
 				while True:
 					try:
 						output += console.recv(1024)
@@ -43,12 +43,11 @@ def read_from_socket(socket_path, termination_string, timeout):
 						if e.errno != errno.EWOULDBLOCK:
 							raise Exception(e)
 						continue_select = False
-			else:
-				nooutput_for += select_timeout
-			if nooutput_for > timeout:
+			if default_timer() - start > timeout:
 				from exceptions import SocketReadTimeout
-				msg = ('Reading from socket `{path}\' timed out after {seconds} seconds.'
-				       .format(path=socket_path, timeout=nooutput_for))
+				msg = ('Reading from socket `{path}\' timed out after {seconds} seconds.\n'
+				       'Here is the output so far:\n{output}'
+				       .format(path=socket_path, seconds=timeout, output=output))
 				raise SocketReadTimeout(msg)
 		console.close()
 		return output
