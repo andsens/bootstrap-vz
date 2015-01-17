@@ -79,6 +79,7 @@ mounting_group = [filesystem.CreateMountDir,
                   ]
 
 kernel_group = [kernel.DetermineKernelVersion,
+                kernel.UpdateInitramfs,
                 ]
 
 ssh_group = [ssh.AddOpenSSHPackage,
