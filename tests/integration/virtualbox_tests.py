@@ -57,7 +57,6 @@ def test_partitioned_grub():
 
 
 def test_unpartitioned_extlinux_unstable():
-	raise Skip('Jessie not yet working with extlinux')
 	std_partials = ['base', 'unstable64', 'extlinux', 'unpartitioned', 'root_password']
 	custom_partials = [partials['vbox'], partials['vmdk']]
 	manifest_data = merge_manifest_data(std_partials, custom_partials)
@@ -66,7 +65,6 @@ def test_unpartitioned_extlinux_unstable():
 
 
 def test_partitioned_extlinux_unstable():
-	raise Skip('Jessie not yet working with extlinux')
 	std_partials = ['base', 'unstable64', 'extlinux', 'msdos', 'single_partition', 'root_password']
 	custom_partials = [partials['vbox'], partials['vmdk']]
 	manifest_data = merge_manifest_data(std_partials, custom_partials)
