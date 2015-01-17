@@ -3,6 +3,7 @@ from .. import phases
 from ..tools import log_check_call
 import apt
 import filesystem
+import kernel
 from bootstrapvz.base.fs import partitionmaps
 import os.path
 
@@ -89,6 +90,8 @@ class InstallGrub_2(Task):
 	description = 'Installing grub 2'
 	phase = phases.system_modification
 	predecessors = [filesystem.FStab]
+	# Make sure the kernel image is updated after we have installed the bootloader
+	successors = [kernel.UpdateInitramfs]
 
 	@classmethod
 	def run(cls, info):
