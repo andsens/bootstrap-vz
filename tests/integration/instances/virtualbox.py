@@ -57,7 +57,14 @@ class VirtualBoxInstance(Instance):
 		log.debug('Booting vbox machine `{name}\''.format(name=self.name))
 		self.machine.launch_vm_process(self.session, 'headless').wait_for_completion(-1)
 		from ..tools import read_from_socket
-		self.console_output = read_from_socket(self.serial_port_path, 'INIT: Entering runlevel: 2', 20)
+		# Gotta figure out a more reliable way to check when the system is done booting.
+		# Maybe bootstrapped unit test images should have a startup script that issues
+		# a callback to the host.
+		if self.image.manifest.system['release'] in ['squeeze', 'wheezy']:
+			termination_string = 'INIT: Entering runlevel: 2'
+		else:
+			termination_string = 'Debian GNU/Linux'
+		self.console_output = read_from_socket(self.serial_port_path, termination_string, 20)
 
 	def shutdown(self):
 		log.debug('Shutting down vbox machine `{name}\''.format(name=self.name))
