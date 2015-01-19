@@ -75,6 +75,9 @@ class AbstractPartitionMap(FSMProxy):
 			                    '{device_path} (?P<blk_offset>\d+)$'
 			                    .format(device_path=volume.device_path))
 			log_check_call(['kpartx', '-as', volume.device_path])
+
+			mappable_partitions = filter(lambda p: not isinstance(p, PartitionGap), self.partitions)
+
 			import os.path
 			# Run through the kpartx output and map the paths to the partitions
 			for mapping in mappings:
@@ -83,19 +86,19 @@ class AbstractPartitionMap(FSMProxy):
 					raise PartitionError('Unable to parse kpartx output: ' + mapping)
 				partition_path = os.path.join('/dev/mapper', match.group('name'))
 				p_idx = int(match.group('p_idx')) - 1
-				self.partitions[p_idx].map(partition_path)
+				mappable_partitions[p_idx].map(partition_path)
 
 			# Check if any partition was not mapped
 			for idx, partition in enumerate(self.partitions):
 				if isinstance(partition, PartitionGap):
 					continue
 				if partition.fsm.current not in ['mapped', 'formatted']:
-					raise PartitionError('kpartx did not map partition #' + str(idx + 1))
+					raise PartitionError('kpartx did not map partition #' + str(partition.get_index()))
 
 		except PartitionError:
 			# Revert any mapping and reraise the error
 			for partition in self.partitions:
-				if not partition.fsm.can('unmap'):
+				if partition.fsm.can('unmap'):
 					partition.unmap()
 			log_check_call(['kpartx', '-ds', volume.device_path])
 			raise

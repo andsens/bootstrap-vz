@@ -68,7 +68,10 @@ class InstallGrub_1_99(Task):
 			with open(device_map_path, 'w') as device_map:
 				device_map.write('(hd0) {device_path}\n'.format(device_path=device_path))
 				if not isinstance(p_map, partitionmaps.none.NoPartitions):
+					from bootstrapvz.base.fs.partitions.gap import PartitionGap
 					for idx, partition in enumerate(info.volume.partition_map.partitions):
+						if isinstance(partition, PartitionGap):
+							continue
 						device_map.write('(hd0,{prefix}{idx}) {device_path}\n'
 						                 .format(device_path=partition.device_path,
 						                         prefix=partition_prefix,
