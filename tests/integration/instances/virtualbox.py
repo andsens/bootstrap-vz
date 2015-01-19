@@ -92,12 +92,12 @@ class VirtualBoxInstance(Instance):
 			self.create()
 			try:
 				self.boot()
-			except (Exception, KeyboardInterrupt) as e:
+			except (Exception, KeyboardInterrupt):
 				self.shutdown()
-				raise e
-		except (Exception, KeyboardInterrupt) as e:
+				raise
+		except (Exception, KeyboardInterrupt):
 			self.destroy()
-			raise e
+			raise
 
 	def down(self):
 		self.shutdown()
