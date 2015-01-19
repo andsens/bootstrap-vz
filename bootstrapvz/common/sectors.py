@@ -68,87 +68,104 @@ class Sectors(object):
 		return self.bytes > other.bytes
 
 	def __add__(self, other):
-		if not isinstance(other, Sectors):
-			raise UnitError('Can only add sectors to sectors')
-		if self.sector_size != other.sector_size:
-			raise UnitError('Cannot sum sectors with different sector sizes')
-		return Sectors(self.bytes + other.bytes, self.sector_size)
+		if isinstance(other, (int, long)):
+			return Sectors(self.bytes + self.sector_size * other, self.sector_size)
+		if isinstance(other, Bytes):
+			return Sectors(self.bytes + other, self.sector_size)
+		if isinstance(other, Sectors):
+			if self.sector_size != other.sector_size:
+				raise UnitError('Cannot sum sectors with different sector sizes')
+			return Sectors(self.bytes + other.bytes, self.sector_size)
+		raise UnitError('Can only add sectors, bytes or integers to sectors')
 
 	def __iadd__(self, other):
-		if not isinstance(other, (Bytes, Sectors)):
-			raise UnitError('Can only add Bytes or sectors to sectors')
+		if isinstance(other, (int, long)):
+			self.bytes += self.sector_size * other
+			return self
 		if isinstance(other, Bytes):
 			self.bytes += other
+			return self
 		if isinstance(other, Sectors):
 			if self.sector_size != other.sector_size:
 				raise UnitError('Cannot sum sectors with different sector sizes')
 			self.bytes += other.bytes
-		return self
+			return self
+		raise UnitError('Can only add sectors, bytes or integers to sectors')
 
 	def __sub__(self, other):
-		if not isinstance(other, (Sectors, int, long)):
-			raise UnitError('Can only subtract sectors or integers from sectors')
-		if isinstance(other, int):
+		if isinstance(other, (int, long)):
 			return Sectors(self.bytes - self.sector_size * other, self.sector_size)
-		else:
+		if isinstance(other, Bytes):
+			return Sectors(self.bytes - other, self.sector_size)
+		if isinstance(other, Sectors):
 			if self.sector_size != other.sector_size:
 				raise UnitError('Cannot subtract sectors with different sector sizes')
 			return Sectors(self.bytes - other.bytes, self.sector_size)
+		raise UnitError('Can only subtract sectors, bytes or integers from sectors')
 
 	def __isub__(self, other):
-		if not isinstance(other, (Sectors, int, long)):
-			raise UnitError('Can only subtract sectors or integers from sectors')
-		if isinstance(other, int):
+		if isinstance(other, (int, long)):
 			self.bytes -= self.sector_size * other
-		else:
+			return self
+		if isinstance(other, Bytes):
+			self.bytes -= other
+			return self
+		if isinstance(other, Sectors):
 			if self.sector_size != other.sector_size:
 				raise UnitError('Cannot subtract sectors with different sector sizes')
 			self.bytes -= other.bytes
-		return self
+			return self
+		raise UnitError('Can only subtract sectors, bytes or integers from sectors')
 
 	def __mul__(self, other):
-		if not isinstance(other, (int, long)):
+		if isinstance(other, (int, long)):
+			return Sectors(self.bytes * other, self.sector_size)
+		else:
 			raise UnitError('Can only multiply sectors with integers')
-		return Sectors(self.bytes * other, self.sector_size)
 
 	def __imul__(self, other):
-		if not isinstance(other, (int, long)):
+		if isinstance(other, (int, long)):
+			self.bytes *= other
+			return self
+		else:
 			raise UnitError('Can only multiply sectors with integers')
-		self.bytes *= other
-		return self
 
 	def __div__(self, other):
+		if isinstance(other, (int, long)):
+			return Sectors(self.bytes / other, self.sector_size)
 		if isinstance(other, Sectors):
 			if self.sector_size != other.sector_size:
+				return self.bytes / other.bytes
+			else:
 				raise UnitError('Cannot divide sectors with different sector sizes')
-			return self.bytes / other.bytes
-		if not isinstance(other, (int, long)):
-			raise UnitError('Can only divide sectors with integers or sectors')
-		return Sectors(self.bytes / other, self.sector_size)
+		raise UnitError('Can only divide sectors with integers or sectors')
 
 	def __idiv__(self, other):
-		if isinstance(other, Sectors):
-			if self.sector_size != other.sector_size:
-				raise UnitError('Cannot divide sectors with different sector sizes')
-			self.bytes /= other.bytes
-		else:
-			if not isinstance(other, (int, long)):
-				raise UnitError('Can only divide sectors with integers or sectors')
+		if isinstance(other, (int, long)):
 			self.bytes /= other
-		return self
+			return self
+		if isinstance(other, Sectors):
+			if self.sector_size == other.sector_size:
+				self.bytes /= other.bytes
+				return self
+			else:
+				raise UnitError('Cannot divide sectors with different sector sizes')
+		raise UnitError('Can only divide sectors with integers or sectors')
 
 	@onlysectors('Can only take modulus of sectors with sectors')
 	def __mod__(self, other):
-		if self.sector_size != other.sector_size:
+		if self.sector_size == other.sector_size:
+			return Sectors(self.bytes % other.bytes, self.sector_size)
+		else:
 			raise UnitError('Cannot take modulus of sectors with different sector sizes')
-		return Sectors(self.bytes % other.bytes, self.sector_size)
 
 	@onlysectors('Can only take modulus of sectors with sectors')
 	def __imod__(self, other):
-		if self.sector_size != other.sector_size:
+		if self.sector_size == other.sector_size:
+			self.bytes %= other.bytes
+			return self
+		else:
 			raise UnitError('Cannot take modulus of sectors with different sector sizes')
-		self.bytes %= other.bytes
-		return self
 
 	def __getstate__(self):
 		return {'__class__': self.__module__ + '.' + self.__class__.__name__,
