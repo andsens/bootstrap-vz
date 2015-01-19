@@ -36,8 +36,6 @@ class GPTPartitionMap(AbstractPartitionMap):
 			from ..partitions.unformatted import UnformattedPartition
 			grub_size = Sectors('1MiB', sector_size) - primary_gpt.size
 			self.grub_boot = UnformattedPartition(grub_size, last_partition())
-			# Mark the partition as a bios_grub partition
-			self.grub_boot.flags.append('bios_grub')
 			self.partitions.append(self.grub_boot)
 
 		# The boot and swap partitions are optional
@@ -70,6 +68,14 @@ class GPTPartitionMap(AbstractPartitionMap):
 		self.root.size -= primary_gpt.size + secondary_gpt.size
 		if hasattr(self, 'grub_boot'):
 			self.root.size -= self.grub_boot.size
+
+		# Set the boot flag on the right partition
+		if hasattr(self, 'grub_boot'):
+			# Mark the partition as a bios_grub partition
+			self.grub_boot.flags.append('bios_grub')
+		else:
+			# Mark the boot partition, or root, if boot does not exist
+			getattr(self, 'boot', self.root).flags.append('legacy_boot')
 
 		super(GPTPartitionMap, self).__init__(bootloader)
 
