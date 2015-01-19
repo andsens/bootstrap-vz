@@ -84,12 +84,9 @@ def set_fs_states(volume):
 		if not isinstance(p_map, NoPartitions):
 			p_map.fsm.current = 'unmapped'
 
-		from bootstrapvz.base.fs.partitions.gap import PartitionGap
 		from bootstrapvz.base.fs.partitions.unformatted import UnformattedPartition
 		from bootstrapvz.base.fs.partitions.single import SinglePartition
 		for partition in p_map.partitions:
-			if isinstance(partition, PartitionGap):
-				continue
 			if isinstance(partition, UnformattedPartition):
 				partition.fsm.current = 'unmapped'
 				continue

@@ -1,4 +1,5 @@
 from abstract import AbstractPartition
+from bootstrapvz.common.sectors import Sectors
 
 
 class BasePartition(AbstractPartition):
@@ -25,12 +26,9 @@ class BasePartition(AbstractPartition):
 		:param list format_command: Optional format command, valid variables are fs, device_path and size
 		:param BasePartition previous: The partition that preceeds this one
 		"""
-		# By saving the previous partition we have
-		# a linked list that partitions can go backwards in to find the first partition.
+		# By saving the previous partition we have a linked list
+		# that partitions can go backwards in to find the first partition.
 		self.previous = previous
-		from bootstrapvz.common.sectors import Sectors
-		# Initialize the offset to 0 sectors, may be changed later
-		self.offset = Sectors(0, size.sector_size)
 		# List of flags that parted should put on the partition
 		self.flags = []
 		super(BasePartition, self).__init__(size, filesystem, format_command)
@@ -62,11 +60,9 @@ class BasePartition(AbstractPartition):
 		:rtype: Sectors
 		"""
 		if self.previous is None:
-			# If there is no previous partition, this partition begins at the offset
-			return self.offset
+			return Sectors(0, self.size.sector_size)
 		else:
-			# Get the end of the previous partition and add the offset of this partition
-			return self.previous.get_end() + self.offset
+			return self.previous.get_end()
 
 	def map(self, device_path):
 		"""Maps the partition to a device_path
@@ -81,8 +77,8 @@ class BasePartition(AbstractPartition):
 		from bootstrapvz.common.tools import log_check_call
 		# The create command is failry simple, start and end are just Bytes objects coerced into strings
 		create_command = ('mkpart primary {start} {end}'
-		                  .format(start=str(self.get_start()),
-		                          end=str(self.get_end())))
+		                  .format(start=str(self.get_start() + self.pad_start),
+		                          end=str(self.get_end() - self.pad_end)))
 		# Create the partition
 		log_check_call(['parted', '--script', '--align', 'none', e.volume.device_path,
 		                '--', create_command])

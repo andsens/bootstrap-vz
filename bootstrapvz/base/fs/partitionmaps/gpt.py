@@ -1,7 +1,6 @@
 from abstract import AbstractPartitionMap
 from ..partitions.gpt import GPTPartition
 from ..partitions.gpt_swap import GPTSwapPartition
-from ..partitions.gap import PartitionGap
 from bootstrapvz.common.tools import log_check_call
 
 
@@ -24,57 +23,60 @@ class GPTPartitionMap(AbstractPartitionMap):
 		def last_partition():
 			return self.partitions[-1] if len(self.partitions) > 0 else None
 
-		# The first 34 sectors are reserved for the primary GPT
-		primary_gpt = PartitionGap(Sectors(34, sector_size), last_partition())
-		self.partitions.append(primary_gpt)
-
 		if bootloader == 'grub':
 			# If we are using the grub bootloader we need to create an unformatted partition
 			# at the beginning of the map. Its size is 1007kb, which seems to be chosen so that
-			# gpt_primary + grub = 1024KiB
-			# So lets just specify grub size as 1MiB - 34 sectors
+			# primary gpt + grub = 1024KiB
+			# The 34 sectors for the primary gpt will be subtracted later on
 			from ..partitions.unformatted import UnformattedPartition
-			grub_size = Sectors('1MiB', sector_size) - primary_gpt.size
-			self.grub_boot = UnformattedPartition(grub_size, last_partition())
+			self.grub_boot = UnformattedPartition(Sectors('1MiB', sector_size), last_partition())
 			self.partitions.append(self.grub_boot)
+
+		# Offset all partitions by 1 sector.
+		# parted in jessie has changed and no longer allows
+		# gpt partitions to be right next to each other.
+		partition_gap = Sectors(1, sector_size)
 
 		# The boot and swap partitions are optional
 		if 'boot' in data:
 			self.boot = GPTPartition(Sectors(data['boot']['size'], sector_size),
 			                         data['boot']['filesystem'], data['boot'].get('format_command', None),
 			                         'boot', last_partition())
-			# Offset all partitions by 1 sector.
-			# parted in jessie has changed and no longer allows partitions to be right next to each other.
-			self.boot.offset = Sectors(1, sector_size)
-			self.boot.size -= self.boot.offset
+			if self.boot.previous is not None:
+				# No need to pad if this is the first partition
+				self.boot.pad_start += partition_gap
+				self.boot.size -= partition_gap
 			self.partitions.append(self.boot)
+
 		if 'swap' in data:
 			self.swap = GPTSwapPartition(Sectors(data['swap']['size'], sector_size), last_partition())
-			self.swap.offset = Sectors(1, sector_size)
-			self.swap.size -= self.swap.offset
+			if self.swap.previous is not None:
+				self.swap.pad_start += partition_gap
+				self.swap.size -= partition_gap
 			self.partitions.append(self.swap)
+
 		self.root = GPTPartition(Sectors(data['root']['size'], sector_size),
 		                         data['root']['filesystem'], data['root'].get('format_command', None),
 		                         'root', last_partition())
-		self.root.offset = Sectors(1, sector_size)
-		self.root.size -= self.root.offset
+		if self.root.previous is not None:
+			self.root.pad_start += partition_gap
+			self.root.size -= partition_gap
 		self.partitions.append(self.root)
 
-		# The last 34 sectors are reserved for the secondary GPT
-		secondary_gpt = PartitionGap(Sectors(34, sector_size), last_partition())
-		self.partitions.append(secondary_gpt)
+		# The first and last 34 sectors are reserved for the primary/secondary GPT
+		primary_gpt_size = Sectors(34, sector_size)
+		self.partitions[0].pad_start += primary_gpt_size
+		self.partitions[0].size -= primary_gpt_size
 
-		# reduce the size of the root partition so that the overall volume size is not exceeded
-		self.root.size -= primary_gpt.size + secondary_gpt.size
-		if hasattr(self, 'grub_boot'):
-			self.root.size -= self.grub_boot.size
+		secondary_gpt_size = Sectors(34, sector_size)
+		self.partitions[-1].pad_end += secondary_gpt_size
+		self.partitions[-1].size -= secondary_gpt_size
 
-		# Set the boot flag on the right partition
 		if hasattr(self, 'grub_boot'):
-			# Mark the partition as a bios_grub partition
+			# Mark the grub partition as a bios_grub partition
 			self.grub_boot.flags.append('bios_grub')
 		else:
-			# Mark the boot partition, or root, if boot does not exist
+			# Not using grub, mark the boot partition or root as bootable
 			getattr(self, 'boot', self.root).flags.append('legacy_boot')
 
 		super(GPTPartitionMap, self).__init__(bootloader)
@@ -89,6 +91,4 @@ class GPTPartitionMap(AbstractPartitionMap):
 		                '--', 'mklabel', 'gpt'])
 		# Create the partitions
 		for partition in self.partitions:
-			if isinstance(partition, PartitionGap):
-				continue
 			partition.create(volume)

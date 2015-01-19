@@ -1,5 +1,6 @@
 from abc import ABCMeta
 from abc import abstractmethod
+from bootstrapvz.common.sectors import Sectors
 from bootstrapvz.common.tools import log_check_call
 from bootstrapvz.common.fsm_proxy import FSMProxy
 
@@ -27,6 +28,9 @@ class AbstractPartition(FSMProxy):
 		self.size           = size
 		self.filesystem     = filesystem
 		self.format_command = format_command
+		# Initialize the start & end padding to 0 sectors, may be changed later
+		self.pad_start = Sectors(0, size.sector_size)
+		self.pad_end = Sectors(0, size.sector_size)
 		# Path to the partition
 		self.device_path    = None
 		# Dictionary with mount points as keys and Mount objects as values
@@ -55,7 +59,7 @@ class AbstractPartition(FSMProxy):
 		:return: The end of the partition
 		:rtype: Sectors
 		"""
-		return self.get_start() + self.size
+		return self.get_start() + self.pad_start + self.size + self.pad_end
 
 	def _before_format(self, e):
 		"""Formats the partition

@@ -1,6 +1,5 @@
 from abc import ABCMeta
 from abc import abstractmethod
-from ..partitions.gap import PartitionGap
 from bootstrapvz.common.tools import log_check_call
 from bootstrapvz.common.fsm_proxy import FSMProxy
 from ..exceptions import PartitionError
@@ -76,8 +75,6 @@ class AbstractPartitionMap(FSMProxy):
 			                    .format(device_path=volume.device_path))
 			log_check_call(['kpartx', '-as', volume.device_path])
 
-			mappable_partitions = filter(lambda p: not isinstance(p, PartitionGap), self.partitions)
-
 			import os.path
 			# Run through the kpartx output and map the paths to the partitions
 			for mapping in mappings:
@@ -86,12 +83,10 @@ class AbstractPartitionMap(FSMProxy):
 					raise PartitionError('Unable to parse kpartx output: ' + mapping)
 				partition_path = os.path.join('/dev/mapper', match.group('name'))
 				p_idx = int(match.group('p_idx')) - 1
-				mappable_partitions[p_idx].map(partition_path)
+				self.partitions[p_idx].map(partition_path)
 
 			# Check if any partition was not mapped
 			for idx, partition in enumerate(self.partitions):
-				if isinstance(partition, PartitionGap):
-					continue
 				if partition.fsm.current not in ['mapped', 'formatted']:
 					raise PartitionError('kpartx did not map partition #' + str(partition.get_index()))
 
@@ -117,8 +112,6 @@ class AbstractPartitionMap(FSMProxy):
 		volume = event.volume
 		# Run through all partitions before unmapping and make sure they can all be unmapped
 		for partition in self.partitions:
-			if isinstance(partition, PartitionGap):
-				continue
 			if partition.fsm.cannot('unmap'):
 				msg = 'The partition {partition} prevents the unmap procedure'.format(partition=partition)
 				raise PartitionError(msg)
@@ -126,6 +119,4 @@ class AbstractPartitionMap(FSMProxy):
 		log_check_call(['kpartx', '-ds', volume.device_path])
 		# Call unmap on all partitions
 		for partition in self.partitions:
-			if isinstance(partition, PartitionGap):
-				continue
 			partition.unmap()
