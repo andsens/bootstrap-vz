@@ -1,6 +1,6 @@
 from manifests import merge_manifest_data
 from tools.bootable_manifest import BootableManifest
-from nose.plugins.skip import Skip
+from unittest.case import SkipTest
 
 partials = {'vbox': 'provider: {name: virtualbox}',
             'vdi': 'volume: {backing: vdi}',
@@ -33,7 +33,7 @@ def test_gpt_extlinux_oldstable():
 
 
 def test_msdos_grub_oldstable():
-	raise Skip('grub install on squeeze is broken')
+	raise SkipTest('grub install on squeeze is broken')
 	std_partials = ['base', 'oldstable64', 'grub', 'msdos', 'single_partition', 'root_password']
 	custom_partials = [partials['vbox'], partials['vmdk']]
 	manifest_data = merge_manifest_data(std_partials, custom_partials)
@@ -42,7 +42,7 @@ def test_msdos_grub_oldstable():
 
 
 def test_gpt_grub_oldstable():
-	raise Skip('grub install on squeeze is broken')
+	raise SkipTest('grub install on squeeze is broken')
 	std_partials = ['base', 'oldstable64', 'grub', 'gpt', 'single_partition', 'root_password']
 	custom_partials = [partials['vbox'], partials['vmdk']]
 	manifest_data = merge_manifest_data(std_partials, custom_partials)
