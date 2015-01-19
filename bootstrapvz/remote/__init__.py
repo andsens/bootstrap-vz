@@ -32,7 +32,7 @@ supported_exceptions = ['bootstrapvz.common.exceptions.ManifestError',
                         'bootstrapvz.base.fs.exceptions.PartitionError',
                         'bootstrapvz.base.pkg.exceptions.PackageError',
                         'bootstrapvz.base.pkg.exceptions.SourceError',
-                        'bootstrapvz.common.bytes.UnitError',
+                        'bootstrapvz.common.exceptions.UnitError',
                         'bootstrapvz.common.fsm_proxy.FSMProxyError',
                         ]
 
