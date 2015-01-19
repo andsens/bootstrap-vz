@@ -45,13 +45,21 @@ class GPTPartitionMap(AbstractPartitionMap):
 			self.boot = GPTPartition(Sectors(data['boot']['size'], sector_size),
 			                         data['boot']['filesystem'], data['boot'].get('format_command', None),
 			                         'boot', last_partition())
+			# Offset all partitions by 1 sector.
+			# parted in jessie has changed and no longer allows partitions to be right next to each other.
+			self.boot.offset = Sectors(1, sector_size)
+			self.boot.size -= self.boot.offset
 			self.partitions.append(self.boot)
 		if 'swap' in data:
 			self.swap = GPTSwapPartition(Sectors(data['swap']['size'], sector_size), last_partition())
+			self.swap.offset = Sectors(1, sector_size)
+			self.swap.size -= self.swap.offset
 			self.partitions.append(self.swap)
 		self.root = GPTPartition(Sectors(data['root']['size'], sector_size),
 		                         data['root']['filesystem'], data['root'].get('format_command', None),
 		                         'root', last_partition())
+		self.root.offset = Sectors(1, sector_size)
+		self.root.size -= self.root.offset
 		self.partitions.append(self.root)
 
 		# The last 34 sectors are reserved for the secondary GPT
