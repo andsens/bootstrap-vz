@@ -31,13 +31,25 @@ class MSDOSPartitionMap(AbstractPartitionMap):
 			                           last_partition())
 			self.partitions.append(self.boot)
 
+		# Offset all partitions by 1 sector.
+		# parted in jessie has changed and no longer allows
+		# partitions to be right next to each other.
+		partition_gap = Sectors(1, sector_size)
+
 		if 'swap' in data:
 			self.swap = MSDOSSwapPartition(Sectors(data['swap']['size'], sector_size), last_partition())
+			if self.swap.previous is not None:
+				# No need to pad if this is the first partition
+				self.swap.pad_start += partition_gap
+				self.swap.size -= partition_gap
 			self.partitions.append(self.swap)
 
 		self.root = MSDOSPartition(Sectors(data['root']['size'], sector_size),
 		                           data['root']['filesystem'], data['root'].get('format_command', None),
 		                           last_partition())
+		if self.root.previous is not None:
+			self.root.pad_start += partition_gap
+			self.root.size -= partition_gap
 		self.partitions.append(self.root)
 
 		# Mark boot as the boot partition, or root, if boot does not exist

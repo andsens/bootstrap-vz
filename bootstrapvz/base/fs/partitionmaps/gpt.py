@@ -34,7 +34,7 @@ class GPTPartitionMap(AbstractPartitionMap):
 
 		# Offset all partitions by 1 sector.
 		# parted in jessie has changed and no longer allows
-		# gpt partitions to be right next to each other.
+		# partitions to be right next to each other.
 		partition_gap = Sectors(1, sector_size)
 
 		# The boot and swap partitions are optional
