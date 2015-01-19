@@ -80,12 +80,20 @@ def set_fs_states(volume):
 		volume.fsm.current = 'detached'
 
 		p_map = volume.partition_map
-		partitions_state = 'attached'
 		from bootstrapvz.base.fs.partitionmaps.none import NoPartitions
-		if isinstance(p_map, NoPartitions):
-			partitions_state = 'formatted'
-		else:
+		if not isinstance(p_map, NoPartitions):
 			p_map.fsm.current = 'unmapped'
-			partitions_state = 'unmapped_fmt'
+
+		from bootstrapvz.base.fs.partitions.gap import PartitionGap
+		from bootstrapvz.base.fs.partitions.unformatted import UnformattedPartition
+		from bootstrapvz.base.fs.partitions.single import SinglePartition
 		for partition in p_map.partitions:
-			partition.fsm.current = partitions_state
+			if isinstance(partition, PartitionGap):
+				continue
+			if isinstance(partition, UnformattedPartition):
+				partition.fsm.current = 'unmapped'
+				continue
+			if isinstance(partition, SinglePartition):
+				partition.fsm.current = 'formatted'
+				continue
+			partition.fsm.current = 'unmapped_fmt'
