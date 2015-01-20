@@ -3,9 +3,9 @@ volume:
   partitions:
     boot:
       filesystem: ext2
-      size: 32MiB
+      size: 64MiB
     root:
       filesystem: ext4
-      size: 864MiB
+      size: 832MiB
     swap:
       size: 128MiB
