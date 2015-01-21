@@ -69,19 +69,26 @@ class ConfigureExtlinuxJessie(Task):
 		os.mkdir(extlinux_path)
 
 		from . import assets
-		extlinux_assets_path = os.path.join(assets, 'extlinux')
-		extlinux_tpl_path = os.path.join(extlinux_assets_path, 'extlinux.conf')
-		with open(extlinux_tpl_path) as extlinux_tpl:
-			extlinux_config = extlinux_tpl.read()
+		with open(os.path.join(assets, 'extlinux/extlinux.conf')) as template:
+			extlinux_config_tpl = template.read()
 
-		root_uuid = info.volume.partition_map.root.get_uuid()
-		extlinux_config = extlinux_config.format(kernel_version=info.kernel_version, UUID=root_uuid)
-		extlinux_config_path = os.path.join(extlinux_path, 'extlinux.conf')
-		with open(extlinux_config_path, 'w') as extlinux_conf_handle:
+		config_vars = {'root_uuid': info.volume.partition_map.root.get_uuid(),
+		               'kernel_version': info.kernel_version}
+		# Check if / and /boot are on the same partition
+		# If not, /boot will actually be / when booting
+		if hasattr(info.volume.partition_map, 'boot'):
+			config_vars['boot_prefix'] = ''
+		else:
+			config_vars['boot_prefix'] = '/boot'
+
+		extlinux_config = extlinux_config_tpl.format(**config_vars)
+
+		with open(os.path.join(extlinux_path, 'extlinux.conf'), 'w') as extlinux_conf_handle:
 			extlinux_conf_handle.write(extlinux_config)
-		from shutil import copy
+
 		# Copy the boot message
-		boot_txt_path = os.path.join(extlinux_assets_path, 'boot.txt')
+		from shutil import copy
+		boot_txt_path = os.path.join(assets, 'extlinux/boot.txt')
 		copy(boot_txt_path, os.path.join(extlinux_path, 'boot.txt'))
 
 
