@@ -7,6 +7,7 @@ import tasks.initd
 import tasks.host
 import tasks.packages
 from bootstrapvz.common.tasks import apt
+from bootstrapvz.common.tasks import boot
 from bootstrapvz.common.tasks import loopback
 from bootstrapvz.common.tasks import initd
 from bootstrapvz.common.tasks import ssh
@@ -43,6 +44,8 @@ def resolve_tasks(taskset, manifest):
 	                initd.AddExpandRoot,
 	                tasks.initd.AdjustExpandRootDev,
 	                initd.InstallInitScripts,
+	                boot.BlackListModules,
+	                boot.UpdateInitramfs,
 	                ssh.AddSSHKeyGeneration,
 	                ssh.DisableSSHPasswordAuthentication,
 	                tasks.apt.CleanGoogleRepositoriesAndKeys,
