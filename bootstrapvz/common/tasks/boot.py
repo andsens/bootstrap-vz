@@ -7,16 +7,28 @@ from bootstrapvz.base.fs import partitionmaps
 import os.path
 
 
+class UpdateInitramfs(Task):
+	description = 'Updating initramfs'
+	phase = phases.system_modification
+
+	@classmethod
+	def run(cls, info):
+		from ..tools import log_check_call
+		log_check_call(['chroot', info.root, 'update-initramfs', '-u'])
+
+
 class BlackListModules(Task):
 	description = 'Blacklisting kernel modules'
 	phase = phases.system_modification
+	successors = [UpdateInitramfs]
 
 	@classmethod
 	def run(cls, info):
 		blacklist_path = os.path.join(info.root, 'etc/modprobe.d/blacklist.conf')
 		with open(blacklist_path, 'a') as blacklist:
-			blacklist.write(('# disable pc speaker\n'
-			                 'blacklist pcspkr'))
+			blacklist.write(('# disable pc speaker and floppy\n'
+			                 'blacklist pcspkr\n'
+			                 'blacklist floppy\n'))
 
 
 class DisableGetTTYs(Task):
