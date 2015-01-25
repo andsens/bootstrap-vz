@@ -1,6 +1,7 @@
 from instance import Instance
 import virtualbox
 from contextlib import contextmanager
+from ..tools import waituntil
 import logging
 log = logging.getLogger(__name__)
 
@@ -84,7 +85,8 @@ class VirtualBoxInstance(Instance):
 	def shutdown(self):
 		log.debug('Shutting down vbox machine `{name}\''.format(name=self.name))
 		self.session.console.power_down().wait_for_completion(-1)
-		lock(self.machine, self.session).unlock()
+		if not waituntil(lambda: self.machine.session_state == virtualbox.library.SessionState.unlocked):
+			raise LockingException('Timeout while waiting for the machine to become unlocked')
 
 	def destroy(self):
 		log.debug('Destroying vbox machine `{name}\''.format(name=self.name))
@@ -105,15 +107,27 @@ class VirtualBoxInstance(Instance):
 
 @contextmanager
 def lock(machine, session):
+	if machine.session_state != virtualbox.library.SessionState.unlocked:
+		msg = ('Acquiring lock on machine failed, state was `{state}\' '
+		       'instead of `Unlocked\'.'.format(state=str(machine.session_state)))
+		raise LockingException(msg)
+
 	machine.lock_machine(session, virtualbox.library.LockType.write)
 	yield session.machine
-	from ..tools import waituntil
-	if machine.session_state == virtualbox.library.SessionState.unlocked:
-		return
-	if machine.session_state == virtualbox.library.SessionState.unlocking:
-		waituntil(lambda: machine.session_state == virtualbox.library.SessionState.unlocked)
-		return
-	if machine.session_state == virtualbox.library.SessionState.spawning:
-		waituntil(lambda: machine.session_state == virtualbox.library.SessionState.locked)
+
+	if machine.session_state != virtualbox.library.SessionState.locked:
+		if not waituntil(lambda: machine.session_state == virtualbox.library.SessionState.unlocked):
+			msg = ('Error before trying to release lock on machine, state was `{state}\' '
+			       'instead of `Locked\'.'.format(state=str(machine.session_state)))
+			raise LockingException(msg)
+
 	session.unlock_machine()
-	waituntil(lambda: machine.session_state == virtualbox.library.SessionState.unlocked)
+
+	if not waituntil(lambda: machine.session_state == virtualbox.library.SessionState.unlocked):
+		msg = ('Timeout while trying to release lock on machine, '
+		       'last state was `{state}\''.format(state=str(machine.session_state)))
+		raise LockingException(msg)
+
+
+class LockingException(Exception):
+	pass
