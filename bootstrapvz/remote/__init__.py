@@ -33,6 +33,7 @@ supported_exceptions = ['bootstrapvz.common.exceptions.ManifestError',
                         'bootstrapvz.base.pkg.exceptions.SourceError',
                         'bootstrapvz.common.exceptions.UnitError',
                         'bootstrapvz.common.fsm_proxy.FSMProxyError',
+                        'subprocess.CalledProcessError',
                         ]
 
 
@@ -41,6 +42,8 @@ def register_deserialization_handlers():
 		SerializerBase.register_dict_to_class(supported_class, deserialize)
 	for supported_exc in supported_exceptions:
 		SerializerBase.register_dict_to_class(supported_exc, deserialize_exception)
+	import subprocess
+	SerializerBase.register_class_to_dict(subprocess.CalledProcessError, serialize_called_process_error)
 
 
 def unregister_deserialization_handlers():
@@ -71,6 +74,28 @@ def deserialize(fq_classname, data):
 	instance = class_object.__new__(class_object)
 	instance.__setstate__(state)
 	return instance
+
+
+def serialize_called_process_error(obj):
+	# This is by far the weirdest exception serialization.
+	# There is a bug in both Pyro4 and the Python subprocess module.
+	# CalledProcessError does not populate its args property,
+	# although according to https://docs.python.org/2/library/exceptions.html#exceptions.BaseException.args
+	# it should...
+	# So we populate that property during serialization instead
+	# (the code is grabbed directly from Pyro4's class_to_dict())
+	# However, Pyro4 still cannot figure out to call the deserializer
+	# unless we also use setattr() on the exception to set the args below
+	# (before throwing it).
+	# Mind you, the error "__init__() takes at least 3 arguments (2 given)"
+	# is thrown *on the server* if we don't use setattr().
+	# It's all very confusing to me and I'm not entirely
+	# sure what the exact problem is. Regardless - it works, so there.
+	return {'__class__': obj.__class__.__module__ + '.' + obj.__class__.__name__,
+	        '__exception__': True,
+	        'args': (obj.returncode, obj.cmd, obj.output),
+	        'attributes': vars(obj)  # add custom exception attributes
+	        }
 
 
 def get_class_object(fq_classname):

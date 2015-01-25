@@ -3,9 +3,14 @@ import os
 
 def log_check_call(command, stdin=None, env=None, shell=False, cwd=None):
 	status, stdout, stderr = log_call(command, stdin, env, shell, cwd)
+	from subprocess import CalledProcessError
 	if status != 0:
-		from subprocess import CalledProcessError
-		raise CalledProcessError(status, ' '.join(command), '\n'.join(stderr))
+		e = CalledProcessError(status, ' '.join(command), '\n'.join(stderr))
+		# Fix Pyro4's fixIronPythonExceptionForPickle() by setting the args property,
+		# even though we use our own serialization (at least I think that's the problem).
+		# See bootstrapvz.remote.serialize_called_process_error for more info.
+		setattr(e, 'args', (status, ' '.join(command), '\n'.join(stderr)))
+		raise e
 	return stdout
 
 
