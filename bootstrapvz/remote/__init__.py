@@ -6,6 +6,7 @@ log = logging.getLogger(__name__)
 
 supported_classes = ['bootstrapvz.base.manifest.Manifest',
                      'bootstrapvz.base.bootstrapinfo.BootstrapInformation',
+                     'bootstrapvz.base.bootstrapinfo.DictClass',
                      'bootstrapvz.common.fs.loopbackvolume.LoopbackVolume',
                      'bootstrapvz.common.fs.qemuvolume.QEMUVolume',
                      'bootstrapvz.common.fs.virtualdiskimage.VirtualDiskImage',

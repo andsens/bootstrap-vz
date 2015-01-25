@@ -78,20 +78,6 @@ class BootstrapInformation(object):
 		:return: The manifest_vars dictionary
 		:rtype: dict
 		"""
-		class DictClass(dict):
-			"""Tiny extension of dict to allow setting and getting keys via attributes
-			"""
-			def __getattr__(self, name):
-				return self[name]
-
-			def __setattr__(self, name, value):
-				self[name] = value
-
-			def __delattr__(self, name):
-				del self[name]
-
-			def __getstate__(self):
-				return self.__dict__
 
 		def set_manifest_vars(obj, data):
 			"""Runs through the manifest and creates DictClasses for every key
@@ -139,3 +125,23 @@ class BootstrapInformation(object):
 	def __setstate__(self, state):
 		for key in state:
 			self.__dict__[key] = state[key]
+
+
+class DictClass(dict):
+	"""Tiny extension of dict to allow setting and getting keys via attributes
+	"""
+	def __getattr__(self, name):
+		return self[name]
+
+	def __setattr__(self, name, value):
+		self[name] = value
+
+	def __delattr__(self, name):
+		del self[name]
+
+	def __getstate__(self):
+		return self.__dict__
+
+	def __setstate__(self, state):
+		for key in state:
+			self[key] = state[key]
