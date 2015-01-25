@@ -103,23 +103,28 @@ def connect_pyro(host, port):
 	server_uri = 'PYRO:server@{host}:{port}'.format(host=host, port=port)
 	connection = Pyro4.Proxy(server_uri)
 
-	log.debug('Connecting to the RPC daemon')
-	remaining_retries = 5
-	while True:
-		try:
-			connection.ping()
-			break
-		except (Pyro4.errors.ConnectionClosedError, Pyro4.errors.CommunicationError):
-			if remaining_retries > 0:
-				remaining_retries -= 1
-				from time import sleep
-				sleep(2)
-			else:
-				raise
+	log.debug('Connecting to RPC daemon')
 
+	connected = False
 	try:
+		remaining_retries = 5
+		while not connected:
+			try:
+				connection.ping()
+				connected = True
+			except (Pyro4.errors.ConnectionClosedError, Pyro4.errors.CommunicationError):
+				if remaining_retries > 0:
+					remaining_retries -= 1
+					from time import sleep
+					sleep(2)
+				else:
+					raise
+
 		yield connection
 	finally:
-		log.debug('Stopping the RPC daemon')
-		connection.stop()
-		connection._pyroRelease()
+		if connected:
+			log.debug('Stopping RPC daemon')
+			connection.stop()
+			connection._pyroRelease()
+		else:
+			log.warn('Unable to stop RPC daemon, it might still be running on the server')
