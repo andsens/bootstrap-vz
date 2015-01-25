@@ -75,40 +75,22 @@ def run(manifest, build_server, debug=False, dry_run=False):
 	on the other side and initiates a remote bootstrapping procedure
 	"""
 	bootstrap_info = None
-	try:
-		# Connect to the build server
-		connection = build_server.connect()
-		# Start a callback server on this side, so that we may receive log entries
-		from callback import CallbackServer
-		callback_server = CallbackServer(listen_port=build_server.local_callback_port,
-		                                 remote_port=build_server.remote_callback_port)
-		try:
-			# Start the callback server (in a background thread)
-			callback_server.start()
-			# Tell the RPC daemon about the callback server
-			connection.set_callback_server(callback_server)
+	with build_server.connect() as (connection, callback_server):
+		# Replace the standard SIGINT handler with a remote call to the server
+		# so that it may abort the run.
+		def abort(signum, frame):
+			import logging
+			logging.getLogger(__name__).warn('SIGINT received, asking remote to abort.')
+			callback_server.abort_run()
+		import signal
+		orig_sigint = signal.signal(signal.SIGINT, abort)
 
-			# Replace the standard SIGINT handler with a remote call to the server
-			# so that it may abort the run.
-			def abort(signum, frame):
-				import logging
-				logging.getLogger(__name__).warn('SIGINT received, asking remote to abort.')
-				callback_server.abort_run()
-			import signal
-			orig_sigint = signal.signal(signal.SIGINT, abort)
-
-			# Everything has been set up, begin the bootstrapping process
-			bootstrap_info = connection.run(manifest,
-			                                debug=debug,
-			                                # We can't pause the bootstrapping process remotely, yet...
-			                                pause_on_error=False,
-			                                dry_run=dry_run)
-			# Restore the old SIGINT handler
-			signal.signal(signal.SIGINT, orig_sigint)
-		finally:
-			# Stop the callback server
-			callback_server.stop()
-	finally:
-		# Stop the RPC daemon and close the SSH connection
-		build_server.disconnect()
+		# Everything has been set up, begin the bootstrapping process
+		bootstrap_info = connection.run(manifest,
+		                                debug=debug,
+		                                # We can't pause the bootstrapping process remotely, yet...
+		                                pause_on_error=False,
+		                                dry_run=dry_run)
+		# Restore the old SIGINT handler
+		signal.signal(signal.SIGINT, orig_sigint)
 	return bootstrap_info

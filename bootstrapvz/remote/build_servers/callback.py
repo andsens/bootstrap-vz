@@ -14,19 +14,19 @@ class CallbackServer(object):
 		self.daemon.register(self)
 		self.abort = False
 
-	def start(self):
+	def __enter__(self):
 		def serve():
 			self.daemon.requestLoop()
 		from threading import Thread
 		self.thread = Thread(target=serve)
-		log.debug('Starting the callback server')
+		log.debug('Starting callback server')
 		self.thread.start()
+		return self
 
-	def stop(self):
-		if hasattr(self, 'daemon'):
-			self.daemon.shutdown()
-		if hasattr(self, 'thread'):
-			self.thread.join()
+	def __exit__(self, type, value, traceback):
+		log.debug('Shutting down callback server')
+		self.daemon.shutdown()
+		self.thread.join()
 
 	@Pyro4.expose
 	def handle_log(self, pickled_record):
