@@ -19,11 +19,11 @@ class RemoteBuildServer(BuildServer):
 	@contextmanager
 	def connect(self):
 		with self.spawn_server() as forwards:
-			with connect_pyro('localhost', forwards['local_server_port']) as connection:
-				from callback import CallbackServer
-				args = {'listen_port': forwards['local_callback_port'],
-				        'remote_port': forwards['remote_callback_port']}
-				with CallbackServer(**args) as callback_server:
+			args = {'listen_port': forwards['local_callback_port'],
+			        'remote_port': forwards['remote_callback_port']}
+			from callback import CallbackServer
+			with CallbackServer(**args) as callback_server:
+				with connect_pyro('localhost', forwards['local_server_port']) as connection:
 					connection.set_callback_server(callback_server)
 					yield connection
 
