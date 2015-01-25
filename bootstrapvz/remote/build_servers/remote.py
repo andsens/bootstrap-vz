@@ -63,13 +63,17 @@ class RemoteBuildServer(BuildServer):
 			       'local_callback_port': local_callback_port,
 			       'remote_server_port': remote_server_port,
 			       'remote_callback_port': remote_callback_port}
-		except (Exception, KeyboardInterrupt):
-			log.debug('Forcefully terminating SSH connection to the build server')
-			ssh_process.terminate()
-			raise
-		else:
+		finally:
 			log.debug('Waiting for SSH connection to the build server to close')
-			ssh_process.wait()
+			import time
+			start = time.time()
+			while ssh_process.poll() is None:
+				if time.time() - start > 5:
+					log.debug('Forcefully terminating SSH connection to the build server')
+					ssh_process.terminate()
+					break
+				else:
+					time.sleep(0.5)
 
 	def download(self, src, dst):
 		log.debug('Downloading file `{src}\' from '
