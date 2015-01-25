@@ -1,7 +1,31 @@
+from contextlib import contextmanager
+from bootstrapvz.remote import register_deserialization_handlers
+
 # Register deserialization handlers for objects
 # that will pass between server and client
-from bootstrapvz.remote import register_deserialization_handlers
 register_deserialization_handlers()
+
+
+@contextmanager
+def boot_manifest(manifest_data):
+	from bootstrapvz.common.tools import load_data
+	build_servers = load_data('build-servers.yml')
+	from bootstrapvz.remote.build_servers import pick_build_server
+	build_server = pick_build_server(build_servers, manifest_data)
+
+	manifest_data = build_server.apply_build_settings(manifest_data)
+	from bootstrapvz.base.manifest import Manifest
+	manifest = Manifest(data=manifest_data)
+
+	bootstrap_info = build_server.run(manifest)
+
+	from ..images import initialize_image
+	image = initialize_image(manifest, build_server, bootstrap_info)
+	try:
+		with image.get_instance() as instance:
+			yield instance
+	finally:
+		image.destroy()
 
 
 def waituntil(predicate, timeout=5, interval=0.05):

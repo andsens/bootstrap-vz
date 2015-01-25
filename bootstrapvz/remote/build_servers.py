@@ -53,7 +53,10 @@ class BuildServer(object):
 
 
 class LocalBuildServer(BuildServer):
-	pass
+
+	def run(self, manifest):
+		from bootstrapvz.base.main import run
+		return run(manifest)
 
 
 class RemoteBuildServer(BuildServer):
@@ -151,6 +154,10 @@ class RemoteBuildServer(BuildServer):
 		                  self.username + '@' + self.address,
 		                  '--'] + command
 		log_check_call(ssh_cmd)
+
+	def run(self, manifest):
+		from bootstrapvz.remote.main import run
+		return run(manifest, self)
 
 
 def getNPorts(n, port_range=(1024, 65535)):
