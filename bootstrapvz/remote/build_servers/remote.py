@@ -25,7 +25,7 @@ class RemoteBuildServer(BuildServer):
 				        'remote_port': forwards['remote_callback_port']}
 				with CallbackServer(**args) as callback_server:
 					connection.set_callback_server(callback_server)
-					yield (connection, callback_server)
+					yield connection
 
 	@contextmanager
 	def spawn_server(self):
@@ -95,10 +95,6 @@ class RemoteBuildServer(BuildServer):
 		                  self.username + '@' + self.address,
 		                  '--'] + command
 		log_check_call(ssh_cmd)
-
-	def run(self, manifest):
-		from bootstrapvz.remote.main import run
-		return run(manifest, self)
 
 
 @contextmanager

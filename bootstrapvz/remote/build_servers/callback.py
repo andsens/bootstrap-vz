@@ -12,7 +12,6 @@ class CallbackServer(object):
 		                           nathost='localhost', natport=remote_port,
 		                           unixsocket=None)
 		self.daemon.register(self)
-		self.abort = False
 
 	def __enter__(self):
 		def serve():
@@ -36,10 +35,3 @@ class CallbackServer(object):
 		record.extra = getattr(record, 'extra', {})
 		record.extra['source'] = 'remote'
 		log.handle(record)
-
-	@Pyro4.expose
-	def get_abort_run(self):
-		return self.abort
-
-	def abort_run(self):
-		self.abort = True

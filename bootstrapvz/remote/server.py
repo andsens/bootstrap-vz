@@ -57,18 +57,51 @@ class Server(object):
 	def start(self):
 		Pyro4.config.COMMTIMEOUT = 0.5
 		daemon = Pyro4.Daemon('localhost', port=int(self.listen_port), unixsocket=None)
-
 		daemon.register(self, 'server')
+
 		daemon.requestLoop(loopCondition=lambda: not self.stop_serving)
 
 	@Pyro4.expose
-	def run(self, *args, **kwargs):
+	def run(self, manifest, debug=False, dry_run=False):
 
-		def abort_run():
-			return not self.callback_server.get_abort_run()
-		from bootstrapvz.base.main import run
-		kwargs['check_continue'] = abort_run
-		return run(*args, **kwargs)
+		def bootstrap(queue):
+			# setsid() creates a new session, making this process the group leader.
+			# We do that, so when the server calls killpg (kill process group)
+			# on us, it won't kill itself (this process was spawned from a
+			# thread under the server, meaning it's part of the same group).
+			# The process hierarchy looks like this:
+			# Pyro server (process - listening on a port)
+			# +- pool thread
+			# +- pool thread
+			# +- pool thread
+			# +- started thread (the one that got the "run()" call)
+			#    L bootstrap() process (us)
+			# Calling setsid() also fixes another problem:
+			#   SIGINTs sent to this process seem to be redirected
+			#   to the process leader. Since there is a thread between
+			#   us and the process leader, the signal will not be propagated
+			#   (signals are not propagated to threads), this means that any
+			#   subprocess we start (i.e. debootstrap) will not get a SIGINT.
+			import os
+			os.setsid()
+			from bootstrapvz.base.main import run
+			try:
+				bootstrap_info = run(manifest, debug=debug, dry_run=dry_run)
+				queue.put(bootstrap_info)
+			except (Exception, KeyboardInterrupt) as e:
+				queue.put(e)
+
+		from multiprocessing import Queue
+		from multiprocessing import Process
+		queue = Queue()
+		self.bootstrap_process = Process(target=bootstrap, args=(queue,))
+		self.bootstrap_process.start()
+		self.bootstrap_process.join()
+		del self.bootstrap_process
+		result = queue.get()
+		if isinstance(result, Exception):
+			raise result
+		return result
 
 	@Pyro4.expose
 	def set_callback_server(self, server):
@@ -82,4 +115,14 @@ class Server(object):
 
 	@Pyro4.expose
 	def stop(self):
+		if hasattr(self, 'bootstrap_process'):
+			log.warn('Sending SIGINT to bootstrapping process')
+			import os
+			import signal
+			os.killpg(self.bootstrap_process.pid, signal.SIGINT)
+			self.bootstrap_process.join()
+
+		# We can't send a SIGINT to the server,
+		# for some reason the Pyro4 shutdowns are rather unclean,
+		# throwing exceptions and such.
 		self.stop_serving = True

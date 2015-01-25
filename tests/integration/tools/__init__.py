@@ -17,7 +17,9 @@ def boot_manifest(manifest_data):
 	from bootstrapvz.base.manifest import Manifest
 	manifest = Manifest(data=manifest_data)
 
-	bootstrap_info = build_server.run(manifest)
+	bootstrap_info = None
+	with build_server.connect() as connection:
+		bootstrap_info = connection.run(manifest)
 
 	from ..images import initialize_image
 	image = initialize_image(manifest, build_server, bootstrap_info)

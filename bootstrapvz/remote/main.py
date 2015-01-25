@@ -40,10 +40,10 @@ def main():
 	register_deserialization_handlers()
 
 	# Everything has been set up, connect to the server and begin the bootstrapping process
-	run(manifest,
-	    build_server,
-	    debug=opts['--debug'],
-	    dry_run=opts['--dry-run'])
+	with build_server.connect() as connection:
+		connection.run(manifest,
+		               debug=opts['--debug'],
+		               dry_run=['--dry-run'])
 
 
 def get_opts():
@@ -68,29 +68,3 @@ Options:
   -h, --help          show this help
 	"""
 	return docopt(usage)
-
-
-def run(manifest, build_server, debug=False, dry_run=False):
-	"""Connects to the remote build server, starts an RPC daemin
-	on the other side and initiates a remote bootstrapping procedure
-	"""
-	bootstrap_info = None
-	with build_server.connect() as (connection, callback_server):
-		# Replace the standard SIGINT handler with a remote call to the server
-		# so that it may abort the run.
-		def abort(signum, frame):
-			import logging
-			logging.getLogger(__name__).warn('SIGINT received, asking remote to abort.')
-			callback_server.abort_run()
-		import signal
-		orig_sigint = signal.signal(signal.SIGINT, abort)
-
-		# Everything has been set up, begin the bootstrapping process
-		bootstrap_info = connection.run(manifest,
-		                                debug=debug,
-		                                # We can't pause the bootstrapping process remotely, yet...
-		                                pause_on_error=False,
-		                                dry_run=dry_run)
-		# Restore the old SIGINT handler
-		signal.signal(signal.SIGINT, orig_sigint)
-	return bootstrap_info

@@ -1,8 +1,16 @@
 from build_server import BuildServer
+from contextlib import contextmanager
 
 
 class LocalBuildServer(BuildServer):
 
-	def run(self, manifest):
+	@contextmanager
+	def connect(self):
+		yield LocalConnection()
+
+
+class LocalConnection(object):
+
+	def run(self, *args, **kwargs):
 		from bootstrapvz.base.main import run
-		return run(manifest)
+		return run(*args, **kwargs)
