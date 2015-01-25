@@ -62,6 +62,32 @@ class Server(object):
 		daemon.requestLoop(loopCondition=lambda: not self.stop_serving)
 
 	@Pyro4.expose
+	def set_callback_server(self, server):
+		log.debug('Forwarding logs to the callback server')
+		self.log_forwarder.set_server(server)
+
+	@Pyro4.expose
+	def ping(self):
+		if hasattr(self, 'connection_timeout'):
+			self.connection_timeout.cancel()
+			del self.connection_timeout
+		return 'pong'
+
+	@Pyro4.expose
+	def stop(self):
+		if hasattr(self, 'bootstrap_process'):
+			log.warn('Sending SIGINT to bootstrapping process')
+			import os
+			import signal
+			os.killpg(self.bootstrap_process.pid, signal.SIGINT)
+			self.bootstrap_process.join()
+
+		# We can't send a SIGINT to the server,
+		# for some reason the Pyro4 shutdowns are rather unclean,
+		# throwing exceptions and such.
+		self.stop_serving = True
+
+	@Pyro4.expose
 	def run(self, manifest, debug=False, dry_run=False):
 
 		def bootstrap(queue):
@@ -102,26 +128,3 @@ class Server(object):
 		if isinstance(result, Exception):
 			raise result
 		return result
-
-	@Pyro4.expose
-	def set_callback_server(self, server):
-		log.debug('Forwarding logs to the callback server')
-		self.log_forwarder.set_server(server)
-
-	@Pyro4.expose
-	def ping(self):
-		return 'pong'
-
-	@Pyro4.expose
-	def stop(self):
-		if hasattr(self, 'bootstrap_process'):
-			log.warn('Sending SIGINT to bootstrapping process')
-			import os
-			import signal
-			os.killpg(self.bootstrap_process.pid, signal.SIGINT)
-			self.bootstrap_process.join()
-
-		# We can't send a SIGINT to the server,
-		# for some reason the Pyro4 shutdowns are rather unclean,
-		# throwing exceptions and such.
-		self.stop_serving = True
