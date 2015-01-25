@@ -118,7 +118,10 @@ class BootstrapInformation(object):
 		state = self.__dict__.copy()
 		exclude_keys = ['source_lists', 'preference_lists', 'packages']
 		for key in exclude_keys:
-			del state[key]
+			# We may have been serialized before,
+			# so don't fail if the keys do not exist
+			if key in state:
+				del state[key]
 		state['__class__'] = self.__module__ + '.' + self.__class__.__name__
 		return state
 
