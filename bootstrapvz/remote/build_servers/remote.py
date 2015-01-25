@@ -1,62 +1,7 @@
+from build_server import BuildServer
 from bootstrapvz.common.tools import log_check_call
 import logging
 log = logging.getLogger(__name__)
-
-
-def pick_build_server(build_servers, manifest, preferences={}):
-	# Validate the build servers list
-	from bootstrapvz.common.tools import load_data
-	import os.path
-	schema = load_data(os.path.normpath(os.path.join(os.path.dirname(__file__), 'build-servers-schema.yml')))
-	import jsonschema
-	jsonschema.validate(build_servers, schema)
-
-	if manifest['provider']['name'] == 'ec2':
-		must_bootstrap = 'ec2-' + manifest['volume']['backing']
-	else:
-		must_bootstrap = manifest['provider']['name']
-
-	def matches(name, settings):
-		if preferences.get('name', name) != name:
-			return False
-		if preferences.get('release', settings['release']) != settings['release']:
-			return False
-		if must_bootstrap not in settings['can_bootstrap']:
-			return False
-		return True
-
-	for name, settings in build_servers.iteritems():
-		if not matches(name, settings):
-			continue
-		if settings['type'] == 'local':
-			return LocalBuildServer(name, settings)
-		else:
-			return RemoteBuildServer(name, settings)
-	raise Exception('Unable to find a build server that matches your preferences.')
-
-
-class BuildServer(object):
-
-	def __init__(self, name, settings):
-		self.name = name
-		self.settings = settings
-		self.build_settings = settings.get('build_settings', {})
-		self.can_bootstrap = settings['can_bootstrap']
-		self.release = settings.get('release', None)
-
-	def apply_build_settings(self, manifest_data):
-		if manifest_data['provider']['name'] == 'virtualbox' and 'guest_additions' in manifest_data['provider']:
-			manifest_data['provider']['guest_additions'] = self.build_settings['guest_additions']
-		if 'apt_proxy' in self.build_settings:
-			manifest_data.get('plugins', {})['apt_proxy'] = self.build_settings['apt_proxy']
-		return manifest_data
-
-
-class LocalBuildServer(BuildServer):
-
-	def run(self, manifest):
-		from bootstrapvz.base.main import run
-		return run(manifest)
 
 
 class RemoteBuildServer(BuildServer):
@@ -70,6 +15,7 @@ class RemoteBuildServer(BuildServer):
 		self.keyfile = settings['keyfile']
 		self.server_bin = settings['server_bin']
 
+		from . import getNPorts
 		# We can't use :0 for the forwarding ports because
 		# A: It's quite hard to retrieve the port on the remote after the daemon has started
 		# B: SSH doesn't accept 0:localhost:0 as a port forwarding option
@@ -157,15 +103,3 @@ class RemoteBuildServer(BuildServer):
 	def run(self, manifest):
 		from bootstrapvz.remote.main import run
 		return run(manifest, self)
-
-
-def getNPorts(n, port_range=(1024, 65535)):
-	import random
-	ports = []
-	for i in range(0, n):
-		while True:
-			port = random.randrange(*port_range)
-			if port not in ports:
-				ports.append(port)
-				break
-	return ports

@@ -6,7 +6,7 @@ log = logging.getLogger(__name__)
 
 
 def initialize_image(manifest, build_server, bootstrap_info):
-	from bootstrapvz.remote.build_servers import LocalBuildServer
+	from bootstrapvz.remote.build_servers.local import LocalBuildServer
 	if isinstance(build_server, LocalBuildServer):
 		image_path = bootstrap_info.volume.image_path
 	else:
