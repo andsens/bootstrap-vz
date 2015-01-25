@@ -66,8 +66,7 @@ class RemoteBuildServer(BuildServer):
 		self.address = settings['address']
 		self.port = settings['port']
 		self.username = settings['username']
-		self.password = settings['password']
-		self.root_password = settings['root_password']
+		self.password = settings.get('password', None)
 		self.keyfile = settings['keyfile']
 		self.server_bin = settings['server_bin']
 

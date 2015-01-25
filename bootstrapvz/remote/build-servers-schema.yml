@@ -50,7 +50,6 @@ definitions:
       port: {type: integer}
       username: {type: string}
       password: {type: string}
-      root_password: {type: string}
       keyfile: {$ref: '#/definitions/absolute_path'}
       server_bin: {$ref: '#/definitions/absolute_path'}
     required: [type, can_bootstrap, release]
