@@ -81,4 +81,6 @@ class ShrinkVolume(Task):
 	@classmethod
 	def run(cls, info):
 		from bootstrapvz.common.tools import log_check_call
+		perm = os.stat(info.volume.image_path).st_mode & 0777
 		log_check_call(['/usr/bin/vmware-vdiskmanager', '-k', info.volume.image_path])
+		os.chmod(info.volume.image_path, perm)
