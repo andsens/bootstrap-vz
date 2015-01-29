@@ -9,6 +9,7 @@ import tasks.packages
 from bootstrapvz.common.tasks import apt
 from bootstrapvz.common.tasks import loopback
 from bootstrapvz.common.tasks import initd
+from bootstrapvz.common.tasks import kernel
 from bootstrapvz.common.tasks import ssh
 from bootstrapvz.common.tasks import volume
 
@@ -54,6 +55,10 @@ def resolve_tasks(taskset, manifest):
 
 	if manifest.volume['partitions']['type'] != 'none':
 		taskset.add(initd.AdjustExpandRootScript)
+
+	if manifest.volume['partitions']['type'] != 'mbr':
+		taskset.update([tasks.initd.AddGrowRootDisable,
+		                kernel.UpdateInitramfs])
 
 	if 'gcs_destination' in manifest.image:
 		taskset.add(tasks.image.UploadImage)

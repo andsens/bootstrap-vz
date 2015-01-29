@@ -1,0 +1,52 @@
+# Selectively disable growroot               -*- shell-script -*-
+set -e
+
+message() { echo "DISABLE-GROWROOT:" "$@" ; }
+error_exit() { message "$@"; exit 1; }
+
+. /scripts/functions
+
+# initramfs-tools exports the following variables, used below:
+# $ROOT - Generally "/dev/disk/by-uuid/<id>" which is a link to /dev/sda1
+# $ROOTFLAGS - Generally empty
+# $ROOTFSTYPE - Generally empty
+# $rootmnt - Set to "/root"
+
+# Follow link to get real root location
+if [ ! -L "${ROOT}" ]; then
+  real_root=${ROOT}
+else
+  real_root=$(readlink -f "${ROOT}")
+fi
+
+# Remove partition number to get disk
+disk=$(echo ${real_root} | sed 's/[0-9]*$//')
+
+# Determine number of 512-byte sectors in 2TB
+two_tb=$((2*(1024**4)))
+max_sectors=$((${two_tb}/512))
+
+# Determine number of sectors on disk
+geometry=$(sfdisk ${disk} --show-pt-geometry)
+cyl=$(echo $geometry | cut -d " " -f 2)
+heads=$(echo $geometry | cut -d " " -f 4)
+secs=$(echo $geometry | cut -d " " -f 6)
+sectors=$((${cyl}*${heads}*${secs}))
+
+# If disk is >2TB, disable growroot
+if [ "$sectors" -gt "$max_sectors" ]; then
+  message "Disk size >2TB - Not expanding root partition"
+  # Temporarily mount filesystem
+  if [ -z "${ROOTFSTYPE}" ]; then
+    fstype=$(get_fstype "${ROOT}")
+  else
+    fstype=${ROOTFSTYPE}
+  fi
+  mount -w ${fstype:+-t ${fstype} }${ROOTFLAGS} ${ROOT} ${rootmnt} ||
+      error_exit "failed to mount ${ROOT}."
+  # Disable growroot
+  touch "${rootmnt}/etc/growroot-disabled"
+  # Unmount filesystem
+  umount "${rootmnt}" || error_exit "failed to umount ${rootmnt}";
+fi
+
