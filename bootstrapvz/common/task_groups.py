@@ -138,6 +138,7 @@ def get_bootloader_group(manifest):
 			group.append(boot.InstallGrub_2)
 	if manifest.system['bootloader'] == 'extlinux':
 		group.extend([boot.AddExtlinuxPackage,
+		              boot.ConfigureExtLinux,
 		              boot.InstallExtLinux])
 	return group
 
