@@ -1,7 +1,8 @@
-__all__ = ['Phase', 'Task', 'main']
 from phase import Phase
 from task import Task
 from main import main
+
+__all__ = ['Phase', 'Task', 'main']
 
 
 def validate_manifest(data, validator, error):
