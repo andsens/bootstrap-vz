@@ -144,8 +144,7 @@ class PackageBox(Task):
 		box_files = os.listdir(info._vagrant['folder'])
 		log_check_call(['tar', '--create', '--gzip', '--dereference',
 		                '--file', info._vagrant['box_path'],
-		                '--directory', info._vagrant['folder']]
-		               + box_files
+		                '--directory', info._vagrant['folder']] + box_files
 		               )
 		import logging
 		logging.getLogger(__name__).info('The vagrant box has been placed at ' + info._vagrant['box_path'])

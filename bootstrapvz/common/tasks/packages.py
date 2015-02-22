@@ -49,8 +49,7 @@ class InstallPackages(Task):
 			log_check_call(['chroot', info.root,
 			                'apt-get', 'install',
 			                           '--no-install-recommends',
-			                           '--assume-yes']
-			               + map(str, remote_packages),
+			                           '--assume-yes'] + map(str, remote_packages),
 			               env=env)
 		except CalledProcessError as e:
 			import logging
@@ -91,8 +90,7 @@ class InstallPackages(Task):
 		env = os.environ.copy()
 		env['DEBIAN_FRONTEND'] = 'noninteractive'
 		log_check_call(['chroot', info.root,
-		                'dpkg', '--install']
-		               + chrooted_package_paths,
+		                'dpkg', '--install'] + chrooted_package_paths,
 		               env=env)
 
 		for path in absolute_package_paths:
