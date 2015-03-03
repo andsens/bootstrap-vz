@@ -24,14 +24,18 @@ class AddDefaultSources(Task):
 
 	@classmethod
 	def run(cls, info):
+		include_src = info.manifest.packages.get('include-source-type', False)
 		components = ' '.join(info.manifest.packages.get('components', ['main']))
 		info.source_lists.add('main', 'deb     {apt_mirror} {system.release} ' + components)
-		info.source_lists.add('main', 'deb-src {apt_mirror} {system.release} ' + components)
+		if include_src:
+			info.source_lists.add('main', 'deb-src {apt_mirror} {system.release} ' + components)
 		if info.release_codename != 'sid':
 			info.source_lists.add('main', 'deb     http://security.debian.org/  {system.release}/updates ' + components)
-			info.source_lists.add('main', 'deb-src http://security.debian.org/  {system.release}/updates ' + components)
+			if include_src:
+				info.source_lists.add('main', 'deb-src http://security.debian.org/  {system.release}/updates ' + components)
 			info.source_lists.add('main', 'deb     {apt_mirror} {system.release}-updates ' + components)
-			info.source_lists.add('main', 'deb-src {apt_mirror} {system.release}-updates ' + components)
+			if include_src:
+				info.source_lists.add('main', 'deb-src {apt_mirror} {system.release}-updates ' + components)
 
 
 class AddBackports(Task):
