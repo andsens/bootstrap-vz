@@ -121,6 +121,7 @@ properties:
         items:
           $ref: '#/definitions/absolute_path'
         minItems: 1
+      include-source-type: {type: boolean}
     additionalProperties: false
   plugins:
     type: object
