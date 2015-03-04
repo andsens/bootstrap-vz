@@ -80,9 +80,8 @@ def inline_replace(file_path, pattern, subst):
 	import re
 	replacement_count = 0
 	for line in fileinput.input(files=file_path, inplace=True):
-		replacement = re.sub(pattern, subst, line)
-		if replacement != line:
-			replacement_count += 1
+		(replacement, count) = re.subn(pattern, subst, line)
+		replacement_count += count
 		print replacement,
 	return replacement_count
 
