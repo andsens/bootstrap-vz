@@ -28,11 +28,7 @@ class TaskError(Exception):
 	pass
 
 
-class NoMatchesError(Exception):
-	pass
-
-
-class TooManyMatchesError(Exception):
+class UnexpectedNumMatchesError(Exception):
 	pass
 
 

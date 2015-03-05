@@ -63,16 +63,13 @@ def log_call(command, stdin=None, env=None, shell=False, cwd=None):
 
 def sed_i(file_path, pattern, subst, expected_replacements=1):
 	replacement_count = inline_replace(file_path, pattern, subst)
-	if replacement_count < expected_replacements:
-		from exceptions import NoMatchesError
-		msg = ('There were no matches for the expression `{exp}\' in the file `{path}\''
-		       .format(exp=pattern, path=file_path))
-		raise NoMatchesError(msg)
-	if replacement_count > expected_replacements:
-		from exceptions import TooManyMatchesError
-		msg = ('There were too many matches for the expression `{exp}\' in the file `{path}\''
-		       .format(exp=pattern, path=file_path))
-		raise TooManyMatchesError(msg)
+	if replacement_count != expected_replacements:
+		from exceptions import UnexpectedNumMatchesError
+		msg = ('There were {real} instead of {expected} matches for '
+		       'the expression `{exp}\' in the file `{path}\''
+		       .format(real=replacement_count, expected=expected_replacements,
+		               exp=pattern, path=file_path))
+		raise UnexpectedNumMatchesError(msg)
 
 
 def inline_replace(file_path, pattern, subst):
