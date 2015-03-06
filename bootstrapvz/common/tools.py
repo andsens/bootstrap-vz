@@ -22,7 +22,10 @@ def log_call(command, stdin=None, env=None, shell=False, cwd=None):
 
 	command_log = realpath(command[0]).replace('/', '.')
 	log = logging.getLogger(__name__ + command_log)
-	log.debug('Executing: {command}'.format(command=' '.join(command)))
+	if type(command) is list:
+		log.debug('Executing: {command}'.format(command=' '.join(command)))
+	else:
+		log.debug('Executing: {command}'.format(command=command))
 
 	process = subprocess.Popen(args=command, env=env, shell=shell, cwd=cwd,
 	                           stdin=subprocess.PIPE,
