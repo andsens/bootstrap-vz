@@ -31,6 +31,18 @@ definitions:
     type: object
     properties:
       guest_additions: {$ref: '#/definitions/absolute_path'}
+      ec2-credentials:
+        required: [access-key, secret-key]
+        type: object
+        properties:
+          access-key: {type: string}
+          secret-key: {type: string}
+          certificate: {type: string}
+          private-key: {type: string}
+          user-id:
+            type: string
+            pattern: (^arn:aws:iam::\d*:user/\w.*$)|(^\d{4}-\d{4}-\d{4}$)
+        additional_properties: false
       apt_proxy:
         type: object
         properties:

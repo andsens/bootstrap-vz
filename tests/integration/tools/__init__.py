@@ -7,7 +7,7 @@ register_deserialization_handlers()
 
 
 @contextmanager
-def boot_manifest(manifest_data):
+def boot_manifest(manifest_data, boot_vars={}):
 	from bootstrapvz.common.tools import load_data
 	build_servers = load_data('build-servers.yml')
 	from bootstrapvz.remote.build_servers import pick_build_server
@@ -24,7 +24,7 @@ def boot_manifest(manifest_data):
 	from ..images import initialize_image
 	image = initialize_image(manifest, build_server, bootstrap_info)
 	try:
-		with image.get_instance() as instance:
+		with image.get_instance(**boot_vars) as instance:
 			yield instance
 	finally:
 		image.destroy()

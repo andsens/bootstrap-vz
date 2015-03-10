@@ -14,4 +14,10 @@ class BuildServer(object):
 			manifest_data['provider']['guest_additions'] = self.build_settings['guest_additions']
 		if 'apt_proxy' in self.build_settings:
 			manifest_data.get('plugins', {})['apt_proxy'] = self.build_settings['apt_proxy']
+		if 'ec2-credentials' in self.build_settings:
+			if 'credentials' not in manifest_data['provider']:
+				manifest_data['provider']['credentials'] = {}
+			for key in ['access-key', 'secret-key', 'certificate', 'private-key', 'user-id']:
+				if key in self.build_settings['ec2-credentials']:
+					manifest_data['provider']['credentials'][key] = self.build_settings['ec2-credentials'][key]
 		return manifest_data
