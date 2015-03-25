@@ -50,7 +50,7 @@ def test_gpt_grub_oldstable():
 		print(instance.console_output)
 
 
-def test_unpartitioned_extlinux():
+def test_unpartitioned_extlinux_stable():
 	std_partials = ['base', 'stable64', 'extlinux', 'unpartitioned', 'root_password']
 	custom_partials = [partials['vbox'], partials['vmdk']]
 	manifest_data = merge_manifest_data(std_partials, custom_partials)
@@ -58,7 +58,7 @@ def test_unpartitioned_extlinux():
 		print(instance.console_output)
 
 
-def test_msdos_extlinux():
+def test_msdos_extlinux_stable():
 	std_partials = ['base', 'stable64', 'extlinux', 'msdos', 'partitioned', 'root_password']
 	custom_partials = [partials['vbox'], partials['vmdk']]
 	manifest_data = merge_manifest_data(std_partials, custom_partials)
@@ -66,7 +66,7 @@ def test_msdos_extlinux():
 		print(instance.console_output)
 
 
-def test_gpt_extlinux():
+def test_gpt_extlinux_stable():
 	std_partials = ['base', 'stable64', 'extlinux', 'gpt', 'partitioned', 'root_password']
 	custom_partials = [partials['vbox'], partials['vmdk']]
 	manifest_data = merge_manifest_data(std_partials, custom_partials)
@@ -74,7 +74,7 @@ def test_gpt_extlinux():
 		print(instance.console_output)
 
 
-def test_msdos_grub():
+def test_msdos_grub_stable():
 	std_partials = ['base', 'stable64', 'grub', 'msdos', 'partitioned', 'root_password']
 	custom_partials = [partials['vbox'], partials['vmdk']]
 	manifest_data = merge_manifest_data(std_partials, custom_partials)
@@ -82,7 +82,7 @@ def test_msdos_grub():
 		print(instance.console_output)
 
 
-def test_gpt_grub():
+def test_gpt_grub_stable():
 	std_partials = ['base', 'stable64', 'grub', 'gpt', 'partitioned', 'root_password']
 	custom_partials = [partials['vbox'], partials['vmdk']]
 	manifest_data = merge_manifest_data(std_partials, custom_partials)
