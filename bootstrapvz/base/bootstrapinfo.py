@@ -115,13 +115,22 @@ class BootstrapInformation(object):
 		return manifest_vars
 
 	def __getstate__(self):
-		state = self.__dict__.copy()
-		exclude_keys = ['source_lists', 'preference_lists', 'packages']
-		for key in exclude_keys:
-			# We may have been serialized before,
-			# so don't fail if the keys do not exist
-			if key in state:
-				del state[key]
+		from bootstrapvz.remote import supported_classes
+
+		def can_serialize(obj):
+			if hasattr(obj, '__class__') and hasattr(obj, '__module__'):
+				class_name = obj.__module__ + '.' + obj.__class__.__name__
+				return class_name in supported_classes or isinstance(obj, (BaseException, Exception))
+			return True
+
+		def filter_state(state):
+			if isinstance(state, dict):
+				return {key: filter_state(val) for key, val in state.items() if can_serialize(val)}
+			if isinstance(state, (set, tuple, list, frozenset)):
+				return type(state)(filter_state(val) for val in state if can_serialize(val))
+			return state
+
+		state = filter_state(self.__dict__)
 		state['__class__'] = self.__module__ + '.' + self.__class__.__name__
 		return state
 
