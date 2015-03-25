@@ -10,8 +10,80 @@ partials = {'ec2': 'provider: {name: ec2}',
             }
 
 
+def test_unpartitioned_ebs_pvgrub_oldstable():
+	std_partials = ['base', 'oldstable64', 'unpartitioned', 'root_password']
+	custom_partials = [partials['ec2'], partials['ebs'], partials['pvm']]
+	manifest_data = merge_manifest_data(std_partials, custom_partials)
+	boot_vars = {'instance_type': 't1.micro'}
+	with boot_manifest(manifest_data, boot_vars) as instance:
+		print(instance.get_console_output().output)
+
+
+def test_msdos_ebs_pvgrub_oldstable():
+	std_partials = ['base', 'oldstable64', 'msdos', 'single_partition', 'root_password']
+	custom_partials = [partials['ec2'], partials['ebs'], partials['pvm']]
+	manifest_data = merge_manifest_data(std_partials, custom_partials)
+	boot_vars = {'instance_type': 't1.micro'}
+	with boot_manifest(manifest_data, boot_vars) as instance:
+		print(instance.get_console_output().output)
+
+
+def test_gpt_ebs_pvgrub_oldstable():
+	std_partials = ['base', 'oldstable64', 'gpt', 'single_partition', 'root_password']
+	custom_partials = [partials['ec2'], partials['ebs'], partials['pvm']]
+	manifest_data = merge_manifest_data(std_partials, custom_partials)
+	boot_vars = {'instance_type': 't1.micro'}
+	with boot_manifest(manifest_data, boot_vars) as instance:
+		print(instance.get_console_output().output)
+
+
 def test_unpartitioned_ebs_pvgrub_stable():
 	std_partials = ['base', 'stable64', 'unpartitioned', 'root_password']
+	custom_partials = [partials['ec2'], partials['ebs'], partials['pvm']]
+	manifest_data = merge_manifest_data(std_partials, custom_partials)
+	boot_vars = {'instance_type': 't1.micro'}
+	with boot_manifest(manifest_data, boot_vars) as instance:
+		print(instance.get_console_output().output)
+
+
+def test_msdos_ebs_pvgrub_stable():
+	std_partials = ['base', 'stable64', 'msdos', 'single_partition', 'root_password']
+	custom_partials = [partials['ec2'], partials['ebs'], partials['pvm']]
+	manifest_data = merge_manifest_data(std_partials, custom_partials)
+	boot_vars = {'instance_type': 't1.micro'}
+	with boot_manifest(manifest_data, boot_vars) as instance:
+		print(instance.get_console_output().output)
+
+
+def test_gpt_ebs_pvgrub_stable():
+	std_partials = ['base', 'stable64', 'gpt', 'single_partition', 'root_password']
+	custom_partials = [partials['ec2'], partials['ebs'], partials['pvm']]
+	manifest_data = merge_manifest_data(std_partials, custom_partials)
+	boot_vars = {'instance_type': 't1.micro'}
+	with boot_manifest(manifest_data, boot_vars) as instance:
+		print(instance.get_console_output().output)
+
+
+def test_unpartitioned_ebs_pvgrub_unstable():
+	std_partials = ['base', 'unstable64', 'unpartitioned', 'root_password']
+	custom_partials = [partials['ec2'], partials['ebs'], partials['pvm']]
+	manifest_data = merge_manifest_data(std_partials, custom_partials)
+	boot_vars = {'instance_type': 't1.micro'}
+	with boot_manifest(manifest_data, boot_vars) as instance:
+		print(instance.get_console_output().output)
+
+
+def test_msdos_ebs_pvgrub_unstable():
+	std_partials = ['base', 'unstable64', 'msdos', 'single_partition', 'root_password']
+	custom_partials = [partials['ec2'], partials['ebs'], partials['pvm']]
+	manifest_data = merge_manifest_data(std_partials, custom_partials)
+	boot_vars = {'instance_type': 't1.micro'}
+	with boot_manifest(manifest_data, boot_vars) as instance:
+		print(instance.get_console_output().output)
+
+
+def test_gpt_ebs_pvgrub_unstable():
+	std_partials = ['base', 'unstable64', 'gpt', 'single_partition', 'root_password']
 	custom_partials = [partials['ec2'], partials['ebs'], partials['pvm']]
 	manifest_data = merge_manifest_data(std_partials, custom_partials)
 	boot_vars = {'instance_type': 't1.micro'}
