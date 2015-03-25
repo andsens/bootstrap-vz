@@ -26,7 +26,7 @@ class AmazonMachineImage(Image):
 		del self.ami
 
 	@contextmanager
-	def get_instance(self, instance_type='t1.micro'):
+	def get_instance(self, instance_type):
 		from ..instances.ec2 import boot_image
 		name = 'bootstrap-vz test instance'
 		with boot_image(name, self.ami, instance_type) as instance:
