@@ -9,20 +9,22 @@ def initialize_image(manifest, credentials, bootstrap_info):
 	connection = connect_to_region(bootstrap_info._ec2['region'],
 	                               aws_access_key_id=credentials['access-key'],
 	                               aws_secret_access_key=credentials['secret-key'])
-	ami = connection.get_image(bootstrap_info._ec2['image'])
-	image = AmazonMachineImage(manifest, ami)
+	image = AmazonMachineImage(manifest, bootstrap_info._ec2['image'], connection)
 	return image
 
 
 class AmazonMachineImage(Image):
 
-	def __init__(self, manifest, ami):
+	def __init__(self, manifest, image_id, connection):
 		super(AmazonMachineImage, self).__init__(manifest)
-		self.ami = ami
+		self.ami = connection.get_image(image_id)
+		self.connection = connection
 
 	def destroy(self):
 		log.debug('Deleting AMI')
-		self.ami.deregister(delete_snapshot=True)
+		self.ami.deregister()
+		for device, block_device_type in self.ami.block_device_mapping.items():
+			self.connection.delete_snapshot(block_device_type.snapshot_id)
 		del self.ami
 
 	@contextmanager
