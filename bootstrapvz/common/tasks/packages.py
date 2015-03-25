@@ -49,7 +49,8 @@ class InstallPackages(Task):
 			log_check_call(['chroot', info.root,
 			                'apt-get', 'install',
 			                           '--no-install-recommends',
-			                           '--assume-yes'] + map(str, remote_packages),
+			                           '--assume-yes'] +
+			               map(str, remote_packages),
 			               env=env)
 		except CalledProcessError as e:
 			import logging
