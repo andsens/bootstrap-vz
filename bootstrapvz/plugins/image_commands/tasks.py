@@ -11,4 +11,5 @@ class ImageExecuteCommand(Task):
 		from bootstrapvz.common.tools import log_check_call
 		for raw_command in info.manifest.plugins['image_commands']['commands']:
 			command = map(lambda part: part.format(root=info.root, **info.manifest_vars), raw_command)
-			log_check_call(command)
+			shell = len(command) == 1
+			log_check_call(command, shell=shell)
