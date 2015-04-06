@@ -62,3 +62,24 @@ class PrintPublicIPAddress(Task):
             f.write('')
 
         f.close()
+
+
+class DeregisterAMI(Task):
+    description = 'Deregistering AMI'
+    phase = phases.image_registration
+    predecessors = [LaunchEC2Instance]
+
+    @classmethod
+    def run(cls, info):
+        ec2 = info._ec2
+        logger = logging.getLogger(__name__)
+
+        def instance_running():
+            ec2['instance'].update()
+            return ec2['instance'].state == 'running'
+
+        if waituntil(instance_running, timeout=120, interval=5):
+            info._ec2['connection'].deregister_image(info._ec2['image'])
+            info._ec2['snapshot'].delete()
+        else:
+            logger.error('Timeout while booting instance')
