@@ -54,7 +54,7 @@ def validate_manifest(data, validator, error):
 		if bootloader != 'extlinux':
 			error('HVM AMIs currently only work with extlinux as a bootloader', ['system', 'bootloader'])
 		if bootloader == 'extlinux' and partition_type not in ['none', 'msdos']:
-			error('HVM AMIs booted with extlinux currently work with unpartitioned or msdos partitions volumes',
+			error('HVM AMIs booted with extlinux currently work with unpartitioned or msdos partitioned volumes',
 			      ['volume', 'partitions', 'type'])
 
 	if backing == 's3':
