@@ -27,7 +27,7 @@ class GPTPartitionMap(AbstractPartitionMap):
 			# If we are using the grub bootloader we need to create an unformatted partition
 			# at the beginning of the map. Its size is 1007kb, which seems to be chosen so that
 			# primary gpt + grub = 1024KiB
-			# The 34 sectors for the primary gpt will be subtracted later on
+			# The 1 MiB will be subtracted later on, once we know what the subsequent partition is
 			from ..partitions.unformatted import UnformattedPartition
 			self.grub_boot = UnformattedPartition(Sectors('1MiB', sector_size), last_partition())
 			self.partitions.append(self.grub_boot)
@@ -63,6 +63,15 @@ class GPTPartitionMap(AbstractPartitionMap):
 			self.root.size -= partition_gap
 		self.partitions.append(self.root)
 
+		if hasattr(self, 'grub_boot'):
+			# Mark the grub partition as a bios_grub partition
+			self.grub_boot.flags.append('bios_grub')
+			# Subtract the grub partition size from the subsequent partition
+			self.partitions[1].size -= self.grub_boot.size
+		else:
+			# Not using grub, mark the boot partition or root as bootable
+			getattr(self, 'boot', self.root).flags.append('legacy_boot')
+
 		# The first and last 34 sectors are reserved for the primary/secondary GPT
 		primary_gpt_size = Sectors(34, sector_size)
 		self.partitions[0].pad_start += primary_gpt_size
@@ -71,13 +80,6 @@ class GPTPartitionMap(AbstractPartitionMap):
 		secondary_gpt_size = Sectors(34, sector_size)
 		self.partitions[-1].pad_end += secondary_gpt_size
 		self.partitions[-1].size -= secondary_gpt_size
-
-		if hasattr(self, 'grub_boot'):
-			# Mark the grub partition as a bios_grub partition
-			self.grub_boot.flags.append('bios_grub')
-		else:
-			# Not using grub, mark the boot partition or root as bootable
-			getattr(self, 'boot', self.root).flags.append('legacy_boot')
 
 		super(GPTPartitionMap, self).__init__(bootloader)
 
