@@ -162,21 +162,29 @@ def check_ordering(task):
 	:raises TaskListError: If there is a conflict between task precedence and phase precedence
 	"""
 	for successor in task.successors:
-		# Run through all successors and check whether the phase of the task
-		# comes before the phase of a successor
+		# Run through all successors and throw an error if the phase of the task
+		# lies before the phase of a successor, log a warning if it lies after.
 		if task.phase > successor.phase:
 			msg = ("The task {task} is specified as running before {other}, "
 			       "but its phase '{phase}' lies after the phase '{other_phase}'"
 			       .format(task=task, other=successor, phase=task.phase, other_phase=successor.phase))
 			raise TaskListError(msg)
+		if task.phase < successor.phase:
+			log.warn("The task {task} is specified as running before {other} "
+			         "although its phase '{phase}' already lies before the phase '{other_phase}'"
+			         .format(task=task, other=successor, phase=task.phase, other_phase=successor.phase))
 	for predecessor in task.predecessors:
-		# Run through all predecessors and check whether the phase of the task
-		# comes after the phase of a predecessor
+		# Run through all successors and throw an error if the phase of the task
+		# lies after the phase of a predecessor, log a warning if it lies before.
 		if task.phase < predecessor.phase:
 			msg = ("The task {task} is specified as running after {other}, "
 			       "but its phase '{phase}' lies before the phase '{other_phase}'"
 			       .format(task=task, other=predecessor, phase=task.phase, other_phase=predecessor.phase))
 			raise TaskListError(msg)
+		if task.phase > predecessor.phase:
+			log.warn("The task {task} is specified as running after {other} "
+			         "although its phase '{phase}' already lies after the phase '{other_phase}'"
+			         .format(task=task, other=predecessor, phase=task.phase, other_phase=predecessor.phase))
 
 
 def strongly_connected_components(graph):
