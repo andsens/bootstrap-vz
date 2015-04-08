@@ -6,6 +6,7 @@ class ManifestError(Exception):
 		self.message = message
 		self.manifest_path = manifest_path
 		self.data_path = data_path
+		self.args = (self.message, self.manifest_path, self.data_path)
 
 	def __str__(self):
 		if self.data_path is not None:
@@ -19,6 +20,7 @@ class TaskListError(Exception):
 	def __init__(self, message):
 		super(TaskListError, self).__init__(message)
 		self.message = message
+		self.args = (self.message,)
 
 	def __str__(self):
 		return 'Error in tasklist: ' + self.message
