@@ -31,6 +31,7 @@ properties:
         type: string
         enum:
         - pvgrub
+        - grub
         - extlinux
   volume:
     type: object
