@@ -32,24 +32,6 @@ def test_gpt_extlinux_oldstable():
 		print(instance.console_output)
 
 
-def test_msdos_grub_oldstable():
-	raise SkipTest('grub install on squeeze is broken')
-	std_partials = ['base', 'oldstable64', 'grub', 'msdos', 'partitioned', 'root_password']
-	custom_partials = [partials['vbox'], partials['vmdk']]
-	manifest_data = merge_manifest_data(std_partials, custom_partials)
-	with boot_manifest(manifest_data) as instance:
-		print(instance.console_output)
-
-
-def test_gpt_grub_oldstable():
-	raise SkipTest('grub install on squeeze is broken')
-	std_partials = ['base', 'oldstable64', 'grub', 'gpt', 'partitioned', 'root_password']
-	custom_partials = [partials['vbox'], partials['vmdk']]
-	manifest_data = merge_manifest_data(std_partials, custom_partials)
-	with boot_manifest(manifest_data) as instance:
-		print(instance.console_output)
-
-
 def test_unpartitioned_extlinux_stable():
 	std_partials = ['base', 'stable64', 'extlinux', 'unpartitioned', 'root_password']
 	custom_partials = [partials['vbox'], partials['vmdk']]
