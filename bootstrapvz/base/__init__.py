@@ -16,7 +16,15 @@ def validate_manifest(data, validator, error):
 	schema_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'manifest-schema.yml'))
 	validator(data, schema_path)
 
+	from bootstrapvz.common.tools import get_codename
+	codename = get_codename(data['system']['release'])
+
 	# Check the bootloader/partitioning configuration.
 	# Doing this via the schema is a pain and does not output a useful error message.
-	if data['system']['bootloader'] == 'grub' and data['volume']['partitions']['type'] == 'none':
+	if data['system']['bootloader'] == 'grub':
+
+		if data['volume']['partitions']['type'] == 'none':
 			error('Grub cannot boot from unpartitioned disks', ['system', 'bootloader'])
+
+		if codename == 'squeeze':
+			error('Grub installation on squeeze is not supported', ['system', 'bootloader'])
