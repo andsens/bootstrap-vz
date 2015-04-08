@@ -115,6 +115,18 @@ class MountSpecials(Task):
 		root.add_mount('none', 'dev/pts', ['--types', 'devpts'])
 
 
+class CopyMountTable(Task):
+	description = 'Copying mtab from host system'
+	phase = phases.os_installation
+	predecessors = [MountSpecials]
+
+	@classmethod
+	def run(cls, info):
+		import shutil
+		import os.path
+		shutil.copy('/proc/mounts', os.path.join(info.root, 'etc/mtab'))
+
+
 class UnmountRoot(Task):
 	description = 'Unmounting the bootstrap volume'
 	phase = phases.volume_unmounting
@@ -123,6 +135,17 @@ class UnmountRoot(Task):
 	@classmethod
 	def run(cls, info):
 		info.volume.partition_map.root.unmount()
+
+
+class RemoveMountTable(Task):
+	description = 'Removing mtab'
+	phase = phases.volume_unmounting
+	successors = [UnmountRoot]
+
+	@classmethod
+	def run(cls, info):
+		import os
+		os.remove(os.path.join(info.root, 'etc/mtab'))
 
 
 class DeleteMountDir(Task):

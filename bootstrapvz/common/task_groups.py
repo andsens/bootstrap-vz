@@ -74,6 +74,8 @@ boot_partition_group = [filesystem.CreateBootMountDir,
 mounting_group = [filesystem.CreateMountDir,
                   filesystem.MountRoot,
                   filesystem.MountSpecials,
+                  filesystem.CopyMountTable,
+                  filesystem.RemoveMountTable,
                   filesystem.UnmountRoot,
                   filesystem.DeleteMountDir,
                   ]
