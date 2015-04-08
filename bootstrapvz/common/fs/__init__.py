@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 
 
 def get_partitions():
@@ -16,7 +17,8 @@ def get_partitions():
 	return matches
 
 
-def remount(volume, fn):
+@contextmanager
+def unmounted(volume):
 	from bootstrapvz.base.fs.partitionmaps.none import NoPartitions
 
 	p_map = volume.partition_map
@@ -24,9 +26,8 @@ def remount(volume, fn):
 	p_map.root.unmount()
 	if not isinstance(p_map, NoPartitions):
 		p_map.unmap(volume)
-		result = fn()
+		yield
 		p_map.map(volume)
 	else:
-		result = fn()
+		yield
 	p_map.root.mount(destination=root_dir)
-	return result

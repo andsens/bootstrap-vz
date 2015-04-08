@@ -39,26 +39,16 @@ class InstallGrub_1_99(Task):
 
 	@classmethod
 	def run(cls, info):
-
-		from ..fs import remount
 		p_map = info.volume.partition_map
 
-		def link_fn():
+		# GRUB screws up when installing in chrooted environments
+		# so we fake a real harddisk with dmsetup.
+		# Guide here: http://ebroder.net/2009/08/04/installing-grub-onto-a-disk-image/
+		from ..fs import unmounted
+		with unmounted(info.volume):
 			info.volume.link_dm_node()
 			if isinstance(p_map, partitionmaps.none.NoPartitions):
 				p_map.root.device_path = info.volume.device_path
-
-		def unlink_fn():
-			info.volume.unlink_dm_node()
-			if isinstance(p_map, partitionmaps.none.NoPartitions):
-				p_map.root.device_path = info.volume.device_path
-
-		# GRUB cannot deal with installing to loopback devices
-		# so we fake a real harddisk with dmsetup.
-		# Guide here: http://ebroder.net/2009/08/04/installing-grub-onto-a-disk-image/
-		from ..fs.loopbackvolume import LoopbackVolume
-		if isinstance(info.volume, LoopbackVolume):
-			remount(info.volume, link_fn)
 		try:
 			[device_path] = log_check_call(['readlink', '-f', info.volume.device_path])
 			device_map_path = os.path.join(info.root, 'boot/grub/device.map')
@@ -77,13 +67,11 @@ class InstallGrub_1_99(Task):
 			# Install grub
 			log_check_call(['chroot', info.root, 'grub-install', device_path])
 			log_check_call(['chroot', info.root, 'update-grub'])
-		except Exception:
-			if isinstance(info.volume, LoopbackVolume):
-				remount(info.volume, unlink_fn)
-			raise
-
-		if isinstance(info.volume, LoopbackVolume):
-			remount(info.volume, unlink_fn)
+		finally:
+			with unmounted(info.volume):
+				info.volume.unlink_dm_node()
+				if isinstance(p_map, partitionmaps.none.NoPartitions):
+					p_map.root.device_path = info.volume.device_path
 
 
 class InstallGrub_2(Task):

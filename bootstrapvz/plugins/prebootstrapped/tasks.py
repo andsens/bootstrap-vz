@@ -4,7 +4,7 @@ from bootstrapvz.common.tasks import volume
 from bootstrapvz.common.tasks import packages
 from bootstrapvz.providers.virtualbox.tasks import guest_additions
 from bootstrapvz.providers.ec2.tasks import ebs
-from bootstrapvz.common.fs import remount
+from bootstrapvz.common.fs import unmounted
 from shutil import copyfile
 import os.path
 import time
@@ -19,9 +19,9 @@ class Snapshot(Task):
 
 	@classmethod
 	def run(cls, info):
-		def mk_snapshot():
-			return info.volume.snapshot()
-		snapshot = remount(info.volume, mk_snapshot)
+		snapshot = None
+		with unmounted(info.volume):
+			snapshot = info.volume.snapshot()
 		msg = 'A snapshot of the bootstrapped volume was created. ID: ' + snapshot.id
 		log.info(msg)
 
@@ -55,9 +55,8 @@ class CopyImage(Task):
 		loopback_backup_name = 'volume-{id}.{ext}.backup'.format(id=info.run_id, ext=info.volume.extension)
 		destination = os.path.join(info.manifest.bootstrapper['workspace'], loopback_backup_name)
 
-		def mk_snapshot():
+		with unmounted(info.volume):
 			copyfile(info.volume.image_path, destination)
-		remount(info.volume, mk_snapshot)
 		msg = 'A copy of the bootstrapped volume was created. Path: ' + destination
 		log.info(msg)
 
