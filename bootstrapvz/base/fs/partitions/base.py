@@ -94,5 +94,5 @@ class BasePartition(AbstractPartition):
 		self.device_path = e.device_path
 
 	def _before_unmap(self, e):
-		# When unmapped, the device_path ifnromation becomes invalid, so we delete it
+		# When unmapped, the device_path information becomes invalid, so we delete it
 		self.device_path = None
