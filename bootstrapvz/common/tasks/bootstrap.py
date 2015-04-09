@@ -80,7 +80,6 @@ class Bootstrap(Task):
 class IncludePackagesInBootstrap(Task):
 	description = 'Add packages in the bootstrap phase'
 	phase = phases.preparation
-	successors = [Bootstrap]
 
 	@classmethod
 	def run(cls, info):
@@ -92,7 +91,6 @@ class IncludePackagesInBootstrap(Task):
 class ExcludePackagesInBootstrap(Task):
 	description = 'Remove packages from bootstrap phase'
 	phase = phases.preparation
-	successors = [Bootstrap]
 
 	@classmethod
 	def run(cls, info):

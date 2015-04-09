@@ -1,6 +1,5 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
-from bootstrapvz.common.tasks import workspace
 from bootstrapvz.common.tools import log_check_call
 import os
 
@@ -66,7 +65,6 @@ class InstallCloudSDK(Task):
 class RemoveCloudSDKTarball(Task):
 	description = 'Remove tarball for Cloud SDK'
 	phase = phases.system_cleaning
-	successors = [workspace.DeleteWorkspace]
 
 	@classmethod
 	def run(cls, info):
