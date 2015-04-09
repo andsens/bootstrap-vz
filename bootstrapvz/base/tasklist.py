@@ -171,7 +171,8 @@ def check_ordering(task):
 			raise TaskListError(msg)
 		if task.phase < successor.phase:
 			log.warn("The task {task} is specified as running before {other} "
-			         "although its phase '{phase}' already lies before the phase '{other_phase}'"
+			         "although its phase '{phase}' already lies before the phase '{other_phase}' "
+			         "(or the task has been placed in the wrong phase)"
 			         .format(task=task, other=successor, phase=task.phase, other_phase=successor.phase))
 	for predecessor in task.predecessors:
 		# Run through all successors and throw an error if the phase of the task
@@ -183,7 +184,8 @@ def check_ordering(task):
 			raise TaskListError(msg)
 		if task.phase > predecessor.phase:
 			log.warn("The task {task} is specified as running after {other} "
-			         "although its phase '{phase}' already lies after the phase '{other_phase}'"
+			         "although its phase '{phase}' already lies after the phase '{other_phase}' "
+			         "(or the task has been placed in the wrong phase)"
 			         .format(task=task, other=predecessor, phase=task.phase, other_phase=predecessor.phase))
 
 
