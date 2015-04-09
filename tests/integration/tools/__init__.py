@@ -1,5 +1,7 @@
 from contextlib import contextmanager
 from bootstrapvz.remote import register_deserialization_handlers
+import logging
+log = logging.getLogger(__name__)
 
 # Register deserialization handlers for objects
 # that will pass between server and client
@@ -18,9 +20,12 @@ def boot_manifest(manifest_data, boot_vars={}):
 	manifest = Manifest(data=manifest_data)
 
 	bootstrap_info = None
+	log.info('Connecting to build server')
 	with build_server.connect() as connection:
+		log.info('Building manifest')
 		bootstrap_info = connection.run(manifest)
 
+	log.info('Creating and booting instance')
 	from ..images import initialize_image
 	image = initialize_image(manifest, build_server, bootstrap_info)
 	try:
