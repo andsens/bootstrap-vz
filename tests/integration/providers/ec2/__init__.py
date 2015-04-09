@@ -1,11 +1,36 @@
 from contextlib import contextmanager
-from ..tools import waituntil
+from tests.integration.tools import waituntil
 import logging
 log = logging.getLogger(__name__)
 
 
 @contextmanager
-def boot_image(image, instance_type, ec2_connection, vpc_connection):
+def boot_image(manifest, build_server, bootstrap_info, instance_type=None):
+
+	credentials = {'access-key': build_server.build_settings['ec2-credentials']['access-key'],
+	               'secret-key': build_server.build_settings['ec2-credentials']['secret-key']}
+	from boto.ec2 import connect_to_region as ec2_connect
+	ec2_connection = ec2_connect(bootstrap_info._ec2['region'],
+	                             aws_access_key_id=credentials['access-key'],
+	                             aws_secret_access_key=credentials['secret-key'])
+	from boto.vpc import connect_to_region as vpc_connect
+	vpc_connection = vpc_connect(bootstrap_info._ec2['region'],
+	                             aws_access_key_id=credentials['access-key'],
+	                             aws_secret_access_key=credentials['secret-key'])
+
+	if manifest.volume['backing'] == 'ebs':
+		from images import EBSImage
+		image = EBSImage(bootstrap_info._ec2['image'], ec2_connection)
+
+	try:
+		with run_instance(image, instance_type, ec2_connection, vpc_connection) as instance:
+			yield instance
+	finally:
+		image.destroy()
+
+
+@contextmanager
+def run_instance(image, instance_type, ec2_connection, vpc_connection):
 
 	with create_env(ec2_connection, vpc_connection) as boot_env:
 
@@ -18,8 +43,8 @@ def boot_image(image, instance_type, ec2_connection, vpc_connection):
 		instance = None
 		try:
 			log.debug('Booting ec2 instance')
-			reservation = image.run(instance_type=instance_type,
-			                        subnet_id=boot_env['subnet_id'])
+			reservation = image.ami.run(instance_type=instance_type,
+			                            subnet_id=boot_env['subnet_id'])
 			[instance] = reservation.instances
 			instance.add_tag('Name', 'bootstrap-vz test instance')
 

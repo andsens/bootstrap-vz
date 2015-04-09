@@ -1,32 +1,20 @@
-from instance import Instance
 import virtualbox
 from contextlib import contextmanager
-from ..tools import waituntil
+from tests.integration.tools import waituntil
 import logging
 log = logging.getLogger(__name__)
 
 
-@contextmanager
-def boot_image(name, image):
-	instance = VirtualBoxInstance(name, image)
-	try:
-		instance.create()
-		try:
-			instance.boot()
-			yield instance
-		finally:
-			instance.shutdown()
-	finally:
-		instance.destroy()
-
-
-class VirtualBoxInstance(Instance):
+class VirtualBoxInstance(object):
 
 	cpus = 1
 	memory = 256
 
-	def __init__(self, name, image):
-		super(VirtualBoxInstance, self).__init__(name, image)
+	def __init__(self, image, name, arch, release):
+		self.image = image
+		self.name = name
+		self.arch = arch
+		self.release = release
 		self.vbox = virtualbox.VirtualBox()
 		manager = virtualbox.Manager()
 		self.session = manager.get_session()
@@ -35,7 +23,7 @@ class VirtualBoxInstance(Instance):
 		log.debug('Creating vbox machine `{name}\''.format(name=self.name))
 		# create machine
 		os_type = {'x86': 'Debian',
-		           'amd64': 'Debian_64'}.get(self.image.manifest.system['architecture'])
+		           'amd64': 'Debian_64'}.get(self.arch)
 		self.machine = self.vbox.create_machine(settings_file='', name=self.name,
 		                                        groups=[], os_type_id=os_type, flags='')
 		self.machine.cpu_count = self.cpus
@@ -71,12 +59,12 @@ class VirtualBoxInstance(Instance):
 	def boot(self):
 		log.debug('Booting vbox machine `{name}\''.format(name=self.name))
 		self.machine.launch_vm_process(self.session, 'headless').wait_for_completion(-1)
-		from ..tools import read_from_socket
+		from tests.integration.tools import read_from_socket
 		# Gotta figure out a more reliable way to check when the system is done booting.
 		# Maybe bootstrapped unit test images should have a startup script that issues
 		# a callback to the host.
 		from bootstrapvz.common.tools import get_codename
-		if get_codename(self.image.manifest.system['release']) in ['squeeze', 'wheezy']:
+		if get_codename(self.release) in ['squeeze', 'wheezy']:
 			termination_string = 'INIT: Entering runlevel: 2'
 		else:
 			termination_string = 'Debian GNU/Linux'

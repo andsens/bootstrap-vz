@@ -26,13 +26,10 @@ def boot_manifest(manifest_data, boot_vars={}):
 		bootstrap_info = connection.run(manifest)
 
 	log.info('Creating and booting instance')
-	from ..images import initialize_image
-	image = initialize_image(manifest, build_server, bootstrap_info)
-	try:
-		with image.get_instance(**boot_vars) as instance:
-			yield instance
-	finally:
-		image.destroy()
+	import importlib
+	provider_module = importlib.import_module('tests.integration.providers.' + manifest.provider['name'])
+	with provider_module.boot_image(manifest, build_server, bootstrap_info, **boot_vars) as instance:
+		yield instance
 
 
 def waituntil(predicate, timeout=5, interval=0.05):
