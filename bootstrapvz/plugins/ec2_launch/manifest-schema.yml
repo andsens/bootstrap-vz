@@ -16,3 +16,5 @@ properties:
           instance_type: {type: string}
           print_public_ip: {type: string}
           tags: {type: object}
+          deregister_ami: {type: boolean}
+        additionalProperties: false
