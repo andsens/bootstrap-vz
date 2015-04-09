@@ -10,7 +10,7 @@ import urllib
 
 class InstallSaltDependencies(Task):
 	description = 'Add depended packages for salt-minion'
-	phase = phases.package_installation
+	phase = phases.preparation
 	predecessors = [apt.AddDefaultSources]
 
 	@classmethod
