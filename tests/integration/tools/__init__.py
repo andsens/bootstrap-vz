@@ -19,17 +19,20 @@ def boot_manifest(manifest_data, boot_vars={}):
 	from bootstrapvz.base.manifest import Manifest
 	manifest = Manifest(data=manifest_data)
 
-	bootstrap_info = None
-	log.info('Connecting to build server')
-	with build_server.connect() as connection:
-		log.info('Building manifest')
-		bootstrap_info = connection.run(manifest)
-
-	log.info('Creating and booting instance')
 	import importlib
 	provider_module = importlib.import_module('tests.integration.providers.' + manifest.provider['name'])
-	with provider_module.boot_image(manifest, build_server, bootstrap_info, **boot_vars) as instance:
-		yield instance
+
+	prepare_bootstrap = getattr(provider_module, 'prepare_bootstrap', noop)
+	with prepare_bootstrap(manifest, build_server):
+		bootstrap_info = None
+		log.info('Connecting to build server')
+		with build_server.connect() as connection:
+			log.info('Building manifest')
+			bootstrap_info = connection.run(manifest)
+
+		log.info('Creating and booting instance')
+		with provider_module.boot_image(manifest, build_server, bootstrap_info, **boot_vars) as instance:
+			yield instance
 
 
 def waituntil(predicate, timeout=5, interval=0.05):
@@ -79,3 +82,8 @@ def read_from_socket(socket_path, termination_string, timeout, read_timeout=0.5)
 				raise SocketReadTimeout(msg)
 		console.close()
 		return output
+
+
+@contextmanager
+def noop(*args, **kwargs):
+	yield

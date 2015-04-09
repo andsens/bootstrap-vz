@@ -20,4 +20,7 @@ class BuildServer(object):
 			for key in ['access-key', 'secret-key', 'certificate', 'private-key', 'user-id']:
 				if key in self.build_settings['ec2-credentials']:
 					manifest_data['provider']['credentials'][key] = self.build_settings['ec2-credentials'][key]
+		if 's3-region' in self.build_settings and manifest_data['volume']['backing'] == 's3':
+			if 'region' not in manifest_data['image']:
+				manifest_data['image']['region'] = self.build_settings['s3-region']
 		return manifest_data

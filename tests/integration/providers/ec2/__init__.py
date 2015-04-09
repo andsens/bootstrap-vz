@@ -5,6 +5,28 @@ log = logging.getLogger(__name__)
 
 
 @contextmanager
+def prepare_bootstrap(manifest, build_server):
+	if manifest.volume['backing'] == 's3':
+		credentials = {'access-key': build_server.build_settings['ec2-credentials']['access-key'],
+		               'secret-key': build_server.build_settings['ec2-credentials']['secret-key']}
+		from boto.s3 import connect_to_region as s3_connect
+		s3_connection = s3_connect(manifest.image['region'],
+		                           aws_access_key_id=credentials['access-key'],
+		                           aws_secret_access_key=credentials['secret-key'])
+		log.debug('Creating S3 bucket')
+		bucket = s3_connection.create_bucket(manifest.image['bucket'], location=manifest.image['region'])
+		try:
+			yield
+		finally:
+			log.debug('Deleting S3 bucket')
+			for item in bucket.list():
+				bucket.delete_key(item.key)
+			s3_connection.delete_bucket(manifest.image['bucket'])
+	else:
+			yield
+
+
+@contextmanager
 def boot_image(manifest, build_server, bootstrap_info, instance_type=None):
 
 	credentials = {'access-key': build_server.build_settings['ec2-credentials']['access-key'],
@@ -21,6 +43,9 @@ def boot_image(manifest, build_server, bootstrap_info, instance_type=None):
 	if manifest.volume['backing'] == 'ebs':
 		from images import EBSImage
 		image = EBSImage(bootstrap_info._ec2['image'], ec2_connection)
+	if manifest.volume['backing'] == 's3':
+		from images import S3Image
+		image = S3Image(bootstrap_info._ec2['image'], ec2_connection)
 
 	try:
 		with run_instance(image, instance_type, ec2_connection, vpc_connection) as instance:
