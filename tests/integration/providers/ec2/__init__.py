@@ -48,14 +48,14 @@ def boot_image(manifest, build_server, bootstrap_info, instance_type=None):
 		image = S3Image(bootstrap_info._ec2['image'], ec2_connection)
 
 	try:
-		with run_instance(image, instance_type, ec2_connection, vpc_connection) as instance:
+		with run_instance(image, manifest, instance_type, ec2_connection, vpc_connection) as instance:
 			yield instance
 	finally:
 		image.destroy()
 
 
 @contextmanager
-def run_instance(image, instance_type, ec2_connection, vpc_connection):
+def run_instance(image, manifest, instance_type, ec2_connection, vpc_connection):
 
 	with create_env(ec2_connection, vpc_connection) as boot_env:
 
@@ -78,6 +78,19 @@ def run_instance(image, instance_type, ec2_connection, vpc_connection):
 
 			if not waituntil(lambda: instance.get_console_output().output is not None, timeout=600, interval=3):
 				raise EC2InstanceStartupException('Timeout while fetching console output')
+
+			from bootstrapvz.common.tools import get_codename
+			if get_codename(manifest.system['release']) in ['squeeze', 'wheezy']:
+				termination_string = 'INIT: Entering runlevel: 2'
+			else:
+				termination_string = 'Debian GNU/Linux'
+
+			console_output = instance.get_console_output().output
+			if termination_string not in console_output:
+				last_lines = '\n'.join(console_output.split('\n')[-50:])
+				message = ('The instance did not boot properly.\n'
+				           'Last 50 lines of console output:\n{output}'.format(output=last_lines))
+				raise EC2InstanceStartupException(message)
 
 			yield instance
 		finally:
