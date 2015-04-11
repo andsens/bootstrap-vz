@@ -16,7 +16,7 @@ bootstrap-vz
    plugins/index
 
    api/index
-   guidelines
+   contributing
    taskoverview
    howitworks
    switches
