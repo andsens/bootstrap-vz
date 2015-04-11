@@ -14,6 +14,8 @@
 
 import sys
 import os
+import glob
+import os.path
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -261,3 +263,21 @@ texinfo_documents = [('index', 'bootstrap-vz', u'bootstrap-vz Documentation',
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
+
+
+# -- Link to rst files scattered throughout the project -------------------
+
+for readme_path in glob.glob('../bootstrapvz/providers/*/README.rst'):
+	provider_name = os.path.basename(os.path.dirname(readme_path))
+	include_path = os.path.join('providers', provider_name + '.rst')
+	path_to_readme = os.path.join('../../bootstrapvz/providers', provider_name, 'README.rst')
+	with open(include_path, 'w') as include:
+		include.write('.. include:: ' + path_to_readme)
+
+
+for readme_path in glob.glob('../bootstrapvz/plugins/*/README.rst'):
+	plugin_name = os.path.basename(os.path.dirname(readme_path))
+	include_path = os.path.join('plugins', plugin_name + '.rst')
+	path_to_readme = os.path.join('../../bootstrapvz/plugins', plugin_name, 'README.rst')
+	with open(include_path, 'w') as include:
+		include.write('.. include:: ' + path_to_readme)
