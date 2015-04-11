@@ -16,7 +16,7 @@ Sources list
     :private-members:
 
 Preferences list
-------------
+----------------
 .. automodule:: bootstrapvz.base.pkg.preferenceslist
     :members:
     :private-members:

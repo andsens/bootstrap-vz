@@ -70,6 +70,7 @@ class Volume(FSMProxy):
 		rather than a loopback device or a network block device.
 
 		:param _e_obj e: Event object containing arguments to create()
+
 		Keyword arguments to link_dm_node() are:
 
 		:param int logical_start_sector: The sector the volume should start at in the new volume
