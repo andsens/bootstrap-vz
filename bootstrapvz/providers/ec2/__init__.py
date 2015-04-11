@@ -48,17 +48,14 @@ def validate_manifest(data, validator, error):
 	if virtualization == 'pvm' and bootloader != 'pvgrub':
 		error('Paravirtualized AMIs only support pvgrub as a bootloader', ['system', 'bootloader'])
 
-	if virtualization == 'hvm':
-		if backing != 'ebs':
+	if backing != 'ebs' and virtualization == 'hvm':
 			error('HVM AMIs currently only work when they are EBS backed', ['volume', 'backing'])
 
-	if backing == 's3':
-		if partition_type != 'none':
+	if backing == 's3' and partition_type != 'none':
 			error('S3 backed AMIs currently only work with unpartitioned volumes', ['system', 'bootloader'])
 
-	if enhanced_networking == 'simple':
-		if virtualization != 'hvm':
-			error('Enhanced networking currently only works with HVM virtualization', ['provider', 'virtualization'])
+	if enhanced_networking == 'simple' and virtualization != 'hvm':
+			error('Enhanced networking only works with HVM virtualization', ['provider', 'virtualization'])
 
 
 def resolve_tasks(taskset, manifest):
