@@ -1,10 +1,10 @@
 class window.TaskOverview
 	viewBoxHeight = 800
-	viewBoxWidth = 200
+	viewBoxWidth = 800
 	margins =
-		top:    100
+		top:    200
 		left:   50
-		bottom: 100
+		bottom: 200
 		right:  50
 	gravity =
 		lateral: .1
