@@ -7,9 +7,9 @@ and handles the gather, sorting and running of tasks.
 
 .. toctree::
    :maxdepth: 2
+   :glob:
 
-   fs
-   pkg
+   *
 
 Bootstrap information
 ---------------------

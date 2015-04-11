@@ -11,10 +11,10 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   base/index
-   common/index
-   plugins/index
    providers/index
+   plugins/index
+
+   api/index
    guidelines
    taskoverview
    howitworks
