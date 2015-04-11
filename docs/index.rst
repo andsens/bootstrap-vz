@@ -14,6 +14,7 @@ bootstrap-vz
    manifest
    providers/index
    plugins/index
+   changelog
 
    api/index
    contributing
