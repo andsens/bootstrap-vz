@@ -1,7 +1,11 @@
 #!/usr/bin/python
+import sys
+import os.path
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 
-def main(opts):
+def generate_graph_data():
 	from bootstrapvz.base.tasklist import get_all_tasks
 	tasks = get_all_tasks()
 
@@ -45,12 +49,10 @@ def main(opts):
 			link[key] = tasks.index(link[key])
 		return link
 
-	data = {'phases': map(mk_phase, phases.order),
+	return {'phases': map(mk_phase, phases.order),
 	        'modules': map(mk_module, modules),
 	        'nodes': map(mk_node, tasks),
 	        'links': map(mk_link, task_links)}
-
-	write_data(data, opts.get('--output', None))
 
 
 def write_data(data, output_path=None):
@@ -73,4 +75,5 @@ if __name__ == '__main__' and __package__ is None:
 """
 	opts = docopt(usage)
 
-	main(opts)
+	data = generate_graph_data()
+	write_data(data, opts.get('--output', None))

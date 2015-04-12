@@ -1,11 +1,5 @@
-import os
 from nose.tools import assert_true
 from bootstrapvz.base.manifest import Manifest
-
-MANIFEST_DIR = os.path.join(
-    os.path.dirname(os.path.realpath(__file__)),
-    '../../manifests'
-)
 
 
 def test_manifest_generator():
@@ -15,10 +9,16 @@ def test_manifest_generator():
     Loops through the manifests directory and tests that
     each file can successfully be loaded and validated.
     """
-    for fobj in os.listdir(MANIFEST_DIR):
-        path = os.path.join(os.path.abspath(MANIFEST_DIR), fobj)
-
-        yield validate_manifests, path
+    import os.path
+    import glob
+    manifests = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        '../../manifests'
+    )
+    for manifest_path in glob.glob(manifests + '/*.yml'):
+        yield validate_manifests, manifest_path
+    for manifest_path in glob.glob(manifests + '/*.json'):
+        yield validate_manifests, manifest_path
 
 
 def validate_manifests(path):

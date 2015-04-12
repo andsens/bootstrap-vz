@@ -1,6 +1,17 @@
+Developers
+============
+
+.. toctree::
+   :maxdepth: 1
+
+   contributing
+   switches
+   api/index
+   taskoverview
+
 
 How bootstrap-vz works
-======================
+----------------------
 
 Tasks
 ~~~~~
@@ -15,14 +26,14 @@ via attributes. Here is an example:
 ::
 
     class MapPartitions(Task):
-    	description = 'Mapping volume partitions'
-    	phase = phases.volume_preparation
-    	predecessors = [PartitionVolume]
-    	successors = [filesystem.Format]
+      description = 'Mapping volume partitions'
+      phase = phases.volume_preparation
+      predecessors = [PartitionVolume]
+      successors = [filesystem.Format]
     
-    	@classmethod
-    	def run(cls, info):
-    		info.volume.partition_map.map(info.volume)
+      @classmethod
+      def run(cls, info):
+         info.volume.partition_map.map(info.volume)
 
 In this case the attributes define that the task at hand should run
 after the ``PartitionVolume`` task — i.e. after volume has been

@@ -1,10 +1,10 @@
 class window.TaskOverview
 	viewBoxHeight = 800
-	viewBoxWidth = 200
+	viewBoxWidth = 800
 	margins =
-		top:    100
+		top:    200
 		left:   50
-		bottom: 100
+		bottom: 200
 		right:  50
 	gravity =
 		lateral: .1
@@ -26,7 +26,7 @@ class window.TaskOverview
 	constructor: ({@selector}) ->
 		@svg = d3.select(@selector)
 			.attr('viewBox', "0 0 #{viewBoxWidth} #{viewBoxHeight}")
-		d3.json '_static/graph.json', @buildGraph
+		d3.json '../_static/graph.json', @buildGraph
 
 	buildGraph: (error, @data) =>
 		@createDefinitions()
@@ -118,15 +118,23 @@ class window.TaskOverview
 		            .selectAll('line').data(layout.links()).enter()
 		            .append('line').attr('marker-end', 'url(#right-arrowhead)')
 
+		mouseOver = (d) ->
+			labels.classed 'hover', (l) -> d is l
+			nodes.classed 'highlight', (n) -> d.module is n.module
+
+		mouseOut = (d) ->
+			labels.classed 'hover', no
+			nodes.classed 'highlight', no
+
 		nodes = @svg.append('g').attr('class', 'nodes')
 		            .selectAll('g.partition').data(groups).enter()
 		            .append('g').attr('class', 'partition')
 		            .selectAll('circle').data((d) -> d.values).enter()
 		            .append('circle').attr('r', (d) -> d.radius)
-		                             .style('fill', (d, i) -> nodeColors(d[nodeColorKey]))
+		                             .style('fill', (d) -> nodeColors(d[nodeColorKey]))
 		                             .call(layout.drag)
-		                             .on('mouseover', (d) -> (labels.filter (l) -> d is l).classed 'hover', true)
-		                             .on('mouseout', (d) -> (labels.filter (l) -> d is l).classed 'hover', false)
+		                             .on('mouseover', mouseOver)
+		                             .on('mouseout', mouseOut)
 
 		labels = @svg.append('g').attr('class', 'node-labels')
 		             .selectAll('g.partition').data(groups).enter()
