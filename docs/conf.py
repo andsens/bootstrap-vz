@@ -30,7 +30,7 @@ sys.path.insert(0, os.path.abspath(os.pardir))
 # ones.
 extensions = ['sphinx.ext.coverage',
               'sphinx.ext.autodoc',
-              'sphinx.ext.viewcode',
+              'sphinx.ext.linkcode',
               ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -290,3 +290,57 @@ from docs import taskoverview
 
 data = taskoverview.generate_graph_data()
 taskoverview.write_data(data, '_static/graph.json')
+
+
+# -- Substitute links for github with relative links in readthedocs -------
+
+
+if on_rtd:
+	pass
+
+# Snatched from here:
+# https://sourcegraph.com/github.com/Gallopsled/pwntools@master/.PipPackage/pwntools/.def/docs/source/conf/linkcode_resolve/lines
+baseurl = 'https://github.com/andsens/bootstrap-vz'
+
+import subprocess
+try:
+	git_head = subprocess.check_output('git describe --tags 2>/dev/null', shell=True)
+except subprocess.CalledProcessError:
+	try:
+		git_head = subprocess.check_output('git rev-parse HEAD', shell=True).strip()[:10]
+	except subprocess.CalledProcessError:
+		pass
+
+
+def linkcode_resolve(domain, info):
+	if domain != 'py':
+		return None
+	if not info['module']:
+		return None
+
+	filepath = info['module'].replace('.', '/') + '.py'
+	fmt_args = {'baseurl': baseurl,
+	            'commit': git_head,
+	            'path': filepath}
+
+	import importlib
+	import inspect
+	import types
+	module = importlib.import_module(info['module'])
+	value = module
+	for part in info['fullname'].split('.'):
+		value = getattr(value, part, None)
+		if value is None:
+			break
+	valid_types = (types.ModuleType, types.ClassType, types.MethodType,
+	               types.FunctionType, types.TracebackType,
+	               types.FrameType, types.CodeType)
+	if isinstance(value, valid_types):
+		try:
+			lines, first = inspect.getsourcelines(value)
+			fmt_args['linestart'] = first
+			fmt_args['lineend'] = first + len(lines) - 1
+			return '{baseurl}/blob/{commit}/{path}#L{linestart}-L{lineend}'.format(**fmt_args)
+		except IOError:
+			pass
+	return '{baseurl}/blob/{commit}/{path}'.format(**fmt_args)
