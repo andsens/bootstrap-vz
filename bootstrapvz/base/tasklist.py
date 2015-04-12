@@ -117,7 +117,8 @@ def get_all_tasks():
 	# Get a generator that returns all classes in the package
 	import os.path
 	pkg_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..'))
-	classes = get_all_classes(pkg_path, 'bootstrapvz.')
+	exclude_pkgs = ['bootstrapvz.base', 'bootstrapvz.remote']
+	classes = get_all_classes(pkg_path, 'bootstrapvz.', exclude_pkgs)
 
 	# lambda function to check whether a class is a task (excluding the superclass Task)
 	def is_task(obj):
@@ -126,11 +127,12 @@ def get_all_tasks():
 	return filter(is_task, classes)  # Only return classes that are tasks
 
 
-def get_all_classes(path=None, prefix=''):
+def get_all_classes(path=None, prefix='', excludes=[]):
 	""" Given a path to a package, this function retrieves all the classes in it
 
 	:param str path: Path to the package
 	:param str prefix: Name of the package followed by a dot
+	:param list excludes: List of str matching module names that should be ignored
 	:return: A generator that yields classes
 	:rtype: generator
 	:raises Exception: If a module cannot be inspected.
@@ -139,10 +141,13 @@ def get_all_classes(path=None, prefix=''):
 	import importlib
 	import inspect
 
-	def walk_error(module):
-		raise Exception('Unable to inspect module ' + module)
+	def walk_error(module_name):
+		if not any(map(lambda excl: module_name.startswith(excl), excludes)):
+			raise Exception('Unable to inspect module ' + module_name)
 	walker = pkgutil.walk_packages([path], prefix, walk_error)
 	for _, module_name, _ in walker:
+		if any(map(lambda excl: module_name.startswith(excl), excludes)):
+			continue
 		module = importlib.import_module(module_name)
 		classes = inspect.getmembers(module, inspect.isclass)
 		for class_name, obj in classes:
