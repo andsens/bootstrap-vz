@@ -105,7 +105,7 @@ def resolve_tasks(taskset, manifest):
 		                ])
 		taskset.discard(filesystem.FStab)
 
-	if 'enhanced_networking' in manifest.provider and manifest.provider['enhanced_networking'] == 'simple':
+	if manifest.provider.get('enhanced_networking', None) == 'simple':
 		taskset.update([kernel.AddDKMSPackages,
 		                tasks.network.InstallEnhancedNetworking,
 		                kernel.UpdateInitramfs])
