@@ -26,7 +26,7 @@ class window.TaskOverview
 	constructor: ({@selector}) ->
 		@svg = d3.select(@selector)
 			.attr('viewBox', "0 0 #{viewBoxWidth} #{viewBoxHeight}")
-		d3.json '_static/graph.json', @buildGraph
+		d3.json '../_static/graph.json', @buildGraph
 
 	buildGraph: (error, @data) =>
 		@createDefinitions()

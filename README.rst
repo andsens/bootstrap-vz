@@ -136,13 +136,13 @@ Developers
 
 The API documentation, development guidelines and an explanation of
 bootstrap-vz internals can be found at
-`bootstrap-vz.readthedocs.org <http://bootstrap-vz.readthedocs.org>`__.
+`bootstrap-vz.readthedocs.org <http://bootstrap-vz.readthedocs.org/en/master/developers>`__.
 
 Contributing
 ------------
 
 Contribution guidelines are described in the documentation under
-`Contributing <http://bootstrap-vz.readthedocs.org/en/master/contributing.html>`__.
+`Contributing <http://bootstrap-vz.readthedocs.org/en/master/developers/contributing.html>`__.
 There's also
-`a topic <http://bootstrap-vz.readthedocs.org/en/master/contributing.html#coding-style>`__
+`a topic <http://bootstrap-vz.readthedocs.org/en/master/developers/contributing.html#coding-style>`__
 regarding the coding style.

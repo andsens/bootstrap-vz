@@ -1,9 +1,3 @@
-.. bootstrap-vz documentation master file, created by
-   sphinx-quickstart on Sun Mar 23 16:17:28 2014.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-
 bootstrap-vz
 ============
 
@@ -14,11 +8,6 @@ bootstrap-vz
    manifest
    providers/index
    plugins/index
-   changelog
-
-   api/index
-   contributing
-   taskoverview
-   howitworks
-   switches
    logging
+   changelog
+   developers/index
