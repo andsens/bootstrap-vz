@@ -69,7 +69,7 @@ class BasePartition(AbstractPartition):
 	def map(self, device_path):
 		"""Maps the partition to a device_path
 
-		:param str device_path: The device patht his partition should be mapped to
+		:param str device_path: The device path this partition should be mapped to
 		"""
 		self.fsm.map(device_path=device_path)
 
