@@ -7,8 +7,8 @@ once it is done and registers it as an AMI. EBS volume backing only
 works on an EC2 host while S3 backed volumes *should* work locally (at
 this time however they do not, a fix is in the works).
 
-Unless `the cloud-init plugin <dev_Plugins#cloud_init>`__ is used,
-special startup scripts will be installed that automatically fetch the
+Unless `the cloud-init plugin <http://bootstrap-vz.readthedocs.org/en/master/plugins/cloud_init.html>`__
+is used, special startup scripts will be installed that automatically fetch the
 configured authorized\_key from the instance metadata and save or run
 any userdata supplied (if the userdata begins with ``#!`` it will be
 run).

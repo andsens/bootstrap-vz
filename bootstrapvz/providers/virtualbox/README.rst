@@ -9,4 +9,4 @@ interoperability (e.g.
 *should* support vdi files, but since they have no identifier URL not
 even VirtualBox itself can import them). VirtualBox Guest Additions can
 be installed automatically if the ISO is `provided in the
-manifest <dev_Manifest#bootstrapper>`__.
+manifest <http://bootstrap-vz.readthedocs.org/en/master/manifest.html#bootstrapper>`__.

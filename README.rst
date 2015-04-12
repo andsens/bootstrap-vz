@@ -18,14 +18,14 @@ bootstrapper reached its limits.
 Documentation
 -------------
 
-The end-user documentation for bootstrap-vz is available at
-`andsens.github.io/bootstrap-vz <http://andsens.github.io/bootstrap-vz>`__.
+The documentation for bootstrap-vz is available at
+`bootstrap-vz.readthedocs.org <http://bootstrap-vz.readthedocs.org/en/master>`__.
 There, you can discover `what the
-dependencies <http://andsens.github.io/bootstrap-vz/#dependencies>`__
+dependencies <http://bootstrap-vz.readthedocs.org/en/master/index.html#dependencies>`__
 for a specific cloud provider are, `see a list of available
-plugins <http://andsens.github.io/bootstrap-vz/plugins.html>`__ and
+plugins <http://bootstrap-vz.readthedocs.org/en/master/plugins>`__ and
 learn `how you create a
-manifest <http://andsens.github.io/bootstrap-vz/manifest.html>`__.
+manifest <http://bootstrap-vz.readthedocs.org/en/master/manifest.html>`__.
 
 Installation
 ------------
@@ -38,7 +38,7 @@ python dependencies by running ``python setup.py install``. However,
 depending on what kind of image you'd like to bootstrap, there are
 other debian package dependencies as well, at the very least you will
 need ``debootstrap``.
-`The documentation <http://andsens.github.io/bootstrap-vz/>`__
+`The documentation <http://bootstrap-vz.readthedocs.org/en/master>`__
 explains this in more detail.
 
 Note that bootstrap-vz will tell you which tools it requires when they
@@ -68,7 +68,7 @@ VirtualBox Vagrant
     root@host:~# pip install termcolor jsonschema fysom docopt pyyaml # Install python dependencies
     root@host:~# bootstrap-vz/bootstrap-vz bootstrap-vz/manifests/virtualbox-vagrant.manifest.yml
 
-If you want to use the `minimize\_size <dev_Plugins#minimize_size>`__
+If you want to use the `minimize\_size <http://bootstrap-vz.readthedocs.org/en/master/plugins/minimize_size.html>`__
 plugin, you will have to install the ``zerofree`` package and `VMWare
 Workstation <https://my.vmware.com/web/vmware/info/slug/desktop_end_user_computing/vmware_workstation/10_0>`__
 as well.
@@ -113,16 +113,18 @@ Dependencies
 ------------
 
 bootstrap-vz has a number of dependencies depending on the target
-platform and `the selected plugins <dev_Plugins>`__. At a bare minimum
-the following python libraries are needed: \*
-`termcolor <https://pypi.python.org/pypi/termcolor>`__ \*
-`fysom <https://pypi.python.org/pypi/fysom>`__ \*
-`jsonschema <https://pypi.python.org/pypi/jsonschema>`__ \*
-`docopt <https://pypi.python.org/pypi/docopt>`__ \*
-`pyyaml <https://pypi.python.org/pypi/pyyaml>`__ To bootstrap Debian
-itself
-`debootstrap <https://packages.debian.org/wheezy/debootstrap>`__ is
-needed as well.
+platform and `the selected plugins <http://bootstrap-vz.readthedocs.org/en/master/plugins>`__.
+At a bare minimum the following python libraries are needed:
+
+* `termcolor <https://pypi.python.org/pypi/termcolor>`__
+* `fysom <https://pypi.python.org/pypi/fysom>`__
+* `jsonschema <https://pypi.python.org/pypi/jsonschema>`__
+* `docopt <https://pypi.python.org/pypi/docopt>`__
+* `pyyaml <https://pypi.python.org/pypi/pyyaml>`__
+
+To bootstrap Debian itself
+`debootstrap <https://packages.debian.org/wheezy/debootstrap>`__
+is needed as well.
 
 Any other requirements are dependent upon the manifest configuration
 and are detailed in the corresponding sections of the documentation.
@@ -139,7 +141,8 @@ bootstrap-vz internals can be found at
 Contributing
 ------------
 
-Contribution guidelines are described on the
-`CONTRIBUTING <CONTRIBUTING.md>`__ file. There's also a `topic on the
-documentation <http://bootstrap-vz.readthedocs.org/en/development/guidelines.html#coding-style>`__
+Contribution guidelines are described in the documentation under
+`Contributing <http://bootstrap-vz.readthedocs.org/en/master/contributing.html>`__.
+There's also
+`a topic <http://bootstrap-vz.readthedocs.org/en/master/contributing.html#coding-style>`__
 regarding the coding style.
