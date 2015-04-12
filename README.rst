@@ -7,8 +7,8 @@ bootstrap-vz runs without any user intervention and
 generates ready-to-boot images for a number of virtualization
 platforms.
 Its aim is to provide a reproducable bootstrapping process using
-`manifests <http://andsens.github.io/bootstrap-vz/manifest.html>`__ as
-well as supporting a high degree of customizability through plugins.
+`manifests <http://bootstrap-vz.readthedocs.org/en/master/manifest.html>`__
+as well as supporting a high degree of customizability through plugins.
 
 bootstrap-vz was coded from scratch in python once the bash script
 architecture that was used in the
