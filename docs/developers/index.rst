@@ -8,6 +8,7 @@ Developers
    contributing
    switches
    api/index
+   testing/index
    taskoverview
 
 .. include:: ../../bootstrapvz/README.rst
