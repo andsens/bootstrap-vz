@@ -1,10 +1,8 @@
-bootstrap-vz
-============
-
 .. toctree::
    :maxdepth: 1
+   :hidden:
 
-   intro
+   self
    manifest
    providers/index
    plugins/index
@@ -12,3 +10,5 @@ bootstrap-vz
    logging
    changelog
    developers/index
+
+.. include:: ../README.rst

@@ -1,4 +1,4 @@
-Introduction
+bootstrap-vz
 ============
 
 bootstrap-vz is a bootstrapping framework for Debian.
