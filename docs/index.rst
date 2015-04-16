@@ -8,6 +8,7 @@ bootstrap-vz
    manifest
    providers/index
    plugins/index
+   supported_builds
    logging
    changelog
    developers/index
