@@ -3,7 +3,8 @@ API
 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
+   :hidden:
 
    base/index
    common/index

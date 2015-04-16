@@ -11,5 +11,7 @@
    remote_bootstrapping
    changelog
    developers/index
+   api/index
+   testing/index
 
 .. include:: ../README.rst
