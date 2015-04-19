@@ -93,4 +93,8 @@ def transform_github_links(app, doctree, fromdocname):
 		docs_link = find_docs_link(abs_link)
 		if docs_link is None:
 			continue
-		node['refuri'] = os.path.relpath(docs_link, os.path.dirname(fromdocname))
+		# special handling for when we link inside the same document
+		if docs_link.startswith('#'):
+			node['refuri'] = docs_link
+		else:
+			node['refuri'] = os.path.relpath(docs_link, os.path.dirname(fromdocname))
