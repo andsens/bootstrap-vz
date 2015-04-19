@@ -74,7 +74,7 @@ are 4 possible settings:
    Accepts a list of package names.
    ``optional``
 -  ``guest_additions``: This setting is only relevant for the
-   `virtualbox provider <../bootstrapvz/providers/virtualbox.html>`__.
+   `virtualbox provider <../bootstrapvz/providers/virtualbox>`__.
    It specifies the path to the VirtualBox Guest Additions ISO, which, when specified,
    will be mounted and used to install the VirtualBox Guest Additions.
    ``optional``
@@ -214,7 +214,7 @@ boot, root and swap.
       optional setting overrides the command bootstrap-vz would normally
       use to format the partition. The command is specified as a string
       array where each option/argument is an item in that array (much
-      like the `image\_commands <../bootstrapvz/plugins/image_commands.html>`__ plugin).
+      like the `image\_commands <../bootstrapvz/plugins/image_commands>`__ plugin).
       ``optional`` The following variables are available:
    -  ``{fs}``: The filesystem of the partition.
    -  ``{device_path}``: The device path of the partition.
