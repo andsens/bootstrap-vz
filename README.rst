@@ -20,12 +20,11 @@ Documentation
 
 The documentation for bootstrap-vz is available at
 `bootstrap-vz.readthedocs.org <http://bootstrap-vz.readthedocs.org/en/master>`__.
-There, you can discover `what the
-dependencies <#dependencies>`__
-for a specific cloud provider are, `see a list of available
-plugins <bootstrapvz/plugins>`__ and
-learn `how you create a
-manifest <manifests>`__.
+There, you can discover `what the dependencies <#dependencies>`__ for
+a specific cloud provider are, `see a list of available plugins <bootstrapvz/plugins>`__
+and learn `how you create a manifest <manifests>`__.
+
+Note to developers: `The documenation <docs>`__ is generated in a rather peculiar and nifty way.
 
 Installation
 ------------

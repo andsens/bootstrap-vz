@@ -16,6 +16,7 @@ includes_mapping = {
 	r'^remote_bootstrapping$': r'bootstrapvz/remote/',
 	r'^developers/index$': r'bootstrapvz/',
 	r'^developers/contributing$': r'CONTRIBUTING.rst',
+	r'^developers/documentation$': r'docs/',
 	r'^changelog$': r'CHANGELOG.rst',
 }
 
@@ -31,6 +32,7 @@ links_mapping = {
 	r'^bootstrapvz/remote$': r'remote_bootstrapping.html',
 	r'^bootstrapvz$': r'developers',
 	r'^CONTRIBUTING\.rst$': r'developers/contributing.html',
+	r'^docs$': r'developers/documentation.html',
 	r'^CHANGELOG\.rst$': r'changelog.html',
 }
 

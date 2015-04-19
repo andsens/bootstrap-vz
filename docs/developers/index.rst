@@ -6,6 +6,7 @@ Developers
    :hidden:
 
    contributing
+   documentation
    switches
    taskoverview
 
