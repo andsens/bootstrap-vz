@@ -52,88 +52,97 @@ these guidelines are not rules , they are advice on how to better add
 value to the bootstrap-vz codebase.
 
 
-* **The manifest should always fully describe the resulting image. The
-  outcome of a bootstrapping process should never depend on settings
-  specified elsewhere.**
+The manifest should always fully describe the resulting image
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The outcome of a bootstrapping process should never depend on settings
+specified elsewhere.
 
-  This allows others to easily reproduce any
-  setup other people are running and makes it possible to share
-  manifests. `The official debian EC2 images <https:/aws.amazon.com/marketplace/seller-
-  profile?id=890be55d-32d8-4bc8-9042-2b4fd83064d5>`__
-  for example can be reproduced using the manifests available
-  in the manifest directory of bootstrap-vz.
+This allows others to easily reproduce any setup other people are running
+and makes it possible to share manifests.
+`The official debian EC2 images`__ for example can be reproduced
+using the manifests available in the manifest directory of bootstrap-vz.
 
-* **The bootstrapper should always be able to run fully unattended.**
-  
-  For end users, this guideline minimizes the risk of errors. Any
-  required input would also be in direct conflict with the previous
-  guideline that the manifest should always fully describe the resulting
-  image.
+__ https:/aws.amazon.com/marketplace/seller-profile?id=890be55d-32d8-4bc8-9042-2b4fd83064d5
 
-  Additionally developers may have to run the bootstrap
-  process multiple times though, any prompts in the middle of that
-  process may significantly slow down the development speed.
+The bootstrapper should always be able to run fully unattended
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+For end users, this guideline minimizes the risk of errors. Any
+required input would also be in direct conflict with the previous
+guideline that the manifest should always fully describe the resulting
+image.
 
-* **The bootstrapper should only need as much setup as the manifest
-  requires.**
+Additionally developers may have to run the bootstrap
+process multiple times though, any prompts in the middle of that
+process may significantly slow down the development speed.
 
-  Having to shuffle specific paths on the host into place
-  (e.g. ``/target`` has to be created manually) to get the bootstrapper
-  running is going to increase the rate of errors made by users.
-  Aim for minimal setup.
 
-  Exceptions are of course things such as the path to
-  the VirtualBox Guest Additions ISO or tools like ``parted`` that
-  need to be installed on the host.
+The bootstrapper should only need as much setup as the manifest requires
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Having to shuffle specific paths on the host into place
+(e.g. ``/target`` has to be created manually) to get the bootstrapper
+running is going to increase the rate of errors made by users.
+Aim for minimal setup.
 
-* **Roll complexity into which tasks are added to the tasklist.**
+Exceptions are of course things such as the path to
+the VirtualBox Guest Additions ISO or tools like ``parted`` that
+need to be installed on the host.
 
-  If a ``run()`` function checks whether it should do any work or simply be
-  skipped, consider doing that check in ``resolve_tasks()`` instead and
-  avoid adding that task alltogether. This allows people looking at the
-  tasklist in the logfile to determine what work has been performed. If
-  a task says it will modify a file but then bails , a developer may get
-  confused when looking at that file after bootstrapping. He could
-  conclude that the file has either been overwritten or that the
-  search & replace does not work correctly.
 
-* **Control flow should be directed from the task graph.**
+Roll complexity into which tasks are added to the tasklist
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+If a ``run()`` function checks whether it should do any work or simply be
+skipped, consider doing that check in ``resolve_tasks()`` instead and
+avoid adding that task alltogether. This allows people looking at the
+tasklist in the logfile to determine what work has been performed.
 
-  Avoid creating complicated ``run()`` functions. If necessary, split up
-  a function into two semantically separate tasks.
+If a task says it will modify a file but then bails , a developer may get
+confused when looking at that file after bootstrapping. He could
+conclude that the file has either been overwritten or that the
+search & replace does not work correctly.
 
-  This allows other tasks to interleave with the control-flow and add extended
-  functionality (e.g. because volume creation and mounting are two
-  separate tasks, `the prebootstrapped plugin
-  <bootstrapvz/plugins/prebootstrapped>`__
-  can replace the volume creation task with a task of its own that
-  creates a volume from a snapshot instead, but still reuse the mount task).
 
-* **Task classes should be treated as decorated run() functions, they 
-  should not have any state**
+Control flow should be directed from the task graph
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Avoid creating complicated ``run()`` functions. If necessary, split up
+a function into two semantically separate tasks.
 
-  Thats what the BootstrapInformation object is for.
+This allows other tasks to interleave with the control-flow and add extended
+functionality (e.g. because volume creation and mounting are two
+separate tasks, `the prebootstrapped plugin
+<bootstrapvz/plugins/prebootstrapped>`__
+can replace the volume creation task with a task of its own that
+creates a volume from a snapshot instead, but still reuse the mount task).
 
-* **Only add stuff to the BootstrapInformation object when really necessary.**
 
-  This is mainly to avoid clutter.
+Task classes should be treated as decorated run() functions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Tasks should not have any state, thats what the
+BootstrapInformation object is for.
 
-* **Use a json-schema to check for allowed settings**
-  The json-schema may be verbose but it keeps the bulk of check work outside the
-  python code, which is a big plus when it comes to readability. This of
-  course only applies bas long as the checks are simple. You can of
-  course fall back to doing the check in python when that solution is
-  considerably less complex.
+Only add stuff to the BootstrapInformation object when really necessary
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This is mainly to avoid clutter.
 
-* **When invoking external programs, use long options whenever possible**
 
-  This makes the commands a lot easier to understand, since
-  the option names usually hint at what they do.
+Use a json-schema to check for allowed settings
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The json-schema may be verbose but it keeps the bulk of check work outside the
+python code, which is a big plus when it comes to readability.
+This only applies bas long as the checks are simple.
+You can of course fall back to doing the check in python when that solution is
+considerably less complex.
 
-* **When invoking external programs, don't use full paths, rely on ``$PATH``**
 
-  This increases robustness when executable locations change.
-  Example: Use ``log_call(['wget', ...])`` instead of ``log_call(['/usr/bin/wget', ...])``.
+When invoking external programs, use long options whenever possible
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This makes the commands a lot easier to understand, since
+the option names usually hint at what they do.
+
+
+When invoking external programs, don't use full paths, rely on ``$PATH``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This increases robustness when executable locations change.
+Example: Use ``log_call(['wget', ...])`` instead of ``log_call(['/usr/bin/wget', ...])``.
 
 
 Coding style
