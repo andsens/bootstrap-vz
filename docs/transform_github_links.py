@@ -2,7 +2,7 @@ import re
 
 
 def setup(app):
-	app.connect('doctree-resolved', replace_rtd_links)
+	app.connect('doctree-resolved', transform_github_links)
 	return {'version': '0.1'}
 
 # Maps from files in docs/ to folders/files in repo
@@ -64,7 +64,7 @@ def find_docs_link(link):
 	return None
 
 
-def replace_rtd_links(app, doctree, fromdocname):
+def transform_github_links(app, doctree, fromdocname):
 	# Convert relative links in repo into relative links in docs.
 	# We do this by first figuring out whether the current document
 	# has been included from outside docs/ and only continue if so.
