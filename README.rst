@@ -24,7 +24,7 @@ There, you can discover `what the dependencies <#dependencies>`__ for
 a specific cloud provider are, `see a list of available plugins <bootstrapvz/plugins>`__
 and learn `how you create a manifest <manifests>`__.
 
-Note to developers: `The documenation <docs>`__ is generated in a rather peculiar and nifty way.
+Note to developers: `The documentaion <docs>`__ is generated in a rather peculiar and nifty way.
 
 Installation
 ------------
