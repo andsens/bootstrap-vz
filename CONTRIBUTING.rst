@@ -6,7 +6,7 @@ Sending pull requests
 
 Do you want to contribute to the bootstrap-vz project? Nice! Here is the basic workflow:
 
-+ Read the `development guidelines <http://bootstrap-vz.readthedocs.org/en/master/contributing.html#development-guidelines>`__
++ Read the `development guidelines <#development-guidelines>`__
 + Fork this repository.
 + Make any changes you want/need.
 + Check the coding style of your changes using `tox <http://tox.readthedocs.org/>`__ by running `tox -e flake8`
@@ -14,7 +14,7 @@ Do you want to contribute to the bootstrap-vz project? Nice! Here is the basic w
   This check will be repeated by `Travis CI <https://travis-ci.org/andsens/bootstrap-vz>`__
   once you send a pull request, so it's better if you check this beforehand.
 + If the change is significant (e.g. a new plugin, manifest setting or security fix)
-  add your name and contribution to the `changelog <http://bootstrap-vz.readthedocs.org/en/master/changelog.html>`__.
+  add your name and contribution to the `changelog <CHANGELOG.rst>`__.
 + Commit your changes.
 + Squash the commits if needed. For instance, it is fine if you have multiple commits describing atomic units
   of work, but there's no reason to have many little commits just because of corrected typos.
@@ -107,7 +107,7 @@ value to the bootstrap-vz codebase.
   This allows other tasks to interleave with the control-flow and add extended
   functionality (e.g. because volume creation and mounting are two
   separate tasks, `the prebootstrapped plugin
-  <http://bootstrap-vz.readthedocs.org/en/master/plugins/prebootstrapped.html>`__
+  <bootstrapvz/plugins/prebootstrapped>`__
   can replace the volume creation task with a task of its own that
   creates a volume from a snapshot instead, but still reuse the mount task).
 

@@ -7,7 +7,7 @@ bootstrap-vz runs without any user intervention and
 generates ready-to-boot images for a number of virtualization
 platforms.
 Its aim is to provide a reproducable bootstrapping process using
-`manifests <http://bootstrap-vz.readthedocs.org/en/master/manifest.html>`__
+`manifests <manifests>`__
 as well as supporting a high degree of customizability through plugins.
 
 bootstrap-vz was coded from scratch in python once the bash script
@@ -21,11 +21,11 @@ Documentation
 The documentation for bootstrap-vz is available at
 `bootstrap-vz.readthedocs.org <http://bootstrap-vz.readthedocs.org/en/master>`__.
 There, you can discover `what the
-dependencies <http://bootstrap-vz.readthedocs.org/en/master/index.html#dependencies>`__
+dependencies <#dependencies>`__
 for a specific cloud provider are, `see a list of available
-plugins <http://bootstrap-vz.readthedocs.org/en/master/plugins>`__ and
+plugins <bootstrapvz/plugins>`__ and
 learn `how you create a
-manifest <http://bootstrap-vz.readthedocs.org/en/master/manifest.html>`__.
+manifest <manifests>`__.
 
 Installation
 ------------
@@ -68,7 +68,7 @@ VirtualBox Vagrant
     root@host:~# pip install termcolor jsonschema fysom docopt pyyaml # Install python dependencies
     root@host:~# bootstrap-vz/bootstrap-vz bootstrap-vz/manifests/virtualbox-vagrant.manifest.yml
 
-If you want to use the `minimize\_size <http://bootstrap-vz.readthedocs.org/en/master/plugins/minimize_size.html>`__
+If you want to use the `minimize\_size <bootstrapvz/plugins/minimize_size>`__
 plugin, you will have to install the ``zerofree`` package and `VMWare
 Workstation <https://my.vmware.com/web/vmware/info/slug/desktop_end_user_computing/vmware_workstation/10_0>`__
 as well.
@@ -113,7 +113,7 @@ Dependencies
 ------------
 
 bootstrap-vz has a number of dependencies depending on the target
-platform and `the selected plugins <http://bootstrap-vz.readthedocs.org/en/master/plugins>`__.
+platform and `the selected plugins <bootstrapvz/plugins>`__.
 At a bare minimum the following python libraries are needed:
 
 * `termcolor <https://pypi.python.org/pypi/termcolor>`__
@@ -142,7 +142,7 @@ Contributing
 ------------
 
 Contribution guidelines are described in the documentation under
-`Contributing <http://bootstrap-vz.readthedocs.org/en/master/developers/contributing.html>`__.
+`Contributing <CONTRIBUTING.rst>`__.
 There's also
-`a topic <http://bootstrap-vz.readthedocs.org/en/master/developers/contributing.html#coding-style>`__
+`a topic <CONTRIBUTING.rst#coding-style>`__
 regarding the coding style.

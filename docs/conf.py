@@ -272,17 +272,19 @@ import os.path
 for readme_path in glob.glob('../bootstrapvz/providers/*/README.rst'):
 	provider_name = os.path.basename(os.path.dirname(readme_path))
 	include_path = os.path.join('providers', provider_name + '.rst')
-	path_to_readme = os.path.join('../../bootstrapvz/providers', provider_name, 'README.rst')
-	with open(include_path, 'w') as include:
-		include.write('.. include:: ' + path_to_readme)
+	if not os.path.exists(include_path):
+		path_to_readme = os.path.join('../../bootstrapvz/providers', provider_name, 'README.rst')
+		with open(include_path, 'w') as include:
+			include.write('.. include:: ' + path_to_readme)
 
 
 for readme_path in glob.glob('../bootstrapvz/plugins/*/README.rst'):
 	plugin_name = os.path.basename(os.path.dirname(readme_path))
 	include_path = os.path.join('plugins', plugin_name + '.rst')
-	path_to_readme = os.path.join('../../bootstrapvz/plugins', plugin_name, 'README.rst')
-	with open(include_path, 'w') as include:
-		include.write('.. include:: ' + path_to_readme)
+	if not os.path.exists(include_path):
+		path_to_readme = os.path.join('../../bootstrapvz/plugins', plugin_name, 'README.rst')
+		with open(include_path, 'w') as include:
+			include.write('.. include:: ' + path_to_readme)
 
 
 # -- Create task overview graph data --------------------------------------
