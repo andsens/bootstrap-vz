@@ -56,6 +56,12 @@ package and ``kpartx``:
 
     root@host:~# apt-get install parted kpartx
 
+Note that you can always abort a bootstrapping process by pressing
+``Ctrl+C``, bootstrap-vz will then initiate a cleanup/rollback process,
+where volumes are detached/deleted and temporary files removed, pressing
+``Ctrl+C`` a second time shortcuts that procedure, halts the cleanup and
+quits the process.
+
 VirtualBox Vagrant
 ~~~~~~~~~~~~~~~~~~
 
