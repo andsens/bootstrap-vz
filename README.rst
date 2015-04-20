@@ -24,7 +24,8 @@ There, you can discover `what the dependencies <#dependencies>`__ for
 a specific cloud provider are, `see a list of available plugins <bootstrapvz/plugins>`__
 and learn `how you create a manifest <manifests>`__.
 
-Note to developers: `The documentaion <docs>`__ is generated in a rather peculiar and nifty way.
+Note to developers: `The documentaion <docs>`__ is generated in
+a rather peculiar and nifty way.
 
 Installation
 ------------
@@ -65,7 +66,7 @@ quits the process.
 VirtualBox Vagrant
 ~~~~~~~~~~~~~~~~~~
 
-::
+.. code:: sh
 
     user@host:~$ sudo -i # become root
     root@host:~# git clone https://github.com/andsens/bootstrap-vz.git # Clone the repo
@@ -73,10 +74,10 @@ VirtualBox Vagrant
     root@host:~# pip install termcolor jsonschema fysom docopt pyyaml # Install python dependencies
     root@host:~# bootstrap-vz/bootstrap-vz bootstrap-vz/manifests/virtualbox-vagrant.manifest.yml
 
-If you want to use the `minimize\_size <bootstrapvz/plugins/minimize_size>`__
-plugin, you will have to install the ``zerofree`` package and `VMWare
-Workstation <https://my.vmware.com/web/vmware/info/slug/desktop_end_user_computing/vmware_workstation/10_0>`__
-as well.
+If you want to use the `minimize\_size <bootstrapvz/plugins/minimize_size>`__ plugin,
+you will have to install the ``zerofree`` package and `VMWare Workstation`__ as well.
+
+__ https://my.vmware.com/web/vmware/info/slug/desktop_end_user_computing/vmware_workstation/10_0
 
 Amazon EC2 EBS backed AMI
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -109,10 +110,11 @@ occurred you can simply correct the problem that caused it and rerun
 everything, there will be no leftovers from the previous run (as always
 there are of course rare/unlikely exceptions to that rule). The error
 messages should always give you a strong hint at what is wrong, if that
-is not the case please consider `opening an
-issue <https://github.com/andsens/bootstrap-vz/issues>`__ and attach
+is not the case please consider `opening an issue`__ and attach
 both the error message and your manifest (preferably as a gist or
 similar).
+
+__ https://github.com/andsens/bootstrap-vz/issues
 
 Dependencies
 ------------
@@ -127,9 +129,9 @@ At a bare minimum the following python libraries are needed:
 * `docopt <https://pypi.python.org/pypi/docopt>`__
 * `pyyaml <https://pypi.python.org/pypi/pyyaml>`__
 
-To bootstrap Debian itself
-`debootstrap <https://packages.debian.org/wheezy/debootstrap>`__
-is needed as well.
+To bootstrap Debian itself `debootstrap`__ is needed as well.
+
+__ https://packages.debian.org/wheezy/debootstrap
 
 Any other requirements are dependent upon the manifest configuration
 and are detailed in the corresponding sections of the documentation.
@@ -140,14 +142,12 @@ Developers
 ----------
 
 The API documentation, development guidelines and an explanation of
-bootstrap-vz internals can be found at
-`bootstrap-vz.readthedocs.org <http://bootstrap-vz.readthedocs.org/en/master/developers>`__.
+bootstrap-vz internals can be found at `bootstrap-vz.readthedocs.org`__.
+
+__ http://bootstrap-vz.readthedocs.org/en/master/developers
 
 Contributing
 ------------
 
-Contribution guidelines are described in the documentation under
-`Contributing <CONTRIBUTING.rst>`__.
-There's also
-`a topic <CONTRIBUTING.rst#coding-style>`__
-regarding the coding style.
+Contribution guidelines are described in the documentation under `Contributing <CONTRIBUTING.rst>`__.
+There's also a topic regarding `the coding style <CONTRIBUTING.rst#coding-style>`__.
