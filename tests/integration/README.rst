@@ -11,7 +11,7 @@ Since hardcoding manifests for each test, bootstrapping them and booting the
 resulting images is too much code for a single test, a testing harness has
 been developed that reduces each test to it's bare essentials:
 
-* Combine available `manifest partials <manifest-partials>`__ into a single manifest
+* Combine available `manifest partials <#manifest-partials>`__ into a single manifest
 * Boot an instance from a manifest
 * Run tests on the booted instance
 
