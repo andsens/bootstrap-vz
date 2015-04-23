@@ -43,7 +43,7 @@ def main():
 	with build_server.connect() as connection:
 		connection.run(manifest,
 		               debug=opts['--debug'],
-		               dry_run=['--dry-run'])
+		               dry_run=opts['--dry-run'])
 
 
 def get_opts():
