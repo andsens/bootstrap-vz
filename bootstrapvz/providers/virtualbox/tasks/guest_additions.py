@@ -64,9 +64,9 @@ class InstallGuestAdditions(Task):
 		os.mkdir(mount_path)
 		root = info.volume.partition_map.root
 		root.add_mount(guest_additions_path, mount_path, ['-o', 'loop'])
-                install_script = os.path.join('/', mount_dir, 'VBoxLinuxAdditions.run')
-                install_wrapper_name = 'install_guest_additions.sh'
-                install_wrapper = open(os.path.join(assets, install_wrapper_name)) \
+		install_script = os.path.join('/', mount_dir, 'VBoxLinuxAdditions.run')
+		install_wrapper_name = 'install_guest_additions.sh'
+		install_wrapper = open(os.path.join(assets, install_wrapper_name)) \
                         .read() \
                         .replace("KERNEL_VERSION", kernel_version) \
                         .replace("KERNEL_ARCH", info.kernel['arch']) \
