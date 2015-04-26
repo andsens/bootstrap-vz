@@ -2,7 +2,7 @@
 # This is a mapping of Debian release names to their respective codenames
 
 unstable:  sid
-# testing: -- unknown atm
+testing:   stretch
 stable:    jessie
 oldstable: wheezy
 
