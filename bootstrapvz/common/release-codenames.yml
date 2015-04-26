@@ -2,15 +2,15 @@
 # This is a mapping of Debian release names to their respective codenames
 
 unstable:  sid
-testing:   jessie
-stable:    wheezy
-oldstable: squeeze
+# testing: -- unknown atm
+stable:    jessie
+oldstable: wheezy
 
 jessie:  jessie
 wheezy:  wheezy
 squeeze: squeeze
 
-# The following release names are not supported, but included fir completeness sake
+# The following release names are not supported, but included for completeness sake
 lenny:  lenny
 etch:   etch
 sarge:  sarge
