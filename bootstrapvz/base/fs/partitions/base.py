@@ -97,9 +97,18 @@ class BasePartition(AbstractPartition):
 		"""Creates the partition
 		"""
 		from bootstrapvz.common.tools import log_check_call
-		# The create command is failry simple, start and end are just Bytes objects coerced into strings
-		create_command = ('mkpart primary {start} {end}'
-		                  .format(start=str(self.get_start() + self.pad_start),
+		# The create command is fairly simple:
+		# - fs_type is the partition filesystem, as defined by parted:
+		#   fs-type can be one of "fat16", "fat32", "ext2", "HFS", "linux-swap",
+		#   "NTFS", "reiserfs", or "ufs".
+		# - start and end are just Bytes objects coerced into strings
+		if self.filesystem == 'swap':
+			fs_type = 'linux-swap'
+		else:
+			fs_type = 'ext2'
+		create_command = ('mkpart primary {fs_type} {start} {end}'
+		                  .format(fs_type=fs_type,
+		                          start=str(self.get_start() + self.pad_start),
 		                          end=str(self.get_end() - self.pad_end)))
 		# Create the partition
 		log_check_call(['parted', '--script', '--align', 'none', e.volume.device_path,
