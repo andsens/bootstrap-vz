@@ -14,6 +14,12 @@ Settings
     *``required``*
 -  ``port``: The port (integer) of the proxy server.
     *``required``*
+-  ``username``: The username for authentication against the proxy server.
+   This is ignored if ``password`` is not also set.
+   *``optional``*
+-  ``password``: The password for authentication against the proxy server.
+   This is ignored if ``username`` is not also set.
+   *``optional``*
 -  ``persistent``: Whether the proxy configuration file should remain on
    the machine or not.
    Valid values: true, false

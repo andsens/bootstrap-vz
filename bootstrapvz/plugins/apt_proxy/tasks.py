@@ -34,11 +34,21 @@ class SetAptProxy(Task):
 	@classmethod
 	def run(cls, info):
 		proxy_path = os.path.join(info.root, 'etc/apt/apt.conf.d/02proxy')
+		proxy_username = info.manifest.plugins['apt_proxy'].get('username')
+		proxy_password = info.manifest.plugins['apt_proxy'].get('password')
 		proxy_address = info.manifest.plugins['apt_proxy']['address']
 		proxy_port = info.manifest.plugins['apt_proxy']['port']
+
+		if None not in (proxy_username, proxy_password):
+			proxy_auth = '{username}:{password}@'.format(
+				username=proxy_username, password=proxy_password)
+		else:
+			proxy_auth = ''
+
 		with open(proxy_path, 'w') as proxy_file:
-			proxy_file.write('Acquire::http {{ Proxy "http://{address}:{port}"; }};\n'
-			                 .format(address=proxy_address, port=proxy_port))
+			proxy_file.write(
+				'Acquire::http {{ Proxy "http://{auth}{address}:{port}"; }};\n'
+				.format(auth=proxy_auth, address=proxy_address, port=proxy_port))
 
 
 class RemoveAptProxy(Task):
