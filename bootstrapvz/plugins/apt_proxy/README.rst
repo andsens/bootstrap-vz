@@ -11,9 +11,9 @@ Settings
 ~~~~~~~~
 
 -  ``address``: The IP or host of the proxy server.
-    ``required``
+   ``required``
 -  ``port``: The port (integer) of the proxy server.
-    ``required``
+   ``required``
 -  ``username``: The username for authentication against the proxy server.
    This is ignored if ``password`` is not also set.
    ``optional``
@@ -22,6 +22,6 @@ Settings
    ``optional``
 -  ``persistent``: Whether the proxy configuration file should remain on
    the machine or not.
-   Valid values: true, false
-   Default: ``false``
+   Valid values: ``true``, ``false``
+   Default: ``false``.
    ``optional``
