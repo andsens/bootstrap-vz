@@ -29,9 +29,9 @@ Settings
    zeroes, so the volume could be better shrunk after this.
    Valid values: true, false
    Default: false
-   *``optional``*
+   ``optional``
 -  ``shrink``: Whether the volume should be shrunk. This setting works
    best in conjunction with the zerofree tool.
    Valid values: true, false
    Default: false
-   *``optional``*
+   ``optional``

@@ -16,9 +16,9 @@ Settings
 ~~~~~~~~
 
 -  ``manifest``: Path to the puppet manifest that should be applied.
-   *``optional``*
+   ``optional``
 -  ``assets``: Path to puppet assets. The contents will be copied into
    ``/etc/puppet`` on the image. Any existing files will be overwritten.
-   *``optional``*
+   ``optional``
 -  ``enable_agent``: Whether the puppet agent daemon should be enabled.
-   *``optional``*
+   ``optional``

@@ -24,28 +24,28 @@ and secret key, which are needed for bootstraping EBS backed instances.
 The settings describes below should be placed in the ``credentials`` key
 under the ``provider`` section.
 
--  **``access-key``**: AWS access-key.
+-  ``access-key``: AWS access-key.
    May also be supplied via the environment variable
    ``$AWS_ACCESS_KEY``
-   *``required for EBS & S3 backing``*
--  **``secret-key``**: AWS secret-key.
+   ``required for EBS & S3 backing``
+-  ``secret-key``: AWS secret-key.
    May also be supplied via the environment variable
    ``$AWS_SECRET_KEY``
-   *``required for EBS & S3 backing``*
--  **``certificate``**: Path to the AWS user certificate. Used for
+   ``required for EBS & S3 backing``
+-  ``certificate``: Path to the AWS user certificate. Used for
    uploading the image to an S3 bucket.
    May also be supplied via the environment variable
    ``$AWS_CERTIFICATE``
-   *``required for S3 backing``*
--  **``private-key``**: Path to the AWS private key. Used for uploading
+   ``required for S3 backing``
+-  ``private-key``: Path to the AWS private key. Used for uploading
    the image to an S3 bucket.
    May also be supplied via the environment variable
    ``$AWS_PRIVATE_KEY``
-   *``required for S3 backing``*
--  **``user-id``**: AWS user ID. Used for uploading the image to an S3
+   ``required for S3 backing``
+-  ``user-id``: AWS user ID. Used for uploading the image to an S3
    bucket.
    May also be supplied via the environment variable ``$AWS_USER_ID``
-   *``required for S3 backing``*
+   ``required for S3 backing``
 
 Example:
 

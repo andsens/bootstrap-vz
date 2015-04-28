@@ -10,9 +10,9 @@ Settings
 ~~~~~~~~
 
 -  ``update_interval``: Days between running ``apt-get update``.
-   *``required``*
+   ``required``
 -  ``download_interval``: Days between running
    ``apt-get upgrade --download-only``
-   *``required``*
+   ``required``
 -  ``upgrade_interval``: Days between installing any security upgrades.
-   *``required``*
+   ``required``

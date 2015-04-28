@@ -9,4 +9,4 @@ username specified.
 Settings
 ~~~~~~~~
 
--  ``username``: The username of the account to create. *``required``*
+-  ``username``: The username of the account to create. ``required``

@@ -9,4 +9,4 @@ Settings
 
 -  ``servers``: A list of strings specifying which servers should be
    used to synchronize the machine clock.
-   *``optional``*
+   ``optional``

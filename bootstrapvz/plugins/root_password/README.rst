@@ -8,4 +8,4 @@ Settings
 ~~~~~~~~
 
 -  ``password``: The password for the root user.
-   *``required``*
+   ``required``

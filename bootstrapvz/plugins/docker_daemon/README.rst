@@ -15,4 +15,4 @@ Settings
 -  ``version``: Selects the docker version to install. To select the
    latest version simply omit this setting.
    Default: ``latest``
-   *``optional``*
+   ``optional``

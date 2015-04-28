@@ -15,5 +15,5 @@ Settings
    (to circumvent this, simply put the entire command in a single
    string). In addition to the manifest variables ``{root}`` is also
    available. It points at the root of the image volume.
-   *``required``*
-   *``manifest vars``*
+   ``required``
+   ``manifest vars``
