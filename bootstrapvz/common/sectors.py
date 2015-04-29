@@ -134,7 +134,7 @@ class Sectors(object):
 		if isinstance(other, (int, long)):
 			return Sectors(self.bytes / other, self.sector_size)
 		if isinstance(other, Sectors):
-			if self.sector_size != other.sector_size:
+			if self.sector_size == other.sector_size:
 				return self.bytes / other.bytes
 			else:
 				raise UnitError('Cannot divide sectors with different sector sizes')
