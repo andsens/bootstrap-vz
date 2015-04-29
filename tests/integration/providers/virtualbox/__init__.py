@@ -43,7 +43,7 @@ def boot_image(manifest, build_server, bootstrap_info):
 def run_instance(image, instance_name, manifest):
 	from instance import VirtualBoxInstance
 	instance = VirtualBoxInstance(image, instance_name,
-	                              manifest.system['architecture'], manifest.system['release'])
+	                              manifest.system['architecture'], manifest.release)
 	try:
 		instance.create()
 		try:

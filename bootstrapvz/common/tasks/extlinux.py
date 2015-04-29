@@ -27,7 +27,8 @@ class ConfigureExtlinux(Task):
 
 	@classmethod
 	def run(cls, info):
-		if info.release_codename == 'squeeze':
+		from bootstrapvz.common.releases import squeeze
+		if info.manifest.release == squeeze:
 			# On squeeze /etc/default/extlinux is generated when running extlinux-update
 			log_check_call(['chroot', info.root,
 			                'extlinux-update'])

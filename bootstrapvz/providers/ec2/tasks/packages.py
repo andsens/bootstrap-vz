@@ -12,7 +12,8 @@ class DefaultPackages(Task):
 	def run(cls, info):
 		info.packages.add('file')  # Needed for the init scripts
 		# isc-dhcp-client doesn't work properly with ec2
-		if info.release_codename in {'jessie', 'sid'}:
+		from bootstrapvz.common.releases import jessie
+		if info.manifest.release >= jessie:
 			info.packages.add('dhcpcd5')
 		else:
 			info.packages.add('dhcpcd')
@@ -23,6 +24,6 @@ class DefaultPackages(Task):
 		import os.path
 		kernel_packages_path = os.path.join(os.path.dirname(__file__), 'packages-kernels.yml')
 		from bootstrapvz.common.tools import config_get
-		kernel_package = config_get(kernel_packages_path, [info.release_codename,
+		kernel_package = config_get(kernel_packages_path, [info.manifest.release.codename,
 		                                                   info.manifest.system['architecture']])
 		info.packages.add(kernel_package)

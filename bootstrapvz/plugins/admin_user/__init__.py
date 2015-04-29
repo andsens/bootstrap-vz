@@ -13,8 +13,8 @@ def resolve_tasks(taskset, manifest):
 	if initd.AddEC2InitScripts in taskset:
 		taskset.add(tasks.AdminUserCredentials)
 
-	from bootstrapvz.common.tools import get_codename
-	if get_codename(manifest.system['release']) in ['wheezy', 'squeeze']:
+	from bootstrapvz.common.releases import jessie
+	if manifest.release < jessie:
 		taskset.update([ssh.DisableRootLogin])
 
 	taskset.update([tasks.AddSudoPackage,

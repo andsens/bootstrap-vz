@@ -31,9 +31,6 @@ class BootstrapInformation(object):
 		# The default apt mirror
 		self.apt_mirror = self.manifest.packages.get('mirror', 'http://http.debian.net/debian')
 
-		from bootstrapvz.common.tools import get_codename
-		self.release_codename = get_codename(self.manifest.system['release'])
-
 		# Create the manifest_vars dictionary
 		self.manifest_vars = self.__create_manifest_vars(self.manifest, {'apt_mirror': self.apt_mirror})
 

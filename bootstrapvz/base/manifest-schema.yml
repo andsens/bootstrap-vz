@@ -52,16 +52,7 @@ properties:
         type: string
         pattern: ^\S+$
       locale: {type: string}
-      release:
-        enum:
-        - squeeze
-        - wheezy
-        - jessie
-        - sid
-        - oldstable
-        - stable
-        - testing
-        - unstable
+      release: {type: string}
       timezone: {type: string}
     required:
     - release

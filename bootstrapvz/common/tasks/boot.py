@@ -34,9 +34,9 @@ class DisableGetTTYs(Task):
 
 	@classmethod
 	def run(cls, info):
-		# Forward compatible check for jessie,
-		# we should probably get some version numbers up in dis bitch
-		if info.release_codename in ['squeeze', 'wheezy']:
+		# Forward compatible check for jessie
+		from bootstrapvz.common.releases import jessie
+		if info.manifest.release < jessie:
 			from ..tools import sed_i
 			inittab_path = os.path.join(info.root, 'etc/inittab')
 			tty1 = '1:2345:respawn:/sbin/getty 38400 tty1'

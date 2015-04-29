@@ -15,7 +15,8 @@ class AddCloudInitPackages(Task):
 	@classmethod
 	def run(cls, info):
 		target = None
-		if info.release_codename == 'wheezy':
+		from bootstrapvz.common.releases import wheezy
+		if info.manifest.release == wheezy:
 			target = '{system.release}-backports'
 		info.packages.add('cloud-init', target)
 		info.packages.add('sudo')

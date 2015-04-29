@@ -118,15 +118,6 @@ def config_get(path, config_path):
 	return config
 
 
-def get_codename(release):
-	"""Normalizes the release codenames
-	This allows tasks to query for release codenames rather than 'stable', 'unstable' etc.
-	"""
-	release_codenames_path = os.path.join(os.path.dirname(__file__), 'release-codenames.yml')
-	from bootstrapvz.common.tools import config_get
-	return config_get(release_codenames_path, [release])
-
-
 def copy_tree(from_path, to_path):
 	from shutil import copy
 	for abs_prefix, dirs, files in os.walk(from_path):

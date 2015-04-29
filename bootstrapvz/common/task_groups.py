@@ -136,18 +136,18 @@ locale_group = [locale.LocaleBootstrapPackage,
 
 
 def get_bootloader_group(manifest):
-	from bootstrapvz.common.tools import get_codename
+	from bootstrapvz.common.releases import jessie
 	group = []
 	if manifest.system['bootloader'] == 'grub':
 		group.extend([grub.AddGrubPackage,
 		              grub.ConfigureGrub])
-		if get_codename(manifest.system['release']) in ['squeeze', 'wheezy']:
+		if manifest.release < jessie:
 			group.append(grub.InstallGrub_1_99)
 		else:
 			group.append(grub.InstallGrub_2)
 	if manifest.system['bootloader'] == 'extlinux':
 		group.append(extlinux.AddExtlinuxPackage)
-		if get_codename(manifest.system['release']) in ['squeeze', 'wheezy']:
+		if manifest.release < jessie:
 			group.extend([extlinux.ConfigureExtlinux,
 			              extlinux.InstallExtlinux])
 		else:

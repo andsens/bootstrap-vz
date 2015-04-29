@@ -24,12 +24,13 @@ class AddDefaultSources(Task):
 
 	@classmethod
 	def run(cls, info):
+		from bootstrapvz.common.releases import sid
 		include_src = info.manifest.packages.get('include-source-type', False)
 		components = ' '.join(info.manifest.packages.get('components', ['main']))
 		info.source_lists.add('main', 'deb     {apt_mirror} {system.release} ' + components)
 		if include_src:
 			info.source_lists.add('main', 'deb-src {apt_mirror} {system.release} ' + components)
-		if info.release_codename != 'sid':
+		if info.manifest.release != sid:
 			info.source_lists.add('main', 'deb     http://security.debian.org/  {system.release}/updates ' + components)
 			if include_src:
 				info.source_lists.add('main', 'deb-src http://security.debian.org/  {system.release}/updates ' + components)
@@ -45,10 +46,11 @@ class AddBackports(Task):
 
 	@classmethod
 	def run(cls, info):
+		from bootstrapvz.common.releases import sid
 		if info.source_lists.target_exists('{system.release}-backports'):
 			msg = ('{system.release}-backports target already exists').format(**info.manifest_vars)
 			logging.getLogger(__name__).info(msg)
-		elif info.release_codename == 'sid':
+		elif info.manifest.release == sid:
 			logging.getLogger(__name__).info('There are no backports for sid/unstable')
 		else:
 			info.source_lists.add('backports', 'deb     {apt_mirror} {system.release}-backports main')

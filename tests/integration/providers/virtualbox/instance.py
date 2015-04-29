@@ -63,8 +63,8 @@ class VirtualBoxInstance(object):
 		# Gotta figure out a more reliable way to check when the system is done booting.
 		# Maybe bootstrapped unit test images should have a startup script that issues
 		# a callback to the host.
-		from bootstrapvz.common.tools import get_codename
-		if get_codename(self.release) in ['squeeze', 'wheezy']:
+		from bootstrapvz.common.releases import wheezy
+		if self.release <= wheezy:
 			termination_string = 'INIT: Entering runlevel: 2'
 		else:
 			termination_string = 'Debian GNU/Linux'

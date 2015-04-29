@@ -79,8 +79,8 @@ def run_instance(image, manifest, instance_type, ec2_connection, vpc_connection)
 			if not waituntil(lambda: instance.get_console_output().output is not None, timeout=600, interval=3):
 				raise EC2InstanceStartupException('Timeout while fetching console output')
 
-			from bootstrapvz.common.tools import get_codename
-			if get_codename(manifest.system['release']) in ['squeeze', 'wheezy']:
+			from bootstrapvz.common.releases import wheezy
+			if manifest.release <= wheezy:
 				termination_string = 'INIT: Entering runlevel: 2'
 			else:
 				termination_string = 'Debian GNU/Linux'
