@@ -12,8 +12,11 @@ def resolve_tasks(taskset, manifest):
 	if initd.AddEC2InitScripts in taskset:
 		taskset.add(tasks.AdminUserCredentials)
 
+	from bootstrapvz.common.tools import get_codename
+	if get_codename(manifest.system['release']) in ['wheezy', 'squeeze']:
+		taskset.update([tasks.DisableRootLogin])
+
 	taskset.update([tasks.AddSudoPackage,
 	                tasks.CreateAdminUser,
 	                tasks.PasswordlessSudo,
-	                tasks.DisableRootLogin,
 	                ])
