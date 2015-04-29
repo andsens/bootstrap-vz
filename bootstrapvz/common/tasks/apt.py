@@ -46,11 +46,11 @@ class AddBackports(Task):
 
 	@classmethod
 	def run(cls, info):
-		from bootstrapvz.common.releases import sid
+		from bootstrapvz.common.releases import unstable
 		if info.source_lists.target_exists('{system.release}-backports'):
 			msg = ('{system.release}-backports target already exists').format(**info.manifest_vars)
 			logging.getLogger(__name__).info(msg)
-		elif info.manifest.release == sid:
+		elif info.manifest.release == unstable:
 			logging.getLogger(__name__).info('There are no backports for sid/unstable')
 		else:
 			info.source_lists.add('backports', 'deb     {apt_mirror} {system.release}-backports main')
