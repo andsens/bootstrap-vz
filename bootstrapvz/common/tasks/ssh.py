@@ -51,6 +51,17 @@ class DisableSSHPasswordAuthentication(Task):
 		sed_i(sshd_config_path, '^#PasswordAuthentication yes', 'PasswordAuthentication no')
 
 
+class PermitSSHRootLogin(Task):
+	description = 'Permitting SSH root login'
+	phase = phases.system_modification
+
+	@classmethod
+	def run(cls, info):
+		from ..tools import sed_i
+		sshd_config_path = os.path.join(info.root, 'etc/ssh/sshd_config')
+		sed_i(sshd_config_path, '^PermitRootLogin .*', 'PermitRootLogin yes')
+
+
 class DisableSSHDNSLookup(Task):
 	description = 'Disabling sshd remote host name lookup'
 	phase = phases.system_modification

@@ -10,4 +10,5 @@ def resolve_tasks(taskset, manifest):
 	from bootstrapvz.common.tasks import ssh
 	from tasks import SetRootPassword
 	taskset.discard(ssh.DisableSSHPasswordAuthentication)
+	taskset.add(ssh.PermitSSHRootLogin)
 	taskset.add(SetRootPassword)
