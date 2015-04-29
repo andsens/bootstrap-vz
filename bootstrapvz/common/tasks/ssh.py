@@ -51,15 +51,36 @@ class DisableSSHPasswordAuthentication(Task):
 		sed_i(sshd_config_path, '^#PasswordAuthentication yes', 'PasswordAuthentication no')
 
 
-class PermitSSHRootLogin(Task):
-	description = 'Permitting SSH root login'
+class EnableRootLogin(Task):
+	description = 'Disabling SSH login for root'
 	phase = phases.system_modification
 
 	@classmethod
 	def run(cls, info):
-		from ..tools import sed_i
-		sshd_config_path = os.path.join(info.root, 'etc/ssh/sshd_config')
-		sed_i(sshd_config_path, '^PermitRootLogin .*', 'PermitRootLogin yes')
+		sshdconfig_path = os.path.join(info.root, 'etc/ssh/sshd_config')
+		if os.path.exists(sshdconfig_path):
+			from bootstrapvz.common.tools import sed_i
+			sed_i(sshdconfig_path, 'PermitRootLogin .*', 'PermitRootLogin yes')
+		else:
+			import logging
+			logging.getLogger(__name__).warn('The OpenSSH server has not been installed, '
+			                                 'not enabling SSH root login.')
+
+
+class DisableRootLogin(Task):
+	description = 'Disabling SSH login for root'
+	phase = phases.system_modification
+
+	@classmethod
+	def run(cls, info):
+		sshdconfig_path = os.path.join(info.root, 'etc/ssh/sshd_config')
+		if os.path.exists(sshdconfig_path):
+			from bootstrapvz.common.tools import sed_i
+			sed_i(sshdconfig_path, 'PermitRootLogin .*', 'PermitRootLogin no')
+		else:
+			import logging
+			logging.getLogger(__name__).warn('The OpenSSH server has not been installed, '
+			                                 'not disabling SSH root login.')
 
 
 class DisableSSHDNSLookup(Task):

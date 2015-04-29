@@ -8,13 +8,14 @@ def validate_manifest(data, validator, error):
 
 def resolve_tasks(taskset, manifest):
 	import tasks
+	from bootstrapvz.common.tasks import ssh
 	from bootstrapvz.providers.ec2.tasks import initd
 	if initd.AddEC2InitScripts in taskset:
 		taskset.add(tasks.AdminUserCredentials)
 
 	from bootstrapvz.common.tools import get_codename
 	if get_codename(manifest.system['release']) in ['wheezy', 'squeeze']:
-		taskset.update([tasks.DisableRootLogin])
+		taskset.update([ssh.DisableRootLogin])
 
 	taskset.update([tasks.AddSudoPackage,
 	                tasks.CreateAdminUser,

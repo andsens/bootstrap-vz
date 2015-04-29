@@ -54,23 +54,3 @@ class AdminUserCredentials(Task):
 		getcreds_path = os.path.join(info.root, 'etc/init.d/ec2-get-credentials')
 		username = info.manifest.plugins['admin_user']['username']
 		sed_i(getcreds_path, 'username=\'root\'', 'username=\'{username}\''.format(username=username))
-
-
-class DisableRootLogin(Task):
-	description = 'Disabling SSH login for root'
-	phase = phases.system_modification
-
-	@classmethod
-	def run(cls, info):
-		from subprocess import CalledProcessError
-		from bootstrapvz.common.tools import log_check_call
-		try:
-			log_check_call(['chroot', info.root,
-			                'dpkg-query', '-W', 'openssh-server'])
-			from bootstrapvz.common.tools import sed_i
-			sshdconfig_path = os.path.join(info.root, 'etc/ssh/sshd_config')
-			sed_i(sshdconfig_path, 'PermitRootLogin yes', 'PermitRootLogin no')
-		except CalledProcessError:
-			import logging
-			logging.getLogger(__name__).warn('The OpenSSH server has not been installed, '
-			                                 'not disabling SSH root login.')
