@@ -1,6 +1,5 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
-from bootstrapvz.common.tasks import apt
 from bootstrapvz.common.tasks import kernel
 import os.path
 
@@ -23,7 +22,6 @@ class EnableDHCPCDDNS(Task):
 class AddBuildEssentialPackage(Task):
 	description = 'Adding build-essential package'
 	phase = phases.preparation
-	predecessors = [apt.AddDefaultSources]
 
 	@classmethod
 	def run(cls, info):

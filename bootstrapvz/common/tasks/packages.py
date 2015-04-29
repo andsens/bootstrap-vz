@@ -7,7 +7,6 @@ from ..tools import log_check_call
 class AddManifestPackages(Task):
 	description = 'Adding packages from the manifest'
 	phase = phases.preparation
-	predecessors = [apt.AddDefaultSources]
 
 	@classmethod
 	def run(cls, info):

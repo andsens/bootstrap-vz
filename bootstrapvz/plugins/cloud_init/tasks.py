@@ -10,7 +10,7 @@ import os.path
 class AddCloudInitPackages(Task):
 	description = 'Adding cloud-init package and sudo'
 	phase = phases.preparation
-	predecessors = [apt.AddDefaultSources, apt.AddBackports]
+	predecessors = [apt.AddBackports]
 
 	@classmethod
 	def run(cls, info):

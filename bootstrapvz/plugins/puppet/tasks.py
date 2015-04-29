@@ -1,6 +1,5 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
-from bootstrapvz.common.tasks import apt
 from bootstrapvz.common.tools import sed_i
 import os
 
@@ -40,7 +39,6 @@ class CheckManifestPath(Task):
 class AddPackages(Task):
 	description = 'Add puppet package'
 	phase = phases.preparation
-	predecessors = [apt.AddDefaultSources]
 
 	@classmethod
 	def run(cls, info):

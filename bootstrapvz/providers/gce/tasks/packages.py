@@ -8,7 +8,6 @@ import os
 class DefaultPackages(Task):
 	description = 'Adding image packages required for GCE'
 	phase = phases.preparation
-	predecessors = [apt.AddDefaultSources]
 
 	@classmethod
 	def run(cls, info):
@@ -32,7 +31,7 @@ class DefaultPackages(Task):
 class ReleasePackages(Task):
 	description = 'Adding release-specific packages required for GCE'
 	phase = phases.preparation
-	predecessors = [apt.AddDefaultSources, apt.AddBackports, DefaultPackages]
+	predecessors = [apt.AddBackports, DefaultPackages]
 
 	@classmethod
 	def run(cls, info):

@@ -1,7 +1,6 @@
 from bootstrapvz.base import Task
 from .. import phases
 from ..tools import log_check_call
-import apt
 import bootstrap
 import host
 import volume
@@ -51,7 +50,6 @@ class TuneVolumeFS(Task):
 class AddXFSProgs(Task):
 	description = 'Adding `xfsprogs\' to the image packages'
 	phase = phases.preparation
-	predecessors = [apt.AddDefaultSources]
 
 	@classmethod
 	def run(cls, info):

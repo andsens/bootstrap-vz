@@ -3,14 +3,12 @@ from .. import phases
 from ..tools import log_check_call
 import os.path
 from . import assets
-import apt
 import initd
 
 
 class AddOpenSSHPackage(Task):
 	description = 'Adding openssh package'
 	phase = phases.preparation
-	predecessors = [apt.AddDefaultSources]
 
 	@classmethod
 	def run(cls, info):

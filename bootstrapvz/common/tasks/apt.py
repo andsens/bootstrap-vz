@@ -87,6 +87,11 @@ class WriteSources(Task):
 
 	@classmethod
 	def run(cls, info):
+		if not info.source_lists.target_exists(info.manifest.system['release']):
+			import logging
+			log = logging.getLogger(__name__)
+			log.warn('No default target has been specified in the sources list, '
+			         'installing packages may fail')
 		for name, sources in info.source_lists.sources.iteritems():
 			if name == 'main':
 				list_path = os.path.join(info.root, 'etc/apt/sources.list')

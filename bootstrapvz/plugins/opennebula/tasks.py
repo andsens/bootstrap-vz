@@ -6,7 +6,7 @@ from bootstrapvz.common import phases
 class AddONEContextPackage(Task):
 	description = 'Adding the OpenNebula context package'
 	phase = phases.preparation
-	predecessors = [apt.AddDefaultSources, apt.AddBackports]
+	predecessors = [apt.AddBackports]
 
 	@classmethod
 	def run(cls, info):

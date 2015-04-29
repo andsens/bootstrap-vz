@@ -1,14 +1,12 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 from bootstrapvz.common.tasks.initd import InstallInitScripts
-from bootstrapvz.common.tasks import apt
 import os
 
 
 class AddSudoPackage(Task):
 	description = 'Adding `sudo\' to the image packages'
 	phase = phases.preparation
-	predecessors = [apt.AddDefaultSources]
 
 	@classmethod
 	def run(cls, info):

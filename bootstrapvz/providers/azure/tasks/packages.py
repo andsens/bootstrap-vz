@@ -1,13 +1,11 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
-from bootstrapvz.common.tasks import apt
 from bootstrapvz.common.tasks.packages import InstallPackages
 
 
 class DefaultPackages(Task):
 	description = 'Adding image packages required for Azure'
 	phase = phases.preparation
-	predecessors = [apt.AddDefaultSources]
 
 	@classmethod
 	def run(cls, info):

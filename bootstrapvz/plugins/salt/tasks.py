@@ -1,7 +1,6 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 from bootstrapvz.common.tasks import packages
-from bootstrapvz.common.tasks import apt
 from bootstrapvz.common.tools import log_check_call
 from bootstrapvz.common.tools import sed_i
 import os
@@ -11,7 +10,6 @@ import urllib
 class InstallSaltDependencies(Task):
 	description = 'Add depended packages for salt-minion'
 	phase = phases.preparation
-	predecessors = [apt.AddDefaultSources]
 
 	@classmethod
 	def run(cls, info):

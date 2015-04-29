@@ -1,7 +1,6 @@
 from bootstrapvz.base import Task
 from .. import phases
 from ..tools import log_check_call
-import apt
 import filesystem
 import kernel
 from bootstrapvz.base.fs import partitionmaps
@@ -11,7 +10,6 @@ import os
 class AddExtlinuxPackage(Task):
 	description = 'Adding extlinux package'
 	phase = phases.preparation
-	predecessors = [apt.AddDefaultSources]
 
 	@classmethod
 	def run(cls, info):

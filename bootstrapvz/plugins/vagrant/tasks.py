@@ -1,7 +1,6 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 from bootstrapvz.common.tasks import workspace
-from bootstrapvz.common.tasks import apt
 import os
 import shutil
 
@@ -39,7 +38,6 @@ class CreateVagrantBoxDir(Task):
 class AddPackages(Task):
 	description = 'Add packages that vagrant depends on'
 	phase = phases.preparation
-	predecessors = [apt.AddDefaultSources]
 
 	@classmethod
 	def run(cls, info):
