@@ -8,7 +8,6 @@ std_secsz = Bytes(512)
 
 
 def test_init_with_int():
-	eq_(4, abs(Sectors(4, std_secsz)))
 	secsize = 4096
 	eq_(Sectors('1MiB', secsize), Sectors(256, secsize))
 
