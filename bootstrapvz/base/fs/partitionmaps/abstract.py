@@ -37,7 +37,7 @@ class AbstractPartitionMap(FSMProxy):
 		"""Returns the total size the partitions occupy
 
 		:return: The size of all partitions
-		:rtype: Bytes
+		:rtype: Sectors
 		"""
 		# We just need the endpoint of the last partition
 		return self.partitions[-1].get_end()
@@ -74,6 +74,7 @@ class AbstractPartitionMap(FSMProxy):
 			                    '{device_path} (?P<blk_offset>\d+)$'
 			                    .format(device_path=volume.device_path))
 			log_check_call(['kpartx', '-as', volume.device_path])
+
 			import os.path
 			# Run through the kpartx output and map the paths to the partitions
 			for mapping in mappings:
@@ -87,15 +88,15 @@ class AbstractPartitionMap(FSMProxy):
 			# Check if any partition was not mapped
 			for idx, partition in enumerate(self.partitions):
 				if partition.fsm.current not in ['mapped', 'formatted']:
-					raise PartitionError('kpartx did not map partition #' + str(idx + 1))
+					raise PartitionError('kpartx did not map partition #' + str(partition.get_index()))
 
-		except PartitionError as e:
+		except PartitionError:
 			# Revert any mapping and reraise the error
 			for partition in self.partitions:
-				if not partition.fsm.can('unmap'):
+				if partition.fsm.can('unmap'):
 					partition.unmap()
 			log_check_call(['kpartx', '-ds', volume.device_path])
-			raise e
+			raise
 
 	def unmap(self, volume):
 		"""Unmaps the partition

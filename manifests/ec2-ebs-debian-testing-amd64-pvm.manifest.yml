@@ -1,36 +1,32 @@
 ---
-provider: "ec2"
-virtualization: "pvm"
-credentials:
-    access-key: ""
-    secret-key: ""
+provider:
+  name: ec2
+  virtualization: pvm
+  # credentials:
+  #   access-key: AFAKEACCESSKEYFORAWS
+  #   secret-key: thes3cr3tkeyf0ryourawsaccount/FS4d8Qdva
 bootstrapper:
-    workspace: "/target"
+  workspace: /target
 image:
-    name: "debian-{system.release}-{system.architecture}-{virtualization}-{%Y}-{%m}-{%d}-ebs"
-    description: "Debian {system.release} {system.architecture}"
+  name: debian-{system.release}-{system.architecture}-{provider.virtualization}-{%Y}-{%m}-{%d}-ebs
+  description: Debian {system.release} {system.architecture}
 system:
-    release: "testing"
-    architecture: "amd64"
-    bootloader: "pvgrub"
-    timezone: "UTC"
-    locale: "en_US"
-    charmap: "UTF-8"
-packages:
-    #mirror: "http://cloudfront.debian.net/debian"
-    install_standard: true
+  release: testing
+  architecture: amd64
+  bootloader: pvgrub
+  charmap: UTF-8
+  locale: en_US
+  timezone: UTC
 volume:
-    backing: "ebs"
-    partitions:
-        type: "none"
-        root:
-            size: "8GiB"
-            filesystem: "ext4"
+  backing: ebs
+  partitions:
+    type: none
+    root:
+      filesystem: ext4
+      size: 8GiB
+packages:
+  mirror: http://cloudfront.debian.net/debian
 plugins:
-    cloud_init:
-        username: "admin"
-        #metadata_sources: "Ec2"
-        disable_modules:
-            - "landscape"
-            - "byobu"
-            - "ssh-import-id"
+  cloud_init:
+    metadata_sources: Ec2
+    username: admin

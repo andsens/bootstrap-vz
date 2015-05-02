@@ -1,0 +1,29 @@
+---
+$schema: http://json-schema.org/draft-04/schema#
+title: Install Docker plugin manifest
+type: object
+properties:
+  system:
+    type: object
+    properties:
+      architecture:
+        type: string
+        enum: [amd64]
+      release:
+        not:
+          type: string
+          enum:
+          - squeeze
+          - oldstable
+  plugins:
+    type: object
+    properties:
+      docker_daemon:
+        type: object
+        properties:
+          version:
+            pattern: '^\d\.\d{1,2}\.\d$'
+            type: string
+          docker_opts:
+            type: string
+        additionalProperties: false

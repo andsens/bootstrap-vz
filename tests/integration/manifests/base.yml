@@ -1,0 +1,15 @@
+---
+provider: {}
+bootstrapper:
+  workspace: /target
+  tarball: true
+image:
+  name: deb-{system.release}-{system.architecture}-{system.bootloader}-{volume.partitions.type}-{%y}{%m}{%d}
+  description: Debian {system.release} {system.architecture}
+system:
+  charmap: UTF-8
+  locale: en_US
+  timezone: UTC
+volume:
+  partitions: {}
+packages: {}

@@ -11,8 +11,10 @@ import tasks.initd
 from bootstrapvz.common.tasks import volume
 from bootstrapvz.common.tasks import filesystem
 from bootstrapvz.common.tasks import boot
+from bootstrapvz.common.tasks import grub
 from bootstrapvz.common.tasks import initd
 from bootstrapvz.common.tasks import loopback
+from bootstrapvz.common.tasks import kernel
 
 
 def initialize():
@@ -23,7 +25,7 @@ def initialize():
 
 def validate_manifest(data, validator, error):
 	import os.path
-	validator(data, os.path.join(os.path.dirname(__file__), 'manifest-schema.json'))
+	validator(data, os.path.join(os.path.dirname(__file__), 'manifest-schema.yml'))
 
 	from bootstrapvz.common.bytes import Bytes
 	if data['volume']['backing'] == 'ebs':
@@ -31,32 +33,29 @@ def validate_manifest(data, validator, error):
 		for key, partition in data['volume']['partitions'].iteritems():
 			if key != 'type':
 				volume_size += Bytes(partition['size'])
-		if volume_size % Bytes('1GiB') != 0:
+		if int(volume_size % Bytes('1GiB')) != 0:
 			msg = ('The volume size must be a multiple of 1GiB when using EBS backing')
 			error(msg, ['volume', 'partitions'])
 	else:
-		validator(data, os.path.join(os.path.dirname(__file__), 'manifest-schema-s3.json'))
+		validator(data, os.path.join(os.path.dirname(__file__), 'manifest-schema-s3.yml'))
 
 	bootloader = data['system']['bootloader']
-	virtualization = data['virtualization']
+	virtualization = data['provider']['virtualization']
 	backing = data['volume']['backing']
 	partition_type = data['volume']['partitions']['type']
+	enhanced_networking = data['provider']['enhanced_networking'] if 'enhanced_networking' in data['provider'] else None
 
 	if virtualization == 'pvm' and bootloader != 'pvgrub':
 		error('Paravirtualized AMIs only support pvgrub as a bootloader', ['system', 'bootloader'])
 
-	if virtualization == 'hvm':
-		if backing != 'ebs':
+	if backing != 'ebs' and virtualization == 'hvm':
 			error('HVM AMIs currently only work when they are EBS backed', ['volume', 'backing'])
-		if bootloader != 'extlinux':
-			error('HVM AMIs currently only work with extlinux as a bootloader', ['system', 'bootloader'])
-		if bootloader == 'extlinux' and partition_type not in ['none', 'msdos']:
-			error('HVM AMIs booted with extlinux currently work with unpartitioned or msdos partitions volumes',
-			      ['volume', 'partitions', 'type'])
 
-	if backing == 's3':
-		if partition_type != 'none':
+	if backing == 's3' and partition_type != 'none':
 			error('S3 backed AMIs currently only work with unpartitioned volumes', ['system', 'bootloader'])
+
+	if enhanced_networking == 'simple' and virtualization != 'hvm':
+			error('Enhanced networking only works with HVM virtualization', ['provider', 'virtualization'])
 
 
 def resolve_tasks(taskset, manifest):
@@ -84,7 +83,7 @@ def resolve_tasks(taskset, manifest):
 		taskset.add(initd.AdjustExpandRootScript)
 
 	if manifest.system['bootloader'] == 'pvgrub':
-		taskset.add(boot.AddGrubPackage)
+		taskset.add(grub.AddGrubPackage)
 		taskset.add(tasks.boot.ConfigurePVGrub)
 
 	if manifest.volume['backing'].lower() == 'ebs':
@@ -105,6 +104,11 @@ def resolve_tasks(taskset, manifest):
 		                tasks.ami.RemoveBundle,
 		                ])
 		taskset.discard(filesystem.FStab)
+
+	if manifest.provider.get('enhanced_networking', None) == 'simple':
+		taskset.update([kernel.AddDKMSPackages,
+		                tasks.network.InstallEnhancedNetworking,
+		                kernel.UpdateInitramfs])
 
 	taskset.update([filesystem.Format,
 	                volume.Delete,

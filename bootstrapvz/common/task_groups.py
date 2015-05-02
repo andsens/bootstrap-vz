@@ -1,7 +1,8 @@
 from tasks import workspace
 from tasks import packages
 from tasks import host
-from tasks import boot
+from tasks import grub
+from tasks import extlinux
 from tasks import bootstrap
 from tasks import volume
 from tasks import loopback
@@ -14,6 +15,7 @@ from tasks import locale
 from tasks import network
 from tasks import initd
 from tasks import ssh
+from tasks import kernel
 
 
 def get_standard_groups(manifest):
@@ -25,12 +27,13 @@ def get_standard_groups(manifest):
 	if 'boot' in manifest.volume['partitions']:
 		group.extend(boot_partition_group)
 	group.extend(mounting_group)
+	group.extend(kernel_group)
 	group.extend(get_fs_specific_group(manifest))
 	group.extend(get_network_group(manifest))
 	group.extend(get_apt_group(manifest))
 	group.extend(security_group)
 	group.extend(locale_group)
-	group.extend(bootloader_group.get(manifest.system['bootloader'], []))
+	group.extend(get_bootloader_group(manifest))
 	group.extend(cleanup_group)
 	return group
 
@@ -71,9 +74,15 @@ boot_partition_group = [filesystem.CreateBootMountDir,
 mounting_group = [filesystem.CreateMountDir,
                   filesystem.MountRoot,
                   filesystem.MountSpecials,
+                  filesystem.CopyMountTable,
+                  filesystem.RemoveMountTable,
                   filesystem.UnmountRoot,
                   filesystem.DeleteMountDir,
                   ]
+
+kernel_group = [kernel.DetermineKernelVersion,
+                kernel.UpdateInitramfs,
+                ]
 
 ssh_group = [ssh.AddOpenSSHPackage,
              ssh.DisableSSHPasswordAuthentication,
@@ -126,9 +135,25 @@ locale_group = [locale.LocaleBootstrapPackage,
                 ]
 
 
-bootloader_group = {'grub':     [boot.AddGrubPackage, boot.ConfigureGrub, boot.InstallGrub],
-                    'extlinux': [boot.AddExtlinuxPackage, boot.InstallExtLinux],
-                    }
+def get_bootloader_group(manifest):
+	from bootstrapvz.common.releases import jessie
+	group = []
+	if manifest.system['bootloader'] == 'grub':
+		group.extend([grub.AddGrubPackage,
+		              grub.ConfigureGrub])
+		if manifest.release < jessie:
+			group.append(grub.InstallGrub_1_99)
+		else:
+			group.append(grub.InstallGrub_2)
+	if manifest.system['bootloader'] == 'extlinux':
+		group.append(extlinux.AddExtlinuxPackage)
+		if manifest.release < jessie:
+			group.extend([extlinux.ConfigureExtlinux,
+			              extlinux.InstallExtlinux])
+		else:
+			group.extend([extlinux.ConfigureExtlinuxJessie,
+			              extlinux.InstallExtlinuxJessie])
+	return group
 
 
 def get_fs_specific_group(manifest):

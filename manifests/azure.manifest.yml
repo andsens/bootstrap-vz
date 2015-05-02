@@ -1,0 +1,33 @@
+---
+provider:
+  name: azure
+  waagent:
+    version: 2.0.4
+bootstrapper:
+  mirror: http://ftp.fr.debian.org/debian/
+  workspace: /target
+image:
+  name: debian-{system.release}-{system.architecture}-{%y}{%m}{%d}
+  description: Debian {system.release} {system.architecture}
+system:
+  release: wheezy
+  architecture: amd64
+  bootloader: grub
+  charmap: UTF-8
+  locale: en_US
+  timezone: UTC
+volume:
+  backing: raw
+  partitions:
+    type: msdos
+    boot:
+      filesystem: ext2
+      size: 32MiB
+    root:
+      filesystem: ext4
+      size: 7GiB
+packages: {}
+plugins:
+  ntp:
+    servers:
+    - time.windows.com

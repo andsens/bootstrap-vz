@@ -1,0 +1,33 @@
+---
+provider:
+  name: gce
+bootstrapper:
+  workspace: /target
+image:
+  name: disk
+  description: Debian {system.release} {system.architecture}
+system:
+  release: wheezy
+  architecture: amd64
+  bootloader: grub
+  charmap: UTF-8
+  locale: en_US
+  timezone: UTC
+volume:
+  backing: raw
+  partitions:
+    type: msdos
+    root:
+      filesystem: ext4
+      size: 10GiB
+packages:
+  mirror: http://gce_debian_mirror.storage.googleapis.com/
+  components:
+  - main
+  - contrib
+  - non-free
+plugins:
+  google_cloud_sdk: {}
+  ntp:
+    servers:
+    - metadata.google.internal

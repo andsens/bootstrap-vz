@@ -1,0 +1,67 @@
+---
+$schema: http://json-schema.org/draft-04/schema#
+title: Build server settings list
+type: object
+properties:
+  local:
+    type: object
+    properties:
+      type: {enum: [local]}
+      can_bootstrap: {$ref: '#/definitions/can_bootstrap'}
+      release: {type: string}
+      build_settings: {$ref: '#/definitions/build_settings'}
+    required: [type, can_bootstrap, release]
+patternProperties:
+  ^(?!local).*$: {$ref: '#/definitions/ssh'}
+
+definitions:
+  absolute_path:
+    type: string
+    pattern: ^/[^\0]+$
+
+  can_bootstrap:
+    type: array
+    items:
+      enum:
+      - virtualbox
+      - ec2-ebs
+      - ec2-s3
+
+  build_settings:
+    type: object
+    properties:
+      guest_additions: {$ref: '#/definitions/absolute_path'}
+      ec2-credentials:
+        required: [access-key, secret-key]
+        type: object
+        properties:
+          access-key: {type: string}
+          secret-key: {type: string}
+          certificate: {type: string}
+          private-key: {type: string}
+          user-id:
+            type: string
+            pattern: (^arn:aws:iam::\d*:user/\w.*$)|(^\d{4}-\d{4}-\d{4}$)
+        additional_properties: false
+      apt_proxy:
+        type: object
+        properties:
+          address: {type: string}
+          port: {type: integer}
+          persistent: {type: boolean}
+        required: [address, port]
+
+  ssh:
+    type: object
+    properties:
+      type: {enum: [ssh]}
+      can_bootstrap: {$ref: '#/definitions/can_bootstrap'}
+      build_settings: {$ref: '#/definitions/build_settings'}
+      release: {type: string}
+      address: {type: string}
+      port: {type: integer}
+      username: {type: string}
+      password: {type: string}
+      keyfile: {$ref: '#/definitions/absolute_path'}
+      server_bin: {$ref: '#/definitions/absolute_path'}
+    required: [type, can_bootstrap, release]

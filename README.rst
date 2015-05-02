@@ -1,0 +1,153 @@
+bootstrap-vz
+============
+
+bootstrap-vz is a bootstrapping framework for Debian that creates ready-to-boot
+images able to run on a number of cloud providers and virtual machines.
+bootstrap-vz runs without any user intervention and
+generates ready-to-boot images for a number of virtualization
+platforms.
+Its aim is to provide a reproducable bootstrapping process using
+`manifests <manifests>`__
+as well as supporting a high degree of customizability through plugins.
+
+bootstrap-vz was coded from scratch in python once the bash script
+architecture that was used in the
+`build-debian-cloud <https://github.com/andsens/build-debian-cloud>`__
+bootstrapper reached its limits.
+
+Documentation
+-------------
+
+The documentation for bootstrap-vz is available at
+`bootstrap-vz.readthedocs.org <http://bootstrap-vz.readthedocs.org/en/master>`__.
+There, you can discover `what the dependencies <#dependencies>`__ for
+a specific cloud provider are, `see a list of available plugins <bootstrapvz/plugins>`__
+and learn `how you create a manifest <manifests>`__.
+
+Note to developers: `The documentaion <docs>`__ is generated in
+a rather peculiar and nifty way.
+
+Installation
+------------
+
+bootstrap-vz has a master branch for stable releases and a development
+for, well, development.
+
+After checking out the branch of your choice you can install the
+python dependencies by running ``python setup.py install``. However,
+depending on what kind of image you'd like to bootstrap, there are
+other debian package dependencies as well, at the very least you will
+need ``debootstrap``.
+`The documentation <http://bootstrap-vz.readthedocs.org/en/master>`__
+explains this in more detail.
+
+Note that bootstrap-vz will tell you which tools it requires when they
+aren't present (the different packages are mentioned in the error
+message), so you can simply run bootstrap-vz once to get a list of the
+packages, install them, and then re-run.
+
+Quick start
+-----------
+
+Here are a few quickstart tutorials for the most common images.
+If you plan on partitioning your volume, you will need the ``parted``
+package and ``kpartx``:
+
+.. code:: sh
+
+    root@host:~# apt-get install parted kpartx
+
+Note that you can always abort a bootstrapping process by pressing
+``Ctrl+C``, bootstrap-vz will then initiate a cleanup/rollback process,
+where volumes are detached/deleted and temporary files removed, pressing
+``Ctrl+C`` a second time shortcuts that procedure, halts the cleanup and
+quits the process.
+
+VirtualBox Vagrant
+~~~~~~~~~~~~~~~~~~
+
+.. code:: sh
+
+    user@host:~$ sudo -i # become root
+    root@host:~# git clone https://github.com/andsens/bootstrap-vz.git # Clone the repo
+    root@host:~# apt-get install qemu-utils debootstrap python-pip # Install dependencies from aptitude
+    root@host:~# pip install termcolor jsonschema fysom docopt pyyaml # Install python dependencies
+    root@host:~# bootstrap-vz/bootstrap-vz bootstrap-vz/manifests/virtualbox-vagrant.manifest.yml
+
+If you want to use the `minimize\_size <bootstrapvz/plugins/minimize_size>`__ plugin,
+you will have to install the ``zerofree`` package and `VMWare Workstation`__ as well.
+
+__ https://my.vmware.com/web/vmware/info/slug/desktop_end_user_computing/vmware_workstation/10_0
+
+Amazon EC2 EBS backed AMI
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: sh
+
+    user@host:~$ sudo -i # become root
+    root@host:~# git clone https://github.com/andsens/bootstrap-vz.git # Clone the repo
+    root@host:~# apt-get install debootstrap python-pip # Install dependencies from aptitude
+    root@host:~# pip install termcolor jsonschema fysom docopt pyyaml boto # Install python dependencies
+    root@host:~# bootstrap-vz/bootstrap-vz bootstrap-vz/manifests/ec2-ebs-debian-official-amd64-pvm.manifest.yml
+
+To bootstrap S3 backed AMIs, bootstrap-vz will also need the
+``euca2ools`` package. However, version 3.2.0 is required meaning you
+must however install it directly from the eucalyptus repository like
+this:
+
+.. code:: sh
+
+    apt-get install --no-install-recommends python-dev libxml2-dev libxslt-dev gcc
+    pip install git+git://github.com/eucalyptus/euca2ools.git@v3.2.0
+
+Cleanup
+-------
+
+bootstrap-vz tries very hard to clean up after itself both if a run was
+successful but also if it failed. This ensures that you are not left
+with volumes still attached to the host which are useless. If an error
+occurred you can simply correct the problem that caused it and rerun
+everything, there will be no leftovers from the previous run (as always
+there are of course rare/unlikely exceptions to that rule). The error
+messages should always give you a strong hint at what is wrong, if that
+is not the case please consider `opening an issue`__ and attach
+both the error message and your manifest (preferably as a gist or
+similar).
+
+__ https://github.com/andsens/bootstrap-vz/issues
+
+Dependencies
+------------
+
+bootstrap-vz has a number of dependencies depending on the target
+platform and `the selected plugins <bootstrapvz/plugins>`__.
+At a bare minimum the following python libraries are needed:
+
+* `termcolor <https://pypi.python.org/pypi/termcolor>`__
+* `fysom <https://pypi.python.org/pypi/fysom>`__
+* `jsonschema <https://pypi.python.org/pypi/jsonschema>`__
+* `docopt <https://pypi.python.org/pypi/docopt>`__
+* `pyyaml <https://pypi.python.org/pypi/pyyaml>`__
+
+To bootstrap Debian itself `debootstrap`__ is needed as well.
+
+__ https://packages.debian.org/wheezy/debootstrap
+
+Any other requirements are dependent upon the manifest configuration
+and are detailed in the corresponding sections of the documentation.
+bootstrap-vz will however warn you if a requirement has not been met,
+before the bootstrapping process begins.
+
+Developers
+----------
+
+The API documentation, development guidelines and an explanation of
+bootstrap-vz internals can be found at `bootstrap-vz.readthedocs.org`__.
+
+__ http://bootstrap-vz.readthedocs.org/en/master/developers
+
+Contributing
+------------
+
+Contribution guidelines are described in the documentation under `Contributing <CONTRIBUTING.rst>`__.
+There's also a topic regarding `the coding style <CONTRIBUTING.rst#coding-style>`__.

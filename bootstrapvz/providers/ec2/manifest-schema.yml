@@ -1,0 +1,52 @@
+---
+$schema: http://json-schema.org/draft-04/schema#
+title: EC2 manifest
+type: object
+properties:
+  image:
+    type: object
+    properties:
+      description: {type: string}
+  provider:
+    type: object
+    properties:
+      credentials:
+        type: object
+        properties:
+          access-key: {type: string}
+          secret-key: {type: string}
+      virtualization:
+        enum:
+        - pvm
+        - hvm
+      enhanced_networking:
+        enum:
+        - none
+        - simple
+    required: [virtualization]
+  system:
+    type: object
+    properties:
+      bootloader:
+        type: string
+        enum:
+        - pvgrub
+        - grub
+        - extlinux
+  volume:
+    type: object
+    properties:
+      backing:
+        enum:
+        - ebs
+        - s3
+      partitions:
+        type: object
+        properties:
+          type:
+            enum:
+            - none
+            - msdos
+            - gpt
+    required: [backing]
+required: [image]

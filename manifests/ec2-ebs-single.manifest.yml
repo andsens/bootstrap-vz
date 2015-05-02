@@ -1,0 +1,28 @@
+---
+provider:
+  name: ec2
+  virtualization: pvm
+  # credentials:
+  #   access-key: AFAKEACCESSKEYFORAWS
+  #   secret-key: thes3cr3tkeyf0ryourawsaccount/FS4d8Qdva
+bootstrapper:
+  workspace: /target
+image:
+  name: debian-{system.release}-{system.architecture}-{provider.virtualization}-{%y}{%m}{%d}
+  description: Debian {system.release} {system.architecture} AMI ({provider.virtualization})
+system:
+  release: wheezy
+  architecture: amd64
+  bootloader: pvgrub
+  charmap: UTF-8
+  locale: en_US
+  timezone: UTC
+volume:
+  backing: ebs
+  partitions:
+    type: none
+    root:
+      filesystem: ext4
+      size: 1GiB
+packages:
+  mirror: http://cloudfront.debian.net/debian

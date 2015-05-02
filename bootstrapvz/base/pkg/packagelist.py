@@ -87,12 +87,10 @@ class PackageList(object):
 			# The package has already been added, skip the checks below
 			return
 
-		# Check if the target exists in the sources list, raise a PackageError if not
-		check_target = target
-		if check_target is None:
-			check_target = self.default_target
-		if not self.source_lists.target_exists(check_target):
-			msg = ('The target release {target} was not found in the sources list').format(target=check_target)
+		# Check if the target exists (unless it's the default target) in the sources list
+		# raise a PackageError if does not
+		if target not in (None, self.default_target) and not self.source_lists.target_exists(target):
+			msg = ('The target release {target} was not found in the sources list').format(target=target)
 			raise PackageError(msg)
 
 		# Note that we maintain the target value even if it is none.

@@ -19,7 +19,8 @@ class AddRequiredCommands(Task):
 
 def get_bootstrap_args(info):
 	executable = ['debootstrap']
-	options = ['--arch=' + info.manifest.system['architecture']]
+	arch = info.manifest.system.get('userspace_architecture', info.manifest.system.get('architecture'))
+	options = ['--arch=' + arch]
 	if len(info.include_packages) > 0:
 		options.append('--include=' + ','.join(info.include_packages))
 	if len(info.exclude_packages) > 0:
@@ -79,7 +80,6 @@ class Bootstrap(Task):
 class IncludePackagesInBootstrap(Task):
 	description = 'Add packages in the bootstrap phase'
 	phase = phases.preparation
-	successors = [Bootstrap]
 
 	@classmethod
 	def run(cls, info):
@@ -91,7 +91,6 @@ class IncludePackagesInBootstrap(Task):
 class ExcludePackagesInBootstrap(Task):
 	description = 'Remove packages from bootstrap phase'
 	phase = phases.preparation
-	successors = [Bootstrap]
 
 	@classmethod
 	def run(cls, info):

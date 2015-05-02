@@ -13,7 +13,7 @@ def initialize():
 
 def validate_manifest(data, validator, error):
 	import os.path
-	schema_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'manifest-schema.json'))
+	schema_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'manifest-schema.yml'))
 	validator(data, schema_path)
 
 
@@ -21,6 +21,7 @@ def resolve_tasks(taskset, manifest):
 	taskset.update(task_groups.get_standard_groups(manifest))
 
 	taskset.update([tasks.packages.DefaultPackages,
+	                loopback.AddRequiredCommands,
 	                loopback.Create,
 	                initd.InstallInitScripts,
 	                ssh.AddOpenSSHPackage,

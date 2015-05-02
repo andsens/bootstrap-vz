@@ -1,0 +1,20 @@
+---
+$schema: http://json-schema.org/draft-04/schema#
+title: EC2-launch plugin manifest
+type: object
+properties:
+  plugins:
+    type: object
+    properties:
+      ec2_launch:
+        type: object
+        properties:
+          security_group_ids:
+            type: array
+            items: {type: string}
+            uniqueItems: true
+          instance_type: {type: string}
+          print_public_ip: {type: string}
+          tags: {type: object}
+          deregister_ami: {type: boolean}
+        additionalProperties: false

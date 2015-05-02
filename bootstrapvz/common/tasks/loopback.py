@@ -12,12 +12,12 @@ class AddRequiredCommands(Task):
 	@classmethod
 	def run(cls, info):
 		from ..fs.loopbackvolume import LoopbackVolume
-		if isinstance(info.volume, LoopbackVolume):
-			info.host_dependencies['qemu-img'] = 'qemu-utils'
-			info.host_dependencies['losetup'] = 'mount'
 		from ..fs.qemuvolume import QEMUVolume
-		if isinstance(info.volume, QEMUVolume):
+		if type(info.volume) is LoopbackVolume:
 			info.host_dependencies['losetup'] = 'mount'
+			info.host_dependencies['truncate'] = 'coreutils'
+		if isinstance(info.volume, QEMUVolume):
+			info.host_dependencies['qemu-img'] = 'qemu-utils'
 
 
 class Create(Task):
@@ -45,6 +45,7 @@ class MoveImage(Task):
 		destination = os.path.join(info.manifest.bootstrapper['workspace'], filename)
 		import shutil
 		shutil.move(info.volume.image_path, destination)
+		info.volume.image_path = destination
 		import logging
 		log = logging.getLogger(__name__)
 		log.info('The volume image has been moved to ' + destination)

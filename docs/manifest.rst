@@ -1,0 +1,1 @@
+.. include:: ../manifests/README.rst

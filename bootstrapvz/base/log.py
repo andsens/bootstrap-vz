@@ -4,6 +4,50 @@ both to a file and to the console.
 import logging
 
 
+def get_console_handler(debug, colorize):
+	"""Returns a log handler for the console
+	The handler color codes the different log levels
+
+	:params bool debug: Whether to set the log level to DEBUG (otherwise INFO)
+	:params bool colorize: Whether to colorize console output
+	:return: The console logging handler
+	"""
+	# Create a console log handler
+	import sys
+	console_handler = logging.StreamHandler(sys.stderr)
+	if colorize:
+		# We want to colorize the output to the console, so we add a formatter
+		console_handler.setFormatter(ColorFormatter())
+	# Set the log level depending on the debug argument
+	if debug:
+		console_handler.setLevel(logging.DEBUG)
+	else:
+		console_handler.setLevel(logging.INFO)
+	return console_handler
+
+
+def get_file_handler(path, debug):
+	"""Returns a log handler for the given path
+	If the parent directory of the logpath does not exist it will be created
+	The handler outputs relative timestamps (to when it was created)
+
+	:params str path: The full path to the logfile
+	:params bool debug: Whether to set the log level to DEBUG (otherwise INFO)
+	:return: The file logging handler
+	"""
+	import os.path
+	if not os.path.exists(os.path.dirname(path)):
+		os.makedirs(os.path.dirname(path))
+	# Create the log handler
+	file_handler = logging.FileHandler(path)
+	# Absolute timestamps are rather useless when bootstrapping, it's much more interesting
+	# to see how long things take, so we log in a relative format instead
+	file_handler.setFormatter(FileFormatter('[%(relativeCreated)s] %(levelname)s: %(message)s'))
+	# The file log handler always logs everything
+	file_handler.setLevel(logging.DEBUG)
+	return file_handler
+
+
 def get_log_filename(manifest_path):
 	"""Returns the path to a logfile given a manifest
 	The logfile name is constructed from the current timestamp and the basename of the manifest
@@ -22,42 +66,23 @@ def get_log_filename(manifest_path):
 	return filename
 
 
-def setup_logger(logfile=None, debug=False):
-	"""Sets up the python logger to log to both a file and the console
-
-	:param str logfile: Path to a logfile
-	:param bool debug: Whether to log debug output to the console
+class SourceFormatter(logging.Formatter):
+	"""Adds a [source] tag to the log message if it exists
+	The python docs suggest using a LoggingAdapter, but that would mean we'd
+	have to use it everywhere we log something (and only when called remotely),
+	which is not feasible.
 	"""
-	root = logging.getLogger()
-	# Make sure all logging statements are processed by our handlers, they decide the log level
-	root.setLevel(logging.NOTSET)
 
-	# Only enable logging to file if a destination was supplied
-	if logfile is not None:
-		# Create a file log handler
-		file_handler = logging.FileHandler(logfile)
-		# Absolute timestamps are rather useless when bootstrapping, it's much more interesting
-		# to see how long things take, so we log in a relative format instead
-		file_handler.setFormatter(FileFormatter('[%(relativeCreated)s] %(levelname)s: %(message)s'))
-		# The file log handler always logs everything
-		file_handler.setLevel(logging.DEBUG)
-		root.addHandler(file_handler)
-
-	# Create a console log handler
-	import sys
-	console_handler = logging.StreamHandler(sys.stderr)
-	# We want to colorize the output to the console, so we add a formatter
-	console_handler.setFormatter(ConsoleFormatter())
-	# Set the log level depending on the debug argument
-	if debug:
-		console_handler.setLevel(logging.DEBUG)
-	else:
-		console_handler.setLevel(logging.INFO)
-	root.addHandler(console_handler)
+	def format(self, record):
+		extra = getattr(record, 'extra', {})
+		if 'source' in extra:
+			record.msg = '[{source}] {message}'.format(source=record.extra['source'],
+			                                           message=record.msg)
+		return super(SourceFormatter, self).format(record)
 
 
-class ConsoleFormatter(logging.Formatter):
-	"""Formats log statements for the console
+class ColorFormatter(SourceFormatter):
+	"""Colorizes log messages depending on the loglevel
 	"""
 	level_colors = {logging.ERROR: 'red',
 	                logging.WARNING: 'magenta',
@@ -65,14 +90,13 @@ class ConsoleFormatter(logging.Formatter):
 	                }
 
 	def format(self, record):
-		if(record.levelno in self.level_colors):
-			# Colorize the message if we have a color for it (DEBUG has no color)
-			from termcolor import colored
-			record.msg = colored(record.msg, self.level_colors[record.levelno])
-		return super(ConsoleFormatter, self).format(record)
+		# Colorize the message if we have a color for it (DEBUG has no color)
+		from termcolor import colored
+		record.msg = colored(record.msg, self.level_colors.get(record.levelno, None))
+		return super(ColorFormatter, self).format(record)
 
 
-class FileFormatter(logging.Formatter):
+class FileFormatter(SourceFormatter):
 	"""Formats log statements for output to file
 	Currently this is just a stub
 	"""

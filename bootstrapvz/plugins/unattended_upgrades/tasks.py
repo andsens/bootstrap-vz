@@ -1,12 +1,10 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
-from bootstrapvz.common.tasks import apt
 
 
 class AddUnattendedUpgradesPackage(Task):
 	description = 'Adding `unattended-upgrades\' to the image packages'
 	phase = phases.preparation
-	predecessors = [apt.AddDefaultSources]
 
 	@classmethod
 	def run(cls, info):

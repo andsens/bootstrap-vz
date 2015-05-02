@@ -9,8 +9,7 @@ class SinglePartition(AbstractPartition):
 		"""Gets the starting byte of this partition
 
 		:return: The starting byte of this partition
-		:rtype: Bytes
+		:rtype: Sectors
 		"""
-		from bootstrapvz.common.bytes import Bytes
-		# On an unpartitioned volume there is no offset and no previous partition
-		return Bytes(0)
+		from bootstrapvz.common.sectors import Sectors
+		return Sectors(0, self.size.sector_size)

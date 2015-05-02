@@ -1,7 +1,6 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 from bootstrapvz.common.tasks import workspace
-from bootstrapvz.common.tasks import apt
 import os
 import shutil
 
@@ -39,7 +38,6 @@ class CreateVagrantBoxDir(Task):
 class AddPackages(Task):
 	description = 'Add packages that vagrant depends on'
 	phase = phases.preparation
-	predecessors = [apt.AddDefaultSources]
 
 	@classmethod
 	def run(cls, info):
@@ -144,8 +142,7 @@ class PackageBox(Task):
 		box_files = os.listdir(info._vagrant['folder'])
 		log_check_call(['tar', '--create', '--gzip', '--dereference',
 		                '--file', info._vagrant['box_path'],
-		                '--directory', info._vagrant['folder']]
-		               + box_files
+		                '--directory', info._vagrant['folder']] + box_files
 		               )
 		import logging
 		logging.getLogger(__name__).info('The vagrant box has been placed at ' + info._vagrant['box_path'])
@@ -185,12 +182,23 @@ class PackageBox(Task):
 		# VHDURI = "http://go.microsoft.com/fwlink/?LinkId=137171"
 		volume_uuid = info.volume.get_uuid()
 		[disk] = root.findall('./ovf:DiskSection/ovf:Disk', namespaces)
-		attr(disk, 'ovf:capacity', info.volume.size.get_qty_in('B'))
+		attr(disk, 'ovf:capacity', info.volume.size.bytes.get_qty_in('B'))
 		attr(disk, 'ovf:format', info.volume.ovf_uri)
-		attr(disk, 'ovf:uuid', volume_uuid)
+		attr(disk, 'vbox:uuid', volume_uuid)
 
 		[system] = root.findall('./ovf:VirtualSystem', namespaces)
 		attr(system, 'ovf:id', info._vagrant['box_name'])
+
+		# Set the operating system
+		[os_section] = system.findall('./ovf:OperatingSystemSection', namespaces)
+		os_info = {'i386': {'id': 96, 'name': 'Debian'},
+		           'amd64': {'id': 96, 'name': 'Debian_64'}
+		           }.get(info.manifest.system['architecture'])
+		attr(os_section, 'ovf:id', os_info['id'])
+		[os_desc] = os_section.findall('./ovf:Description', namespaces)
+		os_desc.text = os_info['name']
+		[os_type] = os_section.findall('./vbox:OSType', namespaces)
+		os_type.text = os_info['name']
 
 		[sysid] = system.findall('./ovf:VirtualHardwareSection/ovf:System/'
 		                         'vssd:VirtualSystemIdentifier', namespaces)
@@ -208,7 +216,7 @@ class PackageBox(Task):
 		[device_img] = machine.findall('./ovf:StorageControllers'
 		                               '/ovf:StorageController[@name="SATA Controller"]'
 		                               '/ovf:AttachedDevice/ovf:Image', namespaces)
-		attr(device_img, 'ovf:uuid', '{' + str(volume_uuid) + '}')
+		attr(device_img, 'uuid', '{' + str(volume_uuid) + '}')
 
 		template.write(destination, xml_declaration=True)  # , default_namespace=namespaces['ovf']
 

@@ -65,11 +65,12 @@ class Volume(FSMProxy):
 
 	def _before_link_dm_node(self, e):
 		"""Links the volume using the device mapper
-		This allows us to create a 'window' into the volume that acts like a volum in itself.
+		This allows us to create a 'window' into the volume that acts like a volume in itself.
 		Mainly it is used to fool grub into thinking that it is working with a real volume,
 		rather than a loopback device or a network block device.
 
 		:param _e_obj e: Event object containing arguments to create()
+
 		Keyword arguments to link_dm_node() are:
 
 		:param int logical_start_sector: The sector the volume should start at in the new volume
@@ -94,9 +95,9 @@ class Volume(FSMProxy):
 		start_sector = getattr(e, 'start_sector', 0)
 
 		# The number of sectors that should be mapped
-		sectors = getattr(e, 'sectors', int(self.size / 512) - start_sector)
+		sectors = getattr(e, 'sectors', int(self.size) - start_sector)
 
-		# This is the table  we send to dmsetup, so that it may create a decie mapping for us.
+		# This is the table we send to dmsetup, so that it may create a device mapping for us.
 		table = ('{log_start_sec} {sectors} linear {major}:{minor} {start_sec}'
 		         .format(log_start_sec=logical_start_sector,
 		                 sectors=sectors,

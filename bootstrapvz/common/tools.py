@@ -1,12 +1,20 @@
-def log_check_call(command, stdin=None, env=None, shell=False):
-	status, stdout, stderr = log_call(command, stdin, env, shell)
+import os
+
+
+def log_check_call(command, stdin=None, env=None, shell=False, cwd=None):
+	status, stdout, stderr = log_call(command, stdin, env, shell, cwd)
+	from subprocess import CalledProcessError
 	if status != 0:
-		from subprocess import CalledProcessError
-		raise CalledProcessError(status, ' '.join(command), '\n'.join(stderr))
+		e = CalledProcessError(status, ' '.join(command), '\n'.join(stderr))
+		# Fix Pyro4's fixIronPythonExceptionForPickle() by setting the args property,
+		# even though we use our own serialization (at least I think that's the problem).
+		# See bootstrapvz.remote.serialize_called_process_error for more info.
+		setattr(e, 'args', (status, ' '.join(command), '\n'.join(stderr)))
+		raise e
 	return stdout
 
 
-def log_call(command, stdin=None, env=None, shell=False):
+def log_call(command, stdin=None, env=None, shell=False, cwd=None):
 	import subprocess
 	import logging
 	from multiprocessing.dummy import Pool as ThreadPool
@@ -14,9 +22,12 @@ def log_call(command, stdin=None, env=None, shell=False):
 
 	command_log = realpath(command[0]).replace('/', '.')
 	log = logging.getLogger(__name__ + command_log)
-	log.debug('Executing: {command}'.format(command=' '.join(command)))
+	if type(command) is list:
+		log.debug('Executing: {command}'.format(command=' '.join(command)))
+	else:
+		log.debug('Executing: {command}'.format(command=command))
 
-	process = subprocess.Popen(args=command, env=env, shell=shell,
+	process = subprocess.Popen(args=command, env=env, shell=shell, cwd=cwd,
 	                           stdin=subprocess.PIPE,
 	                           stdout=subprocess.PIPE,
 	                           stderr=subprocess.PIPE)
@@ -53,11 +64,26 @@ def log_call(command, stdin=None, env=None, shell=False):
 	return process.returncode, stdout, stderr
 
 
-def sed_i(file_path, pattern, subst):
+def sed_i(file_path, pattern, subst, expected_replacements=1):
+	replacement_count = inline_replace(file_path, pattern, subst)
+	if replacement_count != expected_replacements:
+		from exceptions import UnexpectedNumMatchesError
+		msg = ('There were {real} instead of {expected} matches for '
+		       'the expression `{exp}\' in the file `{path}\''
+		       .format(real=replacement_count, expected=expected_replacements,
+		               exp=pattern, path=file_path))
+		raise UnexpectedNumMatchesError(msg)
+
+
+def inline_replace(file_path, pattern, subst):
 	import fileinput
 	import re
+	replacement_count = 0
 	for line in fileinput.input(files=file_path, inplace=True):
-		print re.sub(pattern, subst, line),
+		(replacement, count) = re.subn(pattern, subst, line)
+		replacement_count += count
+		print replacement,
+	return replacement_count
 
 
 def load_json(path):
@@ -69,12 +95,24 @@ def load_json(path):
 
 def load_yaml(path):
 	import yaml
-	with open(path, 'r') as fobj:
-		return yaml.safe_load(fobj)
+	with open(path, 'r') as stream:
+		return yaml.safe_load(stream)
+
+
+def load_data(path):
+	filename, extension = os.path.splitext(path)
+	if not os.path.isfile(path):
+		raise Exception('The path {path} does not point to a file.'.format(path=path))
+	if extension == '.json':
+		return load_json(path)
+	elif extension == '.yml' or extension == '.yaml':
+		return load_yaml(path)
+	else:
+		raise Exception('Unrecognized extension: {ext}'.format(ext=extension))
 
 
 def config_get(path, config_path):
-	config = load_json(path)
+	config = load_data(path)
 	for key in config_path:
 		config = config.get(key)
 	return config
@@ -82,7 +120,6 @@ def config_get(path, config_path):
 
 def copy_tree(from_path, to_path):
 	from shutil import copy
-	import os
 	for abs_prefix, dirs, files in os.walk(from_path):
 		prefix = os.path.normpath(os.path.relpath(abs_prefix, from_path))
 		for path in dirs:

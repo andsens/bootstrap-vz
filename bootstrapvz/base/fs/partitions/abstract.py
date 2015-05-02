@@ -1,6 +1,6 @@
 from abc import ABCMeta
 from abc import abstractmethod
-import os.path
+from bootstrapvz.common.sectors import Sectors
 from bootstrapvz.common.tools import log_check_call
 from bootstrapvz.common.fsm_proxy import FSMProxy
 
@@ -19,42 +19,6 @@ class AbstractPartition(FSMProxy):
 	          {'name': 'unmount', 'src': 'mounted', 'dst': 'formatted'},
 	          ]
 
-	class Mount(object):
-		"""Represents a mount into the partition
-		"""
-		def __init__(self, source, destination, opts):
-			"""
-			:param str,AbstractPartition source: The path from where we mount or a partition
-			:param str destination: The path of the mountpoint
-			:param list opts: List of options to pass to the mount command
-			"""
-			self.source      = source
-			self.destination = destination
-			self.opts        = opts
-
-		def mount(self, prefix):
-			"""Performs the mount operation or forwards it to another partition
-
-			:param str prefix: Path prefix of the mountpoint
-			"""
-			mount_dir = os.path.join(prefix, self.destination)
-			# If the source is another partition, we tell that partition to mount itself
-			if isinstance(self.source, AbstractPartition):
-				self.source.mount(destination=mount_dir)
-			else:
-				log_check_call(['mount'] + self.opts + [self.source, mount_dir])
-			self.mount_dir = mount_dir
-
-		def unmount(self):
-			"""Performs the unmount operation or asks the partition to unmount itself
-			"""
-			# If its a partition, it can unmount itself
-			if isinstance(self.source, AbstractPartition):
-				self.source.unmount()
-			else:
-				log_check_call(['umount', self.mount_dir])
-			del self.mount_dir
-
 	def __init__(self, size, filesystem, format_command):
 		"""
 		:param Bytes size: Size of the partition
@@ -64,6 +28,9 @@ class AbstractPartition(FSMProxy):
 		self.size           = size
 		self.filesystem     = filesystem
 		self.format_command = format_command
+		# Initialize the start & end padding to 0 sectors, may be changed later
+		self.pad_start = Sectors(0, size.sector_size)
+		self.pad_end = Sectors(0, size.sector_size)
 		# Path to the partition
 		self.device_path    = None
 		# Dictionary with mount points as keys and Mount objects as values
@@ -90,9 +57,9 @@ class AbstractPartition(FSMProxy):
 		"""Gets the end of the partition
 
 		:return: The end of the partition
-		:rtype: Bytes
+		:rtype: Sectors
 		"""
-		return self.get_start() + self.size
+		return self.get_start() + self.pad_start + self.size + self.pad_end
 
 	def _before_format(self, e):
 		"""Formats the partition
@@ -143,7 +110,8 @@ class AbstractPartition(FSMProxy):
 		:param list opts: Any options that should be passed to the mount command
 		"""
 		# Create a new mount object, mount it if the partition is mounted and put it in the mounts dict
-		mount = self.Mount(source, destination, opts)
+		from mount import Mount
+		mount = Mount(source, destination, opts)
 		if self.fsm.current == 'mounted':
 			mount.mount(self.mount_dir)
 		self.mounts[destination] = mount

@@ -1,0 +1,32 @@
+---
+provider:
+  name: virtualbox
+  guest_additions: /root/images/VBoxGuestAdditions.iso
+bootstrapper:
+  workspace: /target
+image:
+  name: debian-{system.release}-{system.architecture}-{%y}{%m}{%d}
+  description: Debian {system.release} {system.architecture}
+system:
+  release: wheezy
+  architecture: amd64
+  bootloader: grub
+  charmap: UTF-8
+  hostname: localhost
+  locale: en_US
+  timezone: UTC
+volume:
+  backing: vmdk
+  partitions:
+    type: msdos
+    boot:
+      filesystem: ext2
+      size: 64MiB
+    root:
+      filesystem: ext4
+      size: 1856MiB
+    swap:
+      size: 128MiB
+packages: {}
+plugins:
+  vagrant: {}

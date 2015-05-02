@@ -1,7 +1,8 @@
 from bootstrapvz.base import Task
-from .. import phases
-from ..tools import log_check_call
+from bootstrapvz.common import phases
+from bootstrapvz.common.tools import log_check_call
 import locale
+import logging
 import os
 
 
@@ -23,14 +24,37 @@ class AddDefaultSources(Task):
 
 	@classmethod
 	def run(cls, info):
+		from bootstrapvz.common.releases import sid
+		include_src = info.manifest.packages.get('include-source-type', False)
 		components = ' '.join(info.manifest.packages.get('components', ['main']))
 		info.source_lists.add('main', 'deb     {apt_mirror} {system.release} ' + components)
-		info.source_lists.add('main', 'deb-src {apt_mirror} {system.release} ' + components)
-		if info.release_codename != 'sid':
+		if include_src:
+			info.source_lists.add('main', 'deb-src {apt_mirror} {system.release} ' + components)
+		if info.manifest.release != sid:
 			info.source_lists.add('main', 'deb     http://security.debian.org/  {system.release}/updates ' + components)
-			info.source_lists.add('main', 'deb-src http://security.debian.org/  {system.release}/updates ' + components)
+			if include_src:
+				info.source_lists.add('main', 'deb-src http://security.debian.org/  {system.release}/updates ' + components)
 			info.source_lists.add('main', 'deb     {apt_mirror} {system.release}-updates ' + components)
-			info.source_lists.add('main', 'deb-src {apt_mirror} {system.release}-updates ' + components)
+			if include_src:
+				info.source_lists.add('main', 'deb-src {apt_mirror} {system.release}-updates ' + components)
+
+
+class AddBackports(Task):
+	description = 'Adding backports to the apt sources'
+	phase = phases.preparation
+	predecessors = [AddDefaultSources]
+
+	@classmethod
+	def run(cls, info):
+		from bootstrapvz.common.releases import unstable
+		if info.source_lists.target_exists('{system.release}-backports'):
+			msg = ('{system.release}-backports target already exists').format(**info.manifest_vars)
+			logging.getLogger(__name__).info(msg)
+		elif info.manifest.release == unstable:
+			logging.getLogger(__name__).info('There are no backports for sid/unstable')
+		else:
+			info.source_lists.add('backports', 'deb     {apt_mirror} {system.release}-backports main')
+			info.source_lists.add('backports', 'deb-src {apt_mirror} {system.release}-backports main')
 
 
 class AddManifestPreferences(Task):
@@ -63,6 +87,11 @@ class WriteSources(Task):
 
 	@classmethod
 	def run(cls, info):
+		if not info.source_lists.target_exists(info.manifest.system['release']):
+			import logging
+			log = logging.getLogger(__name__)
+			log.warn('No default target has been specified in the sources list, '
+			         'installing packages may fail')
 		for name, sources in info.source_lists.sources.iteritems():
 			if name == 'main':
 				list_path = os.path.join(info.root, 'etc/apt/sources.list')
@@ -137,12 +166,11 @@ class AptUpgrade(Task):
 			                           '--assume-yes'])
 		except CalledProcessError as e:
 			if e.returncode == 100:
-				import logging
 				msg = ('apt exited with status code 100. '
 				       'This can sometimes occur when package retrieval times out or a package extraction failed. '
 				       'apt might succeed if you try bootstrapping again.')
 				logging.getLogger(__name__).warn(msg)
-			raise e
+			raise
 
 
 class PurgeUnusedPackages(Task):
@@ -153,7 +181,8 @@ class PurgeUnusedPackages(Task):
 	def run(cls, info):
 		log_check_call(['chroot', info.root,
 		                'apt-get', 'autoremove',
-		                           '--purge'])
+		                           '--purge',
+		                           '--assume-yes'])
 
 
 class AptClean(Task):

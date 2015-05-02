@@ -8,7 +8,7 @@ class QEMUVolume(LoopbackVolume):
 
 	def _before_create(self, e):
 		self.image_path = e.image_path
-		vol_size = str(self.size.get_qty_in('MiB')) + 'M'
+		vol_size = str(self.size.bytes.get_qty_in('MiB')) + 'M'
 		log_check_call(['qemu-img', 'create', '-f', self.qemu_format, self.image_path, vol_size])
 
 	def _check_nbd_module(self):
@@ -23,7 +23,8 @@ class QEMUVolume(LoopbackVolume):
 			num_partitions = len(self.partition_map.partitions)
 			if not self._module_loaded('nbd'):
 				msg = ('The kernel module `nbd\' must be loaded '
-				       '(`modprobe nbd max_part={num_partitions}\') to attach .{extension} images'
+				       '(run `modprobe nbd max_part={num_partitions}\') '
+				       'to attach .{extension} images'
 				       .format(num_partitions=num_partitions, extension=self.extension))
 				raise VolumeError(msg)
 			nbd_max_part = int(self._module_param('nbd', 'max_part'))
@@ -76,3 +77,7 @@ class QEMUVolume(LoopbackVolume):
 			if not self._is_nbd_used(device_name):
 				return os.path.join('/dev', device_name)
 		raise VolumeError('Unable to find free nbd device.')
+
+	def __setstate__(self, state):
+		for key in state:
+			self.__dict__[key] = state[key]

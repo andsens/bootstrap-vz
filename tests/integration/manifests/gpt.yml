@@ -1,0 +1,4 @@
+---
+volume:
+  partitions:
+    type: gpt

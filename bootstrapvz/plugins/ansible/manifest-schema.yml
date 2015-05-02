@@ -1,0 +1,29 @@
+---
+$schema: http://json-schema.org/draft-04/schema#
+title: Ansible plugin manifest
+type: object
+properties:
+  plugins:
+    type: object
+    properties:
+      ansible:
+        type: object
+        properties:
+          extra_vars: {type: string}
+          tags: {type: string}
+          skip_tags: {type: string}
+          opt_flags:
+            type: array
+            flag: {type: string}
+            minItems: 1
+          hosts:
+            type: array
+            host: {type: string}
+            minItems: 1
+          playbook: {$ref: '#/definitions/absolute_path'}
+        required: [playbook]
+        additionalProperties: false
+definitions:
+  absolute_path:
+    pattern: ^/[^\0]+$
+    type: string

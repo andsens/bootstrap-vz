@@ -31,12 +31,6 @@ class BootstrapInformation(object):
 		# The default apt mirror
 		self.apt_mirror = self.manifest.packages.get('mirror', 'http://http.debian.net/debian')
 
-		# Normalize the release codenames so that tasks may query for release codenames rather than
-		# 'stable', 'unstable' etc. This is useful when handling cases that are specific to a release.
-		release_codenames_path = os.path.join(os.path.dirname(__file__), 'release-codenames.json')
-		from bootstrapvz.common.tools import config_get
-		self.release_codename = config_get(release_codenames_path, [self.manifest.system['release']])
-
 		# Create the manifest_vars dictionary
 		self.manifest_vars = self.__create_manifest_vars(self.manifest, {'apt_mirror': self.apt_mirror})
 
@@ -81,17 +75,6 @@ class BootstrapInformation(object):
 		:return: The manifest_vars dictionary
 		:rtype: dict
 		"""
-		class DictClass(dict):
-			"""Tiny extension of dict to allow setting and getting keys via attributes
-			"""
-			def __getattr__(self, name):
-				return self[name]
-
-			def __setattr__(self, name, value):
-				self[name] = value
-
-			def __delattr__(self, name):
-				del self[name]
 
 		def set_manifest_vars(obj, data):
 			"""Runs through the manifest and creates DictClasses for every key
@@ -127,3 +110,47 @@ class BootstrapInformation(object):
 		# They are added last so that they may override previous variables
 		set_manifest_vars(manifest_vars, additional_vars)
 		return manifest_vars
+
+	def __getstate__(self):
+		from bootstrapvz.remote import supported_classes
+
+		def can_serialize(obj):
+			if hasattr(obj, '__class__') and hasattr(obj, '__module__'):
+				class_name = obj.__module__ + '.' + obj.__class__.__name__
+				return class_name in supported_classes or isinstance(obj, (BaseException, Exception))
+			return True
+
+		def filter_state(state):
+			if isinstance(state, dict):
+				return {key: filter_state(val) for key, val in state.items() if can_serialize(val)}
+			if isinstance(state, (set, tuple, list, frozenset)):
+				return type(state)(filter_state(val) for val in state if can_serialize(val))
+			return state
+
+		state = filter_state(self.__dict__)
+		state['__class__'] = self.__module__ + '.' + self.__class__.__name__
+		return state
+
+	def __setstate__(self, state):
+		for key in state:
+			self.__dict__[key] = state[key]
+
+
+class DictClass(dict):
+	"""Tiny extension of dict to allow setting and getting keys via attributes
+	"""
+	def __getattr__(self, name):
+		return self[name]
+
+	def __setattr__(self, name, value):
+		self[name] = value
+
+	def __delattr__(self, name):
+		del self[name]
+
+	def __getstate__(self):
+		return self.__dict__
+
+	def __setstate__(self, state):
+		for key in state:
+			self[key] = state[key]

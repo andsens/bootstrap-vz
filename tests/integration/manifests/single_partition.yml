@@ -1,0 +1,6 @@
+---
+volume:
+  partitions:
+    root:
+      filesystem: ext4
+      size: 1GiB

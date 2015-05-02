@@ -15,7 +15,7 @@ from bootstrapvz.common.tasks import partitioning
 
 def validate_manifest(data, validator, error):
 	import os.path
-	schema_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'manifest-schema.json'))
+	schema_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'manifest-schema.yml'))
 	validator(data, schema_path)
 
 
@@ -37,13 +37,13 @@ def resolve_tasks(taskset, manifest):
 	              guest_additions.InstallGuestAdditions,
 	              ]
 	if manifest.volume['backing'] == 'ebs':
-		if 'snapshot' in settings and settings['snapshot'] is not None:
+		if settings.get('snapshot', None) is not None:
 			taskset.add(CreateFromSnapshot)
 			[taskset.discard(task) for task in skip_tasks]
 		else:
 			taskset.add(Snapshot)
 	else:
-		if 'image' in settings and settings['image'] is not None:
+		if settings.get('image', None) is not None:
 			taskset.add(CreateFromImage)
 			[taskset.discard(task) for task in skip_tasks]
 		else:

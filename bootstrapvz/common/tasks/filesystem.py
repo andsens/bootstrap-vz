@@ -1,7 +1,6 @@
 from bootstrapvz.base import Task
 from .. import phases
 from ..tools import log_check_call
-import apt
 import bootstrap
 import host
 import volume
@@ -26,8 +25,9 @@ class Format(Task):
 	def run(cls, info):
 		from bootstrapvz.base.fs.partitions.unformatted import UnformattedPartition
 		for partition in info.volume.partition_map.partitions:
-			if not isinstance(partition, UnformattedPartition):
-				partition.format()
+			if isinstance(partition, UnformattedPartition):
+				continue
+			partition.format()
 
 
 class TuneVolumeFS(Task):
@@ -41,15 +41,15 @@ class TuneVolumeFS(Task):
 		import re
 		# Disable the time based filesystem check
 		for partition in info.volume.partition_map.partitions:
-			if not isinstance(partition, UnformattedPartition):
-				if re.match('^ext[2-4]$', partition.filesystem) is not None:
-					log_check_call(['tune2fs', '-i', '0', partition.device_path])
+			if isinstance(partition, UnformattedPartition):
+				continue
+			if re.match('^ext[2-4]$', partition.filesystem) is not None:
+				log_check_call(['tune2fs', '-i', '0', partition.device_path])
 
 
 class AddXFSProgs(Task):
 	description = 'Adding `xfsprogs\' to the image packages'
 	phase = phases.preparation
-	predecessors = [apt.AddDefaultSources]
 
 	@classmethod
 	def run(cls, info):
@@ -113,6 +113,18 @@ class MountSpecials(Task):
 		root.add_mount('none', 'dev/pts', ['--types', 'devpts'])
 
 
+class CopyMountTable(Task):
+	description = 'Copying mtab from host system'
+	phase = phases.os_installation
+	predecessors = [MountSpecials]
+
+	@classmethod
+	def run(cls, info):
+		import shutil
+		import os.path
+		shutil.copy('/proc/mounts', os.path.join(info.root, 'etc/mtab'))
+
+
 class UnmountRoot(Task):
 	description = 'Unmounting the bootstrap volume'
 	phase = phases.volume_unmounting
@@ -121,6 +133,17 @@ class UnmountRoot(Task):
 	@classmethod
 	def run(cls, info):
 		info.volume.partition_map.root.unmount()
+
+
+class RemoveMountTable(Task):
+	description = 'Removing mtab'
+	phase = phases.volume_unmounting
+	successors = [UnmountRoot]
+
+	@classmethod
+	def run(cls, info):
+		import os
+		os.remove(os.path.join(info.root, 'etc/mtab'))
 
 
 class DeleteMountDir(Task):

@@ -1,7 +1,5 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
-from bootstrapvz.common.tasks import apt
-from bootstrapvz.common.tasks import network
 from bootstrapvz.common.tools import sed_i
 import os
 
@@ -41,7 +39,6 @@ class CheckManifestPath(Task):
 class AddPackages(Task):
 	description = 'Add puppet package'
 	phase = phases.preparation
-	predecessors = [apt.AddDefaultSources]
 
 	@classmethod
 	def run(cls, info):
@@ -60,9 +57,8 @@ class CopyPuppetAssets(Task):
 
 class ApplyPuppetManifest(Task):
 	description = 'Applying puppet manifest'
-	phase = phases.system_modification
+	phase = phases.user_modification
 	predecessors = [CopyPuppetAssets]
-	successors = [network.RemoveHostname, network.RemoveDNSInfo]
 
 	@classmethod
 	def run(cls, info):

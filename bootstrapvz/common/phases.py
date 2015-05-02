@@ -7,6 +7,7 @@ volume_mounting = Phase('Volume mounting', 'Mounting bootstrap volume')
 os_installation = Phase('OS installation', 'Installing the operating system')
 package_installation = Phase('Package installation', 'Installing software')
 system_modification = Phase('System modification', 'Modifying configuration files, adding resources, etc.')
+user_modification = Phase('User modification', 'Running user specified modifications')
 system_cleaning = Phase('System cleaning', 'Removing sensitive data, temporary files and other leftovers')
 volume_unmounting = Phase('Volume unmounting', 'Unmounting the bootstrap volume')
 image_registration = Phase('Image registration', 'Uploading/Registering with the provider')
@@ -19,6 +20,7 @@ order = [preparation,
          os_installation,
          package_installation,
          system_modification,
+         user_modification,
          system_cleaning,
          volume_unmounting,
          image_registration,

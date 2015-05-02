@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <Envelope ovf:version="1.0" xml:lang="en-US" xmlns="http://schemas.dmtf.org/ovf/envelope/1" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData" xmlns:vssd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:vbox="http://www.virtualbox.org/ovf/machine">
   <References>
-    <File ovf:href="[disk_name]" ovf:id="file1"/>
+    <File ovf:href="[DISK_NAME]" ovf:id="file1"/>
   </References>
   <DiskSection>
     <Info>List of the virtual disks used in the package</Info>
@@ -15,10 +15,10 @@
   </NetworkSection>
   <VirtualSystem ovf:id="[BOXNAME]">
     <Info>A virtual machine</Info>
-    <OperatingSystemSection ovf:id="96">
+    <OperatingSystemSection ovf:id="[OS_ID]">
       <Info>The kind of installed guest operating system</Info>
-      <Description>Debian_64</Description>
-      <vbox:OSType ovf:required="false">Debian_64</vbox:OSType>
+      <Description>[OS_DESCRIPTION]</Description>
+      <vbox:OSType ovf:required="false">[OS_TYPE]</vbox:OSType>
     </OperatingSystemSection>
     <VirtualHardwareSection>
       <Info>Virtual hardware requirements for a virtual machine</Info>

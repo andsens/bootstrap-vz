@@ -1,0 +1,40 @@
+---
+provider:
+  name: ec2
+  virtualization: pvm
+  # credentials:
+  #   access-key:  AFAKEACCESSKEYFORAWS
+  #   secret-key:  thes3cr3tkeyf0ryourawsaccount/FS4d8Qdva
+  #   certificate: /path/to/your/certificate.pem
+  #   private-key: /path/to/your/private.key
+  #   user-id:     arn:aws:iam::123456789012:user/iamuser
+bootstrapper:
+  workspace: /target
+image:
+  name: debian-{system.release}-{system.architecture}-{provider.virtualization}-{%Y}-{%m}-{%d}
+  description: Debian {system.release} {system.architecture} AMI
+  bucket: debian-amis-cn-north-1
+  region: cn-north-1
+system:
+  release: wheezy
+  architecture: amd64
+  bootloader: pvgrub
+  charmap: UTF-8
+  locale: en_US
+  timezone: UTC
+volume:
+  backing: s3
+  partitions:
+    type: none
+    root:
+      filesystem: ext4
+      size: 4GiB
+packages:
+  mirror: http://ftp.cn.debian.org/debian
+plugins:
+  cloud_init:
+    disable_modules:
+    - landscape
+    - byobu
+    - ssh-import-id
+    username: admin

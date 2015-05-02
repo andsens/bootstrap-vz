@@ -44,8 +44,9 @@ class RemoveHWClock(Task):
 
 	@classmethod
 	def run(cls, info):
+		from bootstrapvz.common.releases import squeeze
 		info.initd['disable'].append('hwclock.sh')
-		if info.manifest.system['release'] == 'squeeze':
+		if info.manifest.release == squeeze:
 			info.initd['disable'].append('hwclockfirst.sh')
 
 
@@ -61,4 +62,4 @@ class AdjustExpandRootScript(Task):
 		script = os.path.join(info.root, 'etc/init.d/expand-root')
 		root_idx = info.volume.partition_map.root.get_index()
 		device_path = 'device_path="/dev/xvda{idx}"'.format(idx=root_idx)
-		sed_i(script, '^device_path="/dev/xvda$', device_path)
+		sed_i(script, '^device_path="/dev/xvda"$', device_path)

@@ -7,7 +7,6 @@ from ..tools import log_check_call
 class AddManifestPackages(Task):
 	description = 'Adding packages from the manifest'
 	phase = phases.preparation
-	predecessors = [apt.AddDefaultSources]
 
 	@classmethod
 	def run(cls, info):
@@ -49,8 +48,8 @@ class InstallPackages(Task):
 			log_check_call(['chroot', info.root,
 			                'apt-get', 'install',
 			                           '--no-install-recommends',
-			                           '--assume-yes']
-			               + map(str, remote_packages),
+			                           '--assume-yes'] +
+			               map(str, remote_packages),
 			               env=env)
 		except CalledProcessError as e:
 			import logging
@@ -70,7 +69,7 @@ class InstallPackages(Task):
 					       'This can sometimes occur when package retrieval times out or a package extraction failed. '
 					       'apt might succeed if you try bootstrapping again.')
 					logging.getLogger(__name__).warn(msg)
-			raise e
+			raise
 
 	@classmethod
 	def install_local(cls, info, local_packages):
@@ -91,8 +90,7 @@ class InstallPackages(Task):
 		env = os.environ.copy()
 		env['DEBIAN_FRONTEND'] = 'noninteractive'
 		log_check_call(['chroot', info.root,
-		                'dpkg', '--install']
-		               + chrooted_package_paths,
+		                'dpkg', '--install'] + chrooted_package_paths,
 		               env=env)
 
 		for path in absolute_package_paths:

@@ -2,8 +2,8 @@
 to determine which tasks should be added to the tasklist, what arguments various
 invocations should have etc..
 """
-from bootstrapvz.common.tools import load_json
-from bootstrapvz.common.tools import load_yaml
+from bootstrapvz.common.exceptions import ManifestError
+from bootstrapvz.common.tools import load_data
 import logging
 log = logging.getLogger(__name__)
 
@@ -15,31 +15,47 @@ class Manifest(object):
 	Currently, immutability is not enforced and it would require a fair amount of code
 	to enforce it, instead we just rely on tasks behaving properly.
 	"""
-	def __init__(self, path):
-		"""Initializer: Given a path we load, validate and parse the manifest.
 
-		:param str path: The path to the manifest
+	def __init__(self, path=None, data=None):
+		"""Initializer: Given a path we load, validate and parse the manifest.
+		To create the manifest from dynamic data instead of the contents of a file,
+		provide a properly constructed dict as the data argument.
+
+		:param str path: The path to the manifest (ignored, when `data' is provided)
+		:param str data: The manifest data, if it is not None, it will be used instead of the contents of `path'
 		"""
+		if path is None and data is None:
+			raise ManifestError('`path\' or `data\' must be provided')
 		self.path = path
-		self.load()
+		self.load(data)
+		self.initialize()
 		self.validate()
 		self.parse()
 
-	def load(self):
-		"""Loads the manifest.
-		This function not only reads the manifest but also loads the specified provider and plugins.
-		Once they are loaded, the initialize() function is called on each of them (if it exists).
+	def load(self, data=None):
+		"""Loads the manifest and performs a basic validation.
+		This function reads the manifest and performs some basic validation of
+		the manifest itself to ensure that the properties required for initalization are accessible
+		(otherwise the user would be presented with some cryptic error messages).
+		"""
+		if data is None:
+			self.data = load_data(self.path)
+		else:
+			self.data = data
+
+		from . import validate_manifest
+		# Validate the manifest with the base validation function in __init__
+		validate_manifest(self.data, self.schema_validator, self.validation_error)
+
+	def initialize(self):
+		"""Initializes the provider and the plugins.
+		This function loads the specified provider and plugins.
+		Once the provider and plugins are loaded,
+		the initialize() function is called on each of them (if it exists).
 		The provider must have an initialize function.
 		"""
-		# Load the manifest JSON using the loader in common.tools
-		# It strips comments (which are invalid in strict json) before loading the data.
-		if self.path.endswith('.json'):
-			self.data = load_json(self.path)
-		elif self.path.endswith('.yml') or self.path.endswith('.yaml'):
-			self.data = load_yaml(self.path)
-
 		# Get the provider name from the manifest and load the corresponding module
-		provider_modname = 'bootstrapvz.providers.' + self.data['provider']
+		provider_modname = 'bootstrapvz.providers.' + self.data['provider']['name']
 		log.debug('Loading provider ' + provider_modname)
 		# Create a modules dict that contains the loaded provider and plugins
 		import importlib
@@ -63,12 +79,9 @@ class Manifest(object):
 				init()
 
 	def validate(self):
-		"""Validates the manifest using the base, provider and plugin validation functions.
+		"""Validates the manifest using the provider and plugin validation functions.
 		Plugins are not required to have a validate_manifest function
 		"""
-		from . import validate_manifest
-		# Validate the manifest with the base validation function in __init__
-		validate_manifest(self.data, self.schema_validator, self.validation_error)
 
 		# Run the provider validation
 		self.modules['provider'].validate_manifest(self.data, self.schema_validator, self.validation_error)
@@ -90,6 +103,8 @@ class Manifest(object):
 		self.image        = self.data['image']
 		self.volume       = self.data['volume']
 		self.system       = self.data['system']
+		from bootstrapvz.common.releases import get_release
+		self.release      = get_release(self.system['release'])
 		# The packages and plugins section is not required
 		self.packages     = self.data['packages'] if 'packages' in self.data else {}
 		self.plugins      = self.data['plugins'] if 'plugins' in self.data else {}
@@ -102,19 +117,31 @@ class Manifest(object):
 		:param str schema_path: Path to the json-schema to use for validation
 		"""
 		import jsonschema
-		schema = load_json(schema_path)
+
+		schema = load_data(schema_path)
 		try:
 			jsonschema.validate(data, schema)
 		except jsonschema.ValidationError as e:
 			self.validation_error(e.message, e.path)
 
-	def validation_error(self, message, json_path=None):
+	def validation_error(self, message, data_path=None):
 		"""This function is passed to all validation functions so that they may
 		raise a validation error because a custom validation of the manifest failed.
 
 		:param str message: Message to user about the error
-		:param list json_path: A path to the location in the manifest where the error occurred
+		:param list data_path: A path to the location in the manifest where the error occurred
 		:raises ManifestError: With absolute certainty
 		"""
-		from bootstrapvz.common.exceptions import ManifestError
-		raise ManifestError(message, self.path, json_path)
+		raise ManifestError(message, self.path, data_path)
+
+	def __getstate__(self):
+		return {'__class__': self.__module__ + '.' + self.__class__.__name__,
+		        'path': self.path,
+		        'data': self.data}
+
+	def __setstate__(self, state):
+		self.path = state['path']
+		self.load(state['data'])
+		self.initialize()
+		self.validate()
+		self.parse()

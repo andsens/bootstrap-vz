@@ -1,0 +1,14 @@
+---
+# This is a mapping of Debian release codenames to processor architectures to kernel packages
+squeeze: # In squeeze, we need a special kernel flavor for xen
+  amd64: linux-image-xen-amd64
+  i386: linux-image-xen-686
+wheezy:
+  amd64: linux-image-amd64
+  i386: linux-image-686
+jessie:
+  amd64: linux-image-amd64
+  i386: linux-image-686-pae
+sid:
+  amd64: linux-image-amd64
+  i386: linux-image-686-pae

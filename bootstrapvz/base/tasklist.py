@@ -117,7 +117,8 @@ def get_all_tasks():
 	# Get a generator that returns all classes in the package
 	import os.path
 	pkg_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..'))
-	classes = get_all_classes(pkg_path, 'bootstrapvz.')
+	exclude_pkgs = ['bootstrapvz.base', 'bootstrapvz.remote']
+	classes = get_all_classes(pkg_path, 'bootstrapvz.', exclude_pkgs)
 
 	# lambda function to check whether a class is a task (excluding the superclass Task)
 	def is_task(obj):
@@ -126,11 +127,12 @@ def get_all_tasks():
 	return filter(is_task, classes)  # Only return classes that are tasks
 
 
-def get_all_classes(path=None, prefix=''):
+def get_all_classes(path=None, prefix='', excludes=[]):
 	""" Given a path to a package, this function retrieves all the classes in it
 
 	:param str path: Path to the package
 	:param str prefix: Name of the package followed by a dot
+	:param list excludes: List of str matching module names that should be ignored
 	:return: A generator that yields classes
 	:rtype: generator
 	:raises Exception: If a module cannot be inspected.
@@ -139,10 +141,13 @@ def get_all_classes(path=None, prefix=''):
 	import importlib
 	import inspect
 
-	def walk_error(module):
-		raise Exception('Unable to inspect module ' + module)
+	def walk_error(module_name):
+		if not any(map(lambda excl: module_name.startswith(excl), excludes)):
+			raise Exception('Unable to inspect module ' + module_name)
 	walker = pkgutil.walk_packages([path], prefix, walk_error)
 	for _, module_name, _ in walker:
+		if any(map(lambda excl: module_name.startswith(excl), excludes)):
+			continue
 		module = importlib.import_module(module_name)
 		classes = inspect.getmembers(module, inspect.isclass)
 		for class_name, obj in classes:
@@ -162,21 +167,31 @@ def check_ordering(task):
 	:raises TaskListError: If there is a conflict between task precedence and phase precedence
 	"""
 	for successor in task.successors:
-		# Run through all successors and check whether the phase of the task
-		# comes before the phase of a successor
+		# Run through all successors and throw an error if the phase of the task
+		# lies before the phase of a successor, log a warning if it lies after.
 		if task.phase > successor.phase:
 			msg = ("The task {task} is specified as running before {other}, "
 			       "but its phase '{phase}' lies after the phase '{other_phase}'"
 			       .format(task=task, other=successor, phase=task.phase, other_phase=successor.phase))
 			raise TaskListError(msg)
+		if task.phase < successor.phase:
+			log.warn("The task {task} is specified as running before {other} "
+			         "although its phase '{phase}' already lies before the phase '{other_phase}' "
+			         "(or the task has been placed in the wrong phase)"
+			         .format(task=task, other=successor, phase=task.phase, other_phase=successor.phase))
 	for predecessor in task.predecessors:
-		# Run through all predecessors and check whether the phase of the task
-		# comes after the phase of a predecessor
+		# Run through all successors and throw an error if the phase of the task
+		# lies after the phase of a predecessor, log a warning if it lies before.
 		if task.phase < predecessor.phase:
 			msg = ("The task {task} is specified as running after {other}, "
 			       "but its phase '{phase}' lies before the phase '{other_phase}'"
 			       .format(task=task, other=predecessor, phase=task.phase, other_phase=predecessor.phase))
 			raise TaskListError(msg)
+		if task.phase > predecessor.phase:
+			log.warn("The task {task} is specified as running after {other} "
+			         "although its phase '{phase}' already lies after the phase '{other_phase}' "
+			         "(or the task has been placed in the wrong phase)"
+			         .format(task=task, other=predecessor, phase=task.phase, other_phase=predecessor.phase))
 
 
 def strongly_connected_components(graph):

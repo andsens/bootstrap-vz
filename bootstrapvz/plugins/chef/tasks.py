@@ -1,6 +1,5 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
-from bootstrapvz.common.tasks import apt
 import os
 
 
@@ -23,7 +22,6 @@ class CheckAssetsPath(Task):
 class AddPackages(Task):
 	description = 'Add chef package'
 	phase = phases.preparation
-	predecessors = [apt.AddDefaultSources]
 
 	@classmethod
 	def run(cls, info):

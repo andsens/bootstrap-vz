@@ -12,3 +12,5 @@
 # Testing
 /.coverage
 /.tox/
+/build-servers.yml
+/integration.html
