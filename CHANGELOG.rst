@@ -1,6 +1,25 @@
 Changelog
 =========
 
+2015-05-02
+----------
+Anders Ingemann:
+	* Fix #32: Add image_commands example
+	* Fix #99: rename image_commands to commands
+	* Fix #139: Vagrant / Virtualbox provider should set ostype when 32 bits selected
+	* Fix #204: Create a new phase where user modification tasks can run
+
+2015-04-29
+----------
+Anders Ingemann:
+	* Fix #104: Don't verify default target when adding packages
+	* Fix #217: Implement get_version() function in common.tools
+
+2015-04-28
+----------
+Jonh Wendell:
+	* root_password: Enable SSH root login
+
 2015-04-27
 ----------
 John Kristensen:
