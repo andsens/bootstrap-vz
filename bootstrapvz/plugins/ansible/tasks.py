@@ -30,7 +30,7 @@ class AddPackages(Task):
 
 class RunAnsiblePlaybook(Task):
     description = 'Running ansible playbooks'
-    phase = phases.system_modification
+    phase = phases.user_modification
 
     @classmethod
     def run(cls, info):

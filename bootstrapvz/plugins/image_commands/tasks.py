@@ -3,8 +3,8 @@ from bootstrapvz.common import phases
 
 
 class ImageExecuteCommand(Task):
-	description = 'Execute command in the image'
-	phase = phases.system_modification
+	description = 'Executing commands in the image'
+	phase = phases.user_modification
 
 	@classmethod
 	def run(cls, info):

@@ -57,7 +57,7 @@ class CopyPuppetAssets(Task):
 
 class ApplyPuppetManifest(Task):
 	description = 'Applying puppet manifest'
-	phase = phases.system_modification
+	phase = phases.user_modification
 	predecessors = [CopyPuppetAssets]
 
 	@classmethod

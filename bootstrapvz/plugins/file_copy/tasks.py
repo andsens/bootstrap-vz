@@ -37,8 +37,8 @@ def modify_path(info, path, entry):
 
 
 class MkdirCommand(Task):
-	description = 'copy files into the image'
-	phase = phases.system_modification
+	description = 'Creating directories requested by user'
+	phase = phases.user_modification
 
 	@classmethod
 	def run(cls, info):
@@ -51,8 +51,8 @@ class MkdirCommand(Task):
 
 
 class FileCopyCommand(Task):
-	description = 'copy files into the image'
-	phase = phases.system_modification
+	description = 'Copying user specified files into the image'
+	phase = phases.user_modification
 	predecessors = [MkdirCommand]
 
 	@classmethod
