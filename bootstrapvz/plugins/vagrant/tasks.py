@@ -189,6 +189,17 @@ class PackageBox(Task):
 		[system] = root.findall('./ovf:VirtualSystem', namespaces)
 		attr(system, 'ovf:id', info._vagrant['box_name'])
 
+		# Set the operating system
+		[os_section] = system.findall('./ovf:OperatingSystemSection', namespaces)
+		os_info = {'i386': {'id': 96, 'name': 'Debian'},
+		           'amd64': {'id': 96, 'name': 'Debian_64'}
+		           }.get(info.manifest.system['architecture'])
+		attr(os_section, 'ovf:id', os_info['id'])
+		[os_desc] = os_section.findall('./ovf:Description', namespaces)
+		os_desc.text = os_info['name']
+		[os_type] = os_section.findall('./vbox:OSType', namespaces)
+		os_type.text = os_info['name']
+
 		[sysid] = system.findall('./ovf:VirtualHardwareSection/ovf:System/'
 		                         'vssd:VirtualSystemIdentifier', namespaces)
 		sysid.text = info._vagrant['box_name']

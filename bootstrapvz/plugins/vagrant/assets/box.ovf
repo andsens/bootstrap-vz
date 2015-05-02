@@ -15,10 +15,10 @@
   </NetworkSection>
   <VirtualSystem ovf:id="[BOXNAME]">
     <Info>A virtual machine</Info>
-    <OperatingSystemSection ovf:id="96">
+    <OperatingSystemSection ovf:id="[OS_ID]">
       <Info>The kind of installed guest operating system</Info>
-      <Description>Debian_64</Description>
-      <vbox:OSType ovf:required="false">Debian_64</vbox:OSType>
+      <Description>[OS_DESCRIPTION]</Description>
+      <vbox:OSType ovf:required="false">[OS_TYPE]</vbox:OSType>
     </OperatingSystemSection>
     <VirtualHardwareSection>
       <Info>Virtual hardware requirements for a virtual machine</Info>
