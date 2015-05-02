@@ -184,7 +184,7 @@ class PackageBox(Task):
 		[disk] = root.findall('./ovf:DiskSection/ovf:Disk', namespaces)
 		attr(disk, 'ovf:capacity', info.volume.size.bytes.get_qty_in('B'))
 		attr(disk, 'ovf:format', info.volume.ovf_uri)
-		attr(disk, 'ovf:uuid', volume_uuid)
+		attr(disk, 'vbox:uuid', volume_uuid)
 
 		[system] = root.findall('./ovf:VirtualSystem', namespaces)
 		attr(system, 'ovf:id', info._vagrant['box_name'])
@@ -205,7 +205,7 @@ class PackageBox(Task):
 		[device_img] = machine.findall('./ovf:StorageControllers'
 		                               '/ovf:StorageController[@name="SATA Controller"]'
 		                               '/ovf:AttachedDevice/ovf:Image', namespaces)
-		attr(device_img, 'ovf:uuid', '{' + str(volume_uuid) + '}')
+		attr(device_img, 'uuid', '{' + str(volume_uuid) + '}')
 
 		template.write(destination, xml_declaration=True)  # , default_namespace=namespaces['ovf']
 
