@@ -23,7 +23,7 @@ Jonh Wendell:
 2015-04-27
 ----------
 John Kristensen:
-    * Add authentication support to the apt proxy plugin
+	* Add authentication support to the apt proxy plugin
 
 2015-04-25
 ----------
@@ -60,15 +60,15 @@ Anders Ingemann (work started 2014-08-31, merged on 2015-04-25):
 	* Extend sed_i to raise Exceptions when the expected amount of replacements is not met
 
 Jonas Bergler:
-    * Fixes #145: Fix installation of vbox guest additions.
+	* Fixes #145: Fix installation of vbox guest additions.
 
 Tiago Ilieve:
-    * Fixes #142: msdos partition type incorrect for swap partition (Linux)
+	* Fixes #142: msdos partition type incorrect for swap partition (Linux)
 
 2015-04-23
 ----------
 Tiago Ilieve:
-    * Fixes #212: Sparse file is created on the current directory
+	* Fixes #212: Sparse file is created on the current directory
 
 2014-11-23
 ----------
