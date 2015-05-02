@@ -26,7 +26,7 @@ Example
 Create an empty `index.html` in `/var/www` and delete all locales except english.
 .. code:: yaml
 
-  image_commands:
-      commands:
-        - [touch, '{root}/var/www/index.html']
-        - ['rm -rf /usr/share/locale/[^en]*']
+  commands:
+    commands:
+      - [touch, '{root}/var/www/index.html']
+      - ['rm -rf /usr/share/locale/[^en]*']

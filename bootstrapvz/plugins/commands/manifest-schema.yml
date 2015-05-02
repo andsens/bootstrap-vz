@@ -3,7 +3,7 @@ $schema: http://json-schema.org/draft-04/schema#
 properties:
   plugins:
     properties:
-      image_commands:
+      commands:
         properties:
           commands:
             items:
@@ -17,7 +17,7 @@ properties:
         - commands
         type: object
     required:
-    - image_commands
+    - commands
     type: object
 required:
 - plugins

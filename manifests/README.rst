@@ -214,7 +214,7 @@ boot, root and swap.
       optional setting overrides the command bootstrap-vz would normally
       use to format the partition. The command is specified as a string
       array where each option/argument is an item in that array (much
-      like the `image\_commands <../bootstrapvz/plugins/image_commands>`__ plugin).
+      like the `commands <../bootstrapvz/plugins/commands>`__ plugin).
       ``optional`` The following variables are available:
    -  ``{fs}``: The filesystem of the partition.
    -  ``{device_path}``: The device path of the partition.
