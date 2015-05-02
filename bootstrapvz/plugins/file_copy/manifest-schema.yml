@@ -35,6 +35,7 @@ properties:
         required:
         - files
         type: object
+        additionalProperties: false
     required:
     - file_copy
     type: object

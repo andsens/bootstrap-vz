@@ -14,6 +14,5 @@ properties:
           port: {type: integer}
           persistent: {type: boolean}
           username: {type: string}
-        required:
-        - address
-        - port
+        required: [address, port]
+        additionalProperties: false

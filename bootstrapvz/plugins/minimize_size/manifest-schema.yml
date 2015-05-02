@@ -10,6 +10,7 @@ properties:
           zerofree:
             type: boolean
         type: object
+        additionalProperties: false
     type: object
 title: Minimize size plugin manifest
 type: object

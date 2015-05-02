@@ -11,3 +11,4 @@ properties:
         properties:
           password: {type: string}
         required: [password]
+        additionalProperties: false

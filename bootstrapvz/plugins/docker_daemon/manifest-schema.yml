@@ -3,17 +3,6 @@ $schema: http://json-schema.org/draft-04/schema#
 title: Install Docker plugin manifest
 type: object
 properties:
-  plugins:
-    type: object
-    properties:
-      docker_daemon:
-        type: object
-        properties:
-          version:
-            pattern: '^\d\.\d{1,2}\.\d$'
-            type: string
-          docker_opts:
-            type: string
   system:
     type: object
     properties:
@@ -26,3 +15,15 @@ properties:
           enum:
           - squeeze
           - oldstable
+  plugins:
+    type: object
+    properties:
+      docker_daemon:
+        type: object
+        properties:
+          version:
+            pattern: '^\d\.\d{1,2}\.\d$'
+            type: string
+          docker_opts:
+            type: string
+        additionalProperties: false

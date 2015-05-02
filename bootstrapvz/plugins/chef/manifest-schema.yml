@@ -11,8 +11,8 @@ properties:
         properties:
           assets:
             $ref: '#/definitions/absolute_path'
-        required:
-        - assets
+        required: [assets]
+        additionalProperties: false
 definitions:
   absolute_path:
     pattern: ^/[^\0]+$

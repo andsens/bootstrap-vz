@@ -16,3 +16,4 @@ properties:
         - update_interval
         - download_interval
         - upgrade_interval
+        additionalProperties: false

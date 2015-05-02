@@ -9,6 +9,7 @@ properties:
     properties:
       name: {type: string}
     required: [name]
+    additionalProperties: true
   bootstrapper:
     type: object
     properties:
@@ -31,12 +32,14 @@ properties:
       workspace:
         $ref: '#/definitions/path'
     required: [workspace]
+    additionalProperties: false
   image:
     type: object
     properties:
       name: {type: string}
     required: [name]
   system:
+    type: object
     properties:
       architecture:
         enum: [i386, amd64]
@@ -61,7 +64,7 @@ properties:
     - timezone
     - locale
     - charmap
-    type: object
+    additionalProperties: false
   packages:
     type: object
     properties:
@@ -128,6 +131,7 @@ properties:
         - $ref: '#/definitions/no_partitions'
         - $ref: '#/definitions/partition_table'
     required: [partitions]
+    additionalProperties: false
 definitions:
   absolute_path:
     type: string
@@ -153,9 +157,9 @@ definitions:
         type: array
       size: {$ref: '#/definitions/bytes'}
     required: [size, filesystem]
+    additionalProperties: false
   partition_table:
     type: object
-    additionalProperties: false
     properties:
       boot: {$ref: '#/definitions/partition'}
       root: {$ref: '#/definitions/partition'}
@@ -166,6 +170,7 @@ definitions:
         required: [size]
       type: {enum: [msdos, gpt]}
     required: [root]
+    additionalProperties: false
   path:
     type: string
     pattern: ^[^\0]+$

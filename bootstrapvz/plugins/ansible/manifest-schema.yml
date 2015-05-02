@@ -21,8 +21,8 @@ properties:
             host: {type: string}
             minItems: 1
           playbook: {$ref: '#/definitions/absolute_path'}
-        required:
-        - playbook
+        required: [playbook]
+        additionalProperties: false
 definitions:
   absolute_path:
     pattern: ^/[^\0]+$

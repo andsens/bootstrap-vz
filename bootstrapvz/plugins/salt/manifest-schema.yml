@@ -22,3 +22,4 @@ properties:
           master: {type: string}
           version: {type: string}
         required: [install_source]
+        additionalProperties: false

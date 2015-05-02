@@ -11,3 +11,4 @@ properties:
         properties:
           username: {type: string}
         required: [username]
+        additionalProperties: false

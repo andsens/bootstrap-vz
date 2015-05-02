@@ -28,3 +28,4 @@ properties:
             items: {type: string}
             uniqueItems: true
         required: [username]
+        additionalProperties: false

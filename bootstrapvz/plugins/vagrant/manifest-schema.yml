@@ -21,4 +21,6 @@ properties:
   plugins:
     type: object
     properties:
-      vagrant: {type: object}
+      vagrant:
+        type: object
+        additionalProperties: false
