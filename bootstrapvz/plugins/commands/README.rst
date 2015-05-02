@@ -1,10 +1,9 @@
-Image commands
+Commands
 --------------
 
-The image commands plugin allows you to run arbitrary commands during
-the bootstrap process. The commands are run at an indeterminate point
-*after* packages have been installed, but *before* the volume has been
-unmounted.
+This plugin allows you to run arbitrary commands during the bootstrap process.
+The commands are run at an indeterminate point *after* packages have been
+installed, but *before* the volume has been unmounted.
 
 Settings
 ~~~~~~~~
