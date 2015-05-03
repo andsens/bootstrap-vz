@@ -58,7 +58,6 @@ class CopyPuppetAssets(Task):
 class ApplyPuppetManifest(Task):
 	description = 'Applying puppet manifest'
 	phase = phases.user_modification
-	predecessors = [CopyPuppetAssets]
 
 	@classmethod
 	def run(cls, info):
