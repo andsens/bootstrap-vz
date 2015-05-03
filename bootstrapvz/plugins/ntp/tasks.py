@@ -1,12 +1,10 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
-from bootstrapvz.common.tasks import packages
 
 
 class AddNtpPackage(Task):
 	description = 'Adding NTP Package'
-	phase = phases.package_installation
-	successors = [packages.InstallPackages]
+	phase = phases.preparation
 
 	@classmethod
 	def run(cls, info):
