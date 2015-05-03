@@ -11,17 +11,17 @@ dependency graph where directed edges dictate precedence. Each task is
 a simple class that defines its predecessor tasks and successor tasks
 via attributes. Here is an example:
 
-::
+.. code:: python
 
-    class MapPartitions(Task):
-      description = 'Mapping volume partitions'
-      phase = phases.volume_preparation
-      predecessors = [PartitionVolume]
-      successors = [filesystem.Format]
+	class MapPartitions(Task):
+		description = 'Mapping volume partitions'
+		phase = phases.volume_preparation
+		predecessors = [PartitionVolume]
+		successors = [filesystem.Format]
 
-      @classmethod
-      def run(cls, info):
-         info.volume.partition_map.map(info.volume)
+		@classmethod
+		def run(cls, info):
+			info.volume.partition_map.map(info.volume)
 
 In this case the attributes define that the task at hand should run
 after the ``PartitionVolume`` task — i.e. after volume has been

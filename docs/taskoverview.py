@@ -6,8 +6,11 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 
 def generate_graph_data():
+	import bootstrapvz.common.tasks
+	import bootstrapvz.providers
+	import bootstrapvz.plugins
 	from bootstrapvz.base.tasklist import get_all_tasks
-	tasks = get_all_tasks()
+	tasks = get_all_tasks([bootstrapvz.common.tasks, bootstrapvz.providers, bootstrapvz.plugins])
 
 	def distinct(seq):
 		seen = set()

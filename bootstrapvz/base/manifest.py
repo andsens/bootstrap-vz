@@ -52,18 +52,32 @@ class Manifest(object):
 		"""
 		# Get the provider name from the manifest and load the corresponding module
 		provider_modname = 'bootstrapvz.providers.' + self.data['provider']['name']
-		log.debug('Loading provider ' + provider_modname)
+		log.debug('Loading provider ' + self.data['provider']['name'])
 		# Create a modules dict that contains the loaded provider and plugins
 		import importlib
 		self.modules = {'provider': importlib.import_module(provider_modname),
 		                'plugins': [],
 		                }
 		# Run through all the plugins mentioned in the manifest and load them
+		from pkg_resources import iter_entry_points
 		if 'plugins' in self.data:
-			for plugin_name, plugin_data in self.data['plugins'].iteritems():
-				modname = 'bootstrapvz.plugins.' + plugin_name
-				log.debug('Loading plugin ' + modname)
-				plugin = importlib.import_module(modname)
+			for plugin_name in self.data['plugins'].keys():
+				log.debug('Loading plugin ' + plugin_name)
+				try:
+					# Internal bootstrap-vz plugins take precedence wrt. plugin name
+					modname = 'bootstrapvz.plugins.' + plugin_name
+					plugin = importlib.import_module(modname)
+				except ImportError:
+					entry_points = list(iter_entry_points('bootstrapvz.plugins', name=plugin_name))
+					num_entry_points = len(entry_points)
+					if num_entry_points < 1:
+						raise
+					if num_entry_points > 1:
+						msg = ('Unable to load plugin {name}, '
+						       'there are {num} entry points to choose from.'
+						       .format(name=plugin_name, num=num_entry_points))
+						raise ImportError(msg)
+					plugin = entry_points[0].load()
 				self.modules['plugins'].append(plugin)
 
 	def validate(self):

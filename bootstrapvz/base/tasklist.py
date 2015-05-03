@@ -21,8 +21,13 @@ class TaskList(object):
 		:param dict info: The bootstrap information object
 		:param bool dry_run: Whether to actually run the tasks or simply step through them
 		"""
+		# Get a hold of every task we can find, so that we can topologically sort
+		# all tasks, rather than just the subset we are going to run.
+		from bootstrapvz.common import tasks as common_tasks
+		modules = [common_tasks, info.manifest.modules['provider']] + info.manifest.modules['plugins']
+		all_tasks = set(get_all_tasks(modules))
 		# Create a list for us to run
-		task_list = create_list(self.tasks)
+		task_list = create_list(self.tasks, all_tasks)
 		# Output the tasklist
 		log.debug('Tasklist:\n\t' + ('\n\t'.join(map(repr, task_list))))
 
@@ -61,12 +66,10 @@ def load_tasks(function, manifest, *args):
 	return tasks
 
 
-def create_list(taskset):
+def create_list(taskset, all_tasks):
 	"""Creates a list of all the tasks that should be run.
 	"""
 	from bootstrapvz.common.phases import order
-	# Get a hold of all tasks
-	all_tasks = get_all_tasks()
 	# Make sure all_tasks is a superset of the resolved taskset
 	if not all_tasks >= taskset:
 		msg = ('bootstrap-vz generated a list of all available tasks. '
@@ -115,23 +118,27 @@ def create_list(taskset):
 	return sorted_tasks
 
 
-def get_all_tasks():
+def get_all_tasks(modules):
 	"""Gets a list of all task classes in the package
 
 	:return: A list of all tasks in the package
 	:rtype: list
 	"""
-	# Get a generator that returns all classes in the package
 	import os.path
-	pkg_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..'))
-	exclude_pkgs = ['bootstrapvz.base', 'bootstrapvz.remote']
-	classes = get_all_classes(pkg_path, 'bootstrapvz.', exclude_pkgs)
+	# Get generators that return all classes in a module
+	generators = []
+	for module in modules:
+		module_path = os.path.dirname(module.__file__)
+		module_prefix = module.__name__ + '.'
+		generators.append(get_all_classes(module_path, module_prefix))
+	import itertools
+	classes = itertools.chain(*generators)
 
 	# lambda function to check whether a class is a task (excluding the superclass Task)
 	def is_task(obj):
 		from task import Task
 		return issubclass(obj, Task) and obj is not Task
-	return set(filter(is_task, classes))  # Only return classes that are tasks
+	return filter(is_task, classes)  # Only return classes that are tasks
 
 
 def get_all_classes(path=None, prefix='', excludes=[]):
@@ -150,7 +157,7 @@ def get_all_classes(path=None, prefix='', excludes=[]):
 
 	def walk_error(module_name):
 		if not any(map(lambda excl: module_name.startswith(excl), excludes)):
-			raise Exception('Unable to inspect module ' + module_name)
+			raise TaskListError('Unable to inspect module ' + module_name)
 	walker = pkgutil.walk_packages([path], prefix, walk_error)
 	for _, module_name, _ in walker:
 		if any(map(lambda excl: module_name.startswith(excl), excludes)):
