@@ -61,28 +61,35 @@ def load_tasks(function, manifest, *args):
 	return tasks
 
 
-def create_list(subset):
+def create_list(taskset):
 	"""Creates a list of all the tasks that should be run.
 	"""
 	from bootstrapvz.common.phases import order
 	# Get a hold of all tasks
-	tasks = get_all_tasks()
-	# Make sure the taskset is a subset of all the tasks we have gathered
-	subset.issubset(tasks)
+	all_tasks = get_all_tasks()
+	# Make sure all_tasks is a superset of the resolved taskset
+	if not all_tasks >= taskset:
+		msg = ('bootstrap-vz generated a list of all available tasks. '
+		       'That list is not a superset of the tasks required for bootstrapping. '
+		       'The tasks that were not found are: {tasks} '
+		       '(This is an error in the code and not the manifest, please report this issue.)'
+		       .format(tasks=', '.join(map(str, taskset - all_tasks)))
+		       )
+		raise TaskListError(msg)
 	# Create a graph over all tasks by creating a map of each tasks successors
 	graph = {}
-	for task in tasks:
+	for task in all_tasks:
 		# Do a sanity check first
 		check_ordering(task)
 		successors = set()
 		# Add all successors mentioned in the task
 		successors.update(task.successors)
 		# Add all tasks that mention this task as a predecessor
-		successors.update(filter(lambda succ: task in succ.predecessors, tasks))
+		successors.update(filter(lambda succ: task in succ.predecessors, all_tasks))
 		# Create a list of phases that succeed the phase of this task
 		succeeding_phases = order[order.index(task.phase) + 1:]
 		# Add all tasks that occur in above mentioned succeeding phases
-		successors.update(filter(lambda succ: succ.phase in succeeding_phases, tasks))
+		successors.update(filter(lambda succ: succ.phase in succeeding_phases, all_tasks))
 		# Map the successors to the task
 		graph[task] = successors
 
@@ -104,7 +111,7 @@ def create_list(subset):
 
 	# Filter out any tasks not in the tasklist
 	# We want to maintain ordering, so we don't use set intersection
-	sorted_tasks = filter(lambda task: task in subset, sorted_tasks)
+	sorted_tasks = filter(lambda task: task in taskset, sorted_tasks)
 	return sorted_tasks
 
 
@@ -124,7 +131,7 @@ def get_all_tasks():
 	def is_task(obj):
 		from task import Task
 		return issubclass(obj, Task) and obj is not Task
-	return filter(is_task, classes)  # Only return classes that are tasks
+	return set(filter(is_task, classes))  # Only return classes that are tasks
 
 
 def get_all_classes(path=None, prefix='', excludes=[]):
