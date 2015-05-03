@@ -17,12 +17,6 @@ from bootstrapvz.common.tasks import loopback
 from bootstrapvz.common.tasks import kernel
 
 
-def initialize():
-	# Regardless of of loglevel, we don't want boto debug stuff, it's very noisy
-	import logging
-	logging.getLogger('boto').setLevel(logging.INFO)
-
-
 def validate_manifest(data, validator, error):
 	import os.path
 	validator(data, os.path.join(os.path.dirname(__file__), 'manifest-schema.yml'))
@@ -64,6 +58,7 @@ def resolve_tasks(taskset, manifest):
 
 	taskset.update([tasks.host.AddExternalCommands,
 	                tasks.packages.DefaultPackages,
+	                tasks.connection.SilenceBotoDebug,
 	                tasks.connection.GetCredentials,
 	                tasks.ami.AMIName,
 	                tasks.connection.Connect,

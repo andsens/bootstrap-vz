@@ -27,12 +27,12 @@ class Manifest(object):
 		if path is None and data is None:
 			raise ManifestError('`path\' or `data\' must be provided')
 		self.path = path
-		self.load(data)
-		self.initialize()
+		self.load_data(data)
+		self.load_modules()
 		self.validate()
 		self.parse()
 
-	def load(self, data=None):
+	def load_data(self, data=None):
 		"""Loads the manifest and performs a basic validation.
 		This function reads the manifest and performs some basic validation of
 		the manifest itself to ensure that the properties required for initalization are accessible
@@ -47,12 +47,8 @@ class Manifest(object):
 		# Validate the manifest with the base validation function in __init__
 		validate_manifest(self.data, self.schema_validator, self.validation_error)
 
-	def initialize(self):
-		"""Initializes the provider and the plugins.
-		This function loads the specified provider and plugins.
-		Once the provider and plugins are loaded,
-		the initialize() function is called on each of them (if it exists).
-		The provider must have an initialize function.
+	def load_modules(self):
+		"""Loads the provider and the plugins.
 		"""
 		# Get the provider name from the manifest and load the corresponding module
 		provider_modname = 'bootstrapvz.providers.' + self.data['provider']['name']
@@ -69,14 +65,6 @@ class Manifest(object):
 				log.debug('Loading plugin ' + modname)
 				plugin = importlib.import_module(modname)
 				self.modules['plugins'].append(plugin)
-
-		# Run the initialize function on the provider and plugins
-		self.modules['provider'].initialize()
-		for module in self.modules['plugins']:
-			# Plugins are not required to have an initialize function
-			init = getattr(module, 'initialize', None)
-			if callable(init):
-				init()
 
 	def validate(self):
 		"""Validates the manifest using the provider and plugin validation functions.
@@ -141,7 +129,7 @@ class Manifest(object):
 
 	def __setstate__(self, state):
 		self.path = state['path']
-		self.load(state['data'])
-		self.initialize()
+		self.load_data(state['data'])
+		self.load_modules()
 		self.validate()
 		self.parse()

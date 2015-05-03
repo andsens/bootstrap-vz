@@ -3,9 +3,21 @@ from bootstrapvz.common import phases
 import host
 
 
+class SilenceBotoDebug(Task):
+	description = 'Silence boto debug logging'
+	phase = phases.preparation
+
+	@classmethod
+	def run(cls, info):
+		# Regardless of of loglevel, we don't want boto debug stuff, it's very noisy
+		import logging
+		logging.getLogger('boto').setLevel(logging.INFO)
+
+
 class GetCredentials(Task):
 	description = 'Getting AWS credentials'
 	phase = phases.preparation
+	successors = [SilenceBotoDebug]
 
 	@classmethod
 	def run(cls, info):
