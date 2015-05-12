@@ -1,6 +1,11 @@
 Changelog
 =========
 
+2015-05-08
+----------
+Alexandre Derumier:
+    * Fix #219: ^PermitRootLogin regex
+
 2015-05-02
 ----------
 Anders Ingemann:
