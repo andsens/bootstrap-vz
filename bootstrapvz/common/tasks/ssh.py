@@ -51,7 +51,7 @@ class DisableSSHPasswordAuthentication(Task):
 
 
 class EnableRootLogin(Task):
-	description = 'Disabling SSH login for root'
+	description = 'Enabling SSH login for root'
 	phase = phases.system_modification
 
 	@classmethod
