@@ -4,8 +4,8 @@ bootstrap-vz
 bootstrap-vz is a bootstrapping framework for Debian that creates ready-to-boot
 images able to run on a number of cloud providers and virtual machines.
 bootstrap-vz runs without any user intervention and
-generates ready-to-boot images for a number of virtualization
-platforms.
+generates ready-to-boot images for `a number of virtualization
+platforms <bootstrapvz/providers>`__.
 Its aim is to provide a reproducable bootstrapping process using
 `manifests <manifests>`__
 as well as supporting a high degree of customizability through plugins.
