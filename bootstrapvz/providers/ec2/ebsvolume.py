@@ -12,7 +12,7 @@ class EBSVolume(Volume):
 		conn = e.connection
 		zone = e.zone
 		size = self.size.bytes.get_qty_in('GiB')
-		self.volume = conn.create_volume(size, zone)
+		self.volume = conn.create_volume(size, zone, volume_type='gp2')
 		while self.volume.volume_state() != 'available':
 			time.sleep(5)
 			self.volume.update()
