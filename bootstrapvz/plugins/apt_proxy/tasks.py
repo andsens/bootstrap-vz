@@ -18,7 +18,7 @@ class CheckAptProxy(Task):
 			urllib2.urlopen(proxy_url, timeout=5)
 		except Exception as e:
 			# Default response from `apt-cacher-ng`
-			if isinstance(e, urllib2.HTTPError) and e.code == 404 and e.msg == 'Usage Information':
+			if isinstance(e, urllib2.HTTPError) and e.code in [404, 406] and e.msg == 'Usage Information':
 				pass
 			else:
 				import logging
