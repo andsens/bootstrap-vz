@@ -35,7 +35,7 @@ class InstallEnhancedNetworking(Task):
 
 	@classmethod
 	def run(cls, info):
-		version = '2.15.3'
+		version = '2.16.1'
 		drivers_url = 'http://downloads.sourceforge.net/project/e1000/ixgbevf stable/%s/ixgbevf-%s.tar.gz' % (version, version)
 		archive = os.path.join(info.root, 'tmp', 'ixgbevf-%s.tar.gz' % (version))
 		module_path = os.path.join(info.root, 'usr', 'src', 'ixgbevf-%s' % (version))
