@@ -3,7 +3,7 @@
    :hidden:
 
    self
-   manifest
+   manifests/index
    providers/index
    plugins/index
    supported_builds

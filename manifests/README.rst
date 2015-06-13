@@ -1,5 +1,3 @@
-Manifest
-========
 The manifest file is the primary way to interact with bootstrap-vz.
 Every configuration and customization of a Debian installation is specified in this file.
 
