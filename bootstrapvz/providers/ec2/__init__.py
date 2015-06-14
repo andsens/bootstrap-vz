@@ -68,11 +68,13 @@ def resolve_tasks(taskset, manifest):
 	                tasks.network.EnableDHCPCDDNS,
 	                initd.AddExpandRoot,
 	                initd.RemoveHWClock,
-	                tasks.initd.AddEC2InitScripts,
 	                initd.InstallInitScripts,
 
 	                tasks.ami.RegisterAMI,
 	                ])
+
+	if manifest.provider.get('install_init_scripts', True):
+		taskset.add(tasks.initd.AddEC2InitScripts)
 
 	if manifest.volume['partitions']['type'] != 'none':
 		taskset.add(initd.AdjustExpandRootScript)
