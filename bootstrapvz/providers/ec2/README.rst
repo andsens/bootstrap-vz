@@ -11,7 +11,8 @@ Unless `the cloud-init plugin <../../plugins/cloud_init>`__
 is used, special startup scripts will be installed that automatically fetch the
 configured authorized\_key from the instance metadata and save or run
 any userdata supplied (if the userdata begins with ``#!`` it will be
-run).
+run). Set the variable ``install_init_scripts`` to ``False`` in order
+to disable this behaviour.
 
 Credentials
 -----------
