@@ -40,7 +40,8 @@ class ImportGoogleKey(Task):
 class CleanGoogleRepositoriesAndKeys(Task):
 	description = 'Removing Google key and apt source files'
 	phase = phases.system_cleaning
-	successors = [apt.AptClean, network.RemoveDNSInfo]
+	predecessors = [apt.AptClean]
+	successors = [network.RemoveDNSInfo]
 
 	@classmethod
 	def run(cls, info):
