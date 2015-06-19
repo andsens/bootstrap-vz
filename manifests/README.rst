@@ -139,8 +139,13 @@ The packages section allows you to install custom packages from a
 variety of sources.
 
 -  ``install``: A list of strings that specify which packages should
-   be installed. Valid values: package names optionally followed by a
+   be installed. Valid values: Package names optionally followed by a
    ``/target`` or paths to local ``.deb`` files.
+   Note that packages are installed in the order they are listed.
+   The installer invocations are bundled by package type (remote or local),
+   meaning if you install two local packages, then two remote packages
+   and then another local package, there will be two calls to ``dpkg -i ...``
+   and a single call to ``apt-get install ...``.
 -  ``install_standard``: Defines if the packages of the
    ``"Standard System Utilities"`` option of the Debian installer,
    provided by `tasksel <https://wiki.debian.org/tasksel>`__, should be
