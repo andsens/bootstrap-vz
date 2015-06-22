@@ -1,6 +1,7 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 from bootstrapvz.common.tasks import apt
+from bootstrapvz.common.tasks import packages
 from bootstrapvz.common.tools import config_get
 import logging
 import os
@@ -9,6 +10,7 @@ import os
 class DefaultPackages(Task):
 	description = 'Adding image packages required for GCE'
 	phase = phases.preparation
+	successors = [packages.AddManifestPackages]
 
 	@classmethod
 	def run(cls, info):
@@ -32,6 +34,7 @@ class ReleasePackages(Task):
 	description = 'Adding release-specific packages required for GCE'
 	phase = phases.preparation
 	predecessors = [apt.AddBackports, DefaultPackages]
+	successors = [packages.AddManifestPackages]
 
 	@classmethod
 	def run(cls, info):
@@ -49,6 +52,7 @@ class GooglePackages(Task):
 	description = 'Adding image packages required for GCE from Google repositories'
 	phase = phases.preparation
 	predecessors = [DefaultPackages]
+	successors = [packages.AddManifestPackages]
 
 	@classmethod
 	def run(cls, info):
