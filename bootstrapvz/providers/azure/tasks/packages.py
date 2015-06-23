@@ -13,6 +13,7 @@ class DefaultPackages(Task):
 		info.packages.add('python-openssl')
 		info.packages.add('python-pyasn1')
 		info.packages.add('sudo')
+		info.packages.add('parted')
 
 		import os.path
 		kernel_packages_path = os.path.join(os.path.dirname(__file__), 'packages-kernels.yml')
@@ -42,7 +43,7 @@ class Waagent(Task):
 		log_check_call(['chroot', info.root, 'cp', waagent_script, '/usr/sbin/waagent'])
 		log_check_call(['chroot', info.root, 'chmod', '755', '/usr/sbin/waagent'])
 		log_check_call(['chroot', info.root, 'waagent', '-install'])
-		if info.manifest.system['waagent'].get('conf', False):
-			if os.path.isfile(info.manifest.system['waagent']['conf']):
-				log_check_call(['cp', info.manifest.system['waagent']['conf'],
+		if info.manifest.provider['waagent'].get('conf', False):
+			if os.path.isfile(info.manifest.provider['waagent']['conf']):
+				log_check_call(['cp', info.manifest.provider['waagent']['conf'],
 				                os.path.join(info.root, 'etc/waagent.conf')])
