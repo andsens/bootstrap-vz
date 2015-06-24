@@ -15,7 +15,7 @@ logger="logger -t $prog"
 
 device_path="/dev/xvda"
 
-filesystem=`blkid | grep $device_path | sed 's#\(.*\):.*TYPE="\(.*\)".*#\2#'`
+filesystem=$(blkid -s TYPE -o value ${device_path})
 
 case $filesystem in
 	xfs)  xfs_growfs / ;;
