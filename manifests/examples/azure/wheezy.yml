@@ -4,7 +4,7 @@ provider:
   waagent:
     version: 2.0.4
 bootstrapper:
-  mirror: http://ftp.fr.debian.org/debian/
+  mirror: http://httpredir.debian.org/debian/
   workspace: /target
 image:
   name: debian-{system.release}-{system.architecture}-{%y}{%m}{%d}
