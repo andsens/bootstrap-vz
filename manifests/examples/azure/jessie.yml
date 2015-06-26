@@ -2,7 +2,7 @@
 provider:
   name: azure
   waagent:
-    version: 2.0.4
+    version: 2.0.13
 bootstrapper:
   mirror: http://httpredir.debian.org/debian/
   workspace: /target
@@ -10,7 +10,7 @@ image:
   name: debian-{system.release}-{system.architecture}-{%y}{%m}{%d}
   description: Debian {system.release} {system.architecture}
 system:
-  release: wheezy
+  release: jessie
   architecture: amd64
   bootloader: grub
   charmap: UTF-8
@@ -20,12 +20,9 @@ volume:
   backing: raw
   partitions:
     type: msdos
-    boot:
-      filesystem: ext2
-      size: 32MiB
     root:
       filesystem: ext4
-      size: 7GiB
+      size: 10GiB
 packages: {}
 plugins:
   ntp:
