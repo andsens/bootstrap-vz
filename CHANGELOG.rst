@@ -1,6 +1,11 @@
 Changelog
 =========
 
+2015-06-29
+----------
+Alex Adriaanse:
+	* Fix DKMS kernel version error
+
 2015-05-08
 ----------
 Alexandre Derumier:

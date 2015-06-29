@@ -64,4 +64,4 @@ AUTOINSTALL="yes"
 		for task in ['add', 'build', 'install']:
 			# Invoke DKMS task using specified kernel module (-m) and version (-v)
 			log_check_call(['chroot', info.root,
-			                'dkms', task, '-m', 'ixgbevf', '-v', version])
+			                'dkms', task, '-m', 'ixgbevf', '-v', version, '-k', info.kernel_version])
