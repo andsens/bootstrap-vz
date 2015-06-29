@@ -1,0 +1,16 @@
+diff --git a/debian/extra/initramfs-tools/scripts/init-top/udev b/debian/extra/initramfs-tools/scripts/init-top/udev
+index 687911f..87f1121 100755
+--- a/debian/extra/initramfs-tools/scripts/init-top/udev
++++ b/debian/extra/initramfs-tools/scripts/init-top/udev
+@@ -31,11 +31,5 @@ if [ -d /sys/bus/scsi ]; then
+ 	udevadm settle || true
+ fi
+ 
+-# If the rootdelay parameter has been set, we wait a bit for devices
+-# like usb/firewire disks to settle.
+-if [ "$ROOTDELAY" ]; then
+-	sleep $ROOTDELAY
+-fi
+-
+ # Leave udev running to process events that come in out-of-band (like USB
+ # connections)
