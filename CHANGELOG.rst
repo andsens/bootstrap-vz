@@ -5,6 +5,7 @@ Changelog
 ----------
 Alex Adriaanse:
 	* Fix DKMS kernel version error
+	* Add support for Btrfs
 
 2015-05-08
 ----------
