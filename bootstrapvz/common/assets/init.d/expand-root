@@ -13,8 +13,19 @@
 prog=$(basename $0)
 logger="logger -t $prog"
 
-device_path="/dev/xvda"
+growpart=$(which growpart) || {
+	$logger "growpart was not found on PATH. Unable to expand size."
+	exit 0
+}
 
+root_index="0"
+
+$growpart /dev/xvda $root_index || {
+	$logger "growpart failed. Unable to expand size."
+	exit 0
+}
+
+device_path="/dev/xvda$root_index"
 filesystem=$(blkid -s TYPE -o value ${device_path})
 
 case $filesystem in

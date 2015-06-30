@@ -68,6 +68,7 @@ def resolve_tasks(taskset, manifest):
 	                boot.BlackListModules,
 	                boot.DisableGetTTYs,
 	                initd.AddExpandRoot,
+	                tasks.packages.AddWorkaroundGrowpart,
 	                initd.RemoveHWClock,
 	                initd.InstallInitScripts,
 	                tasks.ami.RegisterAMI,
