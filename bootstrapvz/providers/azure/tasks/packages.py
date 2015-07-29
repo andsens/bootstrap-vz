@@ -47,3 +47,9 @@ class Waagent(Task):
 			if os.path.isfile(info.manifest.provider['waagent']['conf']):
 				log_check_call(['cp', info.manifest.provider['waagent']['conf'],
 				                os.path.join(info.root, 'etc/waagent.conf')])
+
+		# The Azure Linux agent uses 'useradd' to add users, but SHELL
+		# is set to /bin/sh by default. Set this to /bin/bash instead.
+		from bootstrapvz.common.tools import sed_i
+		useradd_config = os.path.join(info.root, 'etc/default/useradd')
+		sed_i(useradd_config, r'^(SHELL=.*)', r'SHELL=/bin/bash')
