@@ -29,5 +29,5 @@ class ConfigureGrub(Task):
 	def run(cls, info):
 		from bootstrapvz.common.tools import sed_i
 		grub_config = os.path.join(info.root, 'etc/default/grub')
-		sed_i(grub_config, r'^(GRUB_CMDLINE_LINUX*=".*)"\s*$', r'\1console=ttyS0 earlyprintk=ttyS0 rootdelay=300"')
-		sed_i(grub_config, r'^.*(GRUB_TIMEOUT=).*$', r'GRUB_TIMEOUT=0')
+		sed_i(grub_config, r'^(GRUB_CMDLINE_LINUX*=".*)"\s*$', r'\1console=tty0 console=ttyS0,115200n8 earlyprintk=ttyS0,115200 rootdelay=300"')
+		sed_i(grub_config, r'^.*(GRUB_TIMEOUT=).*$', r'GRUB_TIMEOUT=5')
