@@ -27,7 +27,10 @@ class ConfigureGrub(Task):
 		grub_def = os.path.join(info.root, 'etc/default/grub')
 		sed_i(grub_def, '^#GRUB_TERMINAL=console', 'GRUB_TERMINAL=console')
 		sed_i(grub_def, '^GRUB_CMDLINE_LINUX_DEFAULT="quiet"',
-		                'GRUB_CMDLINE_LINUX_DEFAULT="console=ttyS0"')
+		                'GRUB_CMDLINE_LINUX_DEFAULT="console=hvc0"')
+		sed_i(grub_def, '^GRUB_TIMEOUT=[0-9]+', 'GRUB_TIMEOUT=0\n'
+		                                        'GRUB_HIDDEN_TIMEOUT=true')
+		sed_i(grub_def, '^#GRUB_DISABLE_RECOVERY="true"', 'GRUB_DISABLE_RECOVERY="true"')
 
 
 class InstallGrub_1_99(Task):
