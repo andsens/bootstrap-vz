@@ -150,7 +150,7 @@ definitions:
     type: object
     properties:
       filesystem:
-        enum: [ext2, ext3, ext4, xfs]
+        enum: [ext2, ext3, ext4, xfs, btrfs]
       format_command:
         items: {type: string}
         minItems: 1

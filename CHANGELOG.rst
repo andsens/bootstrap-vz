@@ -1,6 +1,13 @@
 Changelog
 =========
 
+2015-06-29
+----------
+Alex Adriaanse:
+	* Fix DKMS kernel version error
+	* Add support for Btrfs
+	* Add EC2 Jessie HVM manifest
+
 2015-05-08
 ----------
 Alexandre Derumier:
