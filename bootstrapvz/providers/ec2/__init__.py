@@ -65,13 +65,18 @@ def resolve_tasks(taskset, manifest):
 
 	                boot.BlackListModules,
 	                boot.DisableGetTTYs,
-	                tasks.network.EnableDHCPCDDNS,
 	                initd.AddExpandRoot,
 	                initd.RemoveHWClock,
 	                initd.InstallInitScripts,
 
 	                tasks.ami.RegisterAMI,
 	                ])
+
+	from bootstrapvz.common.releases import wheezy
+	if manifest.release <= wheezy:
+		# The default DHCP client `isc-dhcp' doesn't work properly on wheezy and earlier
+		taskset.add(tasks.network.InstallDHCPCD)
+		taskset.add(tasks.network.EnableDHCPCDDNS)
 
 	if manifest.provider.get('install_init_scripts', True):
 		taskset.add(tasks.initd.AddEC2InitScripts)

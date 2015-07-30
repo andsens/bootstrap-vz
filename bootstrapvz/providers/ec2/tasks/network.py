@@ -4,19 +4,27 @@ from bootstrapvz.common.tasks import kernel
 import os.path
 
 
+class InstallDHCPCD(Task):
+	description = 'Replacing isc-dhcp with dhcpcd'
+	phase = phases.preparation
+
+	@classmethod
+	def run(cls, info):
+		# isc-dhcp-client before jessie doesn't work properly with ec2
+		info.packages.add('dhcpcd')
+		info.exclude_packages.add('isc-dhcp-client')
+		info.exclude_packages.add('isc-dhcp-common')
+
+
 class EnableDHCPCDDNS(Task):
 	description = 'Configuring the DHCP client to set the nameservers'
 	phase = phases.system_modification
 
 	@classmethod
 	def run(cls, info):
-		# The dhcp client that ships with debian sets the DNS servers per default.
-		# For dhcpcd in Wheezy and earlier we need to configure it to do that.
-		from bootstrapvz.common.releases import wheezy
-		if info.manifest.release <= wheezy:
-			from bootstrapvz.common.tools import sed_i
-			dhcpcd = os.path.join(info.root, 'etc/default/dhcpcd')
-			sed_i(dhcpcd, '^#*SET_DNS=.*', 'SET_DNS=\'yes\'')
+		from bootstrapvz.common.tools import sed_i
+		dhcpcd = os.path.join(info.root, 'etc/default/dhcpcd')
+		sed_i(dhcpcd, '^#*SET_DNS=.*', 'SET_DNS=\'yes\'')
 
 
 class AddBuildEssentialPackage(Task):
