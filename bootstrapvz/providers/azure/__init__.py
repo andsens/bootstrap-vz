@@ -15,7 +15,8 @@ def validate_manifest(data, validator, error):
 
 def resolve_tasks(taskset, manifest):
 	taskset.update(task_groups.get_standard_groups(manifest))
-	taskset.update([tasks.packages.DefaultPackages,
+	taskset.update([apt.AddBackports,
+	                tasks.packages.DefaultPackages,
 	                loopback.AddRequiredCommands,
 	                loopback.Create,
 	                initd.InstallInitScripts,

@@ -2,7 +2,7 @@
 provider:
   name: azure
   waagent:
-    version: 2.0.13
+    version: 2.0.14
 bootstrapper:
   mirror: http://httpredir.debian.org/debian/
   workspace: /target
@@ -23,7 +23,11 @@ volume:
     root:
       filesystem: ext4
       size: 10GiB
-packages: {}
+packages:
+  components:
+  - main
+  - contrib
+  - non-free
 plugins:
   ntp:
     servers:
