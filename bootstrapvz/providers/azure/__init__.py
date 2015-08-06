@@ -5,6 +5,7 @@ import tasks.image
 from bootstrapvz.common.tasks import loopback
 from bootstrapvz.common.tasks import initd
 from bootstrapvz.common.tasks import ssh
+from bootstrapvz.common.tasks import apt
 
 
 def validate_manifest(data, validator, error):
