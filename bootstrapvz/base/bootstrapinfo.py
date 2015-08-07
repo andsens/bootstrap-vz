@@ -29,7 +29,7 @@ class BootstrapInformation(object):
 		self.volume = load_volume(self.manifest.volume, manifest.system['bootloader'])
 
 		# The default apt mirror
-		self.apt_mirror = self.manifest.packages.get('mirror', 'http://http.debian.net/debian')
+		self.apt_mirror = self.manifest.packages.get('mirror', 'http://httpredir.debian.org/debian/')
 
 		# Create the manifest_vars dictionary
 		self.manifest_vars = self.__create_manifest_vars(self.manifest, {'apt_mirror': self.apt_mirror})
