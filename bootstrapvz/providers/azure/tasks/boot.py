@@ -15,9 +15,9 @@ class PatchUdev(Task):
 		from bootstrapvz.common.tools import log_check_call
 		from . import assets
 		# c.f. http://anonscm.debian.org/cgit/pkg-systemd/systemd.git/commit/?id=61e055638cea
-		diff_file = file.read(open(os.path.join(assets, 'udev.diff'), 'r'))
-		udev_dir = os.path.join(info.root, 'usr/share/initramfs-tools/scripts/init-top')
-		log_check_call(['patch', '--no-backup-if-mismatch', '-p6', '-d' + udev_dir], stdin=diff_file)
+		udev_file = os.path.join(info.root, 'usr/share/initramfs-tools/scripts/init-top/udev')
+		diff_file = os.path.join(assets, 'udev.diff')
+		log_check_call(['patch', '--no-backup-if-mismatch', udev_file, diff_file])
 
 
 class ConfigureGrub(Task):
