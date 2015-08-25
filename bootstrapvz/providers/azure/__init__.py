@@ -5,6 +5,7 @@ import tasks.image
 from bootstrapvz.common.tasks import loopback
 from bootstrapvz.common.tasks import initd
 from bootstrapvz.common.tasks import ssh
+from bootstrapvz.common.tasks import apt
 
 
 def validate_manifest(data, validator, error):
@@ -15,7 +16,8 @@ def validate_manifest(data, validator, error):
 
 def resolve_tasks(taskset, manifest):
 	taskset.update(task_groups.get_standard_groups(manifest))
-	taskset.update([tasks.packages.DefaultPackages,
+	taskset.update([apt.AddBackports,
+	                tasks.packages.DefaultPackages,
 	                loopback.AddRequiredCommands,
 	                loopback.Create,
 	                initd.InstallInitScripts,
