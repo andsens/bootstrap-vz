@@ -38,12 +38,12 @@
       </Item>
       <Item>
         <rasd:AllocationUnits>MegaBytes</rasd:AllocationUnits>
-        <rasd:Caption>256 MB of memory</rasd:Caption>
+        <rasd:Caption>512 MB of memory</rasd:Caption>
         <rasd:Description>Memory Size</rasd:Description>
-        <rasd:ElementName>256 MB of memory</rasd:ElementName>
+        <rasd:ElementName>512 MB of memory</rasd:ElementName>
         <rasd:InstanceID>2</rasd:InstanceID>
         <rasd:ResourceType>4</rasd:ResourceType>
-        <rasd:VirtualQuantity>256</rasd:VirtualQuantity>
+        <rasd:VirtualQuantity>512</rasd:VirtualQuantity>
       </Item>
       <Item>
         <rasd:Address>0</rasd:Address>
@@ -124,7 +124,7 @@
           <HardwareVirtExLargePages enabled="true"/>
           <HardwareVirtForce enabled="false"/>
         </CPU>
-        <Memory RAMSize="256" PageFusion="false"/>
+        <Memory RAMSize="512" PageFusion="false"/>
         <HID Pointing="PS2Mouse" Keyboard="PS2Keyboard"/>
         <HPET enabled="false"/>
         <Chipset type="PIIX3"/>
