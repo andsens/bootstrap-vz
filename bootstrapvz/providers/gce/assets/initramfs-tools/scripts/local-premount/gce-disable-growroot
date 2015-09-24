@@ -1,5 +1,17 @@
 # Selectively disable growroot               -*- shell-script -*-
 set -e
+PREREQ=""
+prereqs()
+{
+  echo "$PREREQ"
+}
+
+case $1 in
+prereqs)
+  prereqs
+  exit 0
+  ;;
+esac
 
 message() { echo "DISABLE-GROWROOT:" "$@" ; }
 error_exit() { message "$@"; exit 1; }
@@ -11,6 +23,19 @@ error_exit() { message "$@"; exit 1; }
 # $ROOTFLAGS - Generally empty
 # $ROOTFSTYPE - Generally empty
 # $rootmnt - Set to "/root"
+
+# According to the initramfs documentation, it's supposed to wait until
+# the disks have been attached and verified before the local-premount scripts
+# run. This does not happen, however, and failures can happen below if $ROOT
+# is referenced before the disk that it points to is attached. This allows for
+# up to 4 seconds for that to happen. In practice, it generally takes less
+# than half a second.
+for i in $(seq 1 20); do
+  if [ -e "${ROOT}" ]; then
+    break
+  fi
+  sleep 0.2
+done
 
 # Follow link to get real root location
 if [ ! -L "${ROOT}" ]; then
