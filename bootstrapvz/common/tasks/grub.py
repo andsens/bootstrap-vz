@@ -29,7 +29,8 @@ class ConfigureGrub(Task):
 		sed_i(grub_def, '^GRUB_CMDLINE_LINUX_DEFAULT="quiet"',
 		                'GRUB_CMDLINE_LINUX_DEFAULT="console=hvc0"')
 		sed_i(grub_def, '^GRUB_TIMEOUT=[0-9]+', 'GRUB_TIMEOUT=0\n'
-		                                        'GRUB_HIDDEN_TIMEOUT=true')
+		                                        'GRUB_HIDDEN_TIMEOUT=0\n'
+		                                        'GRUB_HIDDEN_TIMEOUT_QUIET=true')
 		sed_i(grub_def, '^#GRUB_DISABLE_RECOVERY="true"', 'GRUB_DISABLE_RECOVERY="true"')
 
 
