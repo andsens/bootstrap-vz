@@ -1,7 +1,6 @@
 from bootstrapvz.common import task_groups
 import tasks.packages
 import tasks.boot
-import tasks.image
 from bootstrapvz.common.tasks import loopback
 from bootstrapvz.common.tasks import initd
 from bootstrapvz.common.tasks import ssh
@@ -20,6 +19,7 @@ def resolve_tasks(taskset, manifest):
 	                tasks.packages.DefaultPackages,
 	                loopback.AddRequiredCommands,
 	                loopback.Create,
+	                loopback.MoveImage,
 	                initd.InstallInitScripts,
 	                ssh.AddOpenSSHPackage,
 	                ssh.ShredHostkeys,
@@ -27,7 +27,6 @@ def resolve_tasks(taskset, manifest):
 	                tasks.packages.Waagent,
 	                tasks.boot.ConfigureGrub,
 	                tasks.boot.PatchUdev,
-	                tasks.image.ConvertToVhd,
 	                ])
 
 

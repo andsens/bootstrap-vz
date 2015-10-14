@@ -22,10 +22,12 @@ def load_volume(data, bootloader):
 	from bootstrapvz.common.fs.loopbackvolume import LoopbackVolume
 	from bootstrapvz.providers.ec2.ebsvolume import EBSVolume
 	from bootstrapvz.common.fs.virtualdiskimage import VirtualDiskImage
+	from bootstrapvz.common.fs.virtualharddisk import VirtualHardDisk
 	from bootstrapvz.common.fs.virtualmachinedisk import VirtualMachineDisk
 	volume_backing = {'raw': LoopbackVolume,
 	                  's3':  LoopbackVolume,
 	                  'vdi': VirtualDiskImage,
+	                  'vhd': VirtualHardDisk,
 	                  'vmdk': VirtualMachineDisk,
 	                  'ebs': EBSVolume
 	                  }.get(data['backing'])
