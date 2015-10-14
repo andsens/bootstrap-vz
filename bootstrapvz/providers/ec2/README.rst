@@ -14,8 +14,11 @@ any userdata supplied (if the userdata begins with ``#!`` it will be
 run). Set the variable ``install_init_scripts`` to ``False`` in order
 to disable this behaviour.
 
+Manifest settings
+-----------------
+
 Credentials
------------
+~~~~~~~~~~~
 
 The AWS credentials can be configured in two ways: Via the manifest or
 through environment variables. To bootstrap S3 backed instances you will
@@ -55,11 +58,51 @@ Example:
     ---
     provider:
       name: ec2
-      virtualization: hvm
-      enhanced_networking: simple
       credentials:
         access-key: AFAKEACCESSKEYFORAWS
         secret-key: thes3cr3tkeyf0ryourawsaccount/FS4d8Qdva
+
+Virtualization
+~~~~~~~~~~~~~~
+
+EC2 supports both paravirtual and hardware virtual machines.
+The virtualization type determines various factors about the
+virtual machine performance (read more about this `in the EC2 docs`__).
+
+__ http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/virtualization_types.html
+
+-  ``virtualization``: The virtualization type
+   Valid values: ``pvm``, ``hvm``
+   ``required``
+
+
+Example:
+
+.. code:: yaml
+
+    ---
+    provider:
+      name: ec2
+      virtualization: hvm
+
+Enhanced networking
+~~~~~~~~~~~~~~~~~~~
+
+Install enhanced networking drivers to take advantage of SR-IOV
+capabilities on hardware virtual machines.
+Read more about this in `the EC2 docs`__.
+
+__ http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/enhanced-networking.html
+
+Example:
+
+.. code:: yaml
+
+    ---
+    provider:
+      name: ec2
+      virtualization: hvm
+      enhanced_networking: simple
 
 Dependencies
 ------------
