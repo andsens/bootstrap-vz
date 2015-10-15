@@ -17,7 +17,7 @@ system:
   locale: en_US
   timezone: UTC
 volume:
-  backing: raw
+  backing: vhd
   partitions:
     type: msdos
     root:
