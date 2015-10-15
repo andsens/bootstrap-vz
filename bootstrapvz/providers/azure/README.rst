@@ -7,13 +7,10 @@ platform.
 Setup
 -----
 
-qemu-img >= 1.7.0 required to convert raw image to vhd fixed size disk.
-This release is available in wheezy-backports.
+``qemu-utils`` is needed to create the VHD image.
 
-*wget* must be installed on local computer.
-
-Manifest must use the *raw* format, provider will automatically
-transform the disk to a vhd disk format.
+``wget`` must be installed on local computer, so the Windows Azure Linux Agent
+can be downloaded.
 
 Do not create swap space on the OS disk:
 
