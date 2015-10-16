@@ -1,5 +1,6 @@
 from bootstrapvz.common import task_groups
 import tasks.packages
+from bootstrapvz.common.tasks import image
 from bootstrapvz.common.tasks import loopback
 from bootstrapvz.common.tasks import initd
 from bootstrapvz.common.tasks import ssh
@@ -21,7 +22,7 @@ def resolve_tasks(taskset, manifest):
 	                ssh.AddOpenSSHPackage,
 	                ssh.ShredHostkeys,
 	                ssh.AddSSHKeyGeneration,
-	                loopback.MoveImage,
+	                image.MoveImage,
 	                ])
 
 	if manifest.provider.get('virtio', []):

@@ -1,5 +1,5 @@
 from bootstrapvz.base import Task
-from .. import phases
+from bootstrapvz.common import phases
 import host
 import volume
 
@@ -30,22 +30,3 @@ class Create(Task):
 		import os.path
 		image_path = os.path.join(info.workspace, 'volume.' + info.volume.extension)
 		info.volume.create(image_path)
-
-
-class MoveImage(Task):
-	description = 'Moving volume image'
-	phase = phases.image_registration
-
-	@classmethod
-	def run(cls, info):
-		image_name = info.manifest.image['name'].format(**info.manifest_vars)
-		filename = image_name + '.' + info.volume.extension
-
-		import os.path
-		destination = os.path.join(info.manifest.bootstrapper['workspace'], filename)
-		import shutil
-		shutil.move(info.volume.image_path, destination)
-		info.volume.image_path = destination
-		import logging
-		log = logging.getLogger(__name__)
-		log.info('The volume image has been moved to ' + destination)

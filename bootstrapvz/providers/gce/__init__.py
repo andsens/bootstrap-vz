@@ -8,6 +8,7 @@ import tasks.host
 import tasks.packages
 from bootstrapvz.common.tasks import apt
 from bootstrapvz.common.tasks import boot
+from bootstrapvz.common.tasks import image
 from bootstrapvz.common.tasks import loopback
 from bootstrapvz.common.tasks import initd
 from bootstrapvz.common.tasks import kernel
@@ -47,7 +48,7 @@ def resolve_tasks(taskset, manifest):
 	                ssh.DisableSSHPasswordAuthentication,
 	                tasks.apt.CleanGoogleRepositoriesAndKeys,
 
-	                loopback.MoveImage,
+	                image.MoveImage,
 	                tasks.image.CreateTarball,
 	                volume.Delete,
 	                ])

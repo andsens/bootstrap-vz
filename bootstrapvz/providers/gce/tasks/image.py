@@ -1,6 +1,6 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
-from bootstrapvz.common.tasks import loopback
+from bootstrapvz.common.tasks import image
 from bootstrapvz.common.tools import log_check_call
 import os.path
 
@@ -8,7 +8,7 @@ import os.path
 class CreateTarball(Task):
 	description = 'Creating tarball with image'
 	phase = phases.image_registration
-	predecessors = [loopback.MoveImage]
+	predecessors = [image.MoveImage]
 
 	@classmethod
 	def run(cls, info):

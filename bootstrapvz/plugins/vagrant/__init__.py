@@ -1,22 +1,22 @@
 import tasks
+from bootstrapvz.common import task_groups
+from bootstrapvz.common.tasks import image
+from bootstrapvz.common.tasks import ssh
+from bootstrapvz.common.tasks import volume
+import os
 
 
 def validate_manifest(data, validator, error):
-	import os.path
 	schema_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'manifest-schema.yml'))
 	validator(data, schema_path)
 
 
 def resolve_tasks(taskset, manifest):
-	from bootstrapvz.common import task_groups
-	from bootstrapvz.common.tasks import ssh
 	taskset.update(task_groups.ssh_group)
+
+	taskset.discard(image.MoveImage)
 	taskset.discard(ssh.DisableSSHPasswordAuthentication)
 
-	from bootstrapvz.common.tasks import loopback
-	taskset.discard(loopback.MoveImage)
-
-	from bootstrapvz.common.tasks import volume
 	taskset.update([tasks.CheckBoxPath,
 	                tasks.CreateVagrantBoxDir,
 	                tasks.AddPackages,
