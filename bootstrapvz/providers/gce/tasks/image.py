@@ -35,7 +35,7 @@ class CreateTarball(Task):
 
 
 class UploadImage(Task):
-	description = 'Uploading image to GCE'
+	description = 'Uploading image to GCS'
 	phase = phases.image_registration
 	predecessors = [CreateTarball]
 
