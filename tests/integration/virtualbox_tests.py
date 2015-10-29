@@ -1,6 +1,5 @@
 from manifests import merge_manifest_data
 from tools import boot_manifest
-from unittest.case import SkipTest
 
 partials = {'vdi': '{provider: {name: virtualbox}, volume: {backing: vdi}}',
             'vmdk': '{provider: {name: virtualbox}, volume: {backing: vmdk}}',
