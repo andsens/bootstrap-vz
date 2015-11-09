@@ -1,7 +1,7 @@
 ---
 provider:
   name: virtualbox
-  guest_additions: /root/images/VBoxGuestAdditions.iso
+  guest_additions: /usr/share/virtualbox/VBoxGuestAdditions.iso
 bootstrapper:
   workspace: /target
 image:
