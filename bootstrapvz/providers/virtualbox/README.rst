@@ -7,6 +7,9 @@ run in VirtualBox). It's advisable to always use vmdk images for
 interoperability (e.g.
 `OVF <http://en.wikipedia.org/wiki/Open_Virtualization_Format>`__ files
 *should* support vdi files, but since they have no identifier URL not
-even VirtualBox itself can import them). VirtualBox Guest Additions can
-be installed automatically if the ISO is `provided in the
-manifest <../../../manifests/#bootstrapper>`__.
+even VirtualBox itself can import them).
+
+VirtualBox Guest Additions can be installed automatically if the ISO is
+`provided in the manifest <../../../manifests/#bootstrapper>`__.
+VirtualBox Additions iso can be installed from main Debian repo by running:
+`apt install virtualbox-guest-additions-iso`
