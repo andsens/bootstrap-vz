@@ -13,7 +13,7 @@ def find_version(path):
 
 setup(name='bootstrap-vz',
       version=find_version(os.path.join(os.path.dirname(__file__), 'bootstrapvz/__init__.py')),
-      packages=find_packages(),
+      packages=find_packages(exclude=['docs']),
       include_package_data=True,
       entry_points={'console_scripts': ['bootstrap-vz = bootstrapvz.base:main',
                                         'bootstrap-vz-remote = bootstrapvz.remote.main:main',
