@@ -19,6 +19,16 @@ def resolve_tasks(taskset, manifest):
 	if manifest.plugins['minimize_size'].get('shrink', False):
 		taskset.add(tasks.AddRequiredCommands)
 		taskset.add(tasks.ShrinkVolume)
+	if 'apt' in manifest.plugins['minimize_size']:
+		apt = manifest.plugins['minimize_size']['apt']
+		if apt.get('autoclean', False):
+			taskset.add(tasks.AutomateAptClean)
+		if 'languages' in apt:
+			taskset.add(tasks.FilterTranslationFiles)
+		if apt.get('gzip_indexes', False):
+			taskset.add(tasks.AptGzipIndexes)
+		if apt.get('autoremove_suggests', False):
+			taskset.add(tasks.AptAutoremoveSuggests)
 
 
 def resolve_rollback_tasks(taskset, manifest, completed, counter_task):

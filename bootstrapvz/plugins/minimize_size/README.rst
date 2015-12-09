@@ -6,8 +6,8 @@ virtual volumes are much smaller than their reported size until any data
 is written to them. During the bootstrapping process temporary data like
 the aptitude cache is written to the volume only to be removed again.
 
-The minimize size plugin employs three different strategies to keep a
-low volume footprint:
+The minimize size plugin employs various strategies to keep a low volume
+footprint:
 
 -  Mount folders from the host into key locations of the image volume to
    avoid any unneccesary disk writes.
@@ -21,6 +21,9 @@ low volume footprint:
    backing). The tool is part of the `VMWare
    Workstation <https://my.vmware.com/web/vmware/info/slug/desktop_end_user_computing/vmware_workstation/10_0>`__
    package.
+-  Tell apt to only download specific language files. See the
+   `apt.conf manpage <http://manpages.debian.org/cgi-bin/man.cgi?query=apt.conf>`__
+   for more details ("Languages" in the "Acquire group" section).
 
 Settings
 ~~~~~~~~
@@ -34,4 +37,7 @@ Settings
    best in conjunction with the zerofree tool.
    Valid values: true, false
    Default: false
+   ``optional``
+-  ``apt_languages``: List of languages apt should download. Use ``[none]`` to
+   not download any languages at all.
    ``optional``

@@ -24,3 +24,10 @@ volume:
     root:
       filesystem: ext4
       size: 1GiB
+plugins:
+  minimize_size:
+    apt:
+      autoclean: true
+      languages: [none]
+      gzip_indexes: true
+      autoremove_suggests: true
