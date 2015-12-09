@@ -3,10 +3,11 @@ $schema: http://json-schema.org/draft-04/schema#
 title: VirtualBox manifest
 type: object
 properties:
-  bootstrapper:
+  provider:
     type: object
     properties:
-      guest_additions: {type: string}
+      guest_additions:
+        $ref: '#/definitions/absolute_path'
   system:
     type: object
     properties:
@@ -34,3 +35,7 @@ properties:
             - msdos
             - gpt
     required: [backing]
+definitions:
+  absolute_path:
+    type: string
+    pattern: ^/[^\0]+$
