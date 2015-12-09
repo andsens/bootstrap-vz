@@ -16,6 +16,7 @@ from tasks import network
 from tasks import initd
 from tasks import ssh
 from tasks import kernel
+from tasks import folder
 
 
 def get_standard_groups(manifest):
@@ -94,6 +95,9 @@ ssh_group = [ssh.AddOpenSSHPackage,
 
 
 def get_network_group(manifest):
+	if manifest.bootstrapper.get('variant', None) == 'minbase':
+		# minbase has no networking
+		return []
 	group = [network.ConfigureNetworkIF,
 	         network.RemoveDNSInfo]
 	if manifest.system.get('hostname', False):
@@ -182,6 +186,7 @@ rollback_map = {workspace.CreateWorkspace:  workspace.DeleteWorkspace,
                 partitioning.MapPartitions: partitioning.UnmapPartitions,
                 filesystem.CreateMountDir:  filesystem.DeleteMountDir,
                 filesystem.MountRoot:       filesystem.UnmountRoot,
+                folder.Create:              folder.Delete,
                 }
 
 

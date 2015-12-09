@@ -1,0 +1,26 @@
+---
+provider:
+  name: docker
+  repository: bootstrap-vz
+  tag: latest
+bootstrapper:
+  workspace: /target
+  variant: minbase
+image:
+  name: debian-{system.release}-{system.architecture}-{%y}{%m}{%d}
+  description: Debian {system.release} {system.architecture}
+system:
+  release: jessie
+  architecture: amd64
+  bootloader: none
+  charmap: UTF-8
+  locale: en_US
+  timezone: UTC
+packages: {}
+volume:
+  backing: folder
+  partitions:
+    type: none
+    root:
+      filesystem: ext4
+      size: 1GiB

@@ -1,0 +1,32 @@
+---
+$schema: http://json-schema.org/draft-04/schema#
+title: Docker manifest
+type: object
+properties:
+  provider:
+    type: object
+    properties:
+      repository:
+        type: string
+      tag:
+        type: string
+    required: [repository, tag]
+  system:
+    type: object
+    properties:
+      bootloader:
+        type: string
+        enum: [none]
+  volume:
+    type: object
+    properties:
+      backing:
+        type: string
+        enum: [folder]
+      partitions:
+        type: object
+        properties:
+          type:
+            type: string
+            enum: [none]
+    required: [backing]

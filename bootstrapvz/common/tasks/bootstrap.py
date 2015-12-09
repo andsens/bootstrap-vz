@@ -21,6 +21,8 @@ def get_bootstrap_args(info):
 	executable = ['debootstrap']
 	arch = info.manifest.system.get('userspace_architecture', info.manifest.system.get('architecture'))
 	options = ['--arch=' + arch]
+	if 'variant' in info.manifest.bootstrapper:
+		options.append('--variant=' + info.manifest.bootstrapper['variant'])
 	if len(info.include_packages) > 0:
 		options.append('--include=' + ','.join(info.include_packages))
 	if len(info.exclude_packages) > 0:
@@ -53,8 +55,8 @@ class MakeTarball(Task):
 		else:
 			from ..tools import log_call
 			status, out, err = log_call(executable + options + ['--make-tarball=' + info.tarball] + arguments)
-			if status != 1:
-				msg = 'debootstrap exited with status {status}, it should exit with status 1'.format(status=status)
+			if status not in [0, 1]:  # variant=minbase exits with 0
+				msg = 'debootstrap exited with status {status}, it should exit with status 0 or 1'.format(status=status)
 				raise TaskError(msg)
 
 
