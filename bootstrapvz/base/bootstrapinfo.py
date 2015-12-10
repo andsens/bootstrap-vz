@@ -55,6 +55,10 @@ class BootstrapInformation(object):
 		# that hint at how a command may be made available.
 		self.host_dependencies = {}
 
+		# Path to optional bootstrapping script for modifying the behaviour of debootstrap
+		# (will be used instead of e.g. /usr/share/debootstrap/scripts/jessie)
+		self.bootstrap_script = None
+
 		# Lists of startup scripts that should be installed and disabled
 		self.initd = {'install': {}, 'disable': []}
 

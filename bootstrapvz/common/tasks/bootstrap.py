@@ -75,6 +75,10 @@ class Bootstrap(Task):
 				log.debug('Found matching tarball, skipping download')
 			options.extend(['--unpack-tarball=' + tarball])
 
+		if info.bootstrap_script is not None:
+			# Optional bootstrapping script to modify the bootstrapping process
+			arguments.append(info.bootstrap_script)
+
 		from ..tools import log_check_call
 		log_check_call(executable + options + arguments)
 
