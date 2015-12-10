@@ -31,3 +31,6 @@ plugins:
       languages: [none]
       gzip_indexes: true
       autoremove_suggests: true
+      locales:
+        - en
+        - en_US

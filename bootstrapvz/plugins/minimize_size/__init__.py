@@ -29,7 +29,13 @@ def resolve_tasks(taskset, manifest):
 			taskset.add(tasks.AptGzipIndexes)
 		if apt.get('autoremove_suggests', False):
 			taskset.add(tasks.AptAutoremoveSuggests)
+		if 'locales' in apt:
+			taskset.update([tasks.CreateBootstrapFilterScripts,
+			                tasks.DeleteBootstrapFilterScripts,
+			                tasks.FilterLocales,
+			                ])
 
 
 def resolve_rollback_tasks(taskset, manifest, completed, counter_task):
 	counter_task(taskset, tasks.AddFolderMounts, tasks.RemoveFolderMounts)
+	counter_task(taskset, tasks.CreateBootstrapFilterScripts, tasks.DeleteBootstrapFilterScripts)
