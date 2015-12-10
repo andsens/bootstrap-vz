@@ -49,12 +49,12 @@ class MakeTarball(Task):
 	@classmethod
 	def run(cls, info):
 		executable, options, arguments = get_bootstrap_args(info)
-		info.tarball = get_tarball_filename(info)
-		if os.path.isfile(info.tarball):
+		tarball = get_tarball_filename(info)
+		if os.path.isfile(tarball):
 			log.debug('Found matching tarball, skipping creation')
 		else:
 			from ..tools import log_call
-			status, out, err = log_call(executable + options + ['--make-tarball=' + info.tarball] + arguments)
+			status, out, err = log_call(executable + options + ['--make-tarball=' + tarball] + arguments)
 			if status not in [0, 1]:  # variant=minbase exits with 0
 				msg = 'debootstrap exited with status {status}, it should exit with status 0 or 1'.format(status=status)
 				raise TaskError(msg)
@@ -68,12 +68,12 @@ class Bootstrap(Task):
 	@classmethod
 	def run(cls, info):
 		executable, options, arguments = get_bootstrap_args(info)
-		info.tarball = get_tarball_filename(info)
-		if os.path.isfile(info.tarball):
+		tarball = get_tarball_filename(info)
+		if os.path.isfile(tarball):
 			if not info.manifest.bootstrapper.get('tarball', False):
 				# Only shows this message if it hasn't tried to create the tarball
 				log.debug('Found matching tarball, skipping download')
-			options.extend(['--unpack-tarball=' + info.tarball])
+			options.extend(['--unpack-tarball=' + tarball])
 
 		from ..tools import log_check_call
 		log_check_call(executable + options + arguments)
