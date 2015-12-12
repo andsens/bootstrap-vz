@@ -37,10 +37,12 @@ def resolve_tasks(taskset, manifest):
 		                tasks.dpkg.CreateBootstrapFilterScripts,
 		                tasks.dpkg.DeleteBootstrapFilterScripts,
 		                ]
-		if 'locales' in apt:
+	if 'dpkg' in manifest.plugins['minimize_size']:
+		dpkg = manifest.plugins['minimize_size']['dpkg']
+		if 'locales' in dpkg:
 			taskset.update(filter_tasks)
 			taskset.add(tasks.dpkg.FilterLocales)
-		if apt.get('exclude_docs', False):
+		if dpkg.get('exclude_docs', False):
 			taskset.update(filter_tasks)
 			taskset.add(tasks.dpkg.ExcludeDocs)
 

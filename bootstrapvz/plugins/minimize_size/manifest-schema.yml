@@ -23,6 +23,9 @@ properties:
                 type: boolean
               autoremove_suggests:
                 type: boolean
+          dpkg:
+            type: object
+            properties:
               locales:
                 type: array
                 minItems: 1

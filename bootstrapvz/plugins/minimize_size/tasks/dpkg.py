@@ -81,7 +81,7 @@ class FilterLocales(Task):
 			'/usr/share/man/',
 		])
 
-		locales = info.manifest.plugins['minimize_size']['apt']['locales']
+		locales = info.manifest.plugins['minimize_size']['dpkg']['locales']
 		info._minimize_size['bootstrap_filter']['include'].extend([
 			'/usr/share/locale/locale.alias',
 			'/usr/share/man/man1',
@@ -104,7 +104,7 @@ class FilterLocales(Task):
 		manpages_lines = ['path-exclude=/usr/share/man/*',
 		                  'path-include=/usr/share/man/man[1-9]']
 
-		locales = info.manifest.plugins['minimize_size']['apt']['locales']
+		locales = info.manifest.plugins['minimize_size']['dpkg']['locales']
 		locale_lines.extend(map(lambda l: 'path-include=/usr/share/locale/' + l + '/*', locales))
 		manpages_lines.extend(map(lambda l: 'path-include=/usr/share/man/' + l + '/*', locales))
 
