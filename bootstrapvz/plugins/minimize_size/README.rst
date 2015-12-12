@@ -24,6 +24,7 @@ footprint:
 -  Tell apt to only download specific language files. See the
    `apt.conf manpage <http://manpages.debian.org/cgi-bin/man.cgi?query=apt.conf>`__
    for more details ("Languages" in the "Acquire group" section).
+-  Configure debootstrap and dpkg to filter out specific paths when installing packages
 
 Settings
 ~~~~~~~~
@@ -38,6 +39,39 @@ Settings
    Valid values: true, false
    Default: false
    ``optional``
--  ``apt_languages``: List of languages apt should download. Use ``[none]`` to
-   not download any languages at all.
+-  ``apt``: Apt specific configurations. ``optional``
+
+   -  ``autoclean``: Configure apt to clean out the archive and cache
+      after every run.
+      Valid values: true, false
+      Default: false
+      ``optional``
+   -  ``languages``: List of languages apt should download. Use ``[none]`` to
+      not download any languages at all.
+      ``optional``
+   -  ``gzip_indexes``: Gzip apt package indexes.
+      Valid values: true, false
+      Default: false
+      ``optional``
+   -  ``autoremove_suggests``: Suggested packages are removed when running.
+      ``apt-get purge --auto-remove``
+      Valid values: true, false
+      Default: false
+      ``optional``
+-  ``dpkg``: dpkg (and debootstrap) specific configurations.
+   These settings not only affect the behavior of dpkg when
+   installing packages after the image has been created, but also
+   during the bootstrapping process. This includes the behavior of
+   debootstrap.
    ``optional``
+
+   -  ``locales``: List of locales that should be kept.
+      When this option is used, all locales (and the manpages in those locales)
+      are excluded from installation excepting the ones in this list.
+      Specify an empty list to not install any locales at all.
+      ``optional``
+   -  ``exclude_docs``: Exclude additional package documentation located in
+      ``/usr/share/doc``
+      Valid values: true, false
+      Default: false
+      ``optional``
