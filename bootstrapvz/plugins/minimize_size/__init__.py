@@ -1,4 +1,7 @@
-import tasks
+import tasks.mounts
+import tasks.shrink
+import tasks.apt
+import tasks.dpkg
 
 
 def validate_manifest(data, validator, error):
@@ -10,29 +13,29 @@ def validate_manifest(data, validator, error):
 
 
 def resolve_tasks(taskset, manifest):
-	taskset.update([tasks.AddFolderMounts,
-	                tasks.RemoveFolderMounts,
+	taskset.update([tasks.mounts.AddFolderMounts,
+	                tasks.mounts.RemoveFolderMounts,
 	                ])
 	if manifest.plugins['minimize_size'].get('zerofree', False):
-		taskset.add(tasks.AddRequiredCommands)
-		taskset.add(tasks.Zerofree)
+		taskset.add(tasks.shrink.AddRequiredCommands)
+		taskset.add(tasks.shrink.Zerofree)
 	if manifest.plugins['minimize_size'].get('shrink', False):
-		taskset.add(tasks.AddRequiredCommands)
-		taskset.add(tasks.ShrinkVolume)
+		taskset.add(tasks.shrink.AddRequiredCommands)
+		taskset.add(tasks.shrink.ShrinkVolume)
 	if 'apt' in manifest.plugins['minimize_size']:
 		apt = manifest.plugins['minimize_size']['apt']
 		if apt.get('autoclean', False):
-			taskset.add(tasks.AutomateAptClean)
+			taskset.add(tasks.apt.AutomateAptClean)
 		if 'languages' in apt:
-			taskset.add(tasks.FilterTranslationFiles)
+			taskset.add(tasks.apt.FilterTranslationFiles)
 		if apt.get('gzip_indexes', False):
-			taskset.add(tasks.AptGzipIndexes)
+			taskset.add(tasks.apt.AptGzipIndexes)
 		if apt.get('autoremove_suggests', False):
-			taskset.add(tasks.AptAutoremoveSuggests)
+			taskset.add(tasks.apt.AptAutoremoveSuggests)
 		if 'locales' in apt:
-			taskset.update([tasks.CreateBootstrapFilterScripts,
-			                tasks.DeleteBootstrapFilterScripts,
-			                tasks.FilterLocales,
+			taskset.update([tasks.dpkg.CreateBootstrapFilterScripts,
+			                tasks.dpkg.DeleteBootstrapFilterScripts,
+			                tasks.dpkg.FilterLocales,
 			                ])
 
 
