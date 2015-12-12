@@ -28,7 +28,6 @@ properties:
             properties:
               locales:
                 type: array
-                minItems: 1
                 items:
                   type: string
               exclude_docs:
