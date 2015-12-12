@@ -79,8 +79,17 @@ class Bootstrap(Task):
 			# Optional bootstrapping script to modify the bootstrapping process
 			arguments.append(info.bootstrap_script)
 
-		from ..tools import log_check_call
-		log_check_call(executable + options + arguments)
+		try:
+			from ..tools import log_check_call
+			log_check_call(executable + options + arguments)
+		except KeyboardInterrupt:
+			# Sometimes ../root/sys and ../root/proc are still mounted when
+			# quitting debootstrap prematurely. This break the cleanup process,
+			# so we unmount manually (ignore the exit code, the dirs may not be mounted).
+			from ..tools import log_call
+			log_call(['umount', os.path.join(info.root, 'sys')])
+			log_call(['umount', os.path.join(info.root, 'proc')])
+			raise
 
 
 class IncludePackagesInBootstrap(Task):
