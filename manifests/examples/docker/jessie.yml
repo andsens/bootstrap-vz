@@ -34,3 +34,4 @@ plugins:
       locales:
         - en
         - en_US
+      exclude_docs: true

@@ -28,6 +28,8 @@ properties:
                 minItems: 1
                 items:
                   type: string
+              exclude_docs:
+                type: boolean
         type: object
         additionalProperties: false
     type: object

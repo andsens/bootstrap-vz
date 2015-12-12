@@ -8,6 +8,25 @@ import shutil
 from . import assets
 
 
+class CreateDpkgCfg(Task):
+	description = 'Creating /etc/dpkg/dpkg.cfg.d before bootstrapping'
+	phase = phases.os_installation
+	successors = [bootstrap.Bootstrap]
+
+	@classmethod
+	def run(cls, info):
+		os.makedirs(os.path.join(info.root, 'etc/dpkg/dpkg.cfg.d'))
+
+
+class InitializeBootstrapFilterList(Task):
+	description = 'Initializing the bootstrapping filter list'
+	phase = phases.preparation
+
+	@classmethod
+	def run(cls, info):
+		info._minimize_size['bootstrap_filter'] = {'exclude': [], 'include': []}
+
+
 class CreateBootstrapFilterScripts(Task):
 	description = 'Creating the bootstrapping locales filter script'
 	phase = phases.os_installation
@@ -29,46 +48,23 @@ class CreateBootstrapFilterScripts(Task):
 		shutil.copy(os.path.join(assets, 'bootstrap-files-filter.sh'), filter_script)
 
 		sed_i(bootstrap_script, r'BOOTSTRAP_FILES_FILTER_PATH', filter_script)
-		sed_i(filter_script, r'EXCLUDE_PATTERN', "./usr/share/locale/.\+\|./usr/share/man/.\+")
 
-		keep_files = ['./usr/share/locale/locale.alias',
-		              './usr/share/man/man1',
-		              './usr/share/man/man2',
-		              './usr/share/man/man3',
-		              './usr/share/man/man4',
-		              './usr/share/man/man5',
-		              './usr/share/man/man6',
-		              './usr/share/man/man7',
-		              './usr/share/man/man8',
-		              './usr/share/man/man9',
-		              ]
-		locales = info.manifest.plugins['minimize_size']['apt']['locales']
-		keep_files.extend(map(lambda l: './usr/share/locale/' + l + '/', locales))
-		keep_files.extend(map(lambda l: './usr/share/man/' + l + '/', locales))
-
-		sed_i(filter_script, r'INCLUDE_PATHS', "\n".join(keep_files))
+		filter_lists = info._minimize_size['bootstrap_filter']
+		exclude_list = '\|'.join(map(lambda p: '.' + p + '.\+', filter_lists['exclude']))
+		include_list = '\n'.join(map(lambda p: '.' + p, filter_lists['include']))
+		sed_i(filter_script, r'EXCLUDE_PATTERN', exclude_list)
+		sed_i(filter_script, r'INCLUDE_PATHS', include_list)
 		os.chmod(filter_script, 0755)
 
 		info.bootstrap_script = bootstrap_script
 		info._minimize_size['filter_script'] = filter_script
 
 
-class DeleteBootstrapFilterScripts(Task):
-	description = 'Deleting the bootstrapping locales filter script'
-	phase = phases.cleaning
-	successors = [workspace.DeleteWorkspace]
-
-	@classmethod
-	def run(cls, info):
-		os.remove(info._minimize_size['filter_script'])
-		del info._minimize_size['filter_script']
-		os.remove(info.bootstrap_script)
-
-
 class FilterLocales(Task):
-	description = 'Configuring dpkg to only include specific locales/manpages when installing packages'
+	description = 'Configuring dpkg and debootstrap to only include specific locales/manpages when installing packages'
 	phase = phases.os_installation
-	successors = [bootstrap.Bootstrap]
+	predecessors = [CreateDpkgCfg]
+	successors = [CreateBootstrapFilterScripts]
 	# Snatched from:
 	# https://github.com/docker/docker/blob/1d775a54cc67e27f755c7338c3ee938498e845d7/contrib/mkimage/debootstrap
 	# and
@@ -76,8 +72,30 @@ class FilterLocales(Task):
 
 	@classmethod
 	def run(cls, info):
-		# This is before we start bootstrapping, so we create dpkg.cfg.d manually
-		os.makedirs(os.path.join(info.root, 'etc/dpkg/dpkg.cfg.d'))
+		# Filter when debootstrapping
+		info._minimize_size['bootstrap_filter']['exclude'].extend([
+			'/usr/share/locale/',
+			'/usr/share/man/',
+		])
+
+		locales = info.manifest.plugins['minimize_size']['apt']['locales']
+		info._minimize_size['bootstrap_filter']['include'].extend([
+			'/usr/share/locale/locale.alias',
+			'/usr/share/man/man1',
+			'/usr/share/man/man2',
+			'/usr/share/man/man3',
+			'/usr/share/man/man4',
+			'/usr/share/man/man5',
+			'/usr/share/man/man6',
+			'/usr/share/man/man7',
+			'/usr/share/man/man8',
+			'/usr/share/man/man9',
+		] +
+			map(lambda l: '/usr/share/locale/' + l + '/', locales) +
+			map(lambda l: '/usr/share/man/' + l + '/', locales)
+		)
+
+		# Filter when installing things with dpkg
 		locale_lines = ['path-exclude=/usr/share/locale/*',
 		                'path-include=/usr/share/locale/locale.alias']
 		manpages_lines = ['path-exclude=/usr/share/man/*',
@@ -94,3 +112,32 @@ class FilterLocales(Task):
 			locale_filter.write('\n'.join(locale_lines) + '\n')
 		with open(manpages_path, 'w') as manpages_filter:
 			manpages_filter.write('\n'.join(manpages_lines) + '\n')
+
+
+class ExcludeDocs(Task):
+	description = 'Configuring dpkg and debootstrap to not install additional documentation for packages'
+	phase = phases.os_installation
+	predecessors = [CreateDpkgCfg]
+	successors = [CreateBootstrapFilterScripts]
+
+	@classmethod
+	def run(cls, info):
+		# "Packages must not require the existence of any files in /usr/share/doc/ in order to function [...]."
+		# Source: https://www.debian.org/doc/debian-policy/ch-docs.html
+		# So doing this should cause no problems.
+		info._minimize_size['bootstrap_filter']['exclude'].append('/usr/share/doc/')
+		exclude_docs_path = os.path.join(info.root, 'etc/dpkg/dpkg.cfg.d/10exclude-docs')
+		with open(exclude_docs_path, 'w') as exclude_docs:
+			exclude_docs.write('path-exclude=/usr/share/doc/*\n')
+
+
+class DeleteBootstrapFilterScripts(Task):
+	description = 'Deleting the bootstrapping locales filter script'
+	phase = phases.cleaning
+	successors = [workspace.DeleteWorkspace]
+
+	@classmethod
+	def run(cls, info):
+		os.remove(info._minimize_size['filter_script'])
+		del info._minimize_size['filter_script']
+		os.remove(info.bootstrap_script)

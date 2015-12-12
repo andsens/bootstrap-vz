@@ -32,13 +32,19 @@ def resolve_tasks(taskset, manifest):
 			taskset.add(tasks.apt.AptGzipIndexes)
 		if apt.get('autoremove_suggests', False):
 			taskset.add(tasks.apt.AptAutoremoveSuggests)
+		filter_tasks = [tasks.dpkg.CreateDpkgCfg,
+		                tasks.dpkg.InitializeBootstrapFilterList,
+		                tasks.dpkg.CreateBootstrapFilterScripts,
+		                tasks.dpkg.DeleteBootstrapFilterScripts,
+		                ]
 		if 'locales' in apt:
-			taskset.update([tasks.dpkg.CreateBootstrapFilterScripts,
-			                tasks.dpkg.DeleteBootstrapFilterScripts,
-			                tasks.dpkg.FilterLocales,
-			                ])
+			taskset.update(filter_tasks)
+			taskset.add(tasks.dpkg.FilterLocales)
+		if apt.get('exclude_docs', False):
+			taskset.update(filter_tasks)
+			taskset.add(tasks.dpkg.ExcludeDocs)
 
 
 def resolve_rollback_tasks(taskset, manifest, completed, counter_task):
-	counter_task(taskset, tasks.AddFolderMounts, tasks.RemoveFolderMounts)
-	counter_task(taskset, tasks.CreateBootstrapFilterScripts, tasks.DeleteBootstrapFilterScripts)
+	counter_task(taskset, tasks.mounts.AddFolderMounts, tasks.mounts.RemoveFolderMounts)
+	counter_task(taskset, tasks.dpkg.CreateBootstrapFilterScripts, tasks.dpkg.DeleteBootstrapFilterScripts)
