@@ -50,7 +50,7 @@ class AptGzipIndexes(Task):
 
 
 class AptAutoremoveSuggests(Task):
-	description = 'Configuring apt to not consider suggested important'
+	description = 'Configuring apt to remove suggested packages when autoremoving'
 	phase = phases.package_installation
 	successors = [apt.AptUpdate]
 	# Snatched from:
