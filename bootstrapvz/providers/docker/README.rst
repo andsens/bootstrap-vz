@@ -20,6 +20,7 @@ Name
 -  ``name``: The image name is the repository and tag to where an
    image should be imported.
    ``required``
+   ``manifest vars``
 
 
 Provider

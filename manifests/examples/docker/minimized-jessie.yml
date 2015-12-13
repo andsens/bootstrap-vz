@@ -1,5 +1,5 @@
 ---
-name: debian-{system.release}-{system.architecture}-{%y}{%m}{%d}
+name: debian-{system.release}-{system.architecture}-{%y}{%m}{%d}:latest
 provider:
   name: docker
   labels:

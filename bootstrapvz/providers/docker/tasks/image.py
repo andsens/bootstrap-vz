@@ -22,7 +22,7 @@ class CreateImage(Task):
 		tar_cmd = ['tar', '--create', '--numeric-owner',
 		           '--directory', info.volume.path, '.']
 		docker_cmd = ['docker', 'import', '--change', info._docker['dockerfile'], '-',
-		              info.manifest.name]
+		              info.manifest.name.format(**info.manifest_vars)]
 		cmd = ' '.join(map(quote, tar_cmd)) + ' | ' + ' '.join(map(quote, docker_cmd))
 		[info._docker['container_id']] = log_check_call([cmd], shell=True)
 
