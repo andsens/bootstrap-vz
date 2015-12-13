@@ -6,10 +6,6 @@ properties:
   provider:
     type: object
     properties:
-      repository:
-        type: string
-      tag:
-        type: string
       labels:
         type: object
         properties:
@@ -25,7 +21,6 @@ properties:
             ^.+$: {type: string}
       dockerfile:
         type: string
-    required: [repository, tag]
   system:
     type: object
     properties:

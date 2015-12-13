@@ -3,9 +3,34 @@ from bootstrapvz.common import phases
 from bootstrapvz.common.tools import log_check_call
 
 
-class PopulateDockerfileLabels(Task):
-	description = 'Populating dockerfile labels'
+class CreateDockerfileEntry(Task):
+	description = 'Creating the Dockerfile entry'
+	phase = phases.preparation
+
+	@classmethod
+	def run(cls, info):
+		info._docker['dockerfile'] = ''
+
+
+class CreateImage(Task):
+	description = 'Creating docker image'
 	phase = phases.image_registration
+
+	@classmethod
+	def run(cls, info):
+		from pipes import quote
+		tar_cmd = ['tar', '--create', '--numeric-owner',
+		           '--directory', info.volume.path, '.']
+		docker_cmd = ['docker', 'import', '--change', info._docker['dockerfile'], '-',
+		              info.manifest.name]
+		cmd = ' '.join(map(quote, tar_cmd)) + ' | ' + ' '.join(map(quote, docker_cmd))
+		[info._docker['container_id']] = log_check_call([cmd], shell=True)
+
+
+class PopulateLabels(Task):
+	description = 'Populating docker labels'
+	phase = phases.image_registration
+	successors = [CreateImage]
 
 	@classmethod
 	def run(cls, info):
@@ -22,16 +47,7 @@ class PopulateDockerfileLabels(Task):
 		if 'labels' in info.manifest.provider:
 			for label, value in info.manifest.provider['labels'].items():
 				labels[label] = value.format(**info.manifest_vars)
-		info._docker['dockerfile_labels'] = labels
 
-
-class CreateDockerfile(Task):
-	description = 'Creating dockerfile'
-	phase = phases.image_registration
-	predecessors = [PopulateDockerfileLabels]
-
-	@classmethod
-	def run(cls, info):
 		# pipes.quote converts newlines into \n rather than just prefixing
 		# it with a backslash, so we need to escape manually
 		def escape(value):
@@ -39,26 +55,17 @@ class CreateDockerfile(Task):
 			value = value.replace('\n', '\\\n')
 			value = '"' + value + '"'
 			return value
-		labels = []
-		for label, value in info._docker['dockerfile_labels'].items():
-			labels.append(label + '=' + escape(value))
+		kv_pairs = [label + '=' + escape(value) for label, value in labels.items()]
 		# Add some nice newlines and indentation
-		info._docker['dockerfile'] = 'LABEL ' + ' \\\n      '.join(labels) + '\n'
-		if 'dockerfile' in info.manifest.provider:
-			info._docker['dockerfile'] += info.manifest.provider['dockerfile'] + '\n'
+		info._docker['dockerfile'] += 'LABEL ' + ' \\\n      '.join(kv_pairs) + '\n'
 
 
-class CreateImage(Task):
-	description = 'Creating docker image'
+class AppendManifestDockerfile(Task):
+	description = 'Appending Dockerfile instructions from the manifest'
 	phase = phases.image_registration
-	predecessors = [CreateDockerfile]
+	predecessors = [PopulateLabels]
+	successors = [CreateImage]
 
 	@classmethod
 	def run(cls, info):
-		from pipes import quote
-		tar_cmd = ['tar', '--create', '--numeric-owner',
-		           '--directory', info.volume.path, '.']
-		docker_cmd = ['docker', 'import', '--change', info._docker['dockerfile'], '-',
-		              info.manifest.provider['repository'] + ':' + info.manifest.provider['tag']]
-		cmd = ' '.join(map(quote, tar_cmd)) + ' | ' + ' '.join(map(quote, docker_cmd))
-		[info._docker['container_id']] = log_check_call(cmd, shell=True)
+		info._docker['dockerfile'] += info.manifest.provider['dockerfile'] + '\n'

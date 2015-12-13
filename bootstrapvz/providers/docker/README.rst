@@ -14,14 +14,16 @@ With optimal settings a 64-bit jessie image can be whittled down to 81.95 MB
 Manifest settings
 -----------------
 
+Name
+~~~~
+
+-  ``name``: The image name is the repository and tag to where an
+   image should be imported.
+   ``required``
+
+
 Provider
 ~~~~~~~~
-
--  ``repository``: Repository to which the image should be imported.
-   ``required``
-
--  ``tag``: Name with which the image should be tagged.
-   ``required``
 
 -  ``dockerfile``: Inline dockerfile that should be appended to
    the one created by the bootstrapper.
@@ -43,11 +45,11 @@ Example:
 .. code:: yaml
 
     ---
+    name: bootstrap-vz:latest
     provider:
       name: docker
-      repository: bootstrap-vz
-      tag: latest
       dockerfile: >
         CMD /bin/bash
       labels:
+        name: debian-{system.release}-{system.architecture}-{%y}{%m}{%d}
         description: Debian {system.release} {system.architecture}

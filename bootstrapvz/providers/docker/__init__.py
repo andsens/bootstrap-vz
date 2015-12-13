@@ -25,10 +25,13 @@ def resolve_tasks(taskset, manifest):
 	taskset.update(task_groups.cleanup_group)
 
 	taskset.update([tasks.commands.AddRequiredCommands,
-	                tasks.image.PopulateDockerfileLabels,
-	                tasks.image.CreateDockerfile,
+	                tasks.image.CreateDockerfileEntry,
 	                tasks.image.CreateImage,
 	                ])
+	if 'labels' in manifest.provider:
+		taskset.add(tasks.image.PopulateLabels)
+	if 'dockerfile' in manifest.provider:
+		taskset.add(tasks.image.AppendManifestDockerfile)
 
 
 def resolve_rollback_tasks(taskset, manifest, completed, counter_task):

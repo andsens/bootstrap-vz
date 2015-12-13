@@ -2,8 +2,6 @@
 name: debian-{system.release}-{system.architecture}-{%y}{%m}{%d}
 provider:
   name: docker
-  repository: bootstrap-vz
-  tag: latest
   labels:
     description: Debian {system.release} {system.architecture}
   dockerfile: >
