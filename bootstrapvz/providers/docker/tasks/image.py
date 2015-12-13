@@ -1,13 +1,11 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
-from bootstrapvz.common.tasks import image
 from bootstrapvz.common.tools import log_check_call
 
 
 class CreateImage(Task):
 	description = 'Creating docker image'
 	phase = phases.image_registration
-	predecessors = [image.MoveImage]
 
 	@classmethod
 	def run(cls, info):
