@@ -26,6 +26,26 @@ Sections
 
 The manifest is split into 7 sections.
 
+Name
+~~~~~
+
+Single string property that specifies the name of the image.
+
+-  ``name``: The name of the resulting image.
+   When bootstrapping cloud images, this would be the name visible in
+   the interface when booting up new instances.
+   When bootstrapping for VirtualBox or kvm, it's the filename of the
+   image.
+   ``required``
+   ``manifest vars``
+
+Example:
+
+.. code:: yaml
+
+    ---
+    name: debian-{system.release}-{system.architecture}-{%Y}-{%m}-{%d}-ebs
+
 Provider
 ~~~~~~~~
 
@@ -76,25 +96,10 @@ are 4 possible settings:
    It specifies the path to the VirtualBox Guest Additions ISO, which, when specified,
    will be mounted and used to install the VirtualBox Guest Additions.
    ``optional``
+-  ``variant``:
 
-Image
-~~~~~
 
-The image section configures anything pertaining directly to the image
-that will be created.
 
--  ``name``: The name of the resulting image.
-   When bootstrapping cloud images, this would be the name visible in
-   the interface when booting up new instances.
-   When bootstrapping for VirtualBox or kvm, it's the filename of the
-   image.
-   ``required``
-   ``manifest vars``
--  ``bucket``: When bootstrapping an S3 backed image for AWS, this
-   will be the bucket where the image is uploaded to.
-   ``required for S3 backing``
--  ``region``: Region in which the AMI should be registered.
-   ``required for S3 backing``
 
 System
 ~~~~~~

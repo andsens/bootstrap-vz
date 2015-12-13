@@ -8,7 +8,7 @@ class MoveImage(Task):
 
 	@classmethod
 	def run(cls, info):
-		image_name = info.manifest.image['name'].format(**info.manifest_vars)
+		image_name = info.manifest.name.format(**info.manifest_vars)
 		filename = image_name + '.' + info.volume.extension
 
 		import os.path

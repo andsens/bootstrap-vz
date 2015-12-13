@@ -100,9 +100,9 @@ class Manifest(object):
 		don't have to access information with info.manifest.data['section']
 		but can do it with info.manifest.section.
 		"""
+		self.name         = self.data['name']
 		self.provider     = self.data['provider']
 		self.bootstrapper = self.data['bootstrapper']
-		self.image        = self.data['image']
 		self.volume       = self.data['volume']
 		self.system       = self.data['system']
 		from bootstrapvz.common.releases import get_release

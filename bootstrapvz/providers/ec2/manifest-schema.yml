@@ -3,13 +3,10 @@ $schema: http://json-schema.org/draft-04/schema#
 title: EC2 manifest
 type: object
 properties:
-  image:
-    type: object
-    properties:
-      description: {type: string}
   provider:
     type: object
     properties:
+      description: {type: string}
       credentials:
         type: object
         properties:

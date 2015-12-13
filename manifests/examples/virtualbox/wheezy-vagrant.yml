@@ -1,11 +1,10 @@
 ---
+name: debian-{system.release}-{system.architecture}-{%y}{%m}{%d}
 provider:
   name: virtualbox
   guest_additions: /usr/share/virtualbox/VBoxGuestAdditions.iso
 bootstrapper:
   workspace: /target
-image:
-  name: debian-{system.release}-{system.architecture}-{%y}{%m}{%d}
 system:
   release: wheezy
   architecture: amd64

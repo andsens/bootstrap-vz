@@ -18,8 +18,8 @@ class AMIName(Task):
 
 	@classmethod
 	def run(cls, info):
-		ami_name = info.manifest.image['name'].format(**info.manifest_vars)
-		ami_description = info.manifest.image['description'].format(**info.manifest_vars)
+		ami_name = info.manifest.name.format(**info.manifest_vars)
+		ami_description = info.manifest.provider['description'].format(**info.manifest_vars)
 
 		images = info._ec2['connection'].get_all_images(owners=['self'])
 		for image in images:
@@ -64,9 +64,9 @@ class UploadImage(Task):
 			s3_url = 'https://s3.cn-north-1.amazonaws.com.cn'
 		else:
 			s3_url = 'https://s3-{region}.amazonaws.com/'.format(region=info._ec2['region'])
-		info._ec2['manifest_location'] = info.manifest.image['bucket'] + '/' + info._ec2['ami_name'] + '.manifest.xml'
+		info._ec2['manifest_location'] = info.manifest.provider['bucket'] + '/' + info._ec2['ami_name'] + '.manifest.xml'
 		log_check_call(['euca-upload-bundle',
-		                '--bucket', info.manifest.image['bucket'],
+		                '--bucket', info.manifest.provider['bucket'],
 		                '--manifest', manifest_file,
 		                '--access-key', info.credentials['access-key'],
 		                '--secret-key', info.credentials['secret-key'],

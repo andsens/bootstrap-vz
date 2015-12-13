@@ -1,11 +1,10 @@
 ---
+name: disk
 provider:
   name: gce
+  description: Debian {system.release} {system.architecture}
 bootstrapper:
   workspace: /target
-image:
-  name: disk
-  description: Debian {system.release} {system.architecture}
 system:
   release: jessie
   architecture: amd64

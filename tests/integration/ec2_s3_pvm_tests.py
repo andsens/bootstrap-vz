@@ -7,7 +7,8 @@ partials = {'s3_pvm': '''
 provider:
   name: ec2
   virtualization: pvm
-image: {bucket: ''' + s3_bucket_name + '''}
+  description: Debian {system.release} {system.architecture}
+  bucket: ''' + s3_bucket_name + '''
 system: {bootloader: pvgrub}
 volume: {backing: s3}
 '''

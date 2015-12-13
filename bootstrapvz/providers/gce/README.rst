@@ -11,4 +11,21 @@ be used by Google Compute Engine to project provided in manifest by
 Manifest settings
 -----------------
 
--  ``image.description``: Description of the image.
+Provider
+~~~~~~~~
+
+-  ``description``: Description of the image.
+-  ``gcs_destination``: Image destination in GSE.
+-  ``gce_project``: GCE project in which to register the image.
+
+
+Example:
+
+.. code:: yaml
+
+    ---
+    provider:
+      name: gce
+      description: Debian {system.release} {system.architecture}
+      gcs_destination: gs://my-bucket
+      gce_project: my-project

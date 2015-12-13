@@ -5,6 +5,7 @@ partials = {'ebs_pvm': '''
 provider:
   name: ec2
   virtualization: pvm
+  description: Debian {system.release} {system.architecture}
 system: {bootloader: pvgrub}
 volume: {backing: ebs}
 '''

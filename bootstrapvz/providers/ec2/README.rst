@@ -107,8 +107,24 @@ Example:
 Image
 ~~~~~
 
--  ``image.description``: Description of the AMI.
+-  ``description``: Description of the AMI.
    ``manifest vars``
+-  ``bucket``: When bootstrapping an S3 backed image, this
+   will be the bucket where the image is uploaded to.
+   ``required for S3 backing``
+-  ``region``: Region in which the AMI should be registered.
+   ``required for S3 backing``
+
+Example:
+
+.. code:: yaml
+
+    ---
+    provider:
+      name: ec2
+      description: Debian {system.release} {system.architecture}
+      bucket: debian-amis
+      region: us-west-1
 
 
 Dependencies

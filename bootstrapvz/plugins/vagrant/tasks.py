@@ -13,7 +13,7 @@ class CheckBoxPath(Task):
 
 	@classmethod
 	def run(cls, info):
-		box_basename = info.manifest.image['name'].format(**info.manifest_vars)
+		box_basename = info.manifest.name.format(**info.manifest_vars)
 		box_name = box_basename + '.box'
 		box_path = os.path.join(info.manifest.bootstrapper['workspace'], box_name)
 		if os.path.exists(box_path):

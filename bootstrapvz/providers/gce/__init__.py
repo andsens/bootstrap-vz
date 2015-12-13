@@ -60,9 +60,9 @@ def resolve_tasks(taskset, manifest):
 		taskset.update([tasks.initd.AddGrowRootDisable,
 		                kernel.UpdateInitramfs])
 
-	if 'gcs_destination' in manifest.image:
+	if 'gcs_destination' in manifest.provider:
 		taskset.add(tasks.image.UploadImage)
-		if 'gce_project' in manifest.image:
+		if 'gce_project' in manifest.provider:
 			taskset.add(tasks.image.RegisterImage)
 
 

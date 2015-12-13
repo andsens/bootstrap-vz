@@ -13,7 +13,7 @@ class CreateTarball(Task):
 	@classmethod
 	def run(cls, info):
 		import datetime
-		image_name = info.manifest.image['name'].format(**info.manifest_vars)
+		image_name = info.manifest.name.format(**info.manifest_vars)
 		filename = image_name + '.' + info.volume.extension
 		today = datetime.datetime.today()
 		name_suffix = today.strftime('%Y%m%d')
@@ -42,7 +42,7 @@ class UploadImage(Task):
 	@classmethod
 	def run(cls, info):
 		log_check_call(['gsutil', 'cp', info._gce['tarball_path'],
-		                info.manifest.image['gcs_destination'] + info._gce['tarball_name']])
+		                info.manifest.provider['gcs_destination'] + info._gce['tarball_name']])
 
 
 class RegisterImage(Task):
@@ -53,9 +53,9 @@ class RegisterImage(Task):
 	@classmethod
 	def run(cls, info):
 		image_description = info._gce['lsb_description']
-		if 'description' in info.manifest.image:
-			image_description = info.manifest.image['description']
-		log_check_call(['gcutil', '--project=' + info.manifest.image['gce_project'],
+		if 'description' in info.manifest.provider:
+			image_description = info.manifest.provider['description']
+		log_check_call(['gcutil', '--project=' + info.manifest.provider['gce_project'],
 		                'addimage', info._gce['image_name'],
-		                info.manifest.image['gcs_destination'] + info._gce['tarball_name'],
+		                info.manifest.provider['gcs_destination'] + info._gce['tarball_name'],
 		                '--description=' + image_description])

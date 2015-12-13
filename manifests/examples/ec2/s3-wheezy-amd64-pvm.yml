@@ -1,4 +1,5 @@
 ---
+name: debian-{system.release}-{system.architecture}-{provider.virtualization}-{%y}{%m}{%d}
 provider:
   name: ec2
   virtualization: pvm
@@ -8,13 +9,11 @@ provider:
   #   certificate: /path/to/your/certificate.pem
   #   private-key: /path/to/your/private.key
   #   user-id:     arn:aws:iam::123456789012:user/iamuser
-bootstrapper:
-  workspace: /target
-image:
-  name: debian-{system.release}-{system.architecture}-{provider.virtualization}-{%y}{%m}{%d}
   description: Debian {system.release} {system.architecture} AMI
   bucket: debian-amis
   region: us-west-1
+bootstrapper:
+  workspace: /target
 system:
   release: wheezy
   architecture: amd64

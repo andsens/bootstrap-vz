@@ -1,4 +1,5 @@
 ---
+name: debian-{system.release}-{system.architecture}-{%y}{%m}{%d}
 provider:
   name: kvm
   virtio_modules:
@@ -6,8 +7,6 @@ provider:
   - virtio_blk
 bootstrapper:
   workspace: /target
-image:
-  name: debian-{system.release}-{system.architecture}-{%y}{%m}{%d}
 system:
   release: wheezy
   architecture: amd64

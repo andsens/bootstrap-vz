@@ -3,7 +3,7 @@ $schema: http://json-schema.org/draft-04/schema#
 title: GCE manifest
 type: object
 properties:
-  image:
+  provider:
     type: object
     properties:
       description: {type: string}

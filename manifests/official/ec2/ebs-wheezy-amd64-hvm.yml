@@ -1,4 +1,5 @@
 ---
+name: debian-{system.release}-{system.architecture}-{provider.virtualization}-{%Y}-{%m}-{%d}-ebs
 provider:
   name: ec2
   virtualization: hvm
@@ -6,11 +7,9 @@ provider:
   # credentials:
   #   access-key: AFAKEACCESSKEYFORAWS
   #   secret-key: thes3cr3tkeyf0ryourawsaccount/FS4d8Qdva
+  description: Debian {system.release} {system.architecture}
 bootstrapper:
   workspace: /target
-image:
-  name: debian-{system.release}-{system.architecture}-{provider.virtualization}-{%Y}-{%m}-{%d}-ebs
-  description: Debian {system.release} {system.architecture}
 system:
   release: wheezy
   architecture: amd64

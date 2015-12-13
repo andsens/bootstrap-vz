@@ -2,8 +2,10 @@
 $schema: http://json-schema.org/draft-04/schema#
 title: Generic manifest
 type: object
-required: [provider, bootstrapper, system, volume]
+required: [name, provider, bootstrapper, system, volume]
 properties:
+  name:
+    type: string
   provider:
     type: object
     properties:
@@ -40,11 +42,6 @@ properties:
           - scratchbox
     required: [workspace]
     additionalProperties: false
-  image:
-    type: object
-    properties:
-      name: {type: string}
-    required: [name]
   system:
     type: object
     properties:

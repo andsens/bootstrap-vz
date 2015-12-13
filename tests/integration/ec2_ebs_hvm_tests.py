@@ -5,6 +5,7 @@ partials = {'ebs_hvm': '''
 provider:
   name: ec2
   virtualization: hvm
+  description: Debian {system.release} {system.architecture}
 volume: {backing: ebs}
 ''',
             'extlinux': 'system: {bootloader: extlinux}',

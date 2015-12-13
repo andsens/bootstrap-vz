@@ -1,4 +1,5 @@
 ---
+name: debian-{system.release}-{system.architecture}-{%y}{%m}{%d}
 provider:
   name: docker
   repository: bootstrap-vz
@@ -6,9 +7,6 @@ provider:
 bootstrapper:
   workspace: /target
   variant: minbase
-image:
-  name: debian-{system.release}-{system.architecture}-{%y}{%m}{%d}
-  description: Debian {system.release} {system.architecture}
 system:
   release: jessie
   architecture: amd64
