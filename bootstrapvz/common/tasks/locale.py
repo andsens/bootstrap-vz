@@ -15,7 +15,7 @@ class LocaleBootstrapPackage(Task):
 
 
 class GenerateLocale(Task):
-	description = 'Generating the selected locale'
+	description = 'Generating system locale'
 	phase = phases.package_installation
 
 	@classmethod
