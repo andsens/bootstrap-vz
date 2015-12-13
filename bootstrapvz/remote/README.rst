@@ -165,7 +165,26 @@ at ``/root/guest_additions.iso`` on server 1, while server 2 has it at
 * ``guest_additions`` specifies the path to the VirtualBox guest additions ISO
   on the remote machine.
 * ``apt_proxy`` sets the configuration for the `apt_proxy plugin <../plugins/apt_proxy>`.
-* ``ec2-credentials`` contains all the settings you know from EC2 manifests,
-  note that when running `integration tests <../../tests/integration>`__,
-  these credentials are also used when running instances.
+* ``ec2-credentials`` contains all the settings you know from EC2 manifests.
 * ``s3-region`` overrides the s3 bucket region when bootstrapping S3 backed images.
+
+
+Run settings
+~~~~~~~~~~~~~~
+The run settings hold information about how to start a bootstrapped image.
+This is useful only when running integration tests.
+
+.. code:: yaml
+
+  local:
+    type: local
+    can_bootstrap:
+      - ec2-s3
+    release: jessie
+    run_settings:
+      ec2-credentials:
+        access-key: AFAKEACCESSKEYFORAWS
+        secret-key: thes3cr3tkeyf0ryourawsaccount/FS4d8Qdva
+
+* ``ec2-credentials`` contains the access key and secret key used to boot
+  an EC2 AMI.

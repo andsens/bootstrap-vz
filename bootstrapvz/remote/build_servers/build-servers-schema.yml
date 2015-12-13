@@ -50,6 +50,16 @@ definitions:
           port: {type: integer}
           persistent: {type: boolean}
         required: [address, port]
+  run_settings:
+    type: object
+    properties:
+      ec2-credentials:
+        required: [access-key, secret-key]
+        type: object
+        properties:
+          access-key: {type: string}
+          secret-key: {type: string}
+        additional_properties: false
 
   ssh:
     type: object

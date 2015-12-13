@@ -29,8 +29,8 @@ def prepare_bootstrap(manifest, build_server):
 @contextmanager
 def boot_image(manifest, build_server, bootstrap_info, instance_type=None):
 
-	credentials = {'access-key': build_server.build_settings['ec2-credentials']['access-key'],
-	               'secret-key': build_server.build_settings['ec2-credentials']['secret-key']}
+	credentials = {'access-key': build_server.run_settings['ec2-credentials']['access-key'],
+	               'secret-key': build_server.run_settings['ec2-credentials']['secret-key']}
 	from boto.ec2 import connect_to_region as ec2_connect
 	ec2_connection = ec2_connect(bootstrap_info._ec2['region'],
 	                             aws_access_key_id=credentials['access-key'],

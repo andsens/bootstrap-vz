@@ -6,6 +6,7 @@ class BuildServer(object):
 		self.name = name
 		self.settings = settings
 		self.build_settings = settings.get('build_settings', {})
+		self.run_settings = settings.get('run_settings', {})
 		self.can_bootstrap = settings['can_bootstrap']
 		self.release = settings.get('release', None)
 
