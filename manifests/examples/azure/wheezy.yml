@@ -8,7 +8,6 @@ bootstrapper:
   workspace: /target
 image:
   name: debian-{system.release}-{system.architecture}-{%y}{%m}{%d}
-  description: Debian {system.release} {system.architecture}
 system:
   release: wheezy
   architecture: amd64
