@@ -6,7 +6,7 @@
 
 extract_dpkg_deb_data () {
   local pkg="$1"
-  local excludes_file="/tmp/bootstrap-vz-excludes-$$"
+  local excludes_file="DEBOOTSTRAP_EXCLUDES_PATH"
   # List all files in $pkg and run them through the filter (avoid exit status >0 if no matches are found)
   dpkg-deb --fsys-tarfile "$pkg" | tar -t | BOOTSTRAP_FILES_FILTER_PATH > "$excludes_file" || true
   dpkg-deb --fsys-tarfile "$pkg" | tar --exclude-from "$excludes_file" -xf -

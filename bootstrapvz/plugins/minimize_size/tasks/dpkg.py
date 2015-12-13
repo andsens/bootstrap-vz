@@ -43,10 +43,12 @@ class CreateBootstrapFilterScripts(Task):
 
 		bootstrap_script = os.path.join(info.workspace, 'bootstrap_script.sh')
 		filter_script = os.path.join(info.workspace, 'bootstrap_files_filter.sh')
+		excludes_file = os.path.join(info.workspace, 'debootstrap-excludes')
 
 		shutil.copy(os.path.join(assets, 'bootstrap-script.sh'), bootstrap_script)
 		shutil.copy(os.path.join(assets, 'bootstrap-files-filter.sh'), filter_script)
 
+		sed_i(bootstrap_script, r'DEBOOTSTRAP_EXCLUDES_PATH', excludes_file)
 		sed_i(bootstrap_script, r'BOOTSTRAP_FILES_FILTER_PATH', filter_script)
 
 		# We exclude with patterns but include with fixed strings
