@@ -10,6 +10,27 @@ interoperability (e.g.
 even VirtualBox itself can import them).
 
 VirtualBox Guest Additions can be installed automatically if the ISO is
-`provided in the manifest <../../../manifests/#bootstrapper>`__.
+provided in the manifest.
 VirtualBox Additions iso can be installed from main Debian repo by running:
 `apt install virtualbox-guest-additions-iso`
+
+
+Manifest settings
+-----------------
+
+Provider
+~~~~~~~~
+
+-  ``guest_additions``: Specifies the path to the VirtualBox Guest Additions ISO,
+   which, when specified, will be mounted and used to install the
+   VirtualBox Guest Additions.
+   ``optional``
+
+Example:
+
+.. code:: yaml
+
+    ---
+    provider:
+      name: virtualbox
+      guest_additions: /usr/share/virtualbox/VBoxGuestAdditions.iso

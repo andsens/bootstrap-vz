@@ -4,15 +4,33 @@ Azure
 This provider generates raw images for Microsoft Azure computing
 platform.
 
-Setup
------
 
-``qemu-utils`` is needed to create the VHD image.
+Manifest settings
+-----------------
 
-``wget`` must be installed on local computer, so the Windows Azure Linux Agent
-can be downloaded.
+Provider
+~~~~~~~~
 
-Do not create swap space on the OS disk:
+-  ``waagent``: Waagent specific settings.
+   ``required``
+
+    -  ``conf``: Path to ``waagent.conf`` that should override the default
+       ``optional``
+    -  ``version``: Version of waagent to install.
+       Waagent versions are available at:
+       https://github.com/Azure/WALinuxAgent/releases
+       ``required``
+
+Example:
+
+.. code:: yaml
+
+    ---
+    provider:
+      name: azure
+      waagent:
+        conf: /root/waagent.conf
+        version: 2.0.4
 
 The Windows Azure Linux Agent can automatically configure swap space
 using the local resource disk that is attached to the VM after
@@ -27,17 +45,3 @@ provisioning on Azure. Modify the following parameters in
     ResourceDisk.EnableSwap=y
     ResourceDisk.SwapSizeMB=2048    ## NOTE: set this to whatever you need it to be.
 
-You can specify a waagent.conf file to replace the default one in the
-manifest in the azure/waagent section of the provider:
-
-::
-
-    "system" : { 
-        "waagent" : {
-           "conf": "path_to_my_conf_file",  # optional
-           "version" : "2.0.4"              # mandatory
-        }
-    }, ...
-
-Waagent versions are available at:
-https://github.com/Azure/WALinuxAgent/releases

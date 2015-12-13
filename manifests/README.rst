@@ -58,6 +58,15 @@ name of the provider itself.
 Consult the `providers <../bootstrapvz/providers>`__ section of the documentation
 for a list of valid values.
 
+
+Example:
+
+.. code:: yaml
+
+    ---
+    provider:
+      name: ec2
+
 Bootstrapper
 ~~~~~~~~~~~~
 
@@ -91,15 +100,28 @@ are 4 possible settings:
 -  ``exclude_packages``: Packages to exclude during bootstrap phase.
    Accepts a list of package names.
    ``optional``
--  ``guest_additions``: This setting is only relevant for the
-   `virtualbox provider <../bootstrapvz/providers/virtualbox>`__.
-   It specifies the path to the VirtualBox Guest Additions ISO, which, when specified,
-   will be mounted and used to install the VirtualBox Guest Additions.
-   ``optional``
--  ``variant``:
+-  ``variant``: Debian variant to install. The only supported value
+   is ``minbase`` and should only be used in conjunction with the
+   Docker provider. Not specifying this option will result in a normal
+   Debian variant being bootstrapped.
 
 
+Example:
 
+.. code:: yaml
+
+    ---
+    bootstrapper:
+      workspace: /target
+      tarball: true
+      mirror: http://httpredir.debian.org/debian/
+      include_packages:
+         - whois
+         - psmisc
+      exclude_packages:
+         - isc-dhcp-client
+         - isc-dhcp-common
+      variant: minbase
 
 System
 ~~~~~~
@@ -131,6 +153,20 @@ system and does not fit under any other section.
 -  ``timezone``: Timezone of the system.
    Valid values: Any filename from ``/usr/share/zoneinfo``
    ``required``
+
+Example:
+
+.. code:: yaml
+
+    ---
+    system:
+      release: jessie
+      architecture: amd64
+      bootloader: extlinux
+      charmap: UTF-8
+      hostname: jessie x86_64
+      locale: en_US
+      timezone: UTC
 
 Packages
 ~~~~~~~~
@@ -181,9 +217,41 @@ variety of sources.
    specified.
    ``optional``
    The values are objects with three keys:
--  ``package``: The package to pin (wildcards allowed)
--  ``pin``: The release to pin the package to.
--  ``pin-priority``: The priority of this pin.
+
+   -  ``package``: The package to pin (wildcards allowed)
+   -  ``pin``: The release to pin the package to.
+   -  ``pin-priority``: The priority of this pin.
+
+Example:
+
+.. code:: yaml
+
+    ---
+    packages:
+      install:
+        - /root/packages/custom_app.deb
+        - puppet
+      install_standard: true
+      mirror: http://cloudfront.debian.net/debian
+      sources:
+       - deb http://apt.puppetlabs.com wheezy main dependencies
+      components:
+        - contrib
+        - non-free
+      trusted-keys:
+        - /root/keys/puppet.gpg
+      preferences:
+        main:
+          - package: *
+            pin: release o=Debian, n=wheezy
+            pin-priority: 800
+          - package: *
+            pin: release o=Debian Backports, a=wheezy-backports, n=wheezy-backports
+            pin-priority: 760
+          - package: puppet puppet-common
+            pin: version 2.7.25-1puppetlabs1
+            pin-priority: 840
+
 
 Volume
 ~~~~~~
@@ -234,9 +302,38 @@ boot, root and swap.
       this partition.
       ``optional``
 
+Example:
+
+.. code:: yaml
+
+    ---
+    volume:
+      backing: vdi
+      partitions:
+        type: msdos
+        boot:
+          filesystem: ext2
+          size: 32MiB
+        root:
+          filesystem: ext4
+          size: 864MiB
+        swap:
+          size: 128MiB
+
 Plugins
 ~~~~~~~
 
 The plugins section is a map of plugin names to whatever configuration a
 plugin requires. Go to the `plugin section <../bootstrapvz/plugins>`__
 of the documentation, to see the configuration for a specific plugin.
+
+
+Example:
+
+.. code:: yaml
+
+    ---
+    plugins:
+      minimize_size:
+        zerofree: true
+        shrink: true
