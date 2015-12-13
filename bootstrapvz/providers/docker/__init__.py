@@ -25,6 +25,8 @@ def resolve_tasks(taskset, manifest):
 	taskset.update(task_groups.cleanup_group)
 
 	taskset.update([tasks.commands.AddRequiredCommands,
+	                tasks.image.PopulateDockerfileLabels,
+	                tasks.image.CreateDockerfile,
 	                tasks.image.CreateImage,
 	                ])
 

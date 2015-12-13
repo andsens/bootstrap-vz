@@ -10,6 +10,21 @@ properties:
         type: string
       tag:
         type: string
+      labels:
+        type: object
+        properties:
+          # https://github.com/projectatomic/ContainerApplicationGenericLabels
+          distribution-scope:
+            type: string
+            enum:
+              - private
+              - authoritative-source-only
+              - restricted
+              - public
+          patternProperties:
+            ^.+$: {type: string}
+      dockerfile:
+        type: string
     required: [repository, tag]
   system:
     type: object
