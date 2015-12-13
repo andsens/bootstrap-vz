@@ -31,8 +31,10 @@ There, you can discover `what the dependencies <#dependencies>`__ for
 a specific cloud provider are, `see a list of available plugins <bootstrapvz/plugins>`__
 and learn `how you create a manifest <manifests>`__.
 
-Note to developers: `The documentaion <docs>`__ is generated in
-a rather peculiar and nifty way.
+Note to developers: The shared documentation links on github and readthedocs
+are transformed in `a rather peculiar and nifty way`__.
+
+__ https://github.com/andsens/bootstrap-vz/blob/master/docs/transform_github_links.py
 
 Installation
 ------------
@@ -157,8 +159,8 @@ __ https://packages.debian.org/wheezy/debootstrap
 
 Any other requirements are dependent upon the manifest configuration
 and are detailed in the corresponding sections of the documentation.
-bootstrap-vz will however warn you if a requirement has not been met,
-before the bootstrapping process begins.
+Before the bootstrapping process begins however,
+bootstrap-vz will warn you if a requirement has not been met.
 
 Developers
 ----------
