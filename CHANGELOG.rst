@@ -1,6 +1,73 @@
 Changelog
 =========
 
+2015-12-13
+----------
+Anders Ingemann:
+	* Docker provider implemented
+	* minimize_size: Added various size reduction options for dpkg and apt
+	* Removed image section in manifest.
+	  Provider specific options have been moved to the provider section.
+	  The image name is now specified on the top level of the manifest with "name"
+	* Provider docs have been greatly improved. All now list their special options.
+	* All manifest option documentation is now accompanied by an example.
+
+2015-11-13
+----------
+vorlock:
+	* Exclude docs from binary package
+
+2015-10-20
+----------
+Max Illfelder:
+	* Remove support for the GCE Debian mirror
+
+2015-10-14
+----------
+Anders Ingemann:
+	* Bootstrap azure images directly to VHD
+
+2015-09-28
+----------
+Rick Wright:
+	* Change GRUB_HIDDEN_TIMEOUT to 0 from true and set GRUB_HIDDEN_TIMEOUT_QUIET to true.
+
+2015-09-24
+----------
+Rick Wright:
+	* Fix a problem with Debian 8 on GCE with >2TB disks
+
+2015-09-04
+----------
+Emmanuel Kasper:
+	* Set Virtualbox memory to 512 MB
+
+2015-08-07
+----------
+Tiago Ilieve:
+	* Change default Debian mirror
+
+2015-08-06
+----------
+Stephen A. Zarkos:
+	* Azure: Change default shell in /etc/default/useradd for Azure images
+	* Azure: Add boot parameters to Azure config to ease local debugging
+	* Azure: Add apt import for backports
+	* Azure: Comment GRUB_HIDDEN_TIMEOUT so we can set GRUB_TIMEOUT
+	* Azure: Wheezy images use wheezy-backports kernel by default
+	* Azure: Change Wheezy image to use single partition
+	* Azure: Update WALinuxAgent to use 2.0.14
+	* Azure: Make sure we can override grub.ConfigureGrub for Azure images
+	* Azure: Add console=tty0 to see kernel/boot messsages on local console
+	* Azure: Set serial port speed to 115200
+	* Azure: Fix error with applying azure/assets/udev.diff
+
+2015-07-30
+----------
+James Bromberger:
+	* AWS: Support multiple ENI
+	* AWS: PVGRUB AKIs for Frankfurt region
+
 2015-06-29
 ----------
 Alex Adriaanse:
