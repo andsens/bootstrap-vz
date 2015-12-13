@@ -24,7 +24,7 @@ class CreateImage(Task):
 		docker_cmd = ['docker', 'import', '--change', info._docker['dockerfile'], '-',
 		              info.manifest.name.format(**info.manifest_vars)]
 		cmd = ' '.join(map(quote, tar_cmd)) + ' | ' + ' '.join(map(quote, docker_cmd))
-		[info._docker['container_id']] = log_check_call([cmd], shell=True)
+		[info._docker['image_id']] = log_check_call([cmd], shell=True)
 
 
 class PopulateLabels(Task):
