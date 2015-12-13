@@ -104,6 +104,13 @@ Example:
       virtualization: hvm
       enhanced_networking: simple
 
+Image
+~~~~~
+
+-  ``image.description``: Description of the AMI.
+   ``manifest vars``
+
+
 Dependencies
 ------------
 

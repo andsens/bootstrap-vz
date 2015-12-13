@@ -90,11 +90,6 @@ that will be created.
    image.
    ``required``
    ``manifest vars``
--  ``description``: Description of the image. Where this setting is
-   used depends highly on which provider is set. At the moment it is
-   only used for AWS images.
-   ``required for ec2 provider``
-   ``manifest vars``
 -  ``bucket``: When bootstrapping an S3 backed image for AWS, this
    will be the bucket where the image is uploaded to.
    ``required for S3 backing``

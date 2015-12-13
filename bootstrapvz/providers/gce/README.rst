@@ -7,3 +7,8 @@ file. It can upload created images to Google Storage Engine (to URI
 provided in manifest by ``gcs_destination``) and can register image to
 be used by Google Compute Engine to project provided in manifest by
 ``gce_project``. Both of those functionalities are not fully tested yet.
+
+Manifest settings
+-----------------
+
+-  ``image.description``: Description of the image.
