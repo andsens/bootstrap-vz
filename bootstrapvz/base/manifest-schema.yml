@@ -35,11 +35,7 @@ properties:
         $ref: '#/definitions/path'
       variant:
         type: string
-        enum:
-          - minbase
-          - buildd
-          - fakechroot
-          - scratchbox
+        enum: [minbase]
     required: [workspace]
     additionalProperties: false
   system:
