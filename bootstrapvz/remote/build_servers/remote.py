@@ -80,16 +80,16 @@ class RemoteBuildServer(BuildServer):
 		          'build server `{name}\' to `{dst}\''
 		          .format(src=src, dst=dst, name=self.name))
 		# Make sure we can read the file as {user}
-		self._remote_command(['sudo', 'chown', self.username, src])
+		self.remote_command(['sudo', 'chown', self.username, src])
 		src_arg = '{user}@{host}:{path}'.format(user=self.username, host=self.address, path=src)
 		log_check_call(['scp', '-i', self.keyfile, '-P', str(self.port),
 		                src_arg, dst])
 
 	def delete(self, path):
 		log.debug('Deleting file `{path}\' on build server `{name}\''.format(path=path, name=self.name))
-		self._remote_command(['sudo', 'rm', path])
+		self.remote_command(['sudo', 'rm', path])
 
-	def _remote_command(self, command):
+	def remote_command(self, command):
 		ssh_cmd = ['ssh', '-i', self.keyfile,
 		                  '-p', str(self.port),
 		                  self.username + '@' + self.address,

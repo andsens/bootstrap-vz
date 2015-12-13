@@ -185,6 +185,10 @@ This is useful only when running integration tests.
       ec2-credentials:
         access-key: AFAKEACCESSKEYFORAWS
         secret-key: thes3cr3tkeyf0ryourawsaccount/FS4d8Qdva
+      docker:
+        machine: default
 
 * ``ec2-credentials`` contains the access key and secret key used to boot
   an EC2 AMI.
+* ``docker.machine`` The docker machine on which an image built for docker
+  should run.

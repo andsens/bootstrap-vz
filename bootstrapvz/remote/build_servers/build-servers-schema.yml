@@ -26,6 +26,7 @@ definitions:
       - virtualbox
       - ec2-ebs
       - ec2-s3
+      - docker
 
   build_settings:
     type: object
@@ -59,6 +60,11 @@ definitions:
         properties:
           access-key: {type: string}
           secret-key: {type: string}
+        additional_properties: false
+      docker:
+        type: object
+        properties:
+          machine: {type: string}
         additional_properties: false
 
   ssh:

@@ -4,7 +4,7 @@ Changelog
 2015-12-13
 ----------
 Anders Ingemann:
-	* Docker provider implemented
+	* Docker provider implemented (including integration testing harness & tests)
 	* minimize_size: Added various size reduction options for dpkg and apt
 	* Removed image section in manifest.
 	  Provider specific options have been moved to the provider section.
