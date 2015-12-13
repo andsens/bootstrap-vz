@@ -1,7 +1,7 @@
 
 
 class ManifestError(Exception):
-	def __init__(self, message, manifest_path, data_path=None):
+	def __init__(self, message, manifest_path=None, data_path=None):
 		super(ManifestError, self).__init__(message)
 		self.message = message
 		self.manifest_path = manifest_path
