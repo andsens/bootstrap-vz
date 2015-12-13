@@ -67,7 +67,7 @@ Missing parts
 -------------
 The integration testing harness is in no way complete.
 
-* It still has no support for providers other than virtualbox and EC2.
+* It still has no support for providers other than Virtualbox, EC2 and Docker.
 * Creating an SSH connection to a booted instance is cumbersome and does not
   happen in any of the tests - this would be particularly useful when manifests
   are to be tested beyond whether they boot up.
