@@ -2,6 +2,7 @@ import tasks.mounts
 import tasks.shrink
 import tasks.apt
 import tasks.dpkg
+from bootstrapvz.common.tasks import locale
 
 
 def validate_manifest(data, validator, error):
@@ -42,6 +43,10 @@ def resolve_tasks(taskset, manifest):
 		if 'locales' in dpkg:
 			taskset.update(filter_tasks)
 			taskset.add(tasks.dpkg.FilterLocales)
+			# If no locales are selected, we don't need the locale package
+			if len(dpkg['locales']) == 0:
+				taskset.discard(locale.LocaleBootstrapPackage)
+				taskset.discard(locale.GenerateLocale)
 		if dpkg.get('exclude_docs', False):
 			taskset.update(filter_tasks)
 			taskset.add(tasks.dpkg.ExcludeDocs)

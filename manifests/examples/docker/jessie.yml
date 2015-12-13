@@ -32,7 +32,5 @@ plugins:
       gzip_indexes: true
       autoremove_suggests: true
     dpkg:
-      locales:
-        - en
-        - en_US
+      locales: []
       exclude_docs: true
