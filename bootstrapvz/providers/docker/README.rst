@@ -8,7 +8,7 @@ specified in the manifest.
 In order to reduce the size of the image, it is highly recommend
 to make use of the `minimize_size <../../plugins/minimize_size>`__ plugin.
 With optimal settings a 64-bit jessie image can be whittled down to 81.95 MB
-(built on Dec 13th 2015 with ``manifests/examples/docker/minimized-jessie.yml``).
+(built on Dec 13th 2015 with ``manifests/examples/docker/jessie-minimized.yml``).
 
 
 Manifest settings
