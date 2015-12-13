@@ -11,6 +11,7 @@ Anders Ingemann:
 	  The image name is now specified on the top level of the manifest with "name"
 	* Provider docs have been greatly improved. All now list their special options.
 	* All manifest option documentation is now accompanied by an example.
+	* Added documentation for the integration test providers
 
 2015-11-13
 ----------
