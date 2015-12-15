@@ -20,7 +20,7 @@ class SetPackageRepositories(Task):
 		info.source_lists.add('main', 'deb-src http://http.debian.net/debian {system.release} ' + components)
 		info.source_lists.add('backports', 'deb     http://http.debian.net/debian {system.release}-backports ' + components)
 		info.source_lists.add('backports', 'deb-src http://http.debian.net/debian {system.release}-backports ' + components)
-		info.source_lists.add('goog', 'deb http://goog-repo.appspot.com/debian pigeon main')
+		info.source_lists.add('google', 'deb http://packages.cloud.google.com/apt google-cloud-compute-legacy-{system.release} main')
 
 
 class ImportGoogleKey(Task):
@@ -32,7 +32,7 @@ class ImportGoogleKey(Task):
 	@classmethod
 	def run(cls, info):
 		key_file = os.path.join(info.root, 'google.gpg.key')
-		log_check_call(['wget', 'https://goog-repo.appspot.com/debian/key/public.gpg.key', '-O', key_file])
+		log_check_call(['wget', 'https://packages.cloud.google.com/apt/doc/apt-key.gpg', '-O', key_file])
 		log_check_call(['chroot', info.root, 'apt-key', 'add', 'google.gpg.key'])
 		os.remove(key_file)
 
@@ -53,6 +53,6 @@ class CleanGoogleRepositoriesAndKeys(Task):
 		          if len(key.split(':')) == 13 and
 		          key.split(':')[9].find('@google.com') > 0]
 		log_check_call(['chroot', info.root, 'apt-key', 'del', key_id[0]])
-		apt_file = os.path.join(info.root, 'etc/apt/sources.list.d/goog.list')
+		apt_file = os.path.join(info.root, 'etc/apt/sources.list.d/google.list')
 		os.remove(apt_file)
 		log_check_call(['chroot', info.root, 'apt-get', 'update'])
