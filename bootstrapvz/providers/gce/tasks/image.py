@@ -55,7 +55,7 @@ class RegisterImage(Task):
 		image_description = info._gce['lsb_description']
 		if 'description' in info.manifest.provider:
 			image_description = info.manifest.provider['description']
-		log_check_call(['gcutil', '--project=' + info.manifest.provider['gce_project'],
-		                'addimage', info._gce['image_name'],
+		log_check_call(['gcloud', 'compute', '--project=' + info.manifest.provider['gce_project'],
+		                'image', 'create', info._gce['image_name'], '--source-uri=',
 		                info.manifest.provider['gcs_destination'] + info._gce['tarball_name'],
 		                '--description=' + image_description])
