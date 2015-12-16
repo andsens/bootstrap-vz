@@ -80,7 +80,7 @@ Docker
     root@host:~# git clone https://github.com/andsens/bootstrap-vz.git # Clone the repo
     root@host:~# apt-get install debootstrap python-pip # Install dependencies from aptitude
     root@host:~# pip install termcolor jsonschema fysom docopt pyyaml pyrfc3339 # Install python dependencies
-    root@host:~# bootstrap-vz/bootstrap-vz bootstrap-vz/manifests/docker/jessie-minimized.yml
+    root@host:~# bootstrap-vz/bootstrap-vz bootstrap-vz/manifests/examples/docker/jessie-minimized.yml
 
 The resulting image should be no larger than 82 MB (81.95 MB to be exact).
 The manifest ``jessie-minimized.yml`` uses the
