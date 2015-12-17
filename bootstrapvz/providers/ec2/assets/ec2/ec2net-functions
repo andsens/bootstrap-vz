@@ -85,7 +85,7 @@ get_secondary_ipv4s() {
 }
 
 remove_primary() {
-  if [ "${INTERFACE}" == "eth0" ]; then
+  if [ "${INTERFACE}" == "eth0" -o "${INTERFACE}" == "lo" ]; then
     return
   fi
   rm -f ${config_file}
@@ -94,7 +94,7 @@ remove_primary() {
 }
 
 rewrite_primary() {
-  if [ "${INTERFACE}" == "eth0" ]; then
+  if [ "${INTERFACE}" == "eth0" -o "${INTERFACE}" == "lo" ]; then
     return
   fi
   cidr=$(get_cidr)
