@@ -78,14 +78,15 @@ Docker
 
     user@host:~$ sudo -i # become root
     root@host:~# git clone https://github.com/andsens/bootstrap-vz.git # Clone the repo
-    root@host:~# apt-get install debootstrap python-pip # Install dependencies from aptitude
+    root@host:~# apt-get install debootstrap python-pip docker.io # Install dependencies from aptitude
     root@host:~# pip install termcolor jsonschema fysom docopt pyyaml pyrfc3339 # Install python dependencies
     root@host:~# bootstrap-vz/bootstrap-vz bootstrap-vz/manifests/examples/docker/jessie-minimized.yml
 
 The resulting image should be no larger than 82 MB (81.95 MB to be exact).
 The manifest ``jessie-minimized.yml`` uses the
 `minimize\_size <bootstrapvz/plugins/minimize_size>`__ plugin to reduce the image
-size considerably.
+size considerably. Rather than installing docker from the debian main repo
+it is recommended to install `the latest docker version <https://docs.docker.com/engine/installation/debian/#debian-jessie-80-64-bit>`__.
 
 
 VirtualBox Vagrant
