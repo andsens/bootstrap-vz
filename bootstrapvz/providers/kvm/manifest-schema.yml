@@ -26,6 +26,7 @@ properties:
         enum:
         - grub
         - extlinux
+        - none
   volume:
     type: object
     properties:
