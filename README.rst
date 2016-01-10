@@ -98,7 +98,7 @@ VirtualBox Vagrant
     root@host:~# git clone https://github.com/andsens/bootstrap-vz.git # Clone the repo
     root@host:~# apt-get install qemu-utils debootstrap python-pip # Install dependencies from aptitude
     root@host:~# pip install termcolor jsonschema fysom docopt pyyaml # Install python dependencies
-    root@host:~# bootstrap-vz/bootstrap-vz bootstrap-vz/manifests/examples/jessie-vagrant.yml
+    root@host:~# bootstrap-vz/bootstrap-vz bootstrap-vz/manifests/examples/virtualbox/jessie-vagrant.yml
 
 If you want to use the `minimize\_size <bootstrapvz/plugins/minimize_size>`__ plugin,
 you will have to install the ``zerofree`` package and `VMWare Workstation`__ as well.
