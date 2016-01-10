@@ -42,7 +42,7 @@ properties:
     type: object
     properties:
       architecture:
-        enum: [i386, amd64]
+        enum: [i386, amd64, arm64]
       userspace_architecture:
         enum: [i386]
       bootloader:
