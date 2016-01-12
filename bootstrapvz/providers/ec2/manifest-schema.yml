@@ -46,4 +46,3 @@ properties:
             - msdos
             - gpt
     required: [backing]
-required: [image]
