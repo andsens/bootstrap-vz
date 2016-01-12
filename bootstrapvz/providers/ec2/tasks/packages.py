@@ -27,5 +27,5 @@ class AddWorkaroundGrowpart(Task):
 		from shutil import copy
 		from . import assets
 		src = os.path.join(assets, 'bin/growpart')
-		dst = os.path.join(info.root, 'usr/bin/growpart')
+		dst = os.path.join(info.root, 'usr/bin/growpart-workaround')
 		copy(src, dst)

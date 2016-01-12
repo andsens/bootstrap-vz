@@ -13,15 +13,17 @@
 prog=$(basename $0)
 logger="logger -t $prog"
 
-hash growpart 2> /dev/null || {
-	$logger "growpart was not found on PATH. Unable to expand size."
+growpart="growpart"
+
+hash $growpart 2> /dev/null || {
+	$logger "$growpart was not found on PATH. Unable to expand size."
 	exit 1
 }
 
 root_device_path="/dev/xvda"
 root_index="0"
 
-growpart $root_device_path $root_index || {
+$growpart $root_device_path $root_index || {
 	$logger "growpart failed. Unable to expand size."
 	exit 1
 }

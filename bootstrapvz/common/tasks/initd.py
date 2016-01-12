@@ -66,3 +66,5 @@ class AdjustExpandRootScript(Task):
 
 		root_device_path = 'root_device_path="{device}"'.format(device=info.volume.device_path)
 		sed_i(script, '^root_device_path="/dev/xvda"$', root_device_path)
+
+		sed_i(script, '^growpart="growpart"$', 'growpart-workaround')
