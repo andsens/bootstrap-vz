@@ -19,7 +19,7 @@ class DefaultPackages(Task):
 
 
 class AddWorkaroundGrowpart(Task):
-	description = 'Adding growpart'
+	description = 'Adding growpart workaround for jessie'
 	phase = phases.system_modification
 
 	@classmethod
