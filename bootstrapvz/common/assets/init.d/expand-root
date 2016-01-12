@@ -18,14 +18,15 @@ hash growpart 2> /dev/null || {
 	exit 1
 }
 
+root_device_path="/dev/xvda"
 root_index="0"
 
-growpart /dev/xvda $root_index || {
+growpart $root_device_path $root_index || {
 	$logger "growpart failed. Unable to expand size."
 	exit 1
 }
 
-device_path="/dev/xvda$root_index"
+device_path="${root_device_path}${root_index}"
 filesystem=$(blkid -s TYPE -o value ${device_path})
 
 case $filesystem in
