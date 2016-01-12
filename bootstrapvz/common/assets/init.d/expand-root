@@ -15,14 +15,14 @@ logger="logger -t $prog"
 
 growpart=$(which growpart) || {
 	$logger "growpart was not found on PATH. Unable to expand size."
-	exit 0
+	exit 1
 }
 
 root_index="0"
 
 $growpart /dev/xvda $root_index || {
 	$logger "growpart failed. Unable to expand size."
-	exit 0
+	exit 1
 }
 
 device_path="/dev/xvda$root_index"
