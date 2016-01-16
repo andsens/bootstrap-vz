@@ -122,7 +122,7 @@ must install it directly from the eucalyptus repository like this:
 
 .. code:: sh
 
-    apt-get install --no-install-recommends python-dev libxml2-dev libxslt-dev gcc
+    apt-get install --no-install-recommends python-dev libxml2-dev libxslt-dev gcc zlib1g-dev
     pip install git+git://github.com/eucalyptus/euca2ools.git@v3.2.0
 
 Cleanup
