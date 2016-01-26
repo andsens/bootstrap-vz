@@ -234,7 +234,8 @@ Example:
       install_standard: true
       mirror: http://cloudfront.debian.net/debian
       sources:
-       - deb http://apt.puppetlabs.com wheezy main dependencies
+        puppet:
+          - deb http://apt.puppetlabs.com wheezy main dependencies
       components:
         - contrib
         - non-free
