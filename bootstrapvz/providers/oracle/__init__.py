@@ -16,14 +16,12 @@ def validate_manifest(data, validator, error):
 
 def resolve_tasks(taskset, manifest):
 	taskset.update(task_groups.get_standard_groups(manifest))
+	taskset.update(task_groups.ssh_group)
 
 	taskset.update([loopback.AddRequiredCommands,
 	                loopback.Create,
-	                initd.InstallInitScripts,
-	                ssh.AddOpenSSHPackage,
-	                ssh.ShredHostkeys,
-	                ssh.AddSSHKeyGeneration,
 	                image.MoveImage,
+	                ssh.DisableRootLogin,
 	                volume.Delete,
 	                tasks.image.CreateImageTarball,
 	                tasks.network.InstallDHCPCD,
