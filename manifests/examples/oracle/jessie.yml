@@ -23,5 +23,6 @@ packages:
       - initramfs-tools
       - /tmp/linux-image-3.16.7-ckt11-gzip-1_amd64.deb
 plugins:
-  root_password:
-    password: ARealSecurePassword
+  cloud_init:
+    username: opc
+    metadata_sources: Ec2

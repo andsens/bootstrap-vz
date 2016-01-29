@@ -14,14 +14,3 @@ class InstallDHCPCD(Task):
 		info.packages.add('dhcpcd5')
 		info.exclude_packages.add('isc-dhcp-client')
 		info.exclude_packages.add('isc-dhcp-common')
-
-
-class SetCloudInitMetadataURL(Task):
-	description = 'Setting cloud-init metadata URL'
-	phase = phases.system_modification
-
-	@classmethod
-	def run(cls, info):
-		cfg_src = os.path.join(assets, 'cloud-init/90_dpkg.cfg')
-		cfg_dst = os.path.join(info.root, 'etc/cloud/cloud.cfg.d/90_dpkg.cfg')
-		shutil.copy(cfg_src, cfg_dst)

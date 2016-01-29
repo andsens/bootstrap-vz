@@ -32,5 +32,3 @@ Create a new local branch from this one:
 Bootstrap a new image:
 
     $ sudo ./bootstrap-vz --debug manifests/examples/oracle/jessie.yml
-
-P.s.: you probably want to change the root password define on the example manifest, as `cloud-init` isn't properly fetching public keys on Oracle Compute Cloud right now.

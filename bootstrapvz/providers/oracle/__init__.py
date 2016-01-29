@@ -29,9 +29,6 @@ def resolve_tasks(taskset, manifest):
 	                tasks.network.InstallDHCPCD,
 	                ])
 
-	if 'cloud_init' in manifest.plugins:
-		taskset.add(tasks.network.SetCloudInitMetadataURL)
-
 
 def resolve_rollback_tasks(taskset, manifest, completed, counter_task):
 	taskset.update(task_groups.get_standard_rollback_tasks(completed))
