@@ -1,8 +1,5 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
-from . import assets
-import os.path
-import shutil
 
 
 class InstallDHCPCD(Task):
