@@ -5,6 +5,7 @@ from bootstrapvz.common.tasks import ssh
 from bootstrapvz.common.tasks import volume
 import tasks.image
 import tasks.network
+import tasks.packages
 
 
 def validate_manifest(data, validator, error):
@@ -24,6 +25,7 @@ def resolve_tasks(taskset, manifest):
 	                volume.Delete,
 	                tasks.image.CreateImageTarball,
 	                tasks.network.InstallDHCPCD,
+	                tasks.packages.DefaultPackages,
 	                ])
 
 

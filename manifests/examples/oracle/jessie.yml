@@ -18,10 +18,6 @@ volume:
     root:
       filesystem: ext4
       size: 8GiB
-packages:
-  install:
-      - initramfs-tools
-      - /tmp/linux-image-3.16.7-ckt11-gzip-1_amd64.deb
 plugins:
   cloud_init:
     username: opc
