@@ -10,12 +10,14 @@ generates images for the following virtualization platforms:
    (supports both HVM and PVM; S3 and EBS backed;
    `used for official Debian images <https://wiki.debian.org/Cloud/AmazonEC2Image/Jessie>`__;
    `Quick start <#amazon-ec2-ebs-backed-ami>`__)
+-  `Docker <bootstrapvz/providers/docker>`__ (`Quick start <#docker>`__)
 -  `Google Compute Engine <bootstrapvz/providers/gce>`__
    (`used by Google for official Debian images <https://wiki.debian.org/Cloud/GoogleComputeEngineImage>`__)
--  `Oracle VirtualBox <bootstrapvz/providers/virtualbox>`__ (`with Vagrant support <#virtualbox-vagrant>`__)
--  `Docker <bootstrapvz/providers/docker>`__ (`Quick start <#docker>`__)
--  `Microsoft Azure <bootstrapvz/providers/azure>`__
 -  `KVM <bootstrapvz/providers/kvm>`__ (Kernel-based Virtual Machine)
+-  `Microsoft Azure <bootstrapvz/providers/azure>`__
+-  `Oracle Compute Cloud Service <bootstrapvz/providers/oracle>`__
+   (`used for official Debian images <https://wiki.debian.org/Cloud/OracleComputeImage>`__)
+-  `Oracle VirtualBox <bootstrapvz/providers/virtualbox>`__ (`with Vagrant support <#virtualbox-vagrant>`__)
 
 Its aim is to provide a reproducable bootstrapping process using
 `manifests <manifests>`__
