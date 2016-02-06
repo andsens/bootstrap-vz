@@ -90,10 +90,10 @@ class AdminUserCredentialsPublicKey(Task):
 		username = info.manifest.plugins['admin_user']['username']
 
 		ssh_file = os.path.join('/home/', username, '.ssh/authorized_keys')
-		rel_ssh_file = os.path.realpath(info.root + '/%s' % ssh_file)
+		rel_ssh_file = os.path.join(info.root, ssh_file)
 
 		ssh_dir = os.path.dirname(ssh_file)
-		rel_ssh_dir = os.path.realpath(info.root + '/%s' % ssh_dir)
+		rel_ssh_dir = os.path.join(info.root, ssh_dir)
 		if not os.path.exists(rel_ssh_dir):
 			log.debug('Creating %s.' % rel_ssh_dir)
 			os.mkdir(rel_ssh_dir)
@@ -118,15 +118,11 @@ class AdminUserCredentialsEC2(Task):
 
 	@classmethod
 	def run(cls, info):
-		from bootstrapvz.common.exceptions import TaskError
 		from bootstrapvz.common.tools import sed_i
 		log = logging.getLogger(__name__)
 
 		getcreds_path = os.path.join(info.root, 'etc/init.d/ec2-get-credentials')
-		if os.path.exists(getcreds_path):
-			log.debug('Updating EC2 get credentials script.')
-			username = info.manifest.plugins['admin_user']['username']
-			sed_i(getcreds_path, "username='root'",
-			      "username='{username}'".format(username=username))
-		else:
-			raise TaskError('Could not find EC2 get credentials script.')
+		log.debug('Updating EC2 get credentials script.')
+		username = info.manifest.plugins['admin_user']['username']
+		sed_i(getcreds_path, "username='root'",
+		      "username='{username}'".format(username=username))

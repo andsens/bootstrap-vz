@@ -7,10 +7,11 @@ def validate_manifest(data, validator, error):
 	if ('password' in data['plugins']['admin_user'] and 'pubkey' in data['plugins']['admin_user']):
 		msg = 'passwd and pubkey are mutually exclusive.'
 		error(msg, ['plugins', 'admin_user'])
-	full_path = data['plugins']['admin_user']['pubkey']
-	if not os.path.exists(full_path):
-		msg = 'Could not find public key at %s' % full_path
-		error(msg, ['plugins', 'admin_user'])
+	if 'pubkey' in data['plugins']['admin_user']:
+		full_path = data['plugins']['admin_user']['pubkey']
+		if not os.path.exists(full_path):
+	    		msg = 'Could not find public key at %s' % full_path
+	    		error(msg, ['plugins', 'admin_user'])
 
 
 def resolve_tasks(taskset, manifest):
