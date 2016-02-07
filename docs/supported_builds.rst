@@ -3,23 +3,22 @@ Supported builds
 
 The following is a list of supported manifest combinations.
 
+Bootloaders and partitions
+--------------------------
+
 Note that grub cannot boot from unpartitioned volumes.
 
-Additionally grub installation is not supported on *squeeze*.
-This is not a technical limitation, but simply stems from a
-lack of motivation to implement support for it.
-
 Azure
------
+~~~~~
 
 TODO
 
 
 EC2
----
+~~~
 
-EBS (wheezy & jessie)
-~~~~~~~~~~~~~~~~~~~~~
+EBS
+___
 
 ========================== ================= ================= =================
  Bootloader / Partitioning        none              msdos            gpt
@@ -29,19 +28,8 @@ EBS (wheezy & jessie)
  grub (hvm)                 *not supported*      supported         supported
 ========================== ================= ================= =================
 
-EBS (squeeze)
-~~~~~~~~~~~~~
-
-========================== ================= ================= =================
- Bootloader / Partitioning        none              msdos            gpt
-========================== ================= ================= =================
- pvgrub (paravirtualized)      supported         supported         supported
- extlinux (hvm)                supported         supported         supported
- grub (hvm)                 *not supported*  *not implemented* *not implemented*
-========================== ================= ================= =================
-
-S3 (all releases)
-~~~~~~~~~~~~~~~~~
+S3
+__
 
 ========================== ================= ================= =================
  Bootloader / Partitioning        none              msdos            gpt
@@ -51,19 +39,27 @@ S3 (all releases)
  grub (hvm)                 *not supported*  *not implemented* *not implemented*
 ========================== ================= ================= =================
 
+
 GCE
----
+~~~
 
 TODO
 
+
 KVM
----
+~~~
+
+TODO
+
+
+Oracle
+~~~~~~
 
 TODO
 
 
 VirtualBox
-----------
+~~~~~~~~~~
 
 ========================== ================= ================= =================
  Bootloader / Partitioning        none              msdos            gpt
@@ -71,3 +67,20 @@ VirtualBox
  extlinux                      supported         supported         supported
  grub                       *not supported*      supported         supported
 ========================== ================= ================= =================
+
+
+Known working builds
+--------------------
+
+The following is a list of supported releases, providers and architectures
+combination. We know that they are working because there's someone working
+on them.
+
+======= ======== ============ ==========================
+Release Provider Architecture Person
+======= ======== ============ ==========================
+Jessie  EC2      ``amd64``    James Bromberger
+Jessie  GCE      ``amd64``    Zach Marano (and GCE Team)
+Jessie  KVM      ``arm64``    Clark Laughlin
+Jessie  Oracle   ``amd64``    Tiago Ilieve
+======= ======== ============ ==========================
