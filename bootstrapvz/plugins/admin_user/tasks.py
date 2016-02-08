@@ -89,11 +89,11 @@ class AdminUserCredentialsPublicKey(Task):
 
 		username = info.manifest.plugins['admin_user']['username']
 
-		ssh_file = os.path.join('/home/', username, '.ssh/authorized_keys')
-		rel_ssh_file = os.path.join(info.root, ssh_file)
+		ssh_file = os.path.join('/home', username, '.ssh/authorized_keys')
+		rel_ssh_file = os.path.join(info.root, 'home', username, '.ssh/authorized_keys')
 
 		ssh_dir = os.path.dirname(ssh_file)
-		rel_ssh_dir = os.path.join(info.root, ssh_dir)
+		rel_ssh_dir = os.path.dirname(rel_ssh_file)
 		if not os.path.exists(rel_ssh_dir):
 			log.debug('Creating %s.' % rel_ssh_dir)
 			os.mkdir(rel_ssh_dir)
