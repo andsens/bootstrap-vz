@@ -76,11 +76,11 @@ The following is a list of supported releases, providers and architectures
 combination. We know that they are working because there's someone working
 on them.
 
-======= ======== ============ ==========================
+======= ======== ============ ===========================================================
 Release Provider Architecture Person
-======= ======== ============ ==========================
-Jessie  EC2      ``amd64``    James Bromberger
-Jessie  GCE      ``amd64``    Zach Marano (and GCE Team)
-Jessie  KVM      ``arm64``    Clark Laughlin
-Jessie  Oracle   ``amd64``    Tiago Ilieve
-======= ======== ============ ==========================
+======= ======== ============ ===========================================================
+Jessie  EC2      ``amd64``    `James Bromberger <https://github.com/JamesBromberger>`__
+Jessie  GCE      ``amd64``    `Zach Marano <https://github.com/zmarano>`__ (and GCE Team)
+Jessie  KVM      ``arm64``    `Clark Laughlin <https://github.com/clarktlaugh>`__
+Jessie  Oracle   ``amd64``    `Tiago Ilieve <https://github.com/myhro>`__
+======= ======== ============ ===========================================================
