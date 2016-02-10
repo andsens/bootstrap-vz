@@ -1,6 +1,21 @@
 Changelog
 =========
 
+2016-02-10
+----------
+Manoj Srivastava:
+	* #252: Added support for password and static pubkey auth
+
+2016-01-14
+----------
+Jesse Szwedko:
+	* #269: EC2: Added growpart script extension
+
+2015-12-19
+----------
+Tim Sattarov:
+	* #263: Ignore loopback interface in udev rules (reduces startup of networking by a factor of 10)
+
 2015-12-13
 ----------
 Anders Ingemann:
