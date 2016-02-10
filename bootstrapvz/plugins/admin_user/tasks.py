@@ -3,8 +3,9 @@ from bootstrapvz.common import phases
 from bootstrapvz.common.tasks.initd import InstallInitScripts
 from bootstrapvz.providers.ec2.tasks.initd import AddEC2InitScripts
 
-import logging
 import os
+import logging
+log = logging.getLogger(__name__)
 
 
 class AddSudoPackage(Task):
@@ -44,85 +45,66 @@ class PasswordlessSudo(Task):
 		os.chmod(sudo_admin_path, ug_read_only)
 
 
-class AdminUserCredentialsPassword(Task):
-	description = 'Set up access credentials for the admin user with a given password'
+class AdminUserPassword(Task):
+	description = 'Setting the admin user password'
 	phase = phases.system_modification
 	predecessors = [InstallInitScripts, CreateAdminUser]
 
 	@classmethod
 	def run(cls, info):
 		from bootstrapvz.common.tools import log_check_call
-		log = logging.getLogger(__name__)
-
-		log.debug('Setting the password for the admin user.')
-		log_check_call(
-			['chroot', info.root, 'chpasswd'],
-			info.manifest.plugins['admin_user']['username'] +
-			':' + info.manifest.plugins['admin_user']['password']
-		)
-		return
+		log_check_call(['chroot', info.root, 'chpasswd'],
+		               info.manifest.plugins['admin_user']['username'] +
+		               ':' + info.manifest.plugins['admin_user']['password'])
 
 
-class AdminUserCredentialsPublicKey(Task):
-	description = 'Set up access credentials for the admin user with a given public key'
+class AdminUserPublicKey(Task):
+	description = 'Installing the public key for the admin user'
 	phase = phases.system_modification
 	predecessors = [AddEC2InitScripts, CreateAdminUser]
 	successors = [InstallInitScripts]
 
 	@classmethod
 	def run(cls, info):
-		from bootstrapvz.common.tools import log_check_call
-
-		log = logging.getLogger(__name__)
-
-		import stat
-		from shutil import copy
-		full_path = info.manifest.plugins['admin_user']['pubkey']
-		log.debug('Copying public key from {path}'.format(path=full_path))
-
 		if 'ec2-get-credentials' in info.initd['install']:
-			log.warn(
-				'You are using a static public key for the admin account.'
-				' This will conflict with the ec2 public key injection mechanisn.'
-				' The ec2-get-credentials startup script has therefore been disabled.')
+			log.warn('You are using a static public key for the admin account.'
+			         'This will conflict with the ec2 public key injection mechanism.'
+			         'The ec2-get-credentials startup script will therefore not be enabled.')
 			del info.initd['install']['ec2-get-credentials']
 
+		# Get the stuff we need (username & public key)
 		username = info.manifest.plugins['admin_user']['username']
+		with open(info.manifest.plugins['admin_user']['pubkey']) as pubkey_handle:
+			pubkey = pubkey_handle.read()
 
-		ssh_file = os.path.join('/home', username, '.ssh/authorized_keys')
-		rel_ssh_file = os.path.join(info.root, 'home', username, '.ssh/authorized_keys')
+		# Create the ssh dir if nobody has created it yet
+		ssh_dir = os.path.join('/home', username, '.ssh')
+		if not os.path.exists(ssh_dir):
+			os.mkdir(ssh_dir, 0700)
 
-		ssh_dir = os.path.dirname(ssh_file)
-		rel_ssh_dir = os.path.dirname(rel_ssh_file)
-		if not os.path.exists(rel_ssh_dir):
-			log.debug('Creating %s.' % rel_ssh_dir)
-			os.mkdir(rel_ssh_dir)
+		# Create (or append to) the authorized keys file (and chmod u=rw,go=)
+		import stat
+		auth_keys_abs = os.path.join(info.root, 'home', username, '.ssh/authorized_keys')
+		with open(auth_keys_abs, 'a') as auth_keys_handle:
+			auth_keys_handle.write(pubkey + '\n')
+		os.chmod(auth_keys_abs, (stat.S_IRUSR | stat.S_IWUSR))
 
-		log.debug('setting %s mode 700' % rel_ssh_dir)
-		mode = (stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
-		os.chmod(rel_ssh_dir, mode)
-
-		copy(full_path, rel_ssh_file)
-
-		mode = (stat.S_IRUSR | stat.S_IWUSR)
-		os.chmod(rel_ssh_file, mode)
-
-		log_check_call(['chroot', info.root, 'chown', '-R', username, ssh_dir])
-		return
+		# Set the owner of the authorized keys file
+		# (must be through chroot, the host system doesn't know about the user)
+		from bootstrapvz.common.tools import log_check_call
+		auth_keys_rel = os.path.join(ssh_dir, 'authorized_keys')
+		log_check_call(['chroot', info.root,
+		                'chown', '-R', username, auth_keys_rel])
 
 
-class AdminUserCredentialsEC2(Task):
-	description = 'Set up access credentials for the admin user using the EC2 credentials'
+class AdminUserPublicKeyEC2(Task):
+	description = 'Modifying ec2-get-credentials to copy the ssh public key to the admin user'
 	phase = phases.system_modification
 	predecessors = [InstallInitScripts, CreateAdminUser]
 
 	@classmethod
 	def run(cls, info):
 		from bootstrapvz.common.tools import sed_i
-		log = logging.getLogger(__name__)
-
 		getcreds_path = os.path.join(info.root, 'etc/init.d/ec2-get-credentials')
-		log.debug('Updating EC2 get credentials script.')
 		username = info.manifest.plugins['admin_user']['username']
-		sed_i(getcreds_path, "username='root'",
-		      "username='{username}'".format(username=username))
+		sed_i(getcreds_path, "username='root'", "username='{username}'".format(username=username))

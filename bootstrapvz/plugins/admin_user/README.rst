@@ -4,27 +4,40 @@ Admin user
 This plugin creates a user with passwordless sudo privileges. It also
 disables the SSH root login. There are three ways to grant access to
 the admin user:
--  Set a password for the user, or
--  Provide a ssh public key to allow remote ssh login, or
 -  Use the EC2 public key (EC2 machines only)
+-  Set a password for the user
+-  Provide a SSH public key to allow remote SSH login
 
-If a password is provided, this plugin sets the admin password. This
-also re-enables password login (off by default in Jessie).
+If the EC2 init scripts are installed, the script for fetching the
+SSH authorized keys will be adjusted to match the username
+specified in ``username``.
 
-If the optional argument pubkey is present (it should be a full path
-to a ssh public key), it will ensure that the ssh public key is used
-to set up password less remote login for the admin user.
+If a password is provided (the ``password`` setting),
+this plugin sets the admin password, which also re-enables
+SSH password login (off by default in Jessie or newer).
 
-Only one of these options (password, or pubkey) may be specified.
+If the optional setting ``pubkey`` is present (it should be a full path
+to a SSH public key), you will be able to log in to the admin user account
+using the corresponding private key
+(this disables the EC2 public key injection mechanism).
 
-If neither the password not a ssh public key location are specified,
-and if the EC2 init scripts are installed, the script for fetching the
-SSH authorized keys will be adjust to match the username specified.
+The ``password`` and ``pubkey`` settings can be used at the same time.
 
 Settings
 ~~~~~~~~
 
 -  ``username``: The username of the account to create. ``required``
 -  ``password``: An optional password for the account to create. ``optional``
--  ``pubkey``:   The full path to an ssh public key to allow
+-  ``pubkey``:   The full path to an SSH public key to allow
    remote access into the admin account. ``optional``
+
+Example:
+
+.. code:: yaml
+
+    ---
+    plugins:
+      admin_user:
+        username: admin
+        password: s3cr3t
+        pubkey: /home/bootstrap-vz/.ssh/id_rsa
