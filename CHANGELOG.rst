@@ -6,10 +6,21 @@ Changelog
 Manoj Srivastava:
 	* #252: Added support for password and static pubkey auth
 
+2016-02-06
+----------
+Tiago Ilieve:
+	* Added Oracle Compute Cloud provider
+	* #280: Declared Squeeze as unsupported
+
 2016-01-14
 ----------
 Jesse Szwedko:
 	* #269: EC2: Added growpart script extension
+
+2016-01-10
+----------
+Clark Laughlin:
+	* Enabled support for KVM on arm64
 
 2015-12-19
 ----------
@@ -30,7 +41,7 @@ Anders Ingemann:
 
 2015-11-13
 ----------
-vorlock:
+Marcin Kulisz:
 	* Exclude docs from binary package
 
 2015-10-20
