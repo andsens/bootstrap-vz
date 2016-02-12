@@ -33,7 +33,7 @@ def get_standard_groups(manifest):
 	group.extend(get_network_group(manifest))
 	group.extend(get_apt_group(manifest))
 	group.extend(security_group)
-	group.extend(locale_group)
+	group.extend(get_locale_group(manifest))
 	group.extend(get_bootloader_group(manifest))
 	group.extend(cleanup_group)
 	return group
@@ -133,10 +133,19 @@ def get_apt_group(manifest):
 
 security_group = [security.EnableShadowConfig]
 
-locale_group = [locale.LocaleBootstrapPackage,
-                locale.GenerateLocale,
-                locale.SetTimezone,
-                ]
+
+def get_locale_group(manifest):
+	from bootstrapvz.common.releases import jessie
+	group = [
+		locale.LocaleBootstrapPackage,
+		locale.GenerateLocale,
+		locale.SetTimezone,
+	]
+	if manifest.release > jessie:
+		group.append(locale.SetLocalTimeLink)
+	else:
+		group.append(locale.SetLocalTimeCopy)
+	return group
 
 
 def get_bootloader_group(manifest):

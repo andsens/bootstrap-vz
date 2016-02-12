@@ -43,11 +43,32 @@ class SetTimezone(Task):
 
 	@classmethod
 	def run(cls, info):
-		from shutil import copy
 		tz_path = os.path.join(info.root, 'etc/timezone')
 		timezone = info.manifest.system['timezone']
 		with open(tz_path, 'w') as tz_file:
 			tz_file.write(timezone)
+
+
+class SetLocalTimeLink(Task):
+	description = 'Setting the selected local timezone (link)'
+	phase = phases.system_modification
+
+	@classmethod
+	def run(cls, info):
+		timezone = info.manifest.system['timezone']
+		localtime_path = os.path.join(info.root, 'etc/localtime')
+		os.unlink(localtime_path)
+		os.symlink(os.path.join('/usr/share/zoneinfo', timezone), localtime_path)
+
+
+class SetLocalTimeCopy(Task):
+	description = 'Setting the selected local timezone (copy)'
+	phase = phases.system_modification
+
+	@classmethod
+	def run(cls, info):
+		from shutil import copy
+		timezone = info.manifest.system['timezone']
 		zoneinfo_path = os.path.join(info.root, '/usr/share/zoneinfo', timezone)
 		localtime_path = os.path.join(info.root, 'etc/localtime')
 		copy(zoneinfo_path, localtime_path)
