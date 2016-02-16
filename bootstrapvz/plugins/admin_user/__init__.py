@@ -20,11 +20,11 @@ def resolve_tasks(taskset, manifest):
 
 	if 'password' in manifest.plugins['admin_user']:
 		taskset.discard(ssh.DisableSSHPasswordAuthentication)
-		taskset.add(tasks.AdminUserCredentialsPassword)
+		taskset.add(tasks.AdminUserPassword)
 	if 'pubkey' in manifest.plugins['admin_user']:
-		taskset.add(tasks.AdminUserCredentialsPublicKey)
+		taskset.add(tasks.AdminUserPublicKey)
 	else:
-		taskset.add(tasks.AdminUserCredentialsEc2)
+		taskset.add(tasks.AdminUserPublicKeyEC2)
 
 	taskset.update([tasks.AddSudoPackage,
 	                tasks.CreateAdminUser,
