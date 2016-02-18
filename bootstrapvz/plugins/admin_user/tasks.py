@@ -77,14 +77,17 @@ class AdminUserPublicKey(Task):
 		with open(info.manifest.plugins['admin_user']['pubkey']) as pubkey_handle:
 			pubkey = pubkey_handle.read()
 
+		# paths
+		ssh_dir_rel = os.path.join('home', username, '.ssh')
+		auth_keys_rel = os.path.join(ssh_dir_rel, 'authorized_keys')
+		ssh_dir_abs = os.path.join(info.root, ssh_dir_rel)
+		auth_keys_abs = os.path.join(info.root, auth_keys_rel)
 		# Create the ssh dir if nobody has created it yet
-		ssh_dir = os.path.join('/home', username, '.ssh')
-		if not os.path.exists(ssh_dir):
-			os.mkdir(ssh_dir, 0700)
+		if not os.path.exists(ssh_dir_abs):
+			os.mkdir(ssh_dir_abs, 0700)
 
 		# Create (or append to) the authorized keys file (and chmod u=rw,go=)
 		import stat
-		auth_keys_abs = os.path.join(info.root, 'home', username, '.ssh/authorized_keys')
 		with open(auth_keys_abs, 'a') as auth_keys_handle:
 			auth_keys_handle.write(pubkey + '\n')
 		os.chmod(auth_keys_abs, (stat.S_IRUSR | stat.S_IWUSR))
@@ -92,7 +95,6 @@ class AdminUserPublicKey(Task):
 		# Set the owner of the authorized keys file
 		# (must be through chroot, the host system doesn't know about the user)
 		from bootstrapvz.common.tools import log_check_call
-		auth_keys_rel = os.path.join(ssh_dir, 'authorized_keys')
 		log_check_call(['chroot', info.root,
 		                'chown', '-R', username, auth_keys_rel])
 
