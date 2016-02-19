@@ -5,7 +5,7 @@ import os.path
 
 
 class DefaultPackages(Task):
-	description = 'Adding image packages required for Oracle Cloud'
+	description = 'Adding image packages required for Oracle Compute Cloud'
 	phase = phases.preparation
 
 	@classmethod
