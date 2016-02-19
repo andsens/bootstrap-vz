@@ -3,6 +3,7 @@ from bootstrapvz.common.tasks import image
 from bootstrapvz.common.tasks import loopback
 from bootstrapvz.common.tasks import ssh
 from bootstrapvz.common.tasks import volume
+import tasks.api
 import tasks.image
 import tasks.network
 import tasks.packages
@@ -35,6 +36,13 @@ def resolve_tasks(taskset, manifest):
 	                tasks.network.InstallDHCPCD,
 	                tasks.packages.DefaultPackages,
 	                ])
+
+	if 'credentials' in manifest.provider:
+		taskset.add(tasks.api.InstantiateAPIClient)
+		taskset.add(tasks.image.UploadImageTarball)
+		if manifest.provider.get('verify', False):
+			taskset.add(tasks.image.DownloadImageTarball)
+			taskset.add(tasks.image.CompareImageTarballs)
 
 
 def resolve_rollback_tasks(taskset, manifest, completed, counter_task):
