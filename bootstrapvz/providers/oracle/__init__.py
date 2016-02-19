@@ -10,8 +10,16 @@ import tasks.packages
 
 def validate_manifest(data, validator, error):
 	import os.path
-	schema_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'manifest-schema.yml'))
-	validator(data, schema_path)
+	validator(data, os.path.join(os.path.dirname(__file__), 'manifest-schema.yml'))
+
+	keys = ['username', 'password', 'identity-domain']
+	if 'credentials' in data['provider']:
+		if not all(key in data['provider']['credentials'] for key in keys):
+			msg = 'All Oracle Compute Cloud credentials should be specified in the manifest'
+			error(msg, ['provider', 'credentials'])
+		if not data['provider'].get('container'):
+			msg = 'The container to which the image will be uploaded should be specified'
+			error(msg, ['provider'])
 
 
 def resolve_tasks(taskset, manifest):

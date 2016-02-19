@@ -3,6 +3,17 @@ $schema: http://json-schema.org/draft-04/schema#
 title: Oracle manifest
 type: object
 properties:
+  provider:
+    type: object
+    properties:
+      credentials:
+        type: object
+        properties:
+          username: {type: string}
+          password: {type: string}
+          identity-domain: {type: string}
+      container: {type: string}
+      verify: {type: boolean}
   system:
     type: object
     properties:
@@ -21,7 +32,6 @@ properties:
           type:
             type: string
             enum:
-            - none
             - msdos
             - gpt
     required: [backing]
