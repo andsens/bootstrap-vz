@@ -15,6 +15,10 @@ class OracleStorageAPIClient:
 		self.base_url = 'https://' + identity_domain + '.storage.oraclecloud.com'
 		self.log = logging.getLogger(__name__)
 
+		# Avoid 'requests' INFO/DEBUG log messages
+		logging.getLogger('requests').setLevel(logging.WARNING)
+		logging.getLogger('urllib3').setLevel(logging.WARNING)
+
 	def _fail(self, error):
 		raise RuntimeError('Oracle Storage Cloud API - ' + error)
 
@@ -58,7 +62,7 @@ class OracleStorageAPIClient:
 		if uploaded_file_md5.hexdigest() != downloaded_file_md5.hexdigest():
 			self.log.error('File hashes mismatch')
 		else:
-			self.log.info('Both files have the same hash')
+			self.log.debug('Both files have the same hash')
 
 	def create_manifest(self):
 		headers = {
@@ -70,7 +74,7 @@ class OracleStorageAPIClient:
 		    'Content-Length': '0',
 		}
 		url = self.object_url
-		self.log.info('Creating remote manifest to join chunks')
+		self.log.debug('Creating remote manifest to join chunks')
 		response = requests.put(url, headers=headers)
 		if response.status_code != 201:
 			self._fail(response.text)
@@ -122,7 +126,7 @@ class OracleStorageAPIClient:
 			    container=self.container,
 			    object_chunk_name=chunk_name,
 			)
-			self.log.info('Uploading chunk ' + chunk_name)
+			self.log.debug('Uploading chunk ' + chunk_name)
 			response = requests.put(url, data=chunk, headers=headers)
 			if response.status_code != 201:
 				self._fail(response.text)
