@@ -14,8 +14,8 @@ Credentials
 ~~~~~~~~~~~
 
 The settings described below should be placed in the ``credentials`` key under
-the ``provider`` section. They will be used to authenticate the API client
-which uploads the image.
+the ``provider`` section, if the image is intended to be uploaded after
+generation. They will be used to authenticate the API client.
 
 -  ``username``: the same login used to access the Oracle Compute Cloud
    dashboard.
