@@ -121,7 +121,8 @@ properties:
   plugins:
     type: object
     patternProperties:
-      ^\w+$: {type: object}
+      ^\w+$: {}
+    additionalProperties: false
   volume:
     type: object
     properties:
