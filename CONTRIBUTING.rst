@@ -118,7 +118,7 @@ Use a json-schema to check for allowed settings
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The json-schema may be verbose but it keeps the bulk of check work outside the
 python code, which is a big plus when it comes to readability.
-This only applies bas long as the checks are simple.
+This only applies as long as the checks are simple.
 You can of course fall back to doing the check in python when that solution is
 considerably less complex.
 
