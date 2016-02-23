@@ -1,6 +1,12 @@
 Changelog
 =========
 
+2016-02-23
+----------
+Nicolas Braud-Santoni:
+	* #282, #290: Added 'debconf' plugin
+	* #290: Relaxed requirements on plugins manifests
+
 2016-02-10
 ----------
 Manoj Srivastava:
