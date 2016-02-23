@@ -1,0 +1,14 @@
+$schema: http://json-schema.org/schema#
+title: Manifest schema for the debconf plugin
+type: object
+properties:
+  plugins:
+    type: object
+    properties:
+      debconf:
+        name: Debconf selections to set
+        description: >-
+          This value should be an inline string in the
+          input format of debconf-set-selections(1).
+        type: string
+    required: [debconf]
