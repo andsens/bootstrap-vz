@@ -38,7 +38,7 @@ def resolve_tasks(taskset, manifest):
 	                ])
 
 	if 'credentials' in manifest.provider:
-		taskset.add(tasks.api.InstantiateAPIClient)
+		taskset.add(tasks.api.Connect)
 		taskset.add(tasks.image.UploadImageTarball)
 		if manifest.provider.get('verify', False):
 			taskset.add(tasks.image.DownloadImageTarball)

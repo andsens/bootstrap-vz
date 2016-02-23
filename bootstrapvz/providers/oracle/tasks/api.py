@@ -3,8 +3,8 @@ from bootstrapvz.common import phases
 from bootstrapvz.providers.oracle.apiclient import OracleStorageAPIClient
 
 
-class InstantiateAPIClient(Task):
-	description = 'Instantiating Oracle Storage Cloud API client'
+class Connect(Task):
+	description = 'Connecting to the Oracle Storage Cloud API'
 	phase = phases.preparation
 
 	@classmethod
@@ -15,3 +15,5 @@ class InstantiateAPIClient(Task):
 		    identity_domain=info.manifest.provider['credentials']['identity-domain'],
 		    container=info.manifest.provider['container'],
 		)
+		# Try to fetch the token, so it will fail early if the credentials are wrong
+		info._oracle['client'].auth_token
