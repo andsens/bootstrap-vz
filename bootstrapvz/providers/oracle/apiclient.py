@@ -2,11 +2,10 @@ import hashlib
 import logging
 import os
 import requests
+from bootstrapvz.common.bytes import Bytes
 
 
 class OracleStorageAPIClient:
-	MEGABYTE = 1024**2
-
 	def __init__(self, username, password, identity_domain, container):
 		self.username = username
 		self.password = password
@@ -41,10 +40,10 @@ class OracleStorageAPIClient:
 	@property
 	def chunk_size(self):
 		file_size = os.path.getsize(self.file_path)
-		if file_size > (300 * self.MEGABYTE):
-			chunk_size = 100 * self.MEGABYTE
+		if file_size > int(Bytes('300MiB')):
+			chunk_size = int(Bytes('100MiB'))
 		else:
-			chunk_size = 50 * self.MEGABYTE
+			chunk_size = int(Bytes('50MiB'))
 		return chunk_size
 
 	def compare_files(self):
@@ -55,7 +54,7 @@ class OracleStorageAPIClient:
 		for f, h in zip(files, hashes):
 			with open(f, 'rb') as current_file:
 				while True:
-					data = current_file.read(self.MEGABYTE)
+					data = current_file.read(int(Bytes('8MiB')))
 					if not data:
 						break
 					h.update(data)
@@ -88,7 +87,7 @@ class OracleStorageAPIClient:
 		if response.status_code != 200:
 			self._fail(response.text)
 		with open(self.target_file_path, 'wb') as f:
-			for chunk in response.iter_content(chunk_size=self.MEGABYTE):
+			for chunk in response.iter_content(chunk_size=int(Bytes('8MiB'))):
 				if chunk:
 					f.write(chunk)
 
