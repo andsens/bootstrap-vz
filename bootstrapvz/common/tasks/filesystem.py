@@ -100,17 +100,84 @@ class MountBoot(Task):
 
 
 class MountSpecials(Task):
-    description = 'Mounting special block devices'
+    description = 'Mounting special devices'
     phase = phases.os_installation
     predecessors = [bootstrap.Bootstrap]
 
     @classmethod
     def run(cls, info):
         root = info.volume.partition_map.root
-        root.add_mount('/dev', 'dev', ['--bind'])
+
+        # Create /dev
+        # See https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/devices.txt
+        import os
+        import stat
+        from os import mknod, makedev, symlink
+        from os.path import join
+        from bootstrapvz.common.fs import get_partitions
+
+        # First, make a tmpfs out of /dev.  Everything must be gone after umount.
+        root.add_mount('none', 'dev', ['--types', 'tmpfs'])
+        dev = join(info.root, 'dev')
+
+        # The GNU libc expects /dev/shm to be a world-writable directory in a tmpfs
+        # This is used by the POSIX shared memory implementation
+        os.makedirs(join(dev, 'shm'), 0o777)
+
+        # The API pseudo-devices (null, zero, full, random, urandom and tty)
+        for name, major, minor in [('null',   1, 3), ('zero',    1, 5), ('full', 1, 7),
+                                   ('random', 1, 8), ('urandom', 1, 9), ('tty',  5, 0)]:
+            mknod(join(dev, name), 0o666 | stat.S_IFCHR, makedev(major, minor))
+
+        # Re-create all device paths that have block devices attached
+        for name, partition in get_partitions().items():
+            mknod(join(dev, name), 0o666 | stat.S_IFBLK, makedev(int(partition['major']), int(partition['minor'])))
+
+        # The nbd devices
+        from bootstrapvz.common.fs.qemuvolume import QEMUVolume
+        if isinstance(info.volume, QEMUVolume):
+            os.makedirs(join(dev, 'mapper'), 0o755)
+            nbd_max_part = int(info.volume._module_param('nbd', 'max_part'))
+            for i in xrange(32 / nbd_max_part):
+                mknod(join(dev, 'nbd%i' % i),
+                      0o660 | stat.S_IFBLK,
+                      makedev(43, nbd_max_part * i))
+                for j in xrange(nbd_max_part):
+                    mknod(join(dev, 'nbd%ip%i' % (i, j + 1)),
+                          0o660 | stat.S_IFBLK,
+                          makedev(43, nbd_max_part * i + j + 1))
+
+                    path = '/dev/mapper/nbd%ip%i' % (i, j + 1)
+                    if os.path.exists(path):
+                        assert(os.path.islink(path))
+                        dest = os.readlink(path)
+                        symlink(dest, join(info.root, path[1:]))
+
+                        dev_stat = os.stat(path)
+                        assert(stat.S_ISBLK(dev_stat.st_mode))
+                        mknod(join(dev, 'mapper', dest), dev_stat.st_mode, dev_stat.st_rdev)
+
+        # Mount a new devpts instance separate from the host's
+        # See http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/filesystems/devpts.txt
+        os.makedirs(join(dev, 'pts'), 0o755)
+        symlink('pts/ptmx', join(dev, 'ptmx'))
+        root.add_mount('none', 'dev/pts',
+                       ['--types', 'devpts',
+                        '--options', 'newinstance,ptmxmode=0666'])
+
+        # The kernel documentation defines some symlinks as required
+        symlink('/proc/self/fd', join(dev, 'fd'))
+        symlink('fd/0', join(dev, 'stdin'))
+        symlink('fd/1', join(dev, 'stdout'))
+        symlink('fd/2', join(dev, 'stderr'))
+        symlink('null', join(dev, 'X0R'))
+
+        # Mount /proc.
+        # It is isolated from the host by the PID/IPC namespace in base/main.py
         root.add_mount('none', 'proc', ['--types', 'proc'])
-        root.add_mount('none', 'sys', ['--types', 'sysfs'])
-        root.add_mount('none', 'dev/pts', ['--types', 'devpts'])
+
+        # Mount /sys read-only
+        root.add_mount('none', 'sys', ['--types', 'sysfs', '--options', 'ro'])
 
 
 class CopyMountTable(Task):

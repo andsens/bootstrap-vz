@@ -22,11 +22,24 @@ def main():
     from manifest import Manifest
     manifest = Manifest(path=opts['MANIFEST'])
 
+    # Isolate the host from the build
+    from unshare import unshare, CLONE_NEWIPC, CLONE_NEWPID
+    unshare(CLONE_NEWIPC | CLONE_NEWPID)
+    child = os.fork()
+    if child == 0:
+        # The PID namespace needs an init; wait forever
+        from time import sleep
+        while True:
+            sleep(0x7FFFFFFF)
     # Everything has been set up, begin the bootstrapping process
     run(manifest,
         debug=opts['--debug'],
         pause_on_error=opts['--pause-on-error'],
         dry_run=opts['--dry-run'])
+
+    # Clean up the PID namespace
+    from signal import SIGSTOP
+    os.kill(child, SIGSTOP)
 
 
 def get_opts():

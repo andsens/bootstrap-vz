@@ -1,6 +1,10 @@
 Changelog
 =========
 
+2016-02-24
+----------
+Nicolas Braud-Santoni:
+    * #293, #294: Confine /dev, /dev/pts and /sys
 
 2016-06-04
 ----------
