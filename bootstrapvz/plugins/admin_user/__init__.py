@@ -23,7 +23,7 @@ def resolve_tasks(taskset, manifest):
 		taskset.add(tasks.AdminUserPassword)
 	if 'pubkey' in manifest.plugins['admin_user']:
 		taskset.add(tasks.AdminUserPublicKey)
-	else:
+	elif manifest.provider['name'] == 'ec2':
 		taskset.add(tasks.AdminUserPublicKeyEC2)
 
 	taskset.update([tasks.AddSudoPackage,
