@@ -96,7 +96,7 @@ class AdminUserPublicKey(Task):
 		# (must be through chroot, the host system doesn't know about the user)
 		from bootstrapvz.common.tools import log_check_call
 		log_check_call(['chroot', info.root,
-		                'chown', '-R', username, auth_keys_rel])
+		                'chown', '-R', (username + ':' + username), ssh_dir_rel])
 
 
 class AdminUserPublicKeyEC2(Task):
