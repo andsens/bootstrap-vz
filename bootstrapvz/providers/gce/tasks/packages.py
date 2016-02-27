@@ -14,15 +14,24 @@ class DefaultPackages(Task):
 
 	@classmethod
 	def run(cls, info):
-		info.packages.add('python')
-		info.packages.add('sudo')
-		info.packages.add('ntp')
-		info.packages.add('lsb-release')
 		info.packages.add('acpi-support-base')
+		info.packages.add('ca-certificates')
+		info.packages.add('curl')
+		info.packages.add('ethtool')
+		info.packages.add('gdisk')
+		info.packages.add('kpartx')
+		info.packages.add('isc-dhcp-client')
+		info.packages.add('lsb-release')
+		info.packages.add('ntp')
+		info.packages.add('parted')
+		info.packages.add('python')
 		info.packages.add('openssh-client')
 		info.packages.add('openssh-server')
-		info.packages.add('dhcpd')
-		info.packages.add('ca-certificates')
+		info.packages.add('rsync')
+		info.packages.add('screen')
+		info.packages.add('sudo')
+		info.packages.add('uuid-runtime')
+		info.packages.add('vim')
 
 		kernel_packages_path = os.path.join(os.path.dirname(__file__), 'packages-kernels.yml')
 		kernel_package = config_get(kernel_packages_path, [info.manifest.release.codename,
