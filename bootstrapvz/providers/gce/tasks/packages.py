@@ -27,11 +27,8 @@ class DefaultPackages(Task):
 		info.packages.add('python')
 		info.packages.add('openssh-client')
 		info.packages.add('openssh-server')
-		info.packages.add('rsync')
-		info.packages.add('screen')
 		info.packages.add('sudo')
 		info.packages.add('uuid-runtime')
-		info.packages.add('vim')
 
 		kernel_packages_path = os.path.join(os.path.dirname(__file__), 'packages-kernels.yml')
 		kernel_package = config_get(kernel_packages_path, [info.manifest.release.codename,
