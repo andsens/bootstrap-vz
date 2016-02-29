@@ -5,20 +5,6 @@ import os
 import shutil
 
 
-class ValidateSourcePaths(Task):
-	description = 'Check whether the files to be copied exist'
-	phase = phases.preparation
-
-	@classmethod
-	def run(cls, info):
-		from bootstrapvz.common.exceptions import TaskError
-		for file_entry in info.manifest.plugins['file_copy']['files']:
-			srcfile = file_entry['src']
-			if not os.path.isfile(srcfile):
-				msg = 'The source file %s does not exist.' % srcfile
-				raise TaskError(msg)
-
-
 def modify_path(info, path, entry):
 	from bootstrapvz.common.tools import log_check_call
 	if 'permissions' in entry:
