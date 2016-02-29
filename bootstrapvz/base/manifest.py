@@ -119,9 +119,13 @@ class Manifest(object):
 		:param str schema_path: Path to the json-schema to use for validation
 		"""
 		import jsonschema
+		import os.path
 
 		schema = load_data(schema_path)
+		metaschema = load_data(os.path.normpath(os.path.join(os.path.dirname(__file__), 'metaschema.json')))
+
 		try:
+			jsonschema.validate(schema, metaschema)
 			jsonschema.validate(data, schema)
 		except jsonschema.ValidationError as e:
 			self.validation_error(e.message, e.path)
