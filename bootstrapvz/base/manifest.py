@@ -27,6 +27,11 @@ class Manifest(object):
 		if path is None and data is None:
 			raise ManifestError('`path\' or `data\' must be provided')
 		self.path = path
+
+		import os.path
+		self.metaschema = load_data(os.path.normpath(os.path.join(os.path.dirname(__file__),
+		                                                          'metaschema.json')))
+
 		self.load_data(data)
 		self.load_modules()
 		self.validate()
@@ -121,7 +126,9 @@ class Manifest(object):
 		import jsonschema
 
 		schema = load_data(schema_path)
+
 		try:
+			jsonschema.validate(schema, self.metaschema)
 			jsonschema.validate(data, schema)
 		except jsonschema.ValidationError as e:
 			self.validation_error(e.message, e.path)
