@@ -78,5 +78,7 @@ class AdjustGrowpartWorkaround(Task):
 		from ..tools import sed_i
 		from bootstrapvz.common.releases import jessie
 
+		script = os.path.join(info.root, 'etc/init.d/expand-root')
+
 		if info.manifest.release >= jessie:
 			sed_i(script, '^growpart="growpart"$', 'growpart-workaround')
