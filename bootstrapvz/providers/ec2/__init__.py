@@ -83,6 +83,7 @@ def resolve_tasks(taskset, manifest):
 
 	if manifest.release >= jessie:
 		taskset.add(tasks.packages.AddWorkaroundGrowpart)
+		taskset.add(initd.AdjustGrowpartWorkaround)
 
 	if manifest.provider.get('install_init_scripts', True):
 		taskset.add(tasks.initd.AddEC2InitScripts)
