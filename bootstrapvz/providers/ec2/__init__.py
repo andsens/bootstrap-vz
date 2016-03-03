@@ -83,13 +83,13 @@ def resolve_tasks(taskset, manifest):
 
 	if manifest.release >= jessie:
 		taskset.add(tasks.packages.AddWorkaroundGrowpart)
+		taskset.add(initd.AdjustGrowpartWorkaround)
 
 	if manifest.provider.get('install_init_scripts', True):
 		taskset.add(tasks.initd.AddEC2InitScripts)
 
 	if manifest.volume['partitions']['type'] != 'none':
 		taskset.add(initd.AdjustExpandRootScript)
-		taskset.add(initd.AdjustGrowpartWorkaround)
 
 	if manifest.system['bootloader'] == 'pvgrub':
 		taskset.add(grub.AddGrubPackage)
