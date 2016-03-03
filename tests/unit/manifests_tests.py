@@ -1,5 +1,3 @@
-from nose.tools import assert_true
-from bootstrapvz.base.manifest import Manifest
 
 
 def test_manifest_generator():
@@ -9,29 +7,25 @@ def test_manifest_generator():
 	Loops through the manifests directory and tests that
 	each file can successfully be loaded and validated.
 	"""
+
+	from nose.tools import assert_true
+	from bootstrapvz.base.manifest import Manifest
+
+	def validate_manifest(path):
+		manifest = Manifest(path=path)
+		assert_true(manifest.data)
+		assert_true(manifest.data['name'])
+		assert_true(manifest.data['provider'])
+		assert_true(manifest.data['bootstrapper'])
+		assert_true(manifest.data['volume'])
+		assert_true(manifest.data['system'])
+
 	import os.path
 	from .. import recursive_glob
+	from itertools import chain
 	manifests = os.path.join(os.path.dirname(os.path.realpath(__file__)),
 	                         '../../manifests')
-	for manifest_path in recursive_glob(manifests, '*.yml'):
-		yield validate_manifests, manifest_path
-	for manifest_path in recursive_glob(manifests, '*.json'):
-		yield validate_manifests, manifest_path
-
-
-def validate_manifests(path):
-	"""
-	manifests_tests - validate_manifests.
-
-	Actually creates the manifest for a given path
-	and checks that all the data values have successfully
-	been created.
-	"""
-	manifest = Manifest(path=path)
-
-	assert_true(manifest.data)
-	assert_true(manifest.data['name'])
-	assert_true(manifest.data['provider'])
-	assert_true(manifest.data['bootstrapper'])
-	assert_true(manifest.data['volume'])
-	assert_true(manifest.data['system'])
+	manifest_paths = chain(recursive_glob(manifests, '*.yml'), recursive_glob(manifests, '*.json'))
+	for manifest_path in manifest_paths:
+		validate_manifest.description = "Validating %s" % os.path.relpath(manifest_path, manifests)
+		yield validate_manifest, manifest_path
