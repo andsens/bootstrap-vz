@@ -89,6 +89,7 @@ def resolve_tasks(taskset, manifest):
 
 	if manifest.volume['partitions']['type'] != 'none':
 		taskset.add(initd.AdjustExpandRootScript)
+		taskset.add(initd.AdjustGrowpartWorkaround)
 
 	if manifest.system['bootloader'] == 'pvgrub':
 		taskset.add(grub.AddGrubPackage)
