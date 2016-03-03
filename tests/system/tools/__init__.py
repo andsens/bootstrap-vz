@@ -20,7 +20,7 @@ def boot_manifest(manifest_data, boot_vars={}):
 	manifest = Manifest(data=manifest_data)
 
 	import importlib
-	provider_module = importlib.import_module('tests.integration.providers.' + manifest.provider['name'])
+	provider_module = importlib.import_module('tests.system.providers.' + manifest.provider['name'])
 
 	prepare_bootstrap = getattr(provider_module, 'prepare_bootstrap', noop)
 	with prepare_bootstrap(manifest, build_server):

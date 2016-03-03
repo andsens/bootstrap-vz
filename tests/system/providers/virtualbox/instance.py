@@ -1,6 +1,6 @@
 import virtualbox
 from contextlib import contextmanager
-from tests.integration.tools import waituntil
+from tests.system.tools import waituntil
 import logging
 log = logging.getLogger(__name__)
 
@@ -59,7 +59,7 @@ class VirtualBoxInstance(object):
 	def boot(self):
 		log.debug('Booting vbox machine `{name}\''.format(name=self.name))
 		self.machine.launch_vm_process(self.session, 'headless').wait_for_completion(-1)
-		from tests.integration.tools import read_from_socket
+		from tests.system.tools import read_from_socket
 		# Gotta figure out a more reliable way to check when the system is done booting.
 		# Maybe bootstrapped unit test images should have a startup script that issues
 		# a callback to the host.

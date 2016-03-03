@@ -6,7 +6,7 @@ Testing
    :hidden:
 
    unit_tests
-   integration_tests
-   integration_test_providers/index
+   system_tests
+   system_test_providers/index
 
 .. include:: ../../tests/README.rst

@@ -1,5 +1,5 @@
 from contextlib import contextmanager
-from tests.integration.tools import waituntil
+from tests.system.tools import waituntil
 import logging
 log = logging.getLogger(__name__)
 

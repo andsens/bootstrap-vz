@@ -1,11 +1,11 @@
-Integration tests
-=================
-`Integration tests`__ test
+System tests
+============
+`System tests`__ test
 bootstrap-vz in its entirety.
 This testing includes building images from manifests and
 creating/booting said images.
 
-__ http://en.wikipedia.org/wiki/Integration_testing
+__ http://en.wikipedia.org/wiki/System_testing
 
 Since hardcoding manifests for each test, bootstrapping them and booting the
 resulting images is too much code for a single test, a testing harness has
@@ -15,12 +15,12 @@ been developed that reduces each test to it's bare essentials:
 * Boot an instance from a manifest
 * Run tests on the booted instance
 
-In order for the integration testing harness to be able to bootstrap it must
+In order for the system testing harness to be able to bootstrap it must
 know about your `build-servers <../../bootstrapvz/remote#build-servers-yml>`__.
 Depending on the manifest that is bootstrapped, the harness chooses
 a fitting build-server, connects to it and starts the bootstrapping process.
 
-When running integration tests, the framework will look for ``build-servers.yml``
+When running system tests, the framework will look for ``build-servers.yml``
 at the root of the repo and raise an error if it is not found.
 
 
@@ -65,7 +65,7 @@ randomly generated on load.
 
 Missing parts
 -------------
-The integration testing harness is in no way complete.
+The system testing harness is in no way complete.
 
 * It still has no support for providers other than Virtualbox, EC2 and Docker.
 * Creating an SSH connection to a booted instance is cumbersome and does not

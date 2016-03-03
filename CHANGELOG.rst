@@ -1,6 +1,11 @@
 Changelog
 =========
 
+2016-03-03
+----------
+Anders Ingemann:
+  * Rename integration tests to system tests
+
 2016-02-23
 ----------
 Nicolas Braud-Santoni:

@@ -1,4 +1,4 @@
-Integration testing providers are implemented on top of the abstraction
+System testing providers are implemented on top of the abstraction
 that is the testing harness.
 
 Implementation
@@ -21,7 +21,7 @@ resources, once testing is done (or failed, so remember to wrap ``yield`` in a
 
 Debugging
 ---------
-When developing an integration test provider, debugging through multiple
+When developing a system test provider, debugging through multiple
 invocations of ``tox`` can be cumbersome. A short test script, which sets
 up logging and invokes a specific test can be used instead:
 
@@ -32,7 +32,7 @@ Example:
 
     #!/usr/bin/env python
 
-    from tests.integration.docker_tests import test_stable
+    from tests.system.docker_tests import test_stable
     from bootstrapvz.base.main import setup_loggers
 
     setup_loggers({'--log': '-', '--color': 'default', '--debug': True})
