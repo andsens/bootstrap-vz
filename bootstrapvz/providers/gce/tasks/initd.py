@@ -28,7 +28,7 @@ class AddGrowRootDisable(Task):
 
 class AdjustExpandRootDev(Task):
 	description = 'Adjusting the expand-root device'
-	phase = phases.system_modificatio
+	phase = phases.system_modification
 	predecessors = [initd.AddExpandRoot, initd.AdjustExpandRootScript]
 
 	@classmethod
