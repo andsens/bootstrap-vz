@@ -1,6 +1,5 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
-from bootstrapvz.common.tasks import initd
 from bootstrapvz.common.tasks import kernel
 from . import assets
 import os.path
