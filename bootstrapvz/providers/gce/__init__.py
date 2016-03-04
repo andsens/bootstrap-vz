@@ -40,6 +40,7 @@ def resolve_tasks(taskset, manifest):
 	                tasks.host.InstallHostnameHook,
 	                tasks.boot.ConfigureGrub,
 	                initd.AddExpandRoot,
+	                tasks.initd.AdjustExpandRootDev,
 	                initd.InstallInitScripts,
 	                boot.BlackListModules,
 	                boot.UpdateInitramfs,

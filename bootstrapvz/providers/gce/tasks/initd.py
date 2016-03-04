@@ -1,6 +1,7 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 from bootstrapvz.common.tasks import kernel
+from bootstrapvz.common.tasks import initd
 from . import assets
 import os.path
 
@@ -23,3 +24,15 @@ class AddGrowRootDisable(Task):
                             'etc/initramfs-tools/scripts/local-premount/gce-disable-growroot')
 		copy(script_src, script_dst)
 		os.chmod(script_dst, rwxr_xr_x)
+
+
+class AdjustExpandRootDev(Task):
+	description = 'Adjusting the expand-root device'
+	phase = phases.system_modification
+	predecessors = [initd.AddExpandRoot, initd.AdjustExpandRootScript]
+
+	@classmethod
+	def run(cls, info):
+		from bootstrapvz.common.tools import sed_i
+		script = os.path.join(info.root, 'etc/init.d/expand-root')
+		sed_i(script, '/dev/loop0', '/dev/sda')
