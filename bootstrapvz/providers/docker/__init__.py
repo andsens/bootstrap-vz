@@ -20,7 +20,7 @@ def resolve_tasks(taskset, manifest):
 	                ])
 	taskset.update(task_groups.get_network_group(manifest))
 	taskset.update(task_groups.get_apt_group(manifest))
-	taskset.update(task_groups.locale_group)
+	taskset.update(task_groups.get_locale_group(manifest))
 	taskset.update(task_groups.security_group)
 	taskset.update(task_groups.cleanup_group)
 
