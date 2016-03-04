@@ -62,7 +62,7 @@ Here are a few quickstart tutorials for the most common images.
 If you plan on partitioning your volume, you will need the ``parted``
 package and ``kpartx``:
 
-.. code:: sh
+.. code-block:: sh
 
     root@host:~# apt-get install parted kpartx
 
@@ -75,7 +75,7 @@ quits the process.
 Docker
 ~~~~~~
 
-.. code:: sh
+.. code-block:: sh
 
     user@host:~$ sudo -i # become root
     root@host:~# git clone https://github.com/andsens/bootstrap-vz.git # Clone the repo
@@ -93,7 +93,7 @@ it is recommended to install `the latest docker version <https://docs.docker.com
 VirtualBox Vagrant
 ~~~~~~~~~~~~~~~~~~
 
-.. code:: sh
+.. code-block:: sh
 
     user@host:~$ sudo -i # become root
     root@host:~# git clone https://github.com/andsens/bootstrap-vz.git # Clone the repo
@@ -109,7 +109,7 @@ __ https://my.vmware.com/web/vmware/info/slug/desktop_end_user_computing/vmware_
 Amazon EC2 EBS backed AMI
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code:: sh
+.. code-block:: sh
 
     user@host:~$ sudo -i # become root
     root@host:~# git clone https://github.com/andsens/bootstrap-vz.git # Clone the repo
@@ -121,7 +121,7 @@ To bootstrap S3 backed AMIs, bootstrap-vz will also need the
 ``euca2ools`` package. However, version 3.2.0 is required meaning you
 must install it directly from the eucalyptus repository like this:
 
-.. code:: sh
+.. code-block:: sh
 
     apt-get install --no-install-recommends python-dev libxml2-dev libxslt-dev gcc zlib1g-dev
     pip install git+git://github.com/eucalyptus/euca2ools.git@v3.2.0

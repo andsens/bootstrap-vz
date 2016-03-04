@@ -28,7 +28,7 @@ generation. They will be used to authenticate the API client.
 
 Example:
 
-.. code:: yaml
+.. code-block:: yaml
 
     ---
     provider:
@@ -52,7 +52,7 @@ available to customize the process of uploading and verifying an image.
    Default: ``false``.
    ``optional``
 
-.. code:: yaml
+.. code-block:: yaml
 
     ---
     provider:

@@ -63,7 +63,7 @@ The file ``build-servers.yml`` informs bootstrap-vz about the different
 build servers you have at your disposal.
 In its simplest form you can just add your own machine like this:
 
-.. code:: yaml
+.. code-block:: yaml
 
   local:
     type: local
@@ -94,7 +94,7 @@ Remote settings
 The other (and more interesting) setting for ``type`` is ``ssh``,
 which requires a few more configuration settings:
 
-.. code:: yaml
+.. code-block:: yaml
 
   local_vm:
     type: ssh
@@ -141,7 +141,7 @@ This is useful when for example the VirtualBox guest additions ISO is located
 at ``/root/guest_additions.iso`` on server 1, while server 2 has it at
 ``/root/images/vbox.iso``.
 
-.. code:: yaml
+.. code-block:: yaml
 
   local:
     type: local
@@ -174,7 +174,7 @@ Run settings
 The run settings hold information about how to start a bootstrapped image.
 This is useful only when running system tests.
 
-.. code:: yaml
+.. code-block:: yaml
 
   local:
     type: local

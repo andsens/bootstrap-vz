@@ -46,7 +46,7 @@ Instead of creating manifests from scratch for each single test, reusable parts
 are factored out into partials in the manifest folder.
 This allows code like this:
 
-.. code:: python
+.. code-block:: python
 
 	partials = {'vdi': '{provider: {name: virtualbox}, volume: {backing: vdi}}',
 	            'vmdk': '{provider: {name: virtualbox}, volume: {backing: vmdk}}',

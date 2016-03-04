@@ -12,7 +12,7 @@ Start by creating an ``__init__.py`` in your plugin folder.
 The only obligatory function you need to implement is ``resolve_tasks()``.
 This function adds tasks to be run to the tasklist:
 
-.. code:: python
+.. code-block:: python
 
 	def resolve_tasks(taskset, manifest):
 		taskset.add(tasks.DoSomething)
@@ -23,7 +23,7 @@ check of which release of Debian bootstrap-vz will create an image.
 
 A task is a class with a static ``run()`` function and some meta-information:
 
-.. code:: python
+.. code-block:: python
 
 	class DoSomething(Task):
 		description = 'Doing something'
@@ -46,7 +46,7 @@ process. If you created temporary files for example, you can add a task to the
 rollback taskset that deletes those files, you might even already have it because
 you run it after an image has been successfully bootstrapped:
 
-.. code:: python
+.. code-block:: python
 
 	def resolve_rollback_tasks(taskset, manifest, completed, counter_task):
 		counter_task(taskset, tasks.DoSomething, tasks.UndoSomething)
@@ -63,7 +63,7 @@ running through the completed tasklist and checking each completed task.
 You can also specify a ``validate_manifest()`` function.
 Typically it looks like this:
 
-.. code:: python
+.. code-block:: python
 
 	def validate_manifest(data, validator, error):
 		import os.path
@@ -75,7 +75,7 @@ The schema is a `JSON schema <http://json-schema.org/>`__, since bootstrap-vz
 supports `yaml <http://yaml.org/>`__, you can avoid a lot of curly braces
 quotes:
 
-.. code:: yaml
+.. code-block:: yaml
 
   $schema: http://json-schema.org/draft-04/schema#
   title: Example plugin manifest
@@ -110,7 +110,7 @@ specific to your use-case or when the plugin contains proprietary code that you
 would not like to share.
 They integrate with bootstrap-vz by exposing an entry-point through ``setup.py``:
 
-.. code:: python
+.. code-block:: python
 
 	setup(name='example-plugin',
 	      version=0.9.5,
@@ -123,7 +123,7 @@ They integrate with bootstrap-vz by exposing an entry-point through ``setup.py``
 Beyond ``setup.py`` the package might need a ``MANIFEST.in`` so that assets
 like ``manifest-schema.yml`` are included when the package is built:
 
-.. code::
+.. code-block:: text
 
 	include example/manifest-schema.yml
 	include example/README.rst
@@ -141,6 +141,6 @@ Some plugins may not find their way to the python package index
 (especially if it's in a private repo). They can of course still be installed
 using pip:
 
-.. code:: sh
+.. code-block:: sh
 
 	pip install git+ssh://git@github.com/username/repo#egg=plugin_name

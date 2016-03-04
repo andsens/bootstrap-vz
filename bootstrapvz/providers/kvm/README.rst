@@ -18,7 +18,7 @@ Provider
 
 Example:
 
-.. code:: yaml
+.. code-block:: yaml
 
     ---
     provider:

@@ -11,7 +11,7 @@ dependency graph where directed edges dictate precedence. Each task is
 a simple class that defines its predecessor tasks and successor tasks
 via attributes. Here is an example:
 
-.. code:: python
+.. code-block:: python
 
 	class MapPartitions(Task):
 		description = 'Mapping volume partitions'

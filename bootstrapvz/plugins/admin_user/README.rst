@@ -33,7 +33,7 @@ Settings
 
 Example:
 
-.. code:: yaml
+.. code-block:: yaml
 
     ---
     plugins:

@@ -43,7 +43,7 @@ Provider
 
 Example:
 
-.. code:: yaml
+.. code-block:: yaml
 
     ---
     name: bootstrap-vz:latest

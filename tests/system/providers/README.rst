@@ -28,7 +28,7 @@ up logging and invokes a specific test can be used instead:
 
 Example:
 
-.. code:: python
+.. code-block:: python
 
     #!/usr/bin/env python
 

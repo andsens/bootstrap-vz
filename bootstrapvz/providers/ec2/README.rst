@@ -53,7 +53,7 @@ under the ``provider`` section.
 
 Example:
 
-.. code:: yaml
+.. code-block:: yaml
 
     ---
     provider:
@@ -78,7 +78,7 @@ __ http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/virtualization_types.html
 
 Example:
 
-.. code:: yaml
+.. code-block:: yaml
 
     ---
     provider:
@@ -96,7 +96,7 @@ __ http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/enhanced-networking.html
 
 Example:
 
-.. code:: yaml
+.. code-block:: yaml
 
     ---
     provider:
@@ -117,7 +117,7 @@ Image
 
 Example:
 
-.. code:: yaml
+.. code-block:: yaml
 
     ---
     provider:
