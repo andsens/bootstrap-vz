@@ -210,6 +210,11 @@ variety of sources.
    be added to the aptitude keyring of trusted signatures for
    repositories.
    ``optional``
+-  ``apt.conf.d``: A map of ``apt.conf(5)`` configuration snippets.
+   The key become the filename in ``/etc/apt/apt.conf.d``, except
+   ``main`` which designates ``/etc/apt/apt.conf``.
+   The value is a string in the ``apt.conf(5)`` syntax.
+   ``optional``
 -  ``preferences``: Allows you to pin packages through `apt
    preferences <https://wiki.debian.org/AptPreferences>`__. The setting
    is an object where the key is the preference filename in
@@ -242,6 +247,11 @@ Example:
         - non-free
       trusted-keys:
         - /root/keys/puppet.gpg
+      apt.conf.d:
+        00InstallRecommends: >-
+	  APT::Install-Recommends "false";
+	  APT::Install-Suggests   "false";
+	00IPv4: 'Acquire::ForceIPv4 "false";'
       preferences:
         main:
           - package: *

@@ -125,6 +125,8 @@ def get_apt_group(manifest):
 	if 'preferences' in manifest.packages:
 		group.append(apt.AddManifestPreferences)
 		group.append(apt.WritePreferences)
+	if 'apt.conf.d' in manifest.packages:
+		group.append(apt.WriteConfiguration)
 	if 'install' in manifest.packages:
 		group.append(packages.AddManifestPackages)
 	if manifest.packages.get('install_standard', False):

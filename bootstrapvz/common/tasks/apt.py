@@ -80,6 +80,22 @@ class InstallTrustedKeys(Task):
 			copy(key_path, destination)
 
 
+class WriteConfiguration(Task):
+        decription = 'Write configuration to apt.conf.d from the manifest'
+        phase = phases.package_installation
+
+        @classmethod
+        def run(cls, info):
+                for name, val in info.manifest.packages.get('apt.conf.d', {}).iteritems():
+                        if name == 'main':
+                                path = os.path.join(info.root, 'etc/apt/apt.conf')
+                        else:
+                                path = os.path.join(info.root, 'etc/apt/apt.conf.d', name)
+
+                        with open(path, 'w') as conf_file:
+                                conf_file.write(val + '\n')
+
+
 class WriteSources(Task):
 	description = 'Writing aptitude sources to disk'
 	phase = phases.package_installation
@@ -138,7 +154,7 @@ class DisableDaemonAutostart(Task):
 class AptUpdate(Task):
 	description = 'Updating the package cache'
 	phase = phases.package_installation
-	predecessors = [locale.GenerateLocale, WriteSources, WritePreferences]
+	predecessors = [locale.GenerateLocale, WriteConfiguration, WriteSources, WritePreferences]
 
 	@classmethod
 	def run(cls, info):
