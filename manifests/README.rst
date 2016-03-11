@@ -198,8 +198,9 @@ variety of sources.
    Default: ``http://httpredir.debian.org/debian/``
 -  ``sources``: A map of additional sources that should be added to
    the aptitude sources list. The key becomes the filename in
-   ``/etc/apt/sources.list.d/`` (with ``.list`` appended to it), while
-   the value is an array with each entry being a line.
+   ``/etc/apt/sources.list.d/`` (with ``.list`` appended to it), except
+   for ``main``, which designates ``/etc/apt/sources.list``.
+   The value is an array with each entry being a line.
    ``optional``
 -  ``components``: A list of components that should be added to the
    default apt sources. For example ``contrib`` or ``non-free``
