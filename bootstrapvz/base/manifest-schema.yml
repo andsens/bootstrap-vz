@@ -98,7 +98,7 @@ properties:
               required: [pin, package, pin-priority]
               additionalProperties: false
             minItems: 1
-        minItems: 1
+        minProperties: 1
         additionalProperties: false
       sources:
         type: object
@@ -109,7 +109,7 @@ properties:
               pattern: ^(deb|deb-src)\s+(\[\s*(.+\S)?\s*\]\s+)?\S+\s+\S+(\s+(.+\S))?\s*$
             minItems: 1
             type: array
-        minItems: 1
+        minProperties: 1
         additionalProperties: false
       trusted-keys:
         type: array
