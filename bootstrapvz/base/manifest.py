@@ -146,10 +146,12 @@ class Manifest(object):
 	def __getstate__(self):
 		return {'__class__': self.__module__ + '.' + self.__class__.__name__,
 		        'path': self.path,
+		        'metaschema': self.metaschema,
 		        'data': self.data}
 
 	def __setstate__(self, state):
 		self.path = state['path']
+		self.metaschema = state['metaschema']
 		self.load_data(state['data'])
 		self.load_modules()
 		self.validate()
