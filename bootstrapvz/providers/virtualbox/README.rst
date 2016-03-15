@@ -1,5 +1,5 @@
 VirtualBox
-----------
+==========
 
 The `VirtualBox <https://www.virtualbox.org/>`__ provider can bootstrap
 to both .vdi and .vmdk images (raw images are also supported but do not

@@ -1,5 +1,5 @@
 KVM
----
+===
 
 The `KVM <http://www.linux-kvm.org/page/Main_Page>`__ provider creates
 virtual images for Linux Kernel-based Virtual Machines. It supports the
