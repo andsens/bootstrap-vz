@@ -1,5 +1,5 @@
 Google Compute Engine
----------------------
+=====================
 
 The `GCE <https://cloud.google.com/products/compute-engine/>`__ provider
 can creates image as expected by GCE - i.e. raw disk image in \*.tar.gz
