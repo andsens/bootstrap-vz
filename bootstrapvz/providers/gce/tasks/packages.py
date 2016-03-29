@@ -15,6 +15,7 @@ class DefaultPackages(Task):
 	@classmethod
 	def run(cls, info):
 		info.packages.add('acpi-support-base')
+		info.packages.add('busybox')
 		info.packages.add('ca-certificates')
 		info.packages.add('curl')
 		info.packages.add('ethtool')
