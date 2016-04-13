@@ -34,7 +34,7 @@ setup(name='bootstrap-vz',
 It is is specifically targeted at bootstrapping systems for virtualized environments.
 bootstrap-vz runs without any user intervention and generates ready-to-boot images for
 a number of virtualization platforms.
-Its aim is to provide a reproducable bootstrapping process using manifests
+Its aim is to provide a reproducible bootstrapping process using manifests
 as well as supporting a high degree of customizability through plugins.''',
       author='Anders Ingemann',
       author_email='anders@ingemann.de',

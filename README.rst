@@ -19,7 +19,7 @@ generates images for the following virtualization platforms:
    (`used for official Debian images <https://wiki.debian.org/Cloud/OracleComputeImage>`__)
 -  `Oracle VirtualBox <bootstrapvz/providers/virtualbox>`__ (`with Vagrant support <#virtualbox-vagrant>`__)
 
-Its aim is to provide a reproducable bootstrapping process using
+Its aim is to provide a reproducible bootstrapping process using
 `manifests <manifests>`__
 as well as supporting a high degree of customizability through plugins.
 

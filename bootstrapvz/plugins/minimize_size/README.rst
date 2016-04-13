@@ -10,7 +10,7 @@ The minimize size plugin employs various strategies to keep a low volume
 footprint:
 
 -  Mount folders from the host into key locations of the image volume to
-   avoid any unneccesary disk writes.
+   avoid any unnecessary disk writes.
 -  Use `zerofree <http://intgat.tigress.co.uk/rmy/uml/index.html>`__ to
    deallocate unused sectors on the volume. On an unpartitioned volume
    this will be done for the entire volume, while it will only happen on
