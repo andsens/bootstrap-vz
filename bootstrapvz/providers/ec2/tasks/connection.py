@@ -50,6 +50,8 @@ class GetCredentials(Task):
 		if all(getattr(provider, provider_key(key)) is not None for key in keys):
 			for key in keys:
 				creds[key] = getattr(provider, provider_key(key))
+			if hasattr(provider, 'security_token'):
+				creds['security-token'] = provider.security_token
 			return creds
 		raise RuntimeError(('No ec2 credentials found, they must all be specified '
 		                    'exclusively via environment variables or through the manifest.'))
@@ -63,6 +65,12 @@ class Connect(Task):
 	@classmethod
 	def run(cls, info):
 		from boto.ec2 import connect_to_region
-		info._ec2['connection'] = connect_to_region(info._ec2['region'],
-		                                            aws_access_key_id=info.credentials['access-key'],
-		                                            aws_secret_access_key=info.credentials['secret-key'])
+		connect_args = {
+			'aws_access_key_id': info.credentials['access-key'],
+			'aws_secret_access_key': info.credentials['secret-key']
+		}
+
+		if 'security-token' in info.credentials:
+			connect_args['security_token'] = info.credentials['security-token']
+
+		info._ec2['connection'] = connect_to_region(info._ec2['region'], **connect_args)
