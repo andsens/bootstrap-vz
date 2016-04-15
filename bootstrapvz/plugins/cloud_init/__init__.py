@@ -30,4 +30,5 @@ def resolve_tasks(taskset, manifest):
 	taskset.discard(initd_ec2.AddEC2InitScripts)
 	taskset.discard(initd.AddExpandRoot)
 	taskset.discard(initd.AdjustExpandRootScript)
+	taskset.discard(initd.AdjustGrowpartWorkaround)
 	taskset.discard(ssh.AddSSHKeyGeneration)
