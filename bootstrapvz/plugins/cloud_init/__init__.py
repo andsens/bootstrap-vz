@@ -24,6 +24,8 @@ def resolve_tasks(taskset, manifest):
 	options = manifest.plugins['cloud_init']
 	if 'username' in options:
 		taskset.add(tasks.SetUsername)
+	if 'groups' in options and len(options['groups']):
+		taskset.add(tasks.SetGroups)
 	if 'disable_modules' in options:
 		taskset.add(tasks.DisableModules)
 

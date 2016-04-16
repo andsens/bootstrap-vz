@@ -22,6 +22,10 @@ properties:
         type: object
         properties:
           username: {type: string}
+          groups:
+            type: array
+            items: {type: string}
+            uniqueItems: true
           metadata_sources: {type: string}
           disable_modules:
             type: array
