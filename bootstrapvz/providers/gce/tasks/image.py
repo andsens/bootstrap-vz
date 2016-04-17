@@ -30,8 +30,11 @@ class CreateTarball(Task):
 		tarball_path = os.path.join(info.manifest.bootstrapper['workspace'], tarball_name)
 		info._gce['tarball_name'] = tarball_name
 		info._gce['tarball_path'] = tarball_path
+                # GCE requires that the file in the tar be named disk.raw, hence the transform
 		log_check_call(['tar', '--sparse', '-C', info.manifest.bootstrapper['workspace'],
-		                '-caf', tarball_path, filename])
+		                '-caf', tarball_path,
+		                '--transform=s|.*|disk.raw|',
+		                filename])
 
 
 class UploadImage(Task):
