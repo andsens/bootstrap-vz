@@ -46,6 +46,7 @@ def resolve_tasks(taskset, manifest):
 	                boot.UpdateInitramfs,
 	                ssh.AddSSHKeyGeneration,
 	                ssh.DisableSSHPasswordAuthentication,
+	                ssh.DisableRootLogin,
 	                tasks.apt.CleanGoogleRepositoriesAndKeys,
 
 	                image.MoveImage,
