@@ -1,0 +1,26 @@
+---
+name: debian-{system.release}-{system.architecture}-{%Y}{%m}{%d}
+provider:
+  name: kvm
+  virtio_modules:
+  - virtio_pci
+  - virtio_blk
+bootstrapper:
+  workspace: /target
+system:
+  release: jessie
+  architecture: amd64
+  bootloader: grub
+  charmap: UTF-8
+  locale: en_US
+  timezone: UTC
+volume:
+  backing: raw
+  partitions:
+    type: msdos
+    root:
+      filesystem: ext4
+      size: 8GiB
+plugins:
+  root_password:
+    password: test
