@@ -99,7 +99,11 @@ VirtualBox Vagrant
     root@host:~# git clone https://github.com/andsens/bootstrap-vz.git # Clone the repo
     root@host:~# apt-get install qemu-utils debootstrap python-pip # Install dependencies from aptitude
     root@host:~# pip install termcolor jsonschema fysom docopt pyyaml # Install python dependencies
+    root@host:~# modprobe nbd max_part=16
     root@host:~# bootstrap-vz/bootstrap-vz bootstrap-vz/manifests/examples/virtualbox/jessie-vagrant.yml
+
+(The `modprobe nbd max_part=16` part enables the network block device driver to support up to 16 partitions
+on a device)
 
 If you want to use the `minimize\_size <bootstrapvz/plugins/minimize_size>`__ plugin,
 you will have to install the ``zerofree`` package and `VMWare Workstation`__ as well.
