@@ -13,6 +13,9 @@ Settings
 
 -  ``username``: The username of the account to create.
    ``required``
+-  ``groups``: A list of strings specifying which additional groups the account
+   should be added to.
+   ``optional``
 -  ``disable_modules``: A list of strings specifying which cloud-init
    modules should be disabled.
    ``optional``

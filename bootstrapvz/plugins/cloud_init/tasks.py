@@ -38,6 +38,22 @@ class SetUsername(Task):
 		sed_i(cloud_cfg, search, replace)
 
 
+class SetGroups(Task):
+	description = 'Setting groups in cloud.cfg'
+	phase = phases.system_modification
+
+	@classmethod
+	def run(cls, info):
+		from bootstrapvz.common.tools import sed_i
+		cloud_cfg = os.path.join(info.root, 'etc/cloud/cloud.cfg')
+		groups = info.manifest.plugins['cloud_init']['groups']
+		search = ('^     groups: \[adm, audio, cdrom, dialout, floppy, video,'
+		          ' plugdev, dip\]$')
+		replace = ('     groups: [adm, audio, cdrom, dialout, floppy, video,'
+		           ' plugdev, dip, {groups}]').format(groups=', '.join(groups))
+		sed_i(cloud_cfg, search, replace)
+
+
 class SetMetadataSource(Task):
 	description = 'Setting metadata source'
 	phase = phases.package_installation
