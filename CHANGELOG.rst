@@ -1,10 +1,16 @@
 Changelog
 =========
 
+
+2016-06-02
+----------
+Peter Wagner
+	* Added ec2_publish plugin
+
 2016-03-03
 ----------
 Anders Ingemann:
-  * Rename integration tests to system tests
+	* Rename integration tests to system tests
 
 2016-02-23
 ----------
