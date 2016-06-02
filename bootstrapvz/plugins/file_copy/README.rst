@@ -12,7 +12,7 @@ Note that this necessarily violates the `first development guideline`_.
 Settings
 ~~~~~~~~
 
-The ``file_copy`` plugin takes a (non-empty) ``files`` list, and optionnaly a ``mkdirs`` list.
+The ``file_copy`` plugin takes a (non-empty) ``files`` list, and optionally a ``mkdirs`` list.
 
 Files (items in the ``files`` list) must be objects with the following properties:
 
