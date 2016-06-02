@@ -6,7 +6,7 @@ provider:
 bootstrapper:
   workspace: /target
 system:
-  release: wheezy
+  release: jessie
   architecture: amd64
   bootloader: grub
   charmap: UTF-8
@@ -20,12 +20,16 @@ volume:
       filesystem: ext4
       size: 10GiB
 packages:
+  sources:
+    google-cloud:
+      - deb http://packages.cloud.google.com/apt google-cloud-compute-{system.release} main
   install:
-    - rsync
-    - screen
-    - vim
+    - google-compute-engine-{system.release}
+    - google-config-{system.release}
 plugins:
-  google_cloud_sdk: {}
+  google_cloud_repo:
+    cleanup_bootstrap_key: true
+    enable_keyring_repo: true
   ntp:
     servers:
     - metadata.google.internal

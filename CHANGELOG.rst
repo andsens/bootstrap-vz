@@ -1,6 +1,17 @@
 Changelog
 =========
 
+2016-06-02
+----------
+Zach Marano:
+  * Fix expand-root script to work with newer version of growpart (in jessie-backports and beyond).
+  * Overhaul Google Compute Engine image build.
+    * Add support for Google Cloud repositories.
+    * Google Cloud SDK install uses a deb package from a Google Cloud repository.
+    * Google Compute Engine guest software is installed from a Google Cloud repository.
+    * Google Compute Engine guest software for Debian 8 is updated to new refactor.
+    * Google Compute Engine wheezy and wheezy-backports manifests are deprecated.
+
 2016-03-03
 ----------
 Anders Ingemann:

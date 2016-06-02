@@ -20,12 +20,38 @@ volume:
       filesystem: ext4
       size: 10GiB
 packages:
+  sources:
+    google-cloud:
+      - deb http://packages.cloud.google.com/apt cloud-sdk-{system.release} main
+      - deb http://packages.cloud.google.com/apt google-cloud-compute-{system.release} main
   install:
-    - rsync
+    - cloud-initramfs-growroot
+    - cloud-utils
+    - google-cloud-sdk
+    - google-compute-engine-{system.release}
+    - google-config-{system.release}
+    - python-crcmod
     - screen
     - vim
+  preferences:
+    # python-crcmod in backports has a compiled version needed for Google Cloud Storage.
+    backport-python-crcmod:
+    - package: python-crcmod
+      pin: release n=jessie-backports
+      pin-priority: 500
+    # cloud-utils in backports has a fixed version of growpart to allow root disk expansion on disks > 2TB.
+    backport-cloud-utils:
+    - package: cloud-utils
+      pin: release n=jessie-backports
+      pin-priority: 500
 plugins:
-  google_cloud_sdk: {}
+  google_cloud_repo:
+    cleanup_bootstrap_key: true
+    enable_keyring_repo: true
   ntp:
     servers:
     - metadata.google.internal
+  unattended_upgrades:
+    download_interval: 1
+    update_interval: 1
+    upgrade_interval: 1

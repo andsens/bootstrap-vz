@@ -1,0 +1,14 @@
+---
+$schema: http://json-schema.org/draft-04/schema#
+title: Google Cloud repository plugin manifest
+type: object
+properties:
+  plugins:
+    type: object
+    properties:
+      google_cloud_repo:
+        type: object
+        properties:
+          cleanup_bootstrap_key: {type: boolean}
+          enable_keyring_repo: {type: boolean}
+        additionalProperties: false

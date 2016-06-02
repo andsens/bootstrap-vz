@@ -20,21 +20,22 @@ volume:
       filesystem: ext4
       size: 10GiB
 packages:
+  sources:
+    google-cloud:
+      - deb http://packages.cloud.google.com/apt cloud-sdk-{system.release} main
+      - deb http://packages.cloud.google.com/apt google-cloud-compute-legacy-{system.release} main
   install:
+    - google-cloud-sdk
+    - google-compute-daemon
+    - google-startup-scripts
+    - python-gcimagebundle
     - rsync
     - screen
     - vim
-  preferences:
-    backport-kernel:
-    - package: linux-image-* initramfs-tools
-      pin: release n=wheezy-backports
-      pin-priority: 500
-    backport-ssh:
-    - package: init-system-helpers openssh-sftp-server openssh-client openssh-server
-      pin: release n=wheezy-backports
-      pin-priority: 500
 plugins:
-  google_cloud_sdk: {}
+  google_cloud_repo:
+    cleanup_bootstrap_key: True
+    enable_keyring_repo: True
   ntp:
     servers:
     - metadata.google.internal
