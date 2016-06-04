@@ -6,6 +6,16 @@ import os
 from bootstrapvz.common.tools import log_check_call
 
 
+class AddXenGrubConsoleOutputDevice(Task):
+    description = 'Adding XEN `hvc0\' as output device for grub'
+    phase = phases.system_modification
+    successors = [grub.WriteGrubConfig]
+
+    @classmethod
+    def run(cls, info):
+        info.grub_config['GRUB_CMDLINE_LINUX_DEFAULT'].append('console=hvc0')
+
+
 class UpdateGrubConfig(Task):
     description = 'Updating the grub config'
     phase = phases.system_modification
