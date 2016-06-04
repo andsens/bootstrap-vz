@@ -1,5 +1,6 @@
 from bootstrapvz.common import task_groups
 import tasks.packages
+import tasks.boot
 from bootstrapvz.common.tasks import image
 from bootstrapvz.common.tasks import loopback
 
@@ -14,6 +15,7 @@ def resolve_tasks(taskset, manifest):
     taskset.update(task_groups.get_standard_groups(manifest))
 
     taskset.update([tasks.packages.DefaultPackages,
+                    tasks.boot.AddVirtualConsoleGrubOutputDevice,
                     loopback.AddRequiredCommands,
                     loopback.Create,
                     image.MoveImage,
