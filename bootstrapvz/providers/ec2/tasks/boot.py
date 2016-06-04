@@ -69,7 +69,6 @@ class ConfigurePVGrub(Task):
     def run(cls, info):
         info.grub_config['GRUB_CMDLINE_LINUX'].extend([
             'consoleblank=0',
-            'console=hvc0',
             'elevator=noop',
         ])
 

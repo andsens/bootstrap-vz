@@ -97,6 +97,7 @@ def resolve_tasks(taskset, manifest):
         taskset.update([grub.AddGrubPackage,
                         grub.InitGrubConfig,
                         grub.SetGrubTerminalToConsole,
+                        grub.SetGrubConsolOutputDeviceToSerial,
                         grub.RemoveGrubTimeout,
                         grub.DisableGrubRecovery,
                         tasks.boot.CreatePVGrubCustomRule,
