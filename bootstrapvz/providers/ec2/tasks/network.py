@@ -54,7 +54,7 @@ class InstallNetworkingUDevHotplugAndDHCPSubinterface(Task):
 		from shutil import copy
 		copy(os.path.join(script_src, '53-ec2-network-interfaces.rules'),
 		     os.path.join(script_dst, 'udev/rules.d/53-ec2-network-interfaces.rules'))
-                os.chmod(os.path.join(script_dst, 'udev/rules.d/53-ec2-network-interfaces.rules'), rwxr_xr_x)
+		os.chmod(os.path.join(script_dst, 'udev/rules.d/53-ec2-network-interfaces.rules'), rwxr_xr_x)
 
 		os.mkdir(os.path.join(script_dst, 'sysconfig'), 0755)
 		os.mkdir(os.path.join(script_dst, 'sysconfig/network-scripts'), 0755)

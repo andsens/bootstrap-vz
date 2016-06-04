@@ -66,13 +66,13 @@ class RunAnsiblePlaybook(Task):
         inventory = os.path.join(info.root, 'tmp/bootstrap-inventory')
         with open(inventory, 'w') as handle:
             conn = '{} ansible_connection=chroot'.format(info.root)
-	    content = ""
+            content = ""
 
-    	    if hosts:
+            if hosts:
                 for host in hosts:
                     content += '[{}]\n{}\n'.format(host, conn)
-	    else:
-		content = conn
+            else:
+                content = conn
 
             handle.write(content)
 

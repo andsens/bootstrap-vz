@@ -98,7 +98,7 @@ mktemp_d() {
 	_RET=$(mktemp -d "${TMPDIR:-/tmp}/${0##*/}.XXXXXX" 2>/dev/null) &&
 		return
 	_RET=$(umask 077 && t="${TMPDIR:-/tmp}/${0##*/}.$$" &&
-		mkdir "${t}" &&	echo "${t}")
+		mkdir "${t}" && echo "${t}")
 	return
 }
 
@@ -428,7 +428,7 @@ rq() {
 	fi
 	if [ $ret -ne 0 ]; then
 		error "failed [$label:$ret]" "$@"
- 		cat "$efile" 1>&2
+		cat "$efile" 1>&2
 	fi
 	return $ret
 }
@@ -443,7 +443,7 @@ verify_ptupdate() {
 
 	# we can always satisfy 'off'
 	if [ "$input" = "off" ]; then
- 		_RET="false";
+		_RET="false";
 		return 0;
 	fi
 

@@ -249,9 +249,9 @@ Example:
         - /root/keys/puppet.gpg
       apt.conf.d:
         00InstallRecommends: >-
-	  APT::Install-Recommends "false";
-	  APT::Install-Suggests   "false";
-	00IPv4: 'Acquire::ForceIPv4 "false";'
+          APT::Install-Recommends "false";
+          APT::Install-Suggests   "false";
+        00IPv4: 'Acquire::ForceIPv4 "false";'
       preferences:
         main:
           - package: *

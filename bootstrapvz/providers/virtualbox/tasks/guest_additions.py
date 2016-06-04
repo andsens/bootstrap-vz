@@ -67,10 +67,10 @@ class InstallGuestAdditions(Task):
 		install_script = os.path.join('/', mount_dir, 'VBoxLinuxAdditions.run')
 		install_wrapper_name = 'install_guest_additions.sh'
 		install_wrapper = open(os.path.join(assets, install_wrapper_name)) \
-                        .read() \
-                        .replace("KERNEL_VERSION", kernel_version) \
-                        .replace("KERNEL_ARCH", info.kernel['arch']) \
-                        .replace("INSTALL_SCRIPT", install_script)
+			.read() \
+			.replace("KERNEL_VERSION", kernel_version) \
+			.replace("KERNEL_ARCH", info.kernel['arch']) \
+			.replace("INSTALL_SCRIPT", install_script)
 		install_wrapper_path = os.path.join(info.root, install_wrapper_name)
 		with open(install_wrapper_path, 'w') as f:
 			f.write(install_wrapper + '\n')

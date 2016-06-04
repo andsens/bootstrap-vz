@@ -15,7 +15,7 @@ class S3FStab(Task):
 		mount_opts = ['defaults']
 		fstab_lines.append('{device_path}{idx} {mountpoint} {filesystem} {mount_opts} {dump} {pass_num}'
 		                   .format(device_path='/dev/xvda',
-		                   	       idx=1,
+		                           idx=1,
 		                           mountpoint='/',
 		                           filesystem=root.filesystem,
 		                           mount_opts=','.join(mount_opts),
