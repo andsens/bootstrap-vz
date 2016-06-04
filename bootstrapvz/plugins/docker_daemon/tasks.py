@@ -4,7 +4,6 @@ from bootstrapvz.common.tasks import grub
 from bootstrapvz.common.tasks import initd
 from bootstrapvz.common.tools import log_check_call
 from bootstrapvz.common.tools import sed_i
-from bootstrapvz.providers.gce.tasks import boot as gceboot
 import os
 import os.path
 import shutil
@@ -61,15 +60,13 @@ class AddDockerInit(Task):
 
 
 class EnableMemoryCgroup(Task):
-    description = 'Change grub configuration to enable the memory cgroup'
+    description = 'Enable the memory cgroup in the grub config'
     phase = phases.system_modification
-    successors = [grub.InstallGrub_1_99, grub.InstallGrub_2]
-    predecessors = [grub.ConfigureGrub, gceboot.ConfigureGrub]
+    successors = [grub.WriteGrubConfig]
 
     @classmethod
     def run(cls, info):
-        grub_config = os.path.join(info.root, 'etc/default/grub')
-        sed_i(grub_config, r'^(GRUB_CMDLINE_LINUX*=".*)"\s*$', r'\1 cgroup_enable=memory"')
+        info.grub_config['GRUB_CMDLINE_LINUX'].append('cgroup_enable=memory')
 
 
 class PullDockerImages(Task):

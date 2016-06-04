@@ -23,14 +23,13 @@ class PatchUdev(Task):
 class ConfigureGrub(Task):
     description = 'Change grub configuration to allow for ttyS0 output'
     phase = phases.system_modification
-    predecessors = [grub.ConfigureGrub]
-    successors = [grub.InstallGrub_1_99, grub.InstallGrub_2]
+    successors = [grub.WriteGrubConfig]
 
     @classmethod
     def run(cls, info):
-        from bootstrapvz.common.tools import sed_i
-        grub_config = os.path.join(info.root, 'etc/default/grub')
-        sed_i(grub_config, r'^(GRUB_CMDLINE_LINUX_DEFAULT=.*)', r'GRUB_CMDLINE_LINUX_DEFAULT=""')
-        sed_i(grub_config, r'^(GRUB_CMDLINE_LINUX*=".*)"\s*$', r'\1console=tty0 console=ttyS0,115200n8 earlyprintk=ttyS0,115200 rootdelay=300"')
-        sed_i(grub_config, r'^(GRUB_HIDDEN_TIMEOUT=).*', r'#GRUB_HIDDEN_TIMEOUT=true')
-        sed_i(grub_config, r'^.*(GRUB_TIMEOUT=).*$', r'GRUB_TIMEOUT=5')
+        info.grub_config['GRUB_CMDLINE_LINUX'].extend([
+            'console=tty0',
+            'console=ttyS0,115200n8',
+            'earlyprintk=ttyS0,115200',
+            'rootdelay=300',
+        ])

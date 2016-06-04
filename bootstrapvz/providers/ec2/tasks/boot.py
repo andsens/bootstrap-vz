@@ -1,19 +1,29 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
+from bootstrapvz.common.tasks import grub
 from . import assets
 import os
+from bootstrapvz.common.tools import log_check_call
 
 
-class ConfigurePVGrub(Task):
-    description = 'Creating grub config files for PVGrub'
+class UpdateGrubConfig(Task):
+    description = 'Updating the grub config'
     phase = phases.system_modification
+    successors = [grub.WriteGrubConfig]
+
+    @classmethod
+    def run(cls, info):
+        log_check_call(['chroot', info.root, 'update-grub'])
+
+
+class CreatePVGrubCustomRule(Task):
+    description = 'Creating special rule for PVGrub'
+    phase = phases.system_modification
+    successors = [UpdateGrubConfig]
 
     @classmethod
     def run(cls, info):
         import stat
-        rwxr_xr_x = (stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR |
-                     stat.S_IRGRP                | stat.S_IXGRP |
-                     stat.S_IROTH                | stat.S_IXOTH)
         x_all = stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH
 
         grubd = os.path.join(info.root, 'etc/grub.d')
@@ -24,7 +34,7 @@ class ConfigurePVGrub(Task):
         script_src = os.path.join(assets, 'grub.d/40_custom')
         script_dst = os.path.join(info.root, 'etc/grub.d/40_custom')
         copy(script_src, script_dst)
-        os.chmod(script_dst, rwxr_xr_x)
+        os.chmod(script_dst, 0755)
 
         from bootstrapvz.base.fs.partitionmaps.none import NoPartitions
         if not isinstance(info.volume.partition_map, NoPartitions):
@@ -39,14 +49,27 @@ class ConfigurePVGrub(Task):
             from bootstrapvz.common.tools import sed_i
             sed_i(script_dst, '^GRUB_DEVICE=/dev/xvda$', 'GRUB_DEVICE=/dev/xvda1')
 
-        from bootstrapvz.common.tools import sed_i
-        grub_def = os.path.join(info.root, 'etc/default/grub')
-        sed_i(grub_def, '^GRUB_TIMEOUT=[0-9]+', 'GRUB_TIMEOUT=0\n'
-                                                'GRUB_HIDDEN_TIMEOUT=true')
-        sed_i(grub_def, '^#GRUB_TERMINAL=console', 'GRUB_TERMINAL=console')
-        sed_i(grub_def, '^GRUB_CMDLINE_LINUX_DEFAULT=.*', 'GRUB_CMDLINE_LINUX_DEFAULT="consoleblank=0 console=hvc0 elevator=noop"')
 
-        from bootstrapvz.common.tools import log_check_call
-        log_check_call(['chroot', info.root, 'update-grub'])
+class ConfigurePVGrub(Task):
+    description = 'Configuring PVGrub'
+    phase = phases.system_modification
+    successors = [UpdateGrubConfig]
+
+    @classmethod
+    def run(cls, info):
+        info.grub_config['GRUB_CMDLINE_LINUX'].extend([
+            'consoleblank=0',
+            'console=hvc0',
+            'elevator=noop',
+        ])
+
+
+class LinkGrubConfig(Task):
+    description = 'Linking the grub config to /boot/grub/menu.lst'
+    phase = phases.system_modification
+    predecessors = [UpdateGrubConfig]
+
+    @classmethod
+    def run(cls, info):
         log_check_call(['chroot', info.root,
                         'ln', '--symbolic', '/boot/grub/grub.cfg', '/boot/grub/menu.lst'])

@@ -6,6 +6,7 @@ from bootstrapvz.common.tasks import loopback
 from bootstrapvz.common.tasks import initd
 from bootstrapvz.common.tasks import ssh
 from bootstrapvz.common.tasks import apt
+from bootstrapvz.common.tasks import grub
 
 
 def validate_manifest(data, validator, error):
@@ -29,6 +30,7 @@ def resolve_tasks(taskset, manifest):
                     tasks.boot.ConfigureGrub,
                     tasks.boot.PatchUdev,
                     ])
+    taskset.discard(grub.SetGrubConsolOutputDeviceToSerial)
 
 
 def resolve_rollback_tasks(taskset, manifest, completed, counter_task):

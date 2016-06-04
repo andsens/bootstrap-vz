@@ -6,6 +6,7 @@ Changelog
 ----------
 Anders Ingemann
     * Disable persistent network interface names for >=stretch
+    * grub defaults and linux boot options are now easier to configure
 
 2016-06-02
 ----------

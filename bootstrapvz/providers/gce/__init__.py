@@ -12,6 +12,7 @@ from bootstrapvz.common.tasks import loopback
 from bootstrapvz.common.tasks import initd
 from bootstrapvz.common.tasks import ssh
 from bootstrapvz.common.tasks import volume
+from bootstrapvz.common.tasks import grub
 
 
 def validate_manifest(data, validator, error):
@@ -43,6 +44,7 @@ def resolve_tasks(taskset, manifest):
                     tasks.image.CreateTarball,
                     volume.Delete,
                     ])
+    taskset.discard(grub.SetGrubConsolOutputDeviceToSerial)
 
     if 'gcs_destination' in manifest.provider:
         taskset.add(tasks.image.UploadImage)

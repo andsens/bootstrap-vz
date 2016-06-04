@@ -152,14 +152,22 @@ def get_locale_group(manifest):
 
 def get_bootloader_group(manifest):
     from bootstrapvz.common.releases import jessie
+    from bootstrapvz.common.releases import stretch
     group = []
     if manifest.system['bootloader'] == 'grub':
         group.extend([grub.AddGrubPackage,
-                      grub.ConfigureGrub])
+                      grub.InitGrubConfig,
+                      grub.SetGrubTerminalToConsole,
+                      grub.SetGrubConsolOutputDeviceToSerial,
+                      grub.RemoveGrubTimeout,
+                      grub.DisableGrubRecovery,
+                      grub.WriteGrubConfig])
         if manifest.release < jessie:
             group.append(grub.InstallGrub_1_99)
         else:
             group.append(grub.InstallGrub_2)
+        if manifest.release >= stretch:
+            group.append(grub.DisablePNIN)
     if manifest.system['bootloader'] == 'extlinux':
         group.append(extlinux.AddExtlinuxPackage)
         if manifest.release < jessie:

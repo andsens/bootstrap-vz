@@ -93,7 +93,16 @@ def resolve_tasks(taskset, manifest):
 
     if manifest.system['bootloader'] == 'pvgrub':
         taskset.add(grub.AddGrubPackage)
-        taskset.add(tasks.boot.ConfigurePVGrub)
+        taskset.update([grub.AddGrubPackage,
+                        grub.InitGrubConfig,
+                        grub.SetGrubTerminalToConsole,
+                        grub.RemoveGrubTimeout,
+                        grub.DisableGrubRecovery,
+                        tasks.boot.CreatePVGrubCustomRule,
+                        tasks.boot.ConfigurePVGrub,
+                        grub.WriteGrubConfig,
+                        tasks.boot.UpdateGrubConfig,
+                        tasks.boot.LinkGrubConfig])
 
     if manifest.volume['backing'].lower() == 'ebs':
         taskset.update([tasks.host.GetInstanceMetadata,
