@@ -19,7 +19,6 @@ class AddGrubPackage(Task):
 class ConfigureGrub(Task):
     description = 'Configuring grub'
     phase = phases.system_modification
-    predecessors = [filesystem.FStab]
 
     @classmethod
     def run(cls, info):
@@ -37,7 +36,7 @@ class ConfigureGrub(Task):
 class InstallGrub_1_99(Task):
     description = 'Installing grub 1.99'
     phase = phases.system_modification
-    predecessors = [filesystem.FStab]
+    predecessors = [filesystem.FStab, ConfigureGrub]
 
     @classmethod
     def run(cls, info):
@@ -79,7 +78,7 @@ class InstallGrub_1_99(Task):
 class InstallGrub_2(Task):
     description = 'Installing grub 2'
     phase = phases.system_modification
-    predecessors = [filesystem.FStab]
+    predecessors = [filesystem.FStab, ConfigureGrub]
     # Make sure the kernel image is updated after we have installed the bootloader
     successors = [kernel.UpdateInitramfs]
 
