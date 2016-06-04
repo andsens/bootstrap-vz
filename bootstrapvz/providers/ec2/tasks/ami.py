@@ -4,7 +4,7 @@ from bootstrapvz.common.exceptions import TaskError
 from bootstrapvz.common.tools import log_check_call
 from ebs import Snapshot
 from bootstrapvz.common.tasks import workspace
-from connection import Connect
+import connection
 from . import assets
 import os.path
 
@@ -14,7 +14,7 @@ cert_ec2 = os.path.join(assets, 'certs/cert-ec2.pem')
 class AMIName(Task):
     description = 'Determining the AMI name'
     phase = phases.preparation
-    predecessors = [Connect]
+    predecessors = [connection.SilenceBotoDebug, connection.Connect]
 
     @classmethod
     def run(cls, info):
