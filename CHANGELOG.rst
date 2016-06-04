@@ -5,8 +5,12 @@ Changelog
 2016-06-04
 ----------
 Anders Ingemann
-    * Disable persistent network interface names for >=stretch
+    * Disable persistent network interface names for >=stretch (by @apolloclark)
     * grub defaults and linux boot options are now easier to configure
+    * Source ixgbevf driver from intel, not sourceforge (by @justinsb)
+    * Use systemd on jessie (by @JamesBromberger)
+    * Tune ec2 images (sysctl settings, module blacklisting, nofail in fstab) (by @JamesBromberger)
+    * Add enable_modules option for cloud-init (by @JamesBromberger)
 
 2016-06-02
 ----------
