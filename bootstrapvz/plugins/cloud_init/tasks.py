@@ -77,7 +77,7 @@ class SetMetadataSource(Task):
 
 
 class DisableModules(Task):
-    description = 'Setting cloud.cfg modules'
+    description = 'Disabling cloud.cfg modules'
     phase = phases.system_modification
 
     @classmethod
@@ -97,3 +97,27 @@ class DisableModules(Task):
         for line in fileinput.input(files=cloud_cfg, inplace=True):
             if not regex.match(line):
                 print line,
+
+
+class EnableModules(Task):
+    description = 'Enabling cloud.cfg modules'
+    phase = phases.system_modification
+
+    @classmethod
+    def run(cls, info):
+        import fileinput
+        import re
+        cloud_cfg = os.path.join(info.root, 'etc/cloud/cloud.cfg')
+        for section in info.manifest.plugins['cloud_init']['enable_modules']:
+            regex = re.compile("^%s:" % section)
+            for entry in info.manifest.plugins['cloud_init']['enable_modules'][section]:
+                count = 0
+                counting = 0
+                for line in fileinput.input(files=cloud_cfg, inplace=True):
+                    if regex.match(line) and not counting:
+                        counting = True
+                    if counting:
+                        count = count + 1
+                    if int(entry['position']) == int(count):
+                        print(" - %s" % entry['module'])
+                    print line,

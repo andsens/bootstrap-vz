@@ -26,6 +26,8 @@ def resolve_tasks(taskset, manifest):
         taskset.add(tasks.SetUsername)
     if 'groups' in options and len(options['groups']):
         taskset.add(tasks.SetGroups)
+    if 'enable_modules' in options:
+        taskset.add(tasks.EnableModules)
     if 'disable_modules' in options:
         taskset.add(tasks.DisableModules)
 
