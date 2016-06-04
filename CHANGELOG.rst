@@ -2,6 +2,11 @@ Changelog
 =========
 
 
+2016-06-04
+----------
+Anders Ingemann
+    * Disable persistent network interface names for >=stretch
+
 2016-06-02
 ----------
 Peter Wagner

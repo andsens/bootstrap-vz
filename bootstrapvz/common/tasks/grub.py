@@ -22,8 +22,13 @@ class ConfigureGrub(Task):
 
     @classmethod
     def run(cls, info):
+        from bootstrapvz.common.releases import stretch
         from bootstrapvz.common.tools import sed_i
         grub_def = os.path.join(info.root, 'etc/default/grub')
+        if info.manifest.release >= stretch:
+            # Disable "Predictable Network Interface Names"
+            # See issue #245 for more details
+            sed_i(grub_def, '^GRUB_CMDLINE_LINUX=""', 'GRUB_CMDLINE_LINUX="net.ifnames=0 biosdevname=0"')
         sed_i(grub_def, '^#GRUB_TERMINAL=console', 'GRUB_TERMINAL=console')
         sed_i(grub_def, '^GRUB_CMDLINE_LINUX_DEFAULT="quiet"',
                         'GRUB_CMDLINE_LINUX_DEFAULT="console=ttyS0"')
