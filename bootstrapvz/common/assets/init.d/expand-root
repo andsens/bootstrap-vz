@@ -23,9 +23,9 @@ hash $growpart 2> /dev/null || {
 root_device_path="/dev/xvda"
 root_index="0"
 
+# Growpart can fail if the partition is already resized.
 $growpart $root_device_path $root_index || {
 	$logger "growpart failed. Unable to expand size."
-	exit 1
 }
 
 device_path="${root_device_path}${root_index}"

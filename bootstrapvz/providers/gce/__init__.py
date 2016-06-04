@@ -1,5 +1,4 @@
 from bootstrapvz.common import task_groups
-import tasks.apt
 import tasks.boot
 import tasks.configuration
 import tasks.image
@@ -11,7 +10,6 @@ from bootstrapvz.common.tasks import boot
 from bootstrapvz.common.tasks import image
 from bootstrapvz.common.tasks import loopback
 from bootstrapvz.common.tasks import initd
-from bootstrapvz.common.tasks import kernel
 from bootstrapvz.common.tasks import ssh
 from bootstrapvz.common.tasks import volume
 
@@ -28,18 +26,12 @@ def resolve_tasks(taskset, manifest):
 	taskset.update([apt.AddBackports,
 	                loopback.AddRequiredCommands,
 	                loopback.Create,
-	                tasks.apt.SetPackageRepositories,
-	                tasks.apt.ImportGoogleKey,
 	                tasks.packages.DefaultPackages,
-	                tasks.packages.ReleasePackages,
-	                tasks.packages.GooglePackages,
-
 	                tasks.configuration.GatherReleaseInformation,
-
 	                tasks.host.DisableIPv6,
-	                tasks.host.InstallHostnameHook,
 	                tasks.boot.ConfigureGrub,
 	                initd.AddExpandRoot,
+	                initd.AdjustExpandRootScript,
 	                tasks.initd.AdjustExpandRootDev,
 	                initd.InstallInitScripts,
 	                boot.BlackListModules,
@@ -47,19 +39,10 @@ def resolve_tasks(taskset, manifest):
 	                ssh.AddSSHKeyGeneration,
 	                ssh.DisableSSHPasswordAuthentication,
 	                ssh.DisableRootLogin,
-	                tasks.apt.CleanGoogleRepositoriesAndKeys,
-
 	                image.MoveImage,
 	                tasks.image.CreateTarball,
 	                volume.Delete,
 	                ])
-
-	if manifest.volume['partitions']['type'] != 'none':
-		taskset.add(initd.AdjustExpandRootScript)
-
-	if manifest.volume['partitions']['type'] != 'mbr':
-		taskset.update([tasks.initd.AddGrowRootDisable,
-		                kernel.UpdateInitramfs])
 
 	if 'gcs_destination' in manifest.provider:
 		taskset.add(tasks.image.UploadImage)
