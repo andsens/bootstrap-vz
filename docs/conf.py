@@ -108,9 +108,9 @@ pygments_style = 'sphinx'
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 if not on_rtd:  # only import and set the theme if we're building docs locally
-	import sphinx_rtd_theme
-	html_theme = 'sphinx_rtd_theme'
-	html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+    import sphinx_rtd_theme
+    html_theme = 'sphinx_rtd_theme'
+    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -270,30 +270,30 @@ import glob
 import os.path
 
 for readme_path in glob.glob('../bootstrapvz/providers/*/README.rst'):
-	provider_name = os.path.basename(os.path.dirname(readme_path))
-	include_path = os.path.join('providers', provider_name + '.rst')
-	if not os.path.exists(include_path):
-		path_to_readme = os.path.join('../../bootstrapvz/providers', provider_name, 'README.rst')
-		with open(include_path, 'w') as include:
-			include.write('.. include:: ' + path_to_readme)
+    provider_name = os.path.basename(os.path.dirname(readme_path))
+    include_path = os.path.join('providers', provider_name + '.rst')
+    if not os.path.exists(include_path):
+        path_to_readme = os.path.join('../../bootstrapvz/providers', provider_name, 'README.rst')
+        with open(include_path, 'w') as include:
+            include.write('.. include:: ' + path_to_readme)
 
 
 for readme_path in glob.glob('../bootstrapvz/plugins/*/README.rst'):
-	plugin_name = os.path.basename(os.path.dirname(readme_path))
-	include_path = os.path.join('plugins', plugin_name + '.rst')
-	if not os.path.exists(include_path):
-		path_to_readme = os.path.join('../../bootstrapvz/plugins', plugin_name, 'README.rst')
-		with open(include_path, 'w') as include:
-			include.write('.. include:: ' + path_to_readme)
+    plugin_name = os.path.basename(os.path.dirname(readme_path))
+    include_path = os.path.join('plugins', plugin_name + '.rst')
+    if not os.path.exists(include_path):
+        path_to_readme = os.path.join('../../bootstrapvz/plugins', plugin_name, 'README.rst')
+        with open(include_path, 'w') as include:
+            include.write('.. include:: ' + path_to_readme)
 
 
 for readme_path in glob.glob('../tests/system/providers/*/README.rst'):
-	provider_name = os.path.basename(os.path.dirname(readme_path))
-	include_path = os.path.join('testing/system_test_providers', provider_name + '.rst')
-	if not os.path.exists(include_path):
-		path_to_readme = os.path.join('../../../tests/system/providers', provider_name, 'README.rst')
-		with open(include_path, 'w') as include:
-			include.write('.. include:: ' + path_to_readme)
+    provider_name = os.path.basename(os.path.dirname(readme_path))
+    include_path = os.path.join('testing/system_test_providers', provider_name + '.rst')
+    if not os.path.exists(include_path):
+        path_to_readme = os.path.join('../../../tests/system/providers', provider_name, 'README.rst')
+        with open(include_path, 'w') as include:
+            include.write('.. include:: ' + path_to_readme)
 
 
 # -- Create task overview graph data --------------------------------------
@@ -308,7 +308,7 @@ taskoverview.write_data(data, '_static/graph.json')
 
 
 if on_rtd:
-	pass
+    pass
 
 # Snatched from here:
 # https://sourcegraph.com/github.com/Gallopsled/pwntools@master/.PipPackage/pwntools/.def/docs/source/conf/linkcode_resolve/lines
@@ -316,43 +316,43 @@ baseurl = 'https://github.com/andsens/bootstrap-vz'
 
 import subprocess
 try:
-	git_head = subprocess.check_output('git describe --tags 2>/dev/null', shell=True)
+    git_head = subprocess.check_output('git describe --tags 2>/dev/null', shell=True)
 except subprocess.CalledProcessError:
-	try:
-		git_head = subprocess.check_output('git rev-parse HEAD', shell=True).strip()[:10]
-	except subprocess.CalledProcessError:
-		pass
+    try:
+        git_head = subprocess.check_output('git rev-parse HEAD', shell=True).strip()[:10]
+    except subprocess.CalledProcessError:
+        pass
 
 
 def linkcode_resolve(domain, info):
-	if domain != 'py':
-		return None
-	if not info['module']:
-		return None
+    if domain != 'py':
+        return None
+    if not info['module']:
+        return None
 
-	filepath = info['module'].replace('.', '/') + '.py'
-	fmt_args = {'baseurl': baseurl,
-	            'commit': git_head,
-	            'path': filepath}
+    filepath = info['module'].replace('.', '/') + '.py'
+    fmt_args = {'baseurl': baseurl,
+                'commit': git_head,
+                'path': filepath}
 
-	import importlib
-	import inspect
-	import types
-	module = importlib.import_module(info['module'])
-	value = module
-	for part in info['fullname'].split('.'):
-		value = getattr(value, part, None)
-		if value is None:
-			break
-	valid_types = (types.ModuleType, types.ClassType, types.MethodType,
-	               types.FunctionType, types.TracebackType,
-	               types.FrameType, types.CodeType)
-	if isinstance(value, valid_types):
-		try:
-			lines, first = inspect.getsourcelines(value)
-			fmt_args['linestart'] = first
-			fmt_args['lineend'] = first + len(lines) - 1
-			return '{baseurl}/blob/{commit}/{path}#L{linestart}-L{lineend}'.format(**fmt_args)
-		except IOError:
-			pass
-	return '{baseurl}/blob/{commit}/{path}'.format(**fmt_args)
+    import importlib
+    import inspect
+    import types
+    module = importlib.import_module(info['module'])
+    value = module
+    for part in info['fullname'].split('.'):
+        value = getattr(value, part, None)
+        if value is None:
+            break
+    valid_types = (types.ModuleType, types.ClassType, types.MethodType,
+                   types.FunctionType, types.TracebackType,
+                   types.FrameType, types.CodeType)
+    if isinstance(value, valid_types):
+        try:
+            lines, first = inspect.getsourcelines(value)
+            fmt_args['linestart'] = first
+            fmt_args['lineend'] = first + len(lines) - 1
+            return '{baseurl}/blob/{commit}/{path}#L{linestart}-L{lineend}'.format(**fmt_args)
+        except IOError:
+            pass
+    return '{baseurl}/blob/{commit}/{path}'.format(**fmt_args)

@@ -6,13 +6,13 @@ import logging
 
 # TODO: Merge with the method available in wip-integration-tests branch
 def waituntil(predicate, timeout=5, interval=0.05):
-	import time
-	threshhold = time.time() + timeout
-	while time.time() < threshhold:
-		if predicate():
-			return True
-		time.sleep(interval)
-	return False
+    import time
+    threshhold = time.time() + timeout
+    while time.time() < threshhold:
+        if predicate():
+            return True
+        time.sleep(interval)
+    return False
 
 
 class LaunchEC2Instance(Task):

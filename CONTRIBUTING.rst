@@ -143,10 +143,8 @@ guidelines. There however a few exceptions:
 * Max line length is 110 chars, not 80.
 * Multiple assignments may be aligned with spaces so that the = match
   vertically.
-* Ignore ``E101``: Indent with tabs and align with spaces
 * Ignore ``E221 & E241``: Alignment of assignments
 * Ignore ``E501``: The max line length is not 80 characters
-* Ignore ``W191``: Indent with tabs not spaces
 
 The codebase can be checked for any violations quite easily, since those rules are already specified in the
 `tox <http://tox.readthedocs.org/>`__ configuration file.

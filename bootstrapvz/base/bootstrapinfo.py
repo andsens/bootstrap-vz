@@ -1,160 +1,160 @@
 
 
 class BootstrapInformation(object):
-	"""The BootstrapInformation class holds all information about the bootstrapping process.
-	The nature of the attributes of this class are rather diverse.
-	Tasks may set their own attributes on this class for later retrieval by another task.
-	Information that becomes invalid (e.g. a path to a file that has been deleted) must be removed.
-	"""
-	def __init__(self, manifest=None, debug=False):
-		"""Instantiates a new bootstrap info object.
+    """The BootstrapInformation class holds all information about the bootstrapping process.
+    The nature of the attributes of this class are rather diverse.
+    Tasks may set their own attributes on this class for later retrieval by another task.
+    Information that becomes invalid (e.g. a path to a file that has been deleted) must be removed.
+    """
+    def __init__(self, manifest=None, debug=False):
+        """Instantiates a new bootstrap info object.
 
-		:param Manifest manifest: The manifest
-		:param bool debug: Whether debugging is turned on
-		"""
-		# Set the manifest attribute.
-		self.manifest = manifest
-		self.debug = debug
+        :param Manifest manifest: The manifest
+        :param bool debug: Whether debugging is turned on
+        """
+        # Set the manifest attribute.
+        self.manifest = manifest
+        self.debug = debug
 
-		# Create a run_id. This id may be used to uniquely identify the currrent bootstrapping process
-		import random
-		self.run_id = '{id:08x}'.format(id=random.randrange(16 ** 8))
+        # Create a run_id. This id may be used to uniquely identify the currrent bootstrapping process
+        import random
+        self.run_id = '{id:08x}'.format(id=random.randrange(16 ** 8))
 
-		# Define the path to our workspace
-		import os.path
-		self.workspace = os.path.join(manifest.bootstrapper['workspace'], self.run_id)
+        # Define the path to our workspace
+        import os.path
+        self.workspace = os.path.join(manifest.bootstrapper['workspace'], self.run_id)
 
-		# Load all the volume information
-		from fs import load_volume
-		self.volume = load_volume(self.manifest.volume, manifest.system['bootloader'])
+        # Load all the volume information
+        from fs import load_volume
+        self.volume = load_volume(self.manifest.volume, manifest.system['bootloader'])
 
-		# The default apt mirror
-		self.apt_mirror = self.manifest.packages.get('mirror', 'http://httpredir.debian.org/debian/')
+        # The default apt mirror
+        self.apt_mirror = self.manifest.packages.get('mirror', 'http://httpredir.debian.org/debian/')
 
-		# Create the manifest_vars dictionary
-		self.manifest_vars = self.__create_manifest_vars(self.manifest, {'apt_mirror': self.apt_mirror})
+        # Create the manifest_vars dictionary
+        self.manifest_vars = self.__create_manifest_vars(self.manifest, {'apt_mirror': self.apt_mirror})
 
-		# Keep a list of apt sources,
-		# so that tasks may add to that list without having to fiddle with apt source list files.
-		from pkg.sourceslist import SourceLists
-		self.source_lists = SourceLists(self.manifest_vars)
-		# Keep a list of apt preferences
-		from pkg.preferenceslist import PreferenceLists
-		self.preference_lists = PreferenceLists(self.manifest_vars)
-		# Keep a list of packages that should be installed, tasks can add and remove things from this list
-		from pkg.packagelist import PackageList
-		self.packages = PackageList(self.manifest_vars, self.source_lists)
+        # Keep a list of apt sources,
+        # so that tasks may add to that list without having to fiddle with apt source list files.
+        from pkg.sourceslist import SourceLists
+        self.source_lists = SourceLists(self.manifest_vars)
+        # Keep a list of apt preferences
+        from pkg.preferenceslist import PreferenceLists
+        self.preference_lists = PreferenceLists(self.manifest_vars)
+        # Keep a list of packages that should be installed, tasks can add and remove things from this list
+        from pkg.packagelist import PackageList
+        self.packages = PackageList(self.manifest_vars, self.source_lists)
 
-		# These sets should rarely be used and specify which packages the debootstrap invocation
-		# should be called with.
-		self.include_packages = set()
-		self.exclude_packages = set()
+        # These sets should rarely be used and specify which packages the debootstrap invocation
+        # should be called with.
+        self.include_packages = set()
+        self.exclude_packages = set()
 
-		# Dictionary to specify which commands are required on the host.
-		# The keys are commands, while the values are either package names or urls
-		# that hint at how a command may be made available.
-		self.host_dependencies = {}
+        # Dictionary to specify which commands are required on the host.
+        # The keys are commands, while the values are either package names or urls
+        # that hint at how a command may be made available.
+        self.host_dependencies = {}
 
-		# Path to optional bootstrapping script for modifying the behaviour of debootstrap
-		# (will be used instead of e.g. /usr/share/debootstrap/scripts/jessie)
-		self.bootstrap_script = None
+        # Path to optional bootstrapping script for modifying the behaviour of debootstrap
+        # (will be used instead of e.g. /usr/share/debootstrap/scripts/jessie)
+        self.bootstrap_script = None
 
-		# Lists of startup scripts that should be installed and disabled
-		self.initd = {'install': {}, 'disable': []}
+        # Lists of startup scripts that should be installed and disabled
+        self.initd = {'install': {}, 'disable': []}
 
-		# Add a dictionary that can be accessed via info._pluginname for the provider and every plugin
-		# Information specific to the module can be added to that 'namespace', this avoids clutter.
-		providername = manifest.modules['provider'].__name__.split('.')[-1]
-		setattr(self, '_' + providername, {})
-		for plugin in manifest.modules['plugins']:
-			pluginname = plugin.__name__.split('.')[-1]
-			setattr(self, '_' + pluginname, {})
+        # Add a dictionary that can be accessed via info._pluginname for the provider and every plugin
+        # Information specific to the module can be added to that 'namespace', this avoids clutter.
+        providername = manifest.modules['provider'].__name__.split('.')[-1]
+        setattr(self, '_' + providername, {})
+        for plugin in manifest.modules['plugins']:
+            pluginname = plugin.__name__.split('.')[-1]
+            setattr(self, '_' + pluginname, {})
 
-	def __create_manifest_vars(self, manifest, additional_vars={}):
-		"""Creates the manifest variables dictionary, based on the manifest contents
-		and additional data.
+    def __create_manifest_vars(self, manifest, additional_vars={}):
+        """Creates the manifest variables dictionary, based on the manifest contents
+        and additional data.
 
-		:param Manifest manifest: The Manifest
-		:param dict additional_vars: Additional values (they will take precedence and overwrite anything else)
-		:return: The manifest_vars dictionary
-		:rtype: dict
-		"""
+        :param Manifest manifest: The Manifest
+        :param dict additional_vars: Additional values (they will take precedence and overwrite anything else)
+        :return: The manifest_vars dictionary
+        :rtype: dict
+        """
 
-		def set_manifest_vars(obj, data):
-			"""Runs through the manifest and creates DictClasses for every key
+        def set_manifest_vars(obj, data):
+            """Runs through the manifest and creates DictClasses for every key
 
-			:param dict obj: dictionary to set the values on
-			:param dict data: dictionary of values to set on the obj
-			"""
-			for key, value in data.iteritems():
-				if isinstance(value, dict):
-					obj[key] = DictClass()
-					set_manifest_vars(obj[key], value)
-					continue
-				# Lists are not supported
-				if not isinstance(value, list):
-					obj[key] = value
+            :param dict obj: dictionary to set the values on
+            :param dict data: dictionary of values to set on the obj
+            """
+            for key, value in data.iteritems():
+                if isinstance(value, dict):
+                    obj[key] = DictClass()
+                    set_manifest_vars(obj[key], value)
+                    continue
+                # Lists are not supported
+                if not isinstance(value, list):
+                    obj[key] = value
 
-		# manifest_vars is a dictionary of all the manifest values,
-		# with it users can cross-reference values in the manifest, so that they do not need to be written twice
-		manifest_vars = {}
-		set_manifest_vars(manifest_vars, manifest.data)
+        # manifest_vars is a dictionary of all the manifest values,
+        # with it users can cross-reference values in the manifest, so that they do not need to be written twice
+        manifest_vars = {}
+        set_manifest_vars(manifest_vars, manifest.data)
 
-		# Populate the manifest_vars with datetime information
-		# and map the datetime variables directly to the dictionary
-		from datetime import datetime
-		now = datetime.now()
-		time_vars = ['%a', '%A', '%b', '%B', '%c', '%d', '%f', '%H',
-		             '%I', '%j', '%m', '%M', '%p', '%S', '%U', '%w',
-		             '%W', '%x', '%X', '%y', '%Y', '%z', '%Z']
-		for key in time_vars:
-			manifest_vars[key] = now.strftime(key)
+        # Populate the manifest_vars with datetime information
+        # and map the datetime variables directly to the dictionary
+        from datetime import datetime
+        now = datetime.now()
+        time_vars = ['%a', '%A', '%b', '%B', '%c', '%d', '%f', '%H',
+                     '%I', '%j', '%m', '%M', '%p', '%S', '%U', '%w',
+                     '%W', '%x', '%X', '%y', '%Y', '%z', '%Z']
+        for key in time_vars:
+            manifest_vars[key] = now.strftime(key)
 
-		# Add any additional manifest variables
-		# They are added last so that they may override previous variables
-		set_manifest_vars(manifest_vars, additional_vars)
-		return manifest_vars
+        # Add any additional manifest variables
+        # They are added last so that they may override previous variables
+        set_manifest_vars(manifest_vars, additional_vars)
+        return manifest_vars
 
-	def __getstate__(self):
-		from bootstrapvz.remote import supported_classes
+    def __getstate__(self):
+        from bootstrapvz.remote import supported_classes
 
-		def can_serialize(obj):
-			if hasattr(obj, '__class__') and hasattr(obj, '__module__'):
-				class_name = obj.__module__ + '.' + obj.__class__.__name__
-				return class_name in supported_classes or isinstance(obj, (BaseException, Exception))
-			return True
+        def can_serialize(obj):
+            if hasattr(obj, '__class__') and hasattr(obj, '__module__'):
+                class_name = obj.__module__ + '.' + obj.__class__.__name__
+                return class_name in supported_classes or isinstance(obj, (BaseException, Exception))
+            return True
 
-		def filter_state(state):
-			if isinstance(state, dict):
-				return {key: filter_state(val) for key, val in state.items() if can_serialize(val)}
-			if isinstance(state, (set, tuple, list, frozenset)):
-				return type(state)(filter_state(val) for val in state if can_serialize(val))
-			return state
+        def filter_state(state):
+            if isinstance(state, dict):
+                return {key: filter_state(val) for key, val in state.items() if can_serialize(val)}
+            if isinstance(state, (set, tuple, list, frozenset)):
+                return type(state)(filter_state(val) for val in state if can_serialize(val))
+            return state
 
-		state = filter_state(self.__dict__)
-		state['__class__'] = self.__module__ + '.' + self.__class__.__name__
-		return state
+        state = filter_state(self.__dict__)
+        state['__class__'] = self.__module__ + '.' + self.__class__.__name__
+        return state
 
-	def __setstate__(self, state):
-		for key in state:
-			self.__dict__[key] = state[key]
+    def __setstate__(self, state):
+        for key in state:
+            self.__dict__[key] = state[key]
 
 
 class DictClass(dict):
-	"""Tiny extension of dict to allow setting and getting keys via attributes
-	"""
-	def __getattr__(self, name):
-		return self[name]
+    """Tiny extension of dict to allow setting and getting keys via attributes
+    """
+    def __getattr__(self, name):
+        return self[name]
 
-	def __setattr__(self, name, value):
-		self[name] = value
+    def __setattr__(self, name, value):
+        self[name] = value
 
-	def __delattr__(self, name):
-		del self[name]
+    def __delattr__(self, name):
+        del self[name]
 
-	def __getstate__(self):
-		return self.__dict__
+    def __getstate__(self):
+        return self.__dict__
 
-	def __setstate__(self, state):
-		for key in state:
-			self[key] = state[key]
+    def __setstate__(self, state):
+        for key in state:
+            self[key] = state[key]

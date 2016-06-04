@@ -48,14 +48,14 @@ This allows code like this:
 
 .. code-block:: python
 
-	partials = {'vdi': '{provider: {name: virtualbox}, volume: {backing: vdi}}',
-	            'vmdk': '{provider: {name: virtualbox}, volume: {backing: vmdk}}',
-	            }
+    partials = {'vdi': '{provider: {name: virtualbox}, volume: {backing: vdi}}',
+                'vmdk': '{provider: {name: virtualbox}, volume: {backing: vmdk}}',
+                }
 
-	def test_unpartitioned_extlinux_oldstable():
-		std_partials = ['base', 'stable64', 'extlinux', 'unpartitioned', 'root_password']
-		custom_partials = [partials['vmdk']]
-		manifest_data = merge_manifest_data(std_partials, custom_partials)
+    def test_unpartitioned_extlinux_oldstable():
+        std_partials = ['base', 'stable64', 'extlinux', 'unpartitioned', 'root_password']
+        custom_partials = [partials['vmdk']]
+        manifest_data = merge_manifest_data(std_partials, custom_partials)
 
 The code above produces a manifest for Debian stable 64-bit unpartitioned
 virtualbox VMDK image.

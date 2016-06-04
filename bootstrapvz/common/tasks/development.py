@@ -3,11 +3,11 @@ from .. import phases
 
 
 class TriggerRollback(Task):
-	phase = phases.cleaning
+    phase = phases.cleaning
 
-	description = 'Triggering a rollback by throwing an exception'
+    description = 'Triggering a rollback by throwing an exception'
 
-	@classmethod
-	def run(cls, info):
-		from ..exceptions import TaskError
-		raise TaskError('Trigger rollback')
+    @classmethod
+    def run(cls, info):
+        from ..exceptions import TaskError
+        raise TaskError('Trigger rollback')

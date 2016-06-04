@@ -22,8 +22,8 @@ volume:
 
 
 def test_stable():
-	std_partials = ['base', 'stable64']
-	custom_partials = [partials['docker']]
-	manifest_data = merge_manifest_data(std_partials, custom_partials)
-	with boot_manifest(manifest_data) as instance:
-		print('\n'.join(instance.run(['echo', 'test'])))
+    std_partials = ['base', 'stable64']
+    custom_partials = [partials['docker']]
+    manifest_data = merge_manifest_data(std_partials, custom_partials)
+    with boot_manifest(manifest_data) as instance:
+        print('\n'.join(instance.run(['echo', 'test'])))

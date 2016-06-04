@@ -4,12 +4,12 @@ import os.path
 
 
 def find_version(path):
-	import re
-	version_file = open(path).read()
-	version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M)
-	if version_match:
-		return version_match.group(1)
-	raise RuntimeError("Unable to find version string.")
+    import re
+    version_file = open(path).read()
+    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M)
+    if version_match:
+        return version_match.group(1)
+    raise RuntimeError("Unable to find version string.")
 
 setup(name='bootstrap-vz',
       version=find_version(os.path.join(os.path.dirname(__file__), 'bootstrapvz/__init__.py')),
