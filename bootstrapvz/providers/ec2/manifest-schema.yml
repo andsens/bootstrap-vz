@@ -20,7 +20,7 @@ properties:
         enum:
         - none
         - simple
-    required: [virtualization]
+    required: [description, virtualization]
   system:
     type: object
     properties:
