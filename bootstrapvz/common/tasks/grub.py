@@ -280,6 +280,16 @@ class DisableGrubRecovery(Task):
         info.grub_config['GRUB_DISABLE_RECOVERY'] = True
 
 
+class EnableSystemd(Task):
+    description = 'Enabling systemd'
+    phase = phases.system_modification
+    successors = [WriteGrubConfig]
+
+    @classmethod
+    def run(cls, info):
+        info.grub_config['GRUB_CMDLINE_LINUX'].append('init=/bin/systemd')
+
+
 class InstallGrub_1_99(Task):
     description = 'Installing grub 1.99'
     phase = phases.system_modification
