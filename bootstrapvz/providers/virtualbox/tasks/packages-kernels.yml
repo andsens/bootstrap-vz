@@ -9,6 +9,9 @@ wheezy:
 jessie:
   amd64: linux-image-amd64
   i386: linux-image-686-pae
+stretch:
+  amd64: linux-image-amd64
+  i386: linux-image-686-pae
 sid:
   amd64: linux-image-amd64
   i386: linux-image-686-pae
