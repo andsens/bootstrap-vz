@@ -8,6 +8,7 @@ import tasks.filesystem
 import tasks.boot
 import tasks.network
 import tasks.initd
+import tasks.tuning
 from bootstrapvz.common.tasks import volume
 from bootstrapvz.common.tasks import filesystem
 from bootstrapvz.common.tasks import boot
@@ -15,6 +16,7 @@ from bootstrapvz.common.tasks import grub
 from bootstrapvz.common.tasks import initd
 from bootstrapvz.common.tasks import loopback
 from bootstrapvz.common.tasks import kernel
+from bootstrapvz.common.tasks import apt
 
 
 def validate_manifest(data, validator, error):
@@ -65,6 +67,8 @@ def resolve_tasks(taskset, manifest):
                     tasks.ami.AMIName,
                     tasks.connection.Connect,
 
+                    tasks.tuning.TuneSystem,
+                    tasks.tuning.BlackListModules,
                     boot.BlackListModules,
                     boot.DisableGetTTYs,
                     initd.AddExpandRoot,
@@ -82,6 +86,8 @@ def resolve_tasks(taskset, manifest):
         taskset.add(tasks.network.EnableDHCPCDDNS)
 
     if manifest.release >= jessie:
+        taskset.add(apt.AddBackports)
+        taskset.add(tasks.tuning.SetCloudInitMountOptions)
         taskset.add(tasks.packages.AddWorkaroundGrowpart)
         taskset.add(initd.AdjustGrowpartWorkaround)
         taskset.add(grub.EnableSystemd)
