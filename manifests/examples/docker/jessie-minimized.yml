@@ -16,7 +16,11 @@ system:
   charmap: UTF-8
   locale: en_US
   timezone: UTC
-packages: {}
+packages:
+  install:
+    - inetutils-ping
+    - iproute2
+    - netbase
 volume:
   backing: folder
   partitions:
