@@ -112,65 +112,56 @@ class MountSpecials(Task):
         # See https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/devices.txt
         import os
         import stat
-        from os import mknod, makedev, symlink
-        from os.path import join
-        from bootstrapvz.common.fs import get_partitions
 
         # First, make a tmpfs out of /dev.  Everything must be gone after umount.
         root.add_mount('none', 'dev', ['--types', 'tmpfs'])
-        dev = join(info.root, 'dev')
 
         # The GNU libc expects /dev/shm to be a world-writable directory in a tmpfs
         # This is used by the POSIX shared memory implementation
-        os.makedirs(join(dev, 'shm'), 0o777)
-
-        # The API pseudo-devices (null, zero, full, random, urandom and tty)
-        for name, major, minor in [('null',   1, 3), ('zero',    1, 5), ('full', 1, 7),
-                                   ('random', 1, 8), ('urandom', 1, 9), ('tty',  5, 0)]:
-            mknod(join(dev, name), 0o666 | stat.S_IFCHR, makedev(major, minor))
-
-        # Re-create all device paths that have block devices attached
-        for name, partition in get_partitions().items():
-            mknod(join(dev, name), 0o666 | stat.S_IFBLK, makedev(int(partition['major']), int(partition['minor'])))
-
-        # The nbd devices
-        from bootstrapvz.common.fs.qemuvolume import QEMUVolume
-        if isinstance(info.volume, QEMUVolume):
-            os.makedirs(join(dev, 'mapper'), 0o755)
-            nbd_max_part = int(info.volume._module_param('nbd', 'max_part'))
-            for i in xrange(32 / nbd_max_part):
-                mknod(join(dev, 'nbd%i' % i),
-                      0o660 | stat.S_IFBLK,
-                      makedev(43, nbd_max_part * i))
-                for j in xrange(nbd_max_part):
-                    mknod(join(dev, 'nbd%ip%i' % (i, j + 1)),
-                          0o660 | stat.S_IFBLK,
-                          makedev(43, nbd_max_part * i + j + 1))
-
-                    path = '/dev/mapper/nbd%ip%i' % (i, j + 1)
-                    if os.path.exists(path):
-                        assert(os.path.islink(path))
-                        dest = os.readlink(path)
-                        symlink(dest, join(info.root, path[1:]))
-
-                        dev_stat = os.stat(path)
-                        assert(stat.S_ISBLK(dev_stat.st_mode))
-                        mknod(join(dev, 'mapper', dest), dev_stat.st_mode, dev_stat.st_rdev)
+        os.makedirs(os.path.join(info.root, 'dev/shm'), 0o777)
 
         # Mount a new devpts instance separate from the host's
         # See http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/filesystems/devpts.txt
-        os.makedirs(join(dev, 'pts'), 0o755)
-        symlink('pts/ptmx', join(dev, 'ptmx'))
+        os.makedirs(os.path.join(info.root, 'dev/pts'), 0o755)
+        os.symlink('pts/ptmx', os.path.join(info.root, 'dev/ptmx'))
         root.add_mount('none', 'dev/pts',
                        ['--types', 'devpts',
                         '--options', 'newinstance,ptmxmode=0666'])
 
         # The kernel documentation defines some symlinks as required
-        symlink('/proc/self/fd', join(dev, 'fd'))
-        symlink('fd/0', join(dev, 'stdin'))
-        symlink('fd/1', join(dev, 'stdout'))
-        symlink('fd/2', join(dev, 'stderr'))
-        symlink('null', join(dev, 'X0R'))
+        os.symlink('/proc/self/fd', os.path.join(info.root, 'dev/fd'))
+        os.symlink('fd/0', os.path.join(info.root, 'dev/stdin'))
+        os.symlink('fd/1', os.path.join(info.root, 'dev/stdout'))
+        os.symlink('fd/2', os.path.join(info.root, 'dev/stderr'))
+        os.symlink('null', os.path.join(info.root, 'dev/X0R'))
+
+        for host_root, dirs, nodes in os.walk('/dev'):
+            guest_root = os.path.join(info.root, os.path.relpath(host_root, '/'))
+            for _dir in dirs:
+                dir_path = os.path.join(guest_root, _dir)
+                if os.path.exists(dir_path):
+                    continue
+                dir_stat = os.stat(os.path.join(host_root, _dir))
+                os.mkdir(dir_path)
+                os.chown(dir_path, dir_stat.st_uid, dir_stat.st_gid)
+                os.chmod(dir_path, dir_stat.st_mode)
+            for node in nodes:
+                node_path = os.path.join(guest_root, node)
+                if os.path.exists(node_path):
+                    continue
+                node_stat = os.stat(os.path.join(host_root, node))
+                if stat.S_ISBLK(node_stat.st_mode):
+                    major = os.major(node_stat.st_rdev)
+                    minor = os.minor(node_stat.st_rdev)
+                    device = os.makedev(major, minor)
+                    os.mknod(node_path, 0o660 | stat.S_IFBLK, device)
+                elif os.path.islink(node):
+                    node_dest = os.readlink(os.path.join(host_root, node))
+                    os.symlink(node_dest, node_path)
+                else:
+                    continue
+                os.chown(node_path, node_stat.st_uid, node_stat.st_gid)
+                os.chmod(node_path, node_stat.st_mode)
 
         # Mount /proc.
         # It is isolated from the host by the PID/IPC namespace in base/main.py
