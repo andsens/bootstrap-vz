@@ -1,3 +1,4 @@
+from bootstrapvz.common.tasks import apt
 from bootstrapvz.common.tasks import folder
 from bootstrapvz.common.tasks import filesystem
 from bootstrapvz.common import task_groups
@@ -23,6 +24,9 @@ def resolve_tasks(taskset, manifest):
     taskset.update(task_groups.get_locale_group(manifest))
     taskset.update(task_groups.security_group)
     taskset.update(task_groups.cleanup_group)
+
+    # Let the autostart of daemons by apt remain disabled
+    taskset.discard(apt.EnableDaemonAutostart)
 
     taskset.update([tasks.commands.AddRequiredCommands,
                     tasks.image.CreateDockerfileEntry,
