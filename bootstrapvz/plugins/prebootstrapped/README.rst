@@ -21,6 +21,8 @@ Settings
 ~~~~~~~~
 
 -  ``snapshot``: ID of the EBS snapshot to use. This setting only works
-   with EBS backed EC2 configurations.
+   with the volume backing ``ebs``.
 -  ``image``: Path to the loopbackvolume snapshot. This setting works
-   with all configurable volume backings except EBS.
+   with the volume backings ``raw``, ``s3``, ``vdi``, ``vmdk``
+-  ``folder``: Path to the folder copy. This setting works
+   with the volume backing ``folder``

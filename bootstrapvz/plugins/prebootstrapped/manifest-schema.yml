@@ -14,6 +14,7 @@ properties:
         - s3
         - vdi
         - vmdk
+        - folder
     required: [backing]
   plugins:
     type: object
@@ -23,4 +24,5 @@ properties:
         properties:
           image: {type: string}
           snapshot: {type: string}
+          folder: {type: string}
         additionalProperties: false

@@ -5,6 +5,7 @@ from bootstrapvz.common.tasks import packages
 from bootstrapvz.providers.virtualbox.tasks import guest_additions
 from bootstrapvz.providers.ec2.tasks import ebs
 from bootstrapvz.common.fs import unmounted
+from bootstrapvz.common.tools import log_check_call
 from shutil import copyfile
 import os.path
 import time
@@ -73,6 +74,33 @@ class CreateFromImage(Task):
         copyfile(loopback_backup_path, info.volume.image_path)
 
         set_fs_states(info.volume)
+
+
+class CopyFolder(Task):
+    description = 'Creating a copy of the bootstrap folder'
+    phase = phases.package_installation
+    predecessors = [packages.InstallPackages, guest_additions.InstallGuestAdditions]
+
+    @classmethod
+    def run(cls, info):
+        folder_backup_name = '{id}.{ext}.backup'.format(id=info.run_id, ext=info.volume.extension)
+        destination = os.path.join(info.manifest.bootstrapper['workspace'], folder_backup_name)
+        log_check_call(['cp', '-a', info.volume.path, destination])
+        msg = 'A copy of the bootstrapped volume was created. Path: ' + destination
+        log.info(msg)
+
+
+class CreateFromFolder(Task):
+    description = 'Creating bootstrap folder from a copy'
+    phase = phases.volume_creation
+    successors = [volume.Attach]
+
+    @classmethod
+    def run(cls, info):
+        info.root = os.path.join(info.workspace, 'root')
+        log_check_call(['cp', '-a', info.manifest.plugins['prebootstrapped']['folder'], info.root])
+        info.volume.path = info.root
+        info.volume.fsm.current = 'attached'
 
 
 def set_fs_states(volume):
