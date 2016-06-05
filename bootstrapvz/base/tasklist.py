@@ -23,9 +23,10 @@ class TaskList(object):
         """
         # Get a hold of every task we can find, so that we can topologically sort
         # all tasks, rather than just the subset we are going to run.
-        from bootstrapvz.common import tasks as common_tasks
-        modules = [common_tasks, info.manifest.modules['provider']] + info.manifest.modules['plugins']
-        all_tasks = set(get_all_tasks(modules))
+        # We pass in the modules which the manifest has already loaded in order
+        # to support third-party plugins, which are not in the bootstrapvz package
+        # and therefore wouldn't be discovered.
+        all_tasks = set(get_all_tasks([info.manifest.modules['provider']] + info.manifest.modules['plugins']))
         # Create a list for us to run
         task_list = create_list(self.tasks, all_tasks)
         # Output the tasklist
@@ -118,18 +119,39 @@ def create_list(taskset, all_tasks):
     return sorted_tasks
 
 
-def get_all_tasks(modules):
+def get_all_tasks(loaded_modules):
     """Gets a list of all task classes in the package
 
     :return: A list of all tasks in the package
     :rtype: list
     """
+    import pkgutil
     import os.path
-    # Get generators that return all classes in a module
-    generators = []
-    for module in modules:
+    import bootstrapvz
+    bootstrapvz_root = os.path.dirname(bootstrapvz.__file__)
+    module_paths = set([(os.path.join(bootstrapvz_root, 'common/tasks'), 'bootstrapvz.common.tasks.')])
+
+    for module in loaded_modules:
         module_path = os.path.dirname(module.__file__)
         module_prefix = module.__name__ + '.'
+        module_paths.add((module_path, module_prefix))
+
+    providers = os.path.join(os.path.dirname(bootstrapvz.__file__), 'providers')
+    for module_loader, module_name, ispkg in pkgutil.iter_modules([providers, 'bootstrapvz.providers']):
+        module_path = os.path.join(module_loader.path, module_name)
+        # The prefix param seems to do nothing, so we prefix the module name ourselves
+        module_prefix = 'bootstrapvz.providers.{}.'.format(module_name)
+        module_paths.add((module_path, module_prefix))
+
+    plugins = os.path.join(os.path.dirname(bootstrapvz.__file__), 'plugins')
+    for module_loader, module_name, ispkg in pkgutil.iter_modules([plugins, 'bootstrapvz.plugins']):
+        module_path = os.path.join(module_loader.path, module_name)
+        module_prefix = 'bootstrapvz.plugins.{}.'.format(module_name)
+        module_paths.add((module_path, module_prefix))
+
+    # Get generators that return all classes in a module
+    generators = []
+    for (module_path, module_prefix) in module_paths:
         generators.append(get_all_classes(module_path, module_prefix))
     import itertools
     classes = itertools.chain(*generators)
