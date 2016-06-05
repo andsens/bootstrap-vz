@@ -1,5 +1,6 @@
 import tasks
 from bootstrapvz.providers.ec2.tasks import ebs
+from bootstrapvz.plugins.minimize_size.tasks import dpkg
 from bootstrapvz.providers.virtualbox.tasks import guest_additions
 from bootstrapvz.common.tasks import loopback
 from bootstrapvz.common.tasks import volume
@@ -30,6 +31,12 @@ def resolve_tasks(taskset, manifest):
                   filesystem.CreateBootMountDir,
 
                   apt.DisableDaemonAutostart,
+                  dpkg.InitializeBootstrapFilterList,
+                  dpkg.CreateDpkgCfg,
+                  dpkg.CreateBootstrapFilterScripts,
+                  dpkg.FilterLocales,
+                  dpkg.ExcludeDocs,
+                  dpkg.DeleteBootstrapFilterScripts,
                   locale.GenerateLocale,
                   bootstrap.MakeTarball,
                   bootstrap.Bootstrap,
