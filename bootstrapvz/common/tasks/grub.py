@@ -200,25 +200,19 @@ class WriteGrubConfig(Task):
     def run(cls, info):
         grub_config_contents = ''
         for key, value in info.grub_config.items():
-            if value is None:
-                continue
             if isinstance(value, str):
                 grub_config_contents += '{}="{}"\n'.format(key, value)
-                continue
-            if isinstance(value, int):
+            elif isinstance(value, int):
                 grub_config_contents += '{}={}\n'.format(key, value)
-                continue
-            if isinstance(value, bool):
+            elif isinstance(value, bool):
                 grub_config_contents += '{}="{}"\n'.format(key, str(value).lower())
-                continue
-            if isinstance(value, list):
-                if len(value) == 0:
-                    continue
-                args_list = ' '.join(map(str, value))
-                grub_config_contents += '{}="{}"\n'.format(key, args_list)
-                continue
-            raise TaskError('Don\'t know how to handle type {}, '
-                            'when creating grub config'.format(type(value)))
+            elif isinstance(value, list):
+                if len(value) > 0:
+                    args_list = ' '.join(map(str, value))
+                    grub_config_contents += '{}="{}"\n'.format(key, args_list)
+            elif value is not None:
+                raise TaskError('Don\'t know how to handle type {}, '
+                                'when creating grub config'.format(type(value)))
         grub_defaults = os.path.join(info.root, 'etc/default/grub')
         with open(grub_defaults, 'w') as grub_defaults_handle:
             grub_defaults_handle.write(grub_config_contents)
