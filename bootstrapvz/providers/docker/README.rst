@@ -26,8 +26,8 @@ Name
 Provider
 ~~~~~~~~
 
--  ``dockerfile``: Inline dockerfile that should be appended to
-   the one created by the bootstrapper.
+-  ``dockerfile``: List of Dockerfile instructions that should be appended to
+   the ones created by the bootstrapper.
    ``optional``
 
 -  ``labels``: Labels that should be added to the dockerfile.
@@ -49,8 +49,8 @@ Example:
     name: bootstrap-vz:latest
     provider:
       name: docker
-      dockerfile: >
-        CMD /bin/bash
+      dockerfile:
+        - CMD /bin/bash
       labels:
         name: debian-{system.release}-{system.architecture}-{%y}{%m}{%d}
         description: Debian {system.release} {system.architecture}

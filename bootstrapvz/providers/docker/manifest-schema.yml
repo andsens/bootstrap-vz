@@ -20,7 +20,11 @@ properties:
           patternProperties:
             ^.+$: {type: string}
       dockerfile:
-        type: string
+        type: array
+        items:
+          # https://github.com/turtlebender/docker/blob/6e2662b3bad319679e17fe25d410f246820ab0e9/builder/job.go#L27
+          type: string
+          pattern: '^(ENTRYPOINT|CMD|USER|WORKDIR|ENV|VOLUME|EXPOSE|ONBUILD|LABEL|MAINTAINER)'
   system:
     type: object
     properties:

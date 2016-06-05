@@ -9,7 +9,7 @@ class CreateDockerfileEntry(Task):
 
     @classmethod
     def run(cls, info):
-        info._docker['dockerfile'] = ''
+        info._docker['dockerfile'] = []
 
 
 class CreateImage(Task):
@@ -21,8 +21,10 @@ class CreateImage(Task):
         from pipes import quote
         tar_cmd = ['tar', '--create', '--numeric-owner',
                    '--directory', info.volume.path, '.']
-        docker_cmd = ['docker', 'import', '--change', info._docker['dockerfile'], '-',
-                      info.manifest.name.format(**info.manifest_vars)]
+        docker_cmd = ['docker', 'import']
+        for instruction in info._docker['dockerfile']:
+            docker_cmd.extend(['--change', instruction])
+        docker_cmd.extend(['-', info.manifest.name.format(**info.manifest_vars)])
         cmd = ' '.join(map(quote, tar_cmd)) + ' | ' + ' '.join(map(quote, docker_cmd))
         [info._docker['image_id']] = log_check_call([cmd], shell=True)
 
@@ -55,9 +57,8 @@ class PopulateLabels(Task):
             value = value.replace('\n', '\\\n')
             value = '"' + value + '"'
             return value
-        kv_pairs = [label + '=' + escape(value) for label, value in labels.items()]
-        # Add some nice newlines and indentation
-        info._docker['dockerfile'] += 'LABEL ' + ' \\\n      '.join(kv_pairs) + '\n'
+        for label, value in labels.items():
+            info._docker['dockerfile'].append('LABEL {}={}'.format(label, escape(value)))
 
 
 class AppendManifestDockerfile(Task):
@@ -68,4 +69,4 @@ class AppendManifestDockerfile(Task):
 
     @classmethod
     def run(cls, info):
-        info._docker['dockerfile'] += info.manifest.provider['dockerfile'] + '\n'
+        info._docker['dockerfile'].extend(info.manifest.provider['dockerfile'])
