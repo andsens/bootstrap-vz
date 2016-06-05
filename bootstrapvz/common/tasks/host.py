@@ -15,7 +15,7 @@ class CheckExternalCommands(Task):
         missing_packages = []
         for command, package in info.host_dependencies.items():
             try:
-                log_check_call(['type ' + command], shell=True)
+                log_check_call(['type', command], shell=True)
             except CalledProcessError:
                 if re.match('^https?:\/\/', package):
                     msg = ('The command `{command}\' is not available, '
