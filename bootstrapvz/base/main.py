@@ -91,9 +91,13 @@ def run(manifest, debug=False, pause_on_error=False, dry_run=False):
     :params bool pause_on_error: Whether to pause on error, before rollback
     :params bool dry_run: Don't actually run the tasks
     """
+    import logging
+
+    log = logging.getLogger(__name__)
     # Get the tasklist
     from tasklist import load_tasks
     from tasklist import TaskList
+    log.info('Generating tasklist')
     tasks = load_tasks('resolve_tasks', manifest)
     tasklist = TaskList(tasks)
     # 'resolve_tasks' is the name of the function to call on the provider and plugins
@@ -102,8 +106,6 @@ def run(manifest, debug=False, pause_on_error=False, dry_run=False):
     from bootstrapinfo import BootstrapInformation
     bootstrap_info = BootstrapInformation(manifest=manifest, debug=debug)
 
-    import logging
-    log = logging.getLogger(__name__)
     try:
         # Run all the tasks the tasklist has gathered
         tasklist.run(info=bootstrap_info, dry_run=dry_run)
