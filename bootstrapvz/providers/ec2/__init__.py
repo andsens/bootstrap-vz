@@ -90,7 +90,8 @@ def resolve_tasks(taskset, manifest):
         taskset.add(tasks.tuning.SetCloudInitMountOptions)
         taskset.add(tasks.packages.AddWorkaroundGrowpart)
         taskset.add(initd.AdjustGrowpartWorkaround)
-        taskset.add(grub.EnableSystemd)
+        if manifest.system['bootloader'] == 'grub':
+            taskset.add(grub.EnableSystemd)
 
     if manifest.provider.get('install_init_scripts', True):
         taskset.add(tasks.initd.AddEC2InitScripts)
