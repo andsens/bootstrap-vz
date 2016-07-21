@@ -11,10 +11,11 @@ Debian 8 Jessie Package Notes:
 * cloud-utils and cloud-guest-utils are pulled in from backports as they provide a fixed version of growpart to safely grow the root partition on disks >2TB.
 * google-cloud-sdk is pulled from a Google Cloud repository.
 * google-compute-engine is pulled from a Google Cloud repository.
+* google-compute-engine-init is pulled from a Google Cloud repository.
 * google-config is pulled from a Google Cloud repository.
 
 jessie-minimal Notes:
-The only additions are the necessary google-compute-engine and google-config packages. This image is not published on GCE however the manifest is provided here for those wishing a minimal GCE Debian image.
+The only additions are the necessary google-compute-engine, google-compute-engine-init, and google-config packages. This image is not published on GCE however the manifest is provided here for those wishing a minimal GCE Debian image.
 
 Note: Debian 7 Wheezy and Backports Debian 7 Wheezy are deprecated images on GCE and are no longer supported.
 These manifests are provided here for historic purposes.
