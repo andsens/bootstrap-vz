@@ -1,4 +1,5 @@
 from bootstrapvz.common import task_groups
+import tasks.apt
 import tasks.boot
 import tasks.configuration
 import tasks.image
@@ -25,6 +26,7 @@ def resolve_tasks(taskset, manifest):
     taskset.update(task_groups.get_standard_groups(manifest))
 
     taskset.update([apt.AddBackports,
+                    apt.AddDefaultSources,
                     loopback.AddRequiredCommands,
                     loopback.Create,
                     tasks.packages.DefaultPackages,
@@ -40,6 +42,7 @@ def resolve_tasks(taskset, manifest):
                     ssh.AddSSHKeyGeneration,
                     ssh.DisableSSHPasswordAuthentication,
                     ssh.DisableRootLogin,
+                    tasks.apt.AddBaselineAptCache,
                     image.MoveImage,
                     tasks.image.CreateTarball,
                     volume.Delete,

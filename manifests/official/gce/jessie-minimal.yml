@@ -20,11 +20,13 @@ volume:
       filesystem: ext4
       size: 10GiB
 packages:
+  include-source-type: true
   sources:
     google-cloud:
       - deb http://packages.cloud.google.com/apt google-cloud-compute-{system.release} main
   install:
     - google-compute-engine-{system.release}
+    - google-compute-engine-init-{system.release}
     - google-config-{system.release}
 plugins:
   google_cloud_repo:
