@@ -24,13 +24,13 @@ class AddDefaultSources(Task):
 
     @classmethod
     def run(cls, info):
-        from bootstrapvz.common.releases import sid
+        from bootstrapvz.common.releases import sid, wheezy
         include_src = info.manifest.packages.get('include-source-type', False)
         components = ' '.join(info.manifest.packages.get('components', ['main']))
         info.source_lists.add('main', 'deb     {apt_mirror} {system.release} ' + components)
         if include_src:
             info.source_lists.add('main', 'deb-src {apt_mirror} {system.release} ' + components)
-        if info.manifest.release != sid:
+        if info.manifest.release != sid and info.manifest.release >= wheezy:
             info.source_lists.add('main', 'deb     http://security.debian.org/  {system.release}/updates ' + components)
             if include_src:
                 info.source_lists.add('main', 'deb-src http://security.debian.org/  {system.release}/updates ' + components)
