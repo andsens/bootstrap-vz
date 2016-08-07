@@ -9,7 +9,7 @@ def validate_manifest(data, validator, error):
 
     for i, file_entry in enumerate(data['plugins']['file_copy']['files']):
         srcfile = file_entry['src']
-        if not os.path.isfile(srcfile):
+        if not os.path.exists(srcfile):
             msg = 'The source file %s does not exist.' % srcfile
             error(msg, ['plugins', 'file_copy', 'files', i])
 
