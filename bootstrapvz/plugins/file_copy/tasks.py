@@ -47,5 +47,9 @@ class FileCopyCommand(Task):
             # note that we don't use os.path.join because it can't
             #  handle absolute paths, which 'dst' most likely is.
             final_destination = os.path.normpath("%s/%s" % (info.root, file_entry['dst']))
-            shutil.copy(file_entry['src'], final_destination)
+            if os.path.isfile(file_entry['src']):
+                shutil.copy(file_entry['src'], final_destination)
+            else:
+                shutil.copytree(file_entry['src'], final_destination)
+
             modify_path(info, file_entry['dst'], file_entry)
