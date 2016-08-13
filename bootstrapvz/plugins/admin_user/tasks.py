@@ -8,6 +8,21 @@ import logging
 log = logging.getLogger(__name__)
 
 
+class CheckPublicKeyFile(Task):
+    description = 'Check that the public key is a valid file'
+    phase = phases.validation
+
+    @classmethod
+    def run(cls, info):
+        from bootstrapvz.common.tools import log_call, rel_path
+
+        pubkey = info.manifest.plugins['admin_user'].get('pubkey', None)
+        if pubkey is not None:
+            if not os.path.isfile(rel_path(info.manifest.path, pubkey)):
+                msg = 'Could not find public key at %s' % pubkey
+                info.manifest.validation_error(msg, ['plugins', 'admin_user', 'pubkey'])
+
+
 class AddSudoPackage(Task):
     description = 'Adding `sudo\' to the image packages'
     phase = phases.preparation
@@ -74,14 +89,21 @@ class AdminUserPublicKey(Task):
 
         # Get the stuff we need (username & public key)
         username = info.manifest.plugins['admin_user']['username']
-        with open(info.manifest.plugins['admin_user']['pubkey']) as pubkey_handle:
+
+        from bootstrapvz.common.tools import rel_path
+        pubkey_path = rel_path(info.manifest.path,
+                               info.manifest.plugins['admin_user']['pubkey'])
+
+        with open(pubkey_path) as pubkey_handle:
             pubkey = pubkey_handle.read()
 
         # paths
-        ssh_dir_rel = os.path.join('home', username, '.ssh')
-        auth_keys_rel = os.path.join(ssh_dir_rel, 'authorized_keys')
-        ssh_dir_abs = os.path.join(info.root, ssh_dir_rel)
-        auth_keys_abs = os.path.join(info.root, auth_keys_rel)
+        from os.path import join
+        ssh_dir_rel   = join('home', username, '.ssh')
+        auth_keys_rel = join(ssh_dir_rel, 'authorized_keys')
+        ssh_dir_abs   = join(info.root, ssh_dir_rel)
+        auth_keys_abs = join(info.root, auth_keys_rel)
+
         # Create the ssh dir if nobody has created it yet
         if not os.path.exists(ssh_dir_abs):
             os.mkdir(ssh_dir_abs, 0700)

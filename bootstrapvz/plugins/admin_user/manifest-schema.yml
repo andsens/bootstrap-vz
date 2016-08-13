@@ -11,10 +11,10 @@ properties:
         properties:
           username: {type: string}
           password: {type: string}
-          pubkey: {$ref: '#/definitions/absolute_path'}
+          pubkey: {$ref: '#/definitions/path'}
         required: [username]
         additionalProperties: false
 definitions:
-  absolute_path:
-    pattern: ^/[^\0]+$
+  path:
+    pattern: ^[^\0]+$
     type: string
