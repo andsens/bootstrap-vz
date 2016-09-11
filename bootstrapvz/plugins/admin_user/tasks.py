@@ -18,8 +18,14 @@ class CheckPublicKeyFile(Task):
 
         pubkey = info.manifest.plugins['admin_user'].get('pubkey', None)
         if pubkey is not None:
-            if not os.path.isfile(rel_path(info.manifest.path, pubkey)):
+            abs_pubkey = rel_path(info.manifest.path, pubkey)
+            if not os.path.isfile(abs_pubkey):
                 msg = 'Could not find public key at %s' % pubkey
+                info.manifest.validation_error(msg, ['plugins', 'admin_user', 'pubkey'])
+
+            ret, _, stderr = log_call('ssh-keygen -l -f ' + abs_pubkey)
+            if ret != 0:
+                msg = 'Invalid public key file at %s' % pubkey
                 info.manifest.validation_error(msg, ['plugins', 'admin_user', 'pubkey'])
 
 
