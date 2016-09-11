@@ -6,6 +6,37 @@ import logging
 import os
 
 
+class ValidateTrustedKeys(Task):
+    description = 'Validate apt trusted keys'
+    phase = phases.validation
+
+    @classmethod
+    def run(cls, info):
+        from bootstrapvz.common.tools import log_call
+
+        for i, key_path in enumerate(info.manifest.packages.get('trusted-keys', {})):
+            if not os.path.isfile(key_path):
+                info.manifest.validation_error('File not found: {}'.format(key_path),
+                                               ['packages', 'trusted-keys', i])
+
+            from tempfile import mkdtemp
+            from shutil import rmtree
+            tempdir = mkdtemp()
+
+            status, _, _ = log_call(
+                ['gpg', '--quiet',
+                 '--homedir', tempdir,
+                 '--keyring', key_path,
+                 '-k']
+            )
+
+            rmtree(tempdir)
+
+            if status != 0:
+                info.manifest.validation_error('Invalid GPG keyring: {}'.format(key_path),
+                                               ['packages', 'trusted-keys', i])
+
+
 class AddManifestSources(Task):
     description = 'Adding sources from the manifest'
     phase = phases.preparation
@@ -70,6 +101,7 @@ class AddManifestPreferences(Task):
 class InstallTrustedKeys(Task):
     description = 'Installing trusted keys'
     phase = phases.package_installation
+    predecessors = [ValidateTrustedKeys]
 
     @classmethod
     def run(cls, info):
