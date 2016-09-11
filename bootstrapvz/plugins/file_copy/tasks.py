@@ -69,4 +69,9 @@ class FileCopyCommand(Task):
             else:
                 shutil.copytree(src_path, final_destination)
 
-            modify_path(info, file_entry['dst'], file_entry)
+            if os.path.isfile(src_path) and os.path.isdir(final_destination):
+                dst = os.path.join(final_destination, os.path.basename(src_path))
+            else:
+                dst = final_destination
+
+            modify_path(info, dst, file_entry)
