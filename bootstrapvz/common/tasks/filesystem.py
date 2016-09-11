@@ -8,7 +8,7 @@ import volume
 
 class AddRequiredCommands(Task):
     description = 'Adding commands required for formatting'
-    phase = phases.preparation
+    phase = phases.validation
     successors = [host.CheckExternalCommands]
 
     @classmethod

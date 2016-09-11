@@ -7,7 +7,7 @@ import volume
 
 class AddRequiredCommands(Task):
     description = 'Adding commands required for partitioning the volume'
-    phase = phases.preparation
+    phase = phases.validation
     successors = [host.CheckExternalCommands]
 
     @classmethod

@@ -10,7 +10,7 @@ import os
 
 class AddRequiredCommands(Task):
     description = 'Adding commands required for reducing volume size'
-    phase = phases.preparation
+    phase = phases.validation
     successors = [host.CheckExternalCommands]
 
     @classmethod
