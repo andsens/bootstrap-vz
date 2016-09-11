@@ -9,7 +9,7 @@ assets = os.path.normpath(os.path.join(os.path.dirname(__file__), '../assets'))
 
 class CheckGuestAdditionsPath(Task):
     description = 'Checking whether the VirtualBox Guest Additions image exists'
-    phase = phases.preparation
+    phase = phases.validation
 
     @classmethod
     def run(cls, info):

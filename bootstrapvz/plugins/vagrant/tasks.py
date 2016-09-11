@@ -9,7 +9,7 @@ assets = os.path.normpath(os.path.join(os.path.dirname(__file__), 'assets'))
 
 class CheckBoxPath(Task):
     description = 'Checking if the vagrant box file already exists'
-    phase = phases.preparation
+    phase = phases.validation
 
     @classmethod
     def run(cls, info):

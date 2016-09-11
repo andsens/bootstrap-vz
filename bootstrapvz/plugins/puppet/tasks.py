@@ -6,7 +6,7 @@ import os
 
 class CheckAssetsPath(Task):
     description = 'Checking whether the assets path exist'
-    phase = phases.preparation
+    phase = phases.validation
 
     @classmethod
     def run(cls, info):
@@ -22,7 +22,7 @@ class CheckAssetsPath(Task):
 
 class CheckManifestPath(Task):
     description = 'Checking whether the manifest path exist'
-    phase = phases.preparation
+    phase = phases.validation
 
     @classmethod
     def run(cls, info):

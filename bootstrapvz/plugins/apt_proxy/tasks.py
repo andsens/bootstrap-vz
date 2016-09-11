@@ -7,7 +7,7 @@ import urllib2
 
 class CheckAptProxy(Task):
     description = 'Checking reachability of APT proxy server'
-    phase = phases.preparation
+    phase = phases.validation
 
     @classmethod
     def run(cls, info):
