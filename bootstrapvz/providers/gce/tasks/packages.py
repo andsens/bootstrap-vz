@@ -1,8 +1,7 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 from bootstrapvz.common.tasks import packages
-from bootstrapvz.common.tools import config_get
-import os
+from bootstrapvz.common.tools import config_get, rel_path
 
 
 class DefaultPackages(Task):
@@ -29,7 +28,7 @@ class DefaultPackages(Task):
         info.packages.add('sudo')
         info.packages.add('uuid-runtime')
 
-        kernel_packages_path = os.path.join(os.path.dirname(__file__), 'packages-kernels.yml')
+        kernel_packages_path = rel_path(__file__, 'packages-kernels.yml')
         kernel_package = config_get(kernel_packages_path, [info.manifest.release.codename,
                                                            info.manifest.system['architecture']])
         info.packages.add(kernel_package)

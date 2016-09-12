@@ -1,14 +1,12 @@
-from bootstrapvz.common.tasks import apt
-from bootstrapvz.common.tasks import folder
-from bootstrapvz.common.tasks import filesystem
 from bootstrapvz.common import task_groups
+from bootstrapvz.common.tasks import apt, folder, filesystem
+from bootstrapvz.common.tools import rel_path
 import tasks.commands
 import tasks.image
 
 
 def validate_manifest(data, validator, error):
-    import os.path
-    schema_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'manifest-schema.yml'))
+    schema_path = rel_path(__file__, 'manifest-schema.yml')
     validator(data, schema_path)
 
 

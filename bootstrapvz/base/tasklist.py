@@ -128,22 +128,22 @@ def get_all_tasks(loaded_modules):
     import pkgutil
     import os.path
     import bootstrapvz
-    bootstrapvz_root = os.path.dirname(bootstrapvz.__file__)
-    module_paths = set([(os.path.join(bootstrapvz_root, 'common/tasks'), 'bootstrapvz.common.tasks.')])
+    from bootstrapvz.common.tools import rel_path
+    module_paths = set([(rel_path(bootstrapvz.__file__, 'common/tasks'), 'bootstrapvz.common.tasks.')])
 
     for module in loaded_modules:
         module_path = os.path.dirname(module.__file__)
         module_prefix = module.__name__ + '.'
         module_paths.add((module_path, module_prefix))
 
-    providers = os.path.join(os.path.dirname(bootstrapvz.__file__), 'providers')
+    providers = rel_path(bootstrapvz.__file__, 'providers')
     for module_loader, module_name, ispkg in pkgutil.iter_modules([providers, 'bootstrapvz.providers']):
         module_path = os.path.join(module_loader.path, module_name)
         # The prefix param seems to do nothing, so we prefix the module name ourselves
         module_prefix = 'bootstrapvz.providers.{}.'.format(module_name)
         module_paths.add((module_path, module_prefix))
 
-    plugins = os.path.join(os.path.dirname(bootstrapvz.__file__), 'plugins')
+    plugins = rel_path(bootstrapvz.__file__, 'plugins')
     for module_loader, module_name, ispkg in pkgutil.iter_modules([plugins, 'bootstrapvz.plugins']):
         module_path = os.path.join(module_loader.path, module_name)
         module_prefix = 'bootstrapvz.plugins.{}.'.format(module_name)

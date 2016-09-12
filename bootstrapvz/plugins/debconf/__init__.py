@@ -1,9 +1,7 @@
 def validate_manifest(data, validator, error):
-    from bootstrapvz.common.tools import log_check_call
-    import os.path
-    schema_path = os.path.join(os.path.dirname(__file__),
-                               'schema.yaml')
-    validator(data, schema_path)
+    from bootstrapvz.common.tools import log_check_call, rel_path
+    validator(data, rel_path(__file__, 'manifest-schema.yml'))
+
     log_check_call(['debconf-set-selections', '--checkonly'],
                    stdin=data['plugins']['debconf'])
 

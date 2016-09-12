@@ -2,9 +2,9 @@
 
 def pick_build_server(build_servers, manifest, preferences={}):
     # Validate the build servers list
-    from bootstrapvz.common.tools import load_data
-    import os.path
-    schema = load_data(os.path.normpath(os.path.join(os.path.dirname(__file__), 'build-servers-schema.yml')))
+    from bootstrapvz.common.tools import load_data, rel_path
+
+    schema = load_data(rel_path(__file__, 'build-servers-schema.yml'))
     import jsonschema
     jsonschema.validate(build_servers, schema)
 

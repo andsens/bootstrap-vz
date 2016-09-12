@@ -2,9 +2,10 @@ from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 from bootstrapvz.common.tasks.packages import InstallPackages
 from bootstrapvz.common.exceptions import TaskError
+from bootstrapvz.common.tools import rel_path
 import os
 
-assets = os.path.normpath(os.path.join(os.path.dirname(__file__), '../assets'))
+assets = rel_path(__file__, '../assets')
 
 
 class CheckGuestAdditionsPath(Task):

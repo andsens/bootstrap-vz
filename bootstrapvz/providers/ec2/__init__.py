@@ -9,19 +9,13 @@ import tasks.boot
 import tasks.network
 import tasks.initd
 import tasks.tuning
-from bootstrapvz.common.tasks import volume
-from bootstrapvz.common.tasks import filesystem
-from bootstrapvz.common.tasks import boot
-from bootstrapvz.common.tasks import grub
-from bootstrapvz.common.tasks import initd
-from bootstrapvz.common.tasks import loopback
-from bootstrapvz.common.tasks import kernel
-from bootstrapvz.common.tasks import apt
+from bootstrapvz.common.tasks import apt, boot, filesystem, grub, initd
+from bootstrapvz.common.tasks import kernel, loopback, volume
+from bootstrapvz.common.tools import rel_path
 
 
 def validate_manifest(data, validator, error):
-    import os.path
-    validator(data, os.path.join(os.path.dirname(__file__), 'manifest-schema.yml'))
+    validator(data, rel_path(__file__, 'manifest-schema.yml'))
 
     from bootstrapvz.common.bytes import Bytes
     if data['volume']['backing'] == 'ebs':
@@ -33,7 +27,7 @@ def validate_manifest(data, validator, error):
             msg = ('The volume size must be a multiple of 1GiB when using EBS backing')
             error(msg, ['volume', 'partitions'])
     else:
-        validator(data, os.path.join(os.path.dirname(__file__), 'manifest-schema-s3.yml'))
+        validator(data, rel_path(__file__, 'manifest-schema-s3.yml'))
 
     bootloader = data['system']['bootloader']
     virtualization = data['provider']['virtualization']
