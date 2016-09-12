@@ -121,6 +121,7 @@ def get_apt_group(manifest):
     if 'sources' in manifest.packages:
         group.append(apt.AddManifestSources)
     if 'trusted-keys' in manifest.packages:
+        group.append(apt.ValidateTrustedKeys)
         group.append(apt.InstallTrustedKeys)
     if 'preferences' in manifest.packages:
         group.append(apt.AddManifestPreferences)
