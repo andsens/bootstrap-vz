@@ -5,7 +5,7 @@ from bootstrapvz.common.tasks import host
 
 class AddExternalCommands(Task):
     description = 'Determining required external commands for EC2 bootstrapping'
-    phase = phases.preparation
+    phase = phases.validation
     successors = [host.CheckExternalCommands]
 
     @classmethod

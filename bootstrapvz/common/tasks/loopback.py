@@ -6,7 +6,7 @@ import volume
 
 class AddRequiredCommands(Task):
     description = 'Adding commands required for creating loopback volumes'
-    phase = phases.preparation
+    phase = phases.validation
     successors = [host.CheckExternalCommands]
 
     @classmethod

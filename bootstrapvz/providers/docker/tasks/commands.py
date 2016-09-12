@@ -5,7 +5,7 @@ from bootstrapvz.common.tasks import host
 
 class AddRequiredCommands(Task):
     description = 'Adding commands required for docker'
-    phase = phases.preparation
+    phase = phases.validation
     successors = [host.CheckExternalCommands]
 
     @classmethod

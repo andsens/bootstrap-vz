@@ -5,7 +5,7 @@ import os
 
 class CheckPlaybookPath(Task):
     description = 'Checking whether the playbook path exist'
-    phase = phases.preparation
+    phase = phases.validation
 
     @classmethod
     def run(cls, info):

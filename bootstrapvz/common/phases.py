@@ -1,5 +1,6 @@
 from bootstrapvz.base.phase import Phase
 
+validation = Phase('Validation', 'Validating data, files, etc.')
 preparation = Phase('Preparation', 'Initializing connections, fetching data etc.')
 volume_creation = Phase('Volume creation', 'Creating the volume to bootstrap onto')
 volume_preparation = Phase('Volume preparation', 'Formatting the bootstrap volume')
@@ -13,7 +14,8 @@ volume_unmounting = Phase('Volume unmounting', 'Unmounting the bootstrap volume'
 image_registration = Phase('Image registration', 'Uploading/Registering with the provider')
 cleaning = Phase('Cleaning', 'Removing temporary files')
 
-order = [preparation,
+order = [validation,
+         preparation,
          volume_creation,
          volume_preparation,
          volume_mounting,

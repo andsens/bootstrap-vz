@@ -5,7 +5,7 @@ from ..exceptions import TaskError
 
 class CheckExternalCommands(Task):
     description = 'Checking availability of external commands'
-    phase = phases.preparation
+    phase = phases.validation
 
     @classmethod
     def run(cls, info):
