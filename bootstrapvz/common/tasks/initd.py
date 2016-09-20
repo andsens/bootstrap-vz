@@ -12,6 +12,7 @@ class InstallInitScripts(Task):
     @classmethod
     def run(cls, info):
         import stat
+        from bootstrapvz.common.releases import jessie
         rwxr_xr_x = (stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR |
                      stat.S_IRGRP                | stat.S_IXGRP |
                      stat.S_IROTH                | stat.S_IXOTH)
@@ -20,10 +21,16 @@ class InstallInitScripts(Task):
             dst = os.path.join(info.root, 'etc/init.d', name)
             copy(src, dst)
             os.chmod(dst, rwxr_xr_x)
-            log_check_call(['chroot', info.root, 'insserv', '--default', name])
+            if info.manifest.release > jessie:
+                log_check_call(['chroot', info.root, 'systemctl', 'enable', name])
+            else:
+                log_check_call(['chroot', info.root, 'insserv', '--default', name])
 
         for name in info.initd['disable']:
-            log_check_call(['chroot', info.root, 'insserv', '--remove', name])
+            if info.manifest.release > jessie:
+                log_check_call(['chroot', info.root, 'systemctl', 'mask', name])
+            else:
+                log_check_call(['chroot', info.root, 'insserv', '--remove', name])
 
 
 class AddExpandRoot(Task):
