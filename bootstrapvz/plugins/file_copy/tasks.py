@@ -36,6 +36,20 @@ class MkdirCommand(Task):
             modify_path(info, dir_entry['dir'], dir_entry)
 
 
+class ValidateFiles(Task):
+    description = 'Check that the required files exist'
+    phase = phases.validation
+
+    @classmethod
+    def run(cls, info):
+        from bootstrapvz.common.tools import rel_path
+
+        for i, file_entry in enumerate(info.manifest.plugins['file_copy']['files']):
+            if not os.path.exists(rel_path(info.manifest.path, file_entry['src'])):
+                msg = 'The source file %s does not exist.' % file_entry['src']
+                info.manifest.validation_error(msg, ['plugins', 'file_copy', 'files', i])
+
+
 class FileCopyCommand(Task):
     description = 'Copying user specified files into the image'
     phase = phases.user_modification
@@ -43,13 +57,21 @@ class FileCopyCommand(Task):
 
     @classmethod
     def run(cls, info):
+        from bootstrapvz.common.tools import rel_path
+
         for file_entry in info.manifest.plugins['file_copy']['files']:
             # note that we don't use os.path.join because it can't
             #  handle absolute paths, which 'dst' most likely is.
             final_destination = os.path.normpath("%s/%s" % (info.root, file_entry['dst']))
-            if os.path.isfile(file_entry['src']):
-                shutil.copy(file_entry['src'], final_destination)
+            src_path = rel_path(info.manifest.path, file_entry['src'])
+            if os.path.isfile(src_path):
+                shutil.copy(src_path, final_destination)
             else:
-                shutil.copytree(file_entry['src'], final_destination)
+                shutil.copytree(src_path, final_destination)
 
-            modify_path(info, file_entry['dst'], file_entry)
+            if os.path.isfile(src_path) and os.path.isdir(final_destination):
+                dst = os.path.join(final_destination, os.path.basename(src_path))
+            else:
+                dst = final_destination
+
+            modify_path(info, dst, file_entry)

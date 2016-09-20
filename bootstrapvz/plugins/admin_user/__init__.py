@@ -1,13 +1,8 @@
-
-
 def validate_manifest(data, validator, error):
     import os.path
+
     schema_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'manifest-schema.yml'))
     validator(data, schema_path)
-    pubkey = data['plugins']['admin_user'].get('pubkey', None)
-    if pubkey is not None and not os.path.exists(pubkey):
-        msg = 'Could not find public key at %s' % pubkey
-        error(msg, ['plugins', 'admin_user', 'pubkey'])
 
 
 def resolve_tasks(taskset, manifest):
@@ -24,6 +19,7 @@ def resolve_tasks(taskset, manifest):
         taskset.add(tasks.AdminUserPassword)
 
     if 'pubkey' in manifest.plugins['admin_user']:
+        taskset.add(tasks.CheckPublicKeyFile)
         taskset.add(tasks.AdminUserPublicKey)
     elif manifest.provider['name'] == 'ec2':
         logging.getLogger(__name__).info("The SSH key will be obtained from EC2")

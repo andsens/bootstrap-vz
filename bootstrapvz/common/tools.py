@@ -133,3 +133,8 @@ def copy_tree(from_path, to_path):
         for path in files:
             copy(os.path.join(abs_prefix, path),
                  os.path.join(to_path, prefix, path))
+
+
+def rel_path(base, path):
+    import os.path
+    return os.path.join(os.path.dirname(base), path)
