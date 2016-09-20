@@ -1,12 +1,12 @@
-import os.path
+from bootstrapvz.common.tools import rel_path
 import tasks
 from bootstrapvz.common.tasks import apt
 from bootstrapvz.common.releases import wheezy
 
 
 def validate_manifest(data, validator, error):
-    schema_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'manifest-schema.yml'))
-    validator(data, schema_path)
+    validator(data, rel_path(__file__, 'manifest-schema.yml'))
+
     from bootstrapvz.common.releases import get_release
     if get_release(data['system']['release']) == wheezy:
         # prefs is a generator of apt preferences across files in the manifest

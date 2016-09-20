@@ -1,3 +1,3 @@
-import os.path
+from bootstrapvz.common.tools import rel_path
 
-assets = os.path.normpath(os.path.join(os.path.dirname(__file__), '../assets'))
+assets = rel_path(__file__, '../assets')

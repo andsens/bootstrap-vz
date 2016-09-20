@@ -2,15 +2,14 @@ from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 from bootstrapvz.common.tasks import grub
 from bootstrapvz.common.tasks import initd
-from bootstrapvz.common.tools import log_check_call
-from bootstrapvz.common.tools import sed_i
+from bootstrapvz.common.tools import log_check_call, sed_i, rel_path
 import os
 import os.path
 import shutil
 import subprocess
 import time
 
-ASSETS_DIR = os.path.normpath(os.path.join(os.path.dirname(__file__), 'assets'))
+ASSETS_DIR = rel_path(__file__, 'assets')
 
 
 class AddDockerDeps(Task):

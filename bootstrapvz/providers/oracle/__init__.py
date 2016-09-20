@@ -1,8 +1,5 @@
 from bootstrapvz.common import task_groups
-from bootstrapvz.common.tasks import image
-from bootstrapvz.common.tasks import loopback
-from bootstrapvz.common.tasks import ssh
-from bootstrapvz.common.tasks import volume
+from bootstrapvz.common.tasks import image, loopback, ssh, volume
 import tasks.api
 import tasks.image
 import tasks.network
@@ -10,8 +7,8 @@ import tasks.packages
 
 
 def validate_manifest(data, validator, error):
-    import os.path
-    validator(data, os.path.join(os.path.dirname(__file__), 'manifest-schema.yml'))
+    from bootstrapvz.common.tools import rel_path
+    validator(data, rel_path(__file__, 'manifest-schema.yml'))
 
     keys = ['username', 'password', 'identity-domain']
     if 'credentials' in data['provider']:

@@ -45,8 +45,8 @@ class ConfigureNetworkIF(Task):
 
     @classmethod
     def run(cls, info):
-        network_config_path = os.path.join(os.path.dirname(__file__), 'network-configuration.yml')
-        from ..tools import config_get
+        from ..tools import config_get, rel_path
+        network_config_path = rel_path(__file__, 'network-configuration.yml')
         if_config = config_get(network_config_path, [info.manifest.release.codename])
 
         interfaces_path = os.path.join(info.root, 'etc/network/interfaces')

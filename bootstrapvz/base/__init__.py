@@ -12,12 +12,10 @@ def validate_manifest(data, validator, error):
     :param function validator: The function that validates the manifest given the data and a path
     :param function error: The function tha raises an error when the validation fails
     """
-    import os.path
-    schema_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'manifest-schema.yml'))
-    validator(data, schema_path)
+    from bootstrapvz.common.tools import rel_path
+    validator(data, rel_path(__file__, 'manifest-schema.yml'))
 
-    from bootstrapvz.common.releases import get_release
-    from bootstrapvz.common.releases import squeeze
+    from bootstrapvz.common.releases import get_release, squeeze
     release = get_release(data['system']['release'])
 
     if release < squeeze:

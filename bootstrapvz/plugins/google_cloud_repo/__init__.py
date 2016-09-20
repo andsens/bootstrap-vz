@@ -1,10 +1,9 @@
 import tasks
-import os.path
+from bootstrapvz.common.tools import rel_path
 
 
 def validate_manifest(data, validator, error):
-    schema_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'manifest-schema.yml'))
-    validator(data, schema_path)
+    validator(data, rel_path(__file__, 'manifest-schema.yml'))
 
 
 def resolve_tasks(taskset, manifest):

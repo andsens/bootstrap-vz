@@ -1,10 +1,11 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 from bootstrapvz.common.tasks import workspace
+from bootstrapvz.common.tools import rel_path
 import os
 import shutil
 
-assets = os.path.normpath(os.path.join(os.path.dirname(__file__), 'assets'))
+assets = rel_path(__file__, 'assets')
 
 
 class CheckBoxPath(Task):

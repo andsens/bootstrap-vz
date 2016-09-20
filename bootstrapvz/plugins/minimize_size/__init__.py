@@ -6,9 +6,9 @@ from bootstrapvz.common.tasks import locale
 
 
 def validate_manifest(data, validator, error):
-    import os.path
-    schema_path = os.path.join(os.path.dirname(__file__), 'manifest-schema.yml')
-    validator(data, schema_path)
+    from bootstrapvz.common.tools import rel_path
+    validator(data, rel_path(__file__, 'manifest-schema.yml'))
+
     if data['plugins']['minimize_size'].get('shrink', False) and data['volume']['backing'] != 'vmdk':
         error('Can only shrink vmdk images', ['plugins', 'minimize_size', 'shrink'])
 

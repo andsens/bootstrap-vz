@@ -1,15 +1,11 @@
 from bootstrapvz.common import task_groups
 import tasks.packages
-from bootstrapvz.common.tasks import image
-from bootstrapvz.common.tasks import loopback
-from bootstrapvz.common.tasks import initd
-from bootstrapvz.common.tasks import ssh
+from bootstrapvz.common.tasks import image, loopback, initd, ssh
 
 
 def validate_manifest(data, validator, error):
-    import os.path
-    schema_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'manifest-schema.yml'))
-    validator(data, schema_path)
+    from bootstrapvz.common.tools import rel_path
+    validator(data, rel_path(__file__, 'manifest-schema.yml'))
 
 
 def resolve_tasks(taskset, manifest):

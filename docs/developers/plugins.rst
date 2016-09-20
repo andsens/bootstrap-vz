@@ -66,9 +66,8 @@ Typically it looks like this:
 .. code-block:: python
 
     def validate_manifest(data, validator, error):
-        import os.path
-        schema_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'manifest-schema.yml'))
-        validator(data, schema_path)
+        from bootstrapvz.common.tools import rel_path
+        validator(data, rel_path(__file__, 'manifest-schema.yml'))
 
 This code validates the manifest against a schema in your plugin folder.
 The schema is a `JSON schema <http://json-schema.org/>`__, since bootstrap-vz

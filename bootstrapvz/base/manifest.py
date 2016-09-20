@@ -3,7 +3,7 @@ to determine which tasks should be added to the tasklist, what arguments various
 invocations should have etc..
 """
 from bootstrapvz.common.exceptions import ManifestError
-from bootstrapvz.common.tools import load_data
+from bootstrapvz.common.tools import load_data, rel_path
 import logging
 log = logging.getLogger(__name__)
 
@@ -28,9 +28,7 @@ class Manifest(object):
             raise ManifestError('`path\' or `data\' must be provided')
         self.path = path
 
-        import os.path
-        self.metaschema = load_data(os.path.normpath(os.path.join(os.path.dirname(__file__),
-                                                                  'metaschema.json')))
+        self.metaschema = load_data(rel_path(__file__, 'metaschema.json'))
 
         self.load_data(data)
         self.load_modules()
