@@ -49,7 +49,7 @@ def validate_manifest(data, validator, error):
 
 
 def resolve_tasks(taskset, manifest):
-    from bootstrapvz.common.releases import wheezy, jessie
+    from bootstrapvz.common.releases import wheezy, jessie, stable
 
     taskset.update(task_groups.get_standard_groups(manifest))
     taskset.update(task_groups.ssh_group)
@@ -80,12 +80,13 @@ def resolve_tasks(taskset, manifest):
         taskset.add(tasks.network.EnableDHCPCDDNS)
 
     if manifest.release >= jessie:
-        taskset.add(apt.AddBackports)
         taskset.add(tasks.tuning.SetCloudInitMountOptions)
         taskset.add(tasks.packages.AddWorkaroundGrowpart)
         taskset.add(initd.AdjustGrowpartWorkaround)
         if manifest.system['bootloader'] == 'grub':
             taskset.add(grub.EnableSystemd)
+        if manifest.release == stable:
+            taskset.add(apt.AddBackports)
 
     if manifest.provider.get('install_init_scripts', True):
         taskset.add(tasks.initd.AddEC2InitScripts)
