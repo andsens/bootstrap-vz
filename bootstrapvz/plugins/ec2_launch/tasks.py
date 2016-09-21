@@ -25,7 +25,9 @@ class LaunchEC2Instance(Task):
         conn = info._ec2['connection']
         r = conn.run_instances(info._ec2['image'],
                                security_group_ids=info.manifest.plugins['ec2_launch'].get('security_group_ids'),
-                               instance_type=info.manifest.plugins['ec2_launch'].get('instance_type', 't2.micro'))
+                               key_name=info.manifest.plugins['ec2_launch'].get('ssh_key'),
+                               instance_type=info.manifest.plugins['ec2_launch'].get('instance_type',
+                                                                                     'm3.medium'))
         info._ec2['instance'] = r.instances[0]
 
         if 'tags' in info.manifest.plugins['ec2_launch']:
