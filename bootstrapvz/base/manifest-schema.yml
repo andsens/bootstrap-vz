@@ -47,10 +47,10 @@ properties:
         enum: [i386]
       bootloader:
         enum:
-        - pvgrub
-        - grub
-        - extlinux
-        - none
+          - pvgrub
+          - grub
+          - extlinux
+          - none
       charmap: {type: string}
       hostname:
         type: string
@@ -59,12 +59,12 @@ properties:
       release: {type: string}
       timezone: {type: string}
     required:
-    - release
-    - architecture
-    - bootloader
-    - timezone
-    - locale
-    - charmap
+      - release
+      - architecture
+      - bootloader
+      - timezone
+      - locale
+      - charmap
     additionalProperties: false
   packages:
     type: object
@@ -77,8 +77,8 @@ properties:
         type: array
         items:
           anyOf:
-          - pattern: ^[^/]+(/[^/]+)?$
-          - $ref: '#/definitions/absolute_path'
+            - pattern: ^[^/]+(/[^/]+)?$
+            - $ref: '#/definitions/absolute_path'
         minItems: 1
       install_standard: {type: boolean}
       mirror:
@@ -137,8 +137,8 @@ properties:
       partitions:
         type: object
         oneOf:
-        - $ref: '#/definitions/no_partitions'
-        - $ref: '#/definitions/partition_table'
+          - $ref: '#/definitions/no_partitions'
+          - $ref: '#/definitions/partition_table'
     required: [partitions]
     additionalProperties: false
 definitions:

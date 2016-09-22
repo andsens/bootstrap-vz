@@ -125,3 +125,9 @@ class RegisterAMI(Task):
             registration_params['sriov_net_support'] = 'simple'
 
         info._ec2['image'] = info._ec2['connection'].register_image(**registration_params)
+
+        # Setting up tags on the AMI
+        if 'tags' in info.manifest.data:
+            raw_tags = info.manifest.data['tags']
+            tags = {k: v.format(**info.manifest_vars) for k, v in raw_tags.items()}
+            info._ec2['connection'].create_tags(info._ec2['image'], tags)

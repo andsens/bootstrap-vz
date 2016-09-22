@@ -49,6 +49,9 @@ def validate_manifest(data, validator, error):
 
 
 def resolve_tasks(taskset, manifest):
+    """
+    Function setting up tasks to run for this provider
+    """
     from bootstrapvz.common.releases import wheezy, jessie, stable
 
     taskset.update(task_groups.get_standard_groups(manifest))
