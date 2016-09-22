@@ -22,10 +22,10 @@ def test_log_call_output_order():
     logged = setup_logger()
     fixture = """
 2 0.0 one\\\\n
-1 0.2 two\\\\n
-1 0.2 four\\\\n
-2 0.2 No, three..\\\\n
-1 0.2 three\\\\n
+1 0.4 two\\\\n
+1 0.4 four\\\\n
+2 0.4 No, three..\\\\n
+1 0.4 three\\\\n
 """
     status, stdout, stderr = log_call([subprocess_path], stdin=fixture)
     eq_(status, 0)
