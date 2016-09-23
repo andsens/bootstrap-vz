@@ -5,7 +5,7 @@ provider:
   waagent:
     version: 2.0.14
 bootstrapper:
-  mirror: http://httpredir.debian.org/debian/
+  mirror: http://deb.debian.org/debian/
   workspace: /target
 system:
   release: jessie
