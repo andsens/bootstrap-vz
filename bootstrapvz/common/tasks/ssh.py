@@ -101,6 +101,7 @@ class ShredHostkeys(Task):
     def run(cls, info):
         ssh_hostkeys = ['ssh_host_dsa_key',
                         'ssh_host_rsa_key']
+
         from bootstrapvz.common.releases import wheezy
         if info.manifest.release >= wheezy:
             ssh_hostkeys.append('ssh_host_ecdsa_key')
@@ -109,4 +110,5 @@ class ShredHostkeys(Task):
         public = [path + '.pub' for path in private]
 
         from ..tools import log_check_call
-        log_check_call(['shred', '--remove'] + private + public)
+        log_check_call(['shred', '--remove'] + [key for key in private + public
+                                                if os.path.isfile(key)])

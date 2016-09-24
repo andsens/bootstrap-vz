@@ -10,8 +10,10 @@ properties:
         type: string
         enum:
         - wheezy
-        - stable
+        - oldstable
         - jessie
+        - stable
+        - stretch
         - testing
         - sid
         - unstable
@@ -38,7 +40,7 @@ properties:
                 type: array
                 properties:
                   module: {type: string}
-                  position: { type: number}
+                  position: {type: number}
             additionalProperties: false
         required: [username]
         additionalProperties: false
