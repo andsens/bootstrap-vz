@@ -114,7 +114,7 @@ Example:
     bootstrapper:
       workspace: /target
       tarball: true
-      mirror: http://httpredir.debian.org/debian/
+      mirror: http://deb.debian.org/debian/
       include_packages:
          - whois
          - psmisc
@@ -195,7 +195,7 @@ variety of sources.
    Default: ``false``
 -  ``mirror``: The default aptitude mirror.
    ``optional``
-   Default: ``http://httpredir.debian.org/debian/``
+   Default: ``http://deb.debian.org/debian/``
 -  ``sources``: A map of additional sources that should be added to
    the aptitude sources list. The key becomes the filename in
    ``/etc/apt/sources.list.d/`` (with ``.list`` appended to it), except
