@@ -85,7 +85,7 @@ def resolve_tasks(taskset, manifest):
         taskset.add(initd.AdjustGrowpartWorkaround)
         if manifest.system['bootloader'] == 'grub':
             taskset.add(grub.EnableSystemd)
-        if manifest.release == stable:
+        if manifest.release <= stable:
             taskset.add(apt.AddBackports)
 
     if manifest.provider.get('install_init_scripts', True):
