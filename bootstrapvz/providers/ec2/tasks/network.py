@@ -106,7 +106,7 @@ class InstallEnhancedNetworking(Task):
         with open(os.path.join(module_path, 'dkms.conf'), 'w') as dkms_conf:
             dkms_conf.write("""PACKAGE_NAME="ixgbevf"
 PACKAGE_VERSION="%s"
-CLEAN="cd src/; make clean"
+CLEAN="cd src/; sed -i '1s/^/EXTRA_CFLAGS := -fno-pie/' Makefile && make clean"
 MAKE="cd src/; make BUILD_KERNEL=${kernelver}"
 BUILT_MODULE_LOCATION[0]="src/"
 BUILT_MODULE_NAME[0]="ixgbevf"
