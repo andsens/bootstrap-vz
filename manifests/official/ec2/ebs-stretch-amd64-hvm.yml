@@ -1,5 +1,8 @@
 ---
-name: debian-{system.release}-{system.architecture}-{provider.virtualization}-{%Y}-{%m}-{%d}-ebs
+name: debian-{system.release}-{system.architecture}-{provider.virtualization}-{%Y}-{%m}-{%d}-{%H}{%M}-ebs
+tags:
+  Name: "Stretch 9.0 alpha"
+  Debian: "9.0~{%Y}{%m}{%d}"
 provider:
   name: ec2
   virtualization: hvm
@@ -11,7 +14,7 @@ provider:
 bootstrapper:
   workspace: /target
 system:
-  release: jessie
+  release: stretch
   architecture: amd64
   bootloader: grub
   charmap: UTF-8
@@ -30,11 +33,6 @@ packages:
     - main
     - contrib
     - non-free
-  preferences:
-    backport-cloud-init-cloud-utils:
-      - package: cloud-init cloud-utils
-        pin: release n=jessie-backports
-        pin-priority: 500
   install:
     - awscli
     - python-boto
@@ -55,3 +53,14 @@ plugins:
     enable_modules:
       cloud_init_modules:
         - {module: growpart, position: 4}
+#  ec2_launch:
+#    security_group_ids:
+#      # this have to be a NONE VPC SG
+#      - sg-398a704f
+#    instance_type: m3.medium
+#    ssh_key: my_ssh_key
+#    print_public_ip: "/tmp/stretch-ami-test-ip"
+#    tags:
+#      Name: "testing-ami-{system.release}"
+#      Debian: "9.0~{%Y}{%m}{%d}{%H}{%M}"
+#    deregister_ami: false

@@ -110,7 +110,7 @@ class Manifest(object):
         self.system       = self.data['system']
         from bootstrapvz.common.releases import get_release
         self.release      = get_release(self.system['release'])
-        # The packages and plugins section is not required
+        # The packages and plugins sections are not required
         self.packages     = self.data['packages'] if 'packages' in self.data else {}
         self.plugins      = self.data['plugins'] if 'plugins' in self.data else {}
 

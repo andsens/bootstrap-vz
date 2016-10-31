@@ -3,6 +3,9 @@ $schema: http://json-schema.org/draft-04/schema#
 title: EC2 manifest
 type: object
 properties:
+  tags:
+    type: object
+    minProperties: 1
   provider:
     type: object
     properties:
@@ -14,12 +17,12 @@ properties:
           secret-key: {type: string}
       virtualization:
         enum:
-        - pvm
-        - hvm
+          - pvm
+          - hvm
       enhanced_networking:
         enum:
-        - none
-        - simple
+          - none
+          - simple
     required: [description, virtualization]
   system:
     type: object
@@ -27,22 +30,22 @@ properties:
       bootloader:
         type: string
         enum:
-        - pvgrub
-        - grub
-        - extlinux
+          - pvgrub
+          - grub
+          - extlinux
   volume:
     type: object
     properties:
       backing:
         enum:
-        - ebs
-        - s3
+          - ebs
+          - s3
       partitions:
         type: object
         properties:
           type:
             enum:
-            - none
-            - msdos
-            - gpt
+              - none
+              - msdos
+              - gpt
     required: [backing]
