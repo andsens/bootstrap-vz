@@ -87,8 +87,8 @@ class InstallEnhancedNetworking(Task):
 
     @classmethod
     def run(cls, info):
-        version = '2.16.4'
-        drivers_url = 'https://downloadmirror.intel.com/25723/eng/ixgbevf-2.16.4.tar.gz'
+        version = '3.2.2'
+	drivers_url = 'https://downloadmirror.intel.com/18700/eng/ixgbevf-3.2.2.tar.gz'
         # Sadly the first number in the URL changes:
         # 2.16.1 => https://downloadmirror.intel.com/25464/eng/ixgbevf-2.16.1.tar.gz
         archive = os.path.join(info.root, 'tmp', 'ixgbevf-%s.tar.gz' % (version))

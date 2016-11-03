@@ -1,5 +1,8 @@
 ---
-name: debian-{system.release}-{system.architecture}-{provider.virtualization}-{%Y}-{%m}-{%d}-ebs
+name: debian-{system.release}-{system.architecture}-{provider.virtualization}-{%Y}-{%m}-{%d}-{%H}{%M}-ebs
+tags:
+  Name: "Jessie 8.6+1"
+  Debian: "8.6+{%Y}{%m}{%d}"
 provider:
   name: ec2
   virtualization: hvm
