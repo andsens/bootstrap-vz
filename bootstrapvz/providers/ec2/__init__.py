@@ -68,6 +68,9 @@ def resolve_tasks(taskset, manifest):
                     tasks.tuning.BlackListModules,
                     boot.BlackListModules,
                     boot.DisableGetTTYs,
+                    tasks.boot.AddXenGrubConsoleOutputDevice,
+                    grub.WriteGrubConfig,
+                    tasks.boot.UpdateGrubConfig,
                     initd.AddExpandRoot,
                     initd.RemoveHWClock,
                     initd.InstallInitScripts,
@@ -133,6 +136,7 @@ def resolve_tasks(taskset, manifest):
     if manifest.provider.get('enhanced_networking', None) == 'simple':
         taskset.update([kernel.AddDKMSPackages,
                         tasks.network.InstallEnhancedNetworking,
+                        tasks.network.InstallENANetworking,
                         kernel.UpdateInitramfs])
 
     taskset.update([filesystem.Format,

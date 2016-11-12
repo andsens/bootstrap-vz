@@ -101,7 +101,8 @@ class InstallEnhancedNetworking(Task):
         log_check_call(['tar', '--ungzip',
                                '--extract',
                                '--file', archive,
-                               '--directory', os.path.join(info.root, 'usr', 'src')])
+                               '--directory', os.path.join(info.root, 'usr',
+                                                           'src')])
 
         with open(os.path.join(module_path, 'dkms.conf'), 'w') as dkms_conf:
             dkms_conf.write("""PACKAGE_NAME="ixgbevf"
@@ -118,4 +119,39 @@ AUTOINSTALL="yes"
         for task in ['add', 'build', 'install']:
             # Invoke DKMS task using specified kernel module (-m) and version (-v)
             log_check_call(['chroot', info.root,
-                            'dkms', task, '-m', 'ixgbevf', '-v', version, '-k', info.kernel_version])
+                            'dkms', task, '-m', 'ixgbevf', '-v', version, '-k',
+                            info.kernel_version])
+
+
+class InstallENANetworking(Task):
+    description = '***** Installing ENA networking kernel driver using DKMS'
+    phase = phases.system_modification
+    successors = [kernel.UpdateInitramfs]
+
+    @classmethod
+    def run(cls, info):
+        version = '1.0.0'
+        drivers_url = 'https://github.com/amzn/amzn-drivers'
+        module_path = os.path.join(info.root, 'usr', 'src',
+                                   'amzn-drivers-%s' % (version))
+
+        from bootstrapvz.common.tools import log_check_call
+        log_check_call(['git', 'clone', drivers_url, module_path])
+
+        with open(os.path.join(module_path, 'dkms.conf'), 'w') as dkms_conf:
+            dkms_conf.write("""PACKAGE_NAME="ena"
+PACKAGE_VERSION="%s"
+CLEAN="make -C kernel/linux/ena clean"
+MAKE="make -C kernel/linux/ena/ BUILD_KERNEL=${kernelver}"
+BUILT_MODULE_NAME[0]="ena"
+BUILT_MODULE_LOCATION="kernel/linux/ena"
+DEST_MODULE_LOCATION[0]="/updates"
+DEST_MODULE_NAME[0]="ena"
+AUTOINSTALL="yes"
+""" % (version))
+
+        for task in ['add', 'build', 'install']:
+            # Invoke DKMS task using specified kernel module (-m) and version (-v)
+            log_check_call(['chroot', info.root,
+                            'dkms', task, '-m', 'amzn-drivers', '-v', version,
+                            '-k', info.kernel_version])

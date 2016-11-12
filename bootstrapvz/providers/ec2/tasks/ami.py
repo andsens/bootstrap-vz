@@ -125,6 +125,7 @@ class RegisterAMI(Task):
 
         if info.manifest.provider.get('enhanced_networking', None) == 'simple':
             registration_params['SriovNetSupport'] = 'simple'
+            registration_params['EnaSupport'] = True
 
         info._ec2['image'] = info._ec2['connection'].register_image(**registration_params)
 
