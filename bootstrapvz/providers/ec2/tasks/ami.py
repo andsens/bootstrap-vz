@@ -21,9 +21,9 @@ class AMIName(Task):
         ami_name = info.manifest.name.format(**info.manifest_vars)
         ami_description = info.manifest.provider['description'].format(**info.manifest_vars)
 
-        images = info._ec2['connection'].get_all_images(owners=['self'])
+        images = info._ec2['connection'].describe_images(Owners=['self'])['Images']
         for image in images:
-            if ami_name == image.name:
+            if ami_name == image['Name']:
                 msg = 'An image by the name {ami_name} already exists.'.format(ami_name=ami_name)
                 raise TaskError(msg)
         info._ec2['ami_name'] = ami_name
@@ -93,41 +93,45 @@ class RegisterAMI(Task):
 
     @classmethod
     def run(cls, info):
-        registration_params = {'name': info._ec2['ami_name'],
-                               'description': info._ec2['ami_description']}
-        registration_params['architecture'] = {'i386': 'i386',
+        registration_params = {'Name': info._ec2['ami_name'],
+                               'Description': info._ec2['ami_description']}
+        registration_params['Architecture'] = {'i386': 'i386',
                                                'amd64': 'x86_64'}.get(info.manifest.system['architecture'])
 
         if info.manifest.volume['backing'] == 's3':
-            registration_params['image_location'] = info._ec2['manifest_location']
+            registration_params['ImageLocation'] = info._ec2['manifest_location']
         else:
             root_dev_name = {'pvm': '/dev/sda',
                              'hvm': '/dev/xvda'}.get(info.manifest.provider['virtualization'])
-            registration_params['root_device_name'] = root_dev_name
+            registration_params['RootDeviceName'] = root_dev_name
 
-            from boto.ec2.blockdevicemapping import BlockDeviceType
-            from boto.ec2.blockdevicemapping import BlockDeviceMapping
-            block_device = BlockDeviceType(snapshot_id=info._ec2['snapshot'].id, delete_on_termination=True,
-                                           size=info.volume.size.bytes.get_qty_in('GiB'), volume_type='gp2')
-            registration_params['block_device_map'] = BlockDeviceMapping()
-            registration_params['block_device_map'][root_dev_name] = block_device
+            block_device = [{'DeviceName': root_dev_name,
+                             'Ebs': {
+                                 'SnapshotId': info._ec2['snapshot'],
+                                 'VolumeSize': info.volume.size.bytes.get_qty_in('GiB'),
+                                 'VolumeType': 'gp2',
+                                 'DeleteOnTermination': True}}]
+            registration_params['BlockDeviceMappings'] = block_device
 
         if info.manifest.provider['virtualization'] == 'hvm':
-            registration_params['virtualization_type'] = 'hvm'
+            registration_params['VirtualizationType'] = 'hvm'
         else:
-            registration_params['virtualization_type'] = 'paravirtual'
+            registration_params['VirtualizationType'] = 'paravirtual'
             akis_path = rel_path(__file__, 'ami-akis.yml')
             from bootstrapvz.common.tools import config_get
-            registration_params['kernel_id'] = config_get(akis_path, [info._ec2['region'],
-                                                                      info.manifest.system['architecture']])
+            registration_params['kernel_id'] = config_get(akis_path,
+                                                          [info._ec2['region'],
+                                                           info.manifest.system['architecture']])
 
         if info.manifest.provider.get('enhanced_networking', None) == 'simple':
-            registration_params['sriov_net_support'] = 'simple'
+            registration_params['SriovNetSupport'] = 'simple'
 
         info._ec2['image'] = info._ec2['connection'].register_image(**registration_params)
 
         # Setting up tags on the AMI
         if 'tags' in info.manifest.data:
             raw_tags = info.manifest.data['tags']
-            tags = {k: v.format(**info.manifest_vars) for k, v in raw_tags.items()}
-            info._ec2['connection'].create_tags(info._ec2['image'], tags)
+            formatted_tags = {k: v.format(**info.manifest_vars) for k, v in raw_tags.items()}
+            tags = [{'Key': k, 'Value': v} for k, v in formatted_tags.items()]
+            info._ec2['connection'].create_tags(Resources=[info._ec2['image']['ImageId']],
+                                                Tags=tags)

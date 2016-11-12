@@ -28,3 +28,10 @@ class Snapshot(Task):
     @classmethod
     def run(cls, info):
         info._ec2['snapshot'] = info.volume.snapshot()
+
+#        # Setting up tags on the snapshot
+#        if 'tags' in info.manifest.data:
+#            raw_tags = info.manifest.data['tags']
+#            tags = {k: v.format(**info.manifest_vars) for k, v in raw_tags.items()}
+#            info._ec2['connection'](Resources=[info._ec2['snapshot']],
+#                                    Tags=[tags])
