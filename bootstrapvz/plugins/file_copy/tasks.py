@@ -74,4 +74,4 @@ class FileCopyCommand(Task):
             else:
                 dst = final_destination
 
-            modify_path(info, dst, file_entry)
+            modify_path(info, file_entry['dst'], file_entry)
