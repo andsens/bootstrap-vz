@@ -28,7 +28,7 @@ class CheckBoxPath(Task):
 class CreateVagrantBoxDir(Task):
     description = 'Creating directory for the vagrant box'
     phase = phases.preparation
-    predecessors = [workspace.CreateWorkspace, CheckBoxPath]
+    predecessors = [workspace.CreateWorkspace]
 
     @classmethod
     def run(cls, info):

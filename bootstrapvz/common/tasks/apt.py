@@ -101,7 +101,6 @@ class AddManifestPreferences(Task):
 class InstallTrustedKeys(Task):
     description = 'Installing trusted keys'
     phase = phases.package_installation
-    predecessors = [ValidateTrustedKeys]
 
     @classmethod
     def run(cls, info):
