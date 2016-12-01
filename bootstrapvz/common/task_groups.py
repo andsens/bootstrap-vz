@@ -134,6 +134,7 @@ def get_apt_group(manifest):
         group.append(packages.AddTaskselStandardPackages)
     return group
 
+
 security_group = [security.EnableShadowConfig]
 
 
