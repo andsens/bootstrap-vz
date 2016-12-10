@@ -34,3 +34,5 @@ us-west-2:
 cn-north-1:
   amd64: aki-9e8f1da7
   i386: aki-908f1da9
+ca-central-1:
+  amd64: aki-320ebd56
