@@ -187,7 +187,10 @@ class FStab(Task):
         fstab_lines = []
         for mount_point in mount_points:
             partition = mount_point['partition']
-            mount_opts = ['defaults']
+            if partition.mountopts is None:
+                mount_opts = ['defaults']
+            else:
+                mount_opts = partition.mountopts
             fstab_lines.append('UUID={uuid} {mountpoint} {filesystem} {mount_opts} {dump} {pass_num}'
                                .format(uuid=partition.get_uuid(),
                                        mountpoint=mount_point['path'],

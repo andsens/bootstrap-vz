@@ -19,7 +19,7 @@ class AbstractPartition(FSMProxy):
               {'name': 'unmount', 'src': 'mounted', 'dst': 'formatted'},
               ]
 
-    def __init__(self, size, filesystem, format_command):
+    def __init__(self, size, filesystem, format_command, mountopts):
         """
         :param Bytes size: Size of the partition
         :param str filesystem: Filesystem the partition should be formatted with
@@ -28,6 +28,8 @@ class AbstractPartition(FSMProxy):
         self.size           = size
         self.filesystem     = filesystem
         self.format_command = format_command
+        # List of mount options
+        self.mountopts      = mountopts
         # Initialize the start & end padding to 0 sectors, may be changed later
         self.pad_start = Sectors(0, size.sector_size)
         self.pad_end = Sectors(0, size.sector_size)
@@ -80,7 +82,12 @@ class AbstractPartition(FSMProxy):
     def _before_mount(self, e):
         """Mount the partition
         """
-        log_check_call(['mount', '--types', self.filesystem, self.device_path, e.destination])
+        if self.mountopts is None:
+            mount_command = ['mount', '--types', self.filesystem, self.device_path, e.destination]
+        else:
+            mount_command = ['mount', '--options', ",".join(self.mountopts), '--types', self.filesystem, self.device_path, e.destination]
+        # Mount the partition
+        log_check_call(mount_command)
         self.mount_dir = e.destination
 
     def _after_mount(self, e):

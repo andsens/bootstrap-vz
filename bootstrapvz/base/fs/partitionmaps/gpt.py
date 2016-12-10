@@ -41,7 +41,7 @@ class GPTPartitionMap(AbstractPartitionMap):
         if 'boot' in data:
             self.boot = GPTPartition(Sectors(data['boot']['size'], sector_size),
                                      data['boot']['filesystem'], data['boot'].get('format_command', None),
-                                     'boot', last_partition())
+                                     data['boot'].get('mountopts', None), 'boot', last_partition())
             if self.boot.previous is not None:
                 # No need to pad if this is the first partition
                 self.boot.pad_start += partition_gap
@@ -57,7 +57,7 @@ class GPTPartitionMap(AbstractPartitionMap):
 
         self.root = GPTPartition(Sectors(data['root']['size'], sector_size),
                                  data['root']['filesystem'], data['root'].get('format_command', None),
-                                 'root', last_partition())
+                                 data['root'].get('mountopts', None), 'root', last_partition())
         if self.root.previous is not None:
             self.root.pad_start += partition_gap
             self.root.size -= partition_gap

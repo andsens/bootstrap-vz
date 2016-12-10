@@ -6,7 +6,7 @@ class GPTPartition(BasePartition):
     """Represents a GPT partition
     """
 
-    def __init__(self, size, filesystem, format_command, name, previous):
+    def __init__(self, size, filesystem, format_command, mountopts, name, previous):
         """
         :param Bytes size: Size of the partition
         :param str filesystem: Filesystem the partition should be formatted with
@@ -15,7 +15,7 @@ class GPTPartition(BasePartition):
         :param BasePartition previous: The partition that preceeds this one
         """
         self.name = name
-        super(GPTPartition, self).__init__(size, filesystem, format_command, previous)
+        super(GPTPartition, self).__init__(size, filesystem, format_command, mountopts, previous)
 
     def _before_create(self, e):
         # Create the partition and then set the name of the partition afterwards

@@ -17,4 +17,4 @@ class UnformattedPartition(BasePartition):
         :param Bytes size: Size of the partition
         :param BasePartition previous: The partition that preceeds this one
         """
-        super(UnformattedPartition, self).__init__(size, None, None, previous)
+        super(UnformattedPartition, self).__init__(size, None, None, None, previous)
