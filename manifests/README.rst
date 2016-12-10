@@ -302,6 +302,15 @@ boot, root and swap.
    -  ``{fs}``: The filesystem of the partition.
    -  ``{device_path}``: The device path of the partition.
    -  ``{size}``: The size of the partition.
+   -  ``mount_opts``: Options to mount the partition with. This optional
+      setting overwrites the default option list bootstrap-vz would 
+      normally use to mount the partiton (defaults). The List is specified
+      as a string array where each option/argument is an item in that array.
+      ``optional`` Here some examples:
+   -  ``nodev``
+   -  ``nosuid``
+   -  ``noexec``
+   -  ``journal_ioprio=3``
 
    The default command used by boostrap-vz is
    ``['mkfs.{fs}', '{device_path}']``.
