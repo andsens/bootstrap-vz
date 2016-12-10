@@ -1,4 +1,5 @@
 from abstract import AbstractPartitionMap
+from ..exceptions import PartitionError
 from ..partitions.msdos import MSDOSPartition
 from ..partitions.msdos_swap import MSDOSSwapPartition
 from bootstrapvz.common.tools import log_check_call
@@ -51,6 +52,13 @@ class MSDOSPartitionMap(AbstractPartitionMap):
             self.root.pad_start += partition_gap
             self.root.size -= partition_gap
         self.partitions.append(self.root)
+
+        # Raise exception while trying to create additional partitions
+	# as its hard to calculate the actual size of the extended partition ATM
+	# And anyhow - we should go with GPT...
+        for partition in data:
+            if partition not in ["boot", "swap", "root", "type"]:
+                raise PartitionError("If you want to have additional partitions please use GPT partition scheme")
 
         # Mark boot as the boot partition, or root, if boot does not exist
         getattr(self, 'boot', self.root).flags.append('boot')

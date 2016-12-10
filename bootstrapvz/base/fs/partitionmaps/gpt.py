@@ -63,6 +63,17 @@ class GPTPartitionMap(AbstractPartitionMap):
             self.root.size -= partition_gap
         self.partitions.append(self.root)
 
+        # Create all additional partitions
+        for partition in data:
+            if partition not in ["boot", "swap", "root", "type"] and not None:
+                part_tmp = GPTPartition(Sectors(data[partition]['size'], sector_size),
+                                 data[partition]['filesystem'], data[partition].get('format_command', None),
+                                 data[partition].get('mountopts', None), partition, last_partition())
+                part_tmp.pad_start += partition_gap
+                part_tmp.size -= partition_gap
+                setattr(self, partition, part_tmp)
+                self.partitions.append(part_tmp)
+
         if hasattr(self, 'grub_boot'):
             # Mark the grub partition as a bios_grub partition
             self.grub_boot.flags.append('bios_grub')

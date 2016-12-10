@@ -99,6 +99,33 @@ class MountBoot(Task):
         p_map.root.add_mount(p_map.boot, 'boot')
 
 
+class MountAdditional(Task):
+    description = 'Mounting additional partitions'
+    phase = phases.volume_mounting
+    predecessors = [MountRoot]
+
+    @classmethod
+    def run(cls, info):
+        import os
+        from bootstrapvz.base.fs.partitions.unformatted import UnformattedPartition
+        p_map = info.volume.partition_map
+        partitions = []
+        #  we need to get rid of UnformattedPartition and sort the list of additional partitons in order to mount them correctly
+        for partition in info.volume.partition_map.partitions:
+            if isinstance(partition, UnformattedPartition):
+                continue
+            if partition.name not in ["boot", "swap", "root"]:
+                partitions.append(partition.name)
+        for partition_name in sorted(partitions, key=len, reverse=False):
+            print partition_name
+            partition = getattr(p_map, partition_name)
+            os.makedirs(os.path.join(info.root, partition.name))
+            if partition.mountopts is None:
+                p_map.root.add_mount(getattr(p_map, partition.name), partition.name)
+            else:
+                p_map.root.add_mount(getattr(p_map, partition.name), partition.name, ['--options'] + partition.mountopts)
+
+
 class MountSpecials(Task):
     description = 'Mounting special block devices'
     phase = phases.os_installation
@@ -165,6 +192,7 @@ class FStab(Task):
     @classmethod
     def run(cls, info):
         import os.path
+        from bootstrapvz.base.fs.partitions.unformatted import UnformattedPartition
         p_map = info.volume.partition_map
         mount_points = [{'path': '/',
                          'partition': p_map.root,
@@ -183,7 +211,15 @@ class FStab(Task):
                                  'dump': '1',
                                  'pass_num': '0',
                                  })
-
+        for partition in info.volume.partition_map.partitions:
+            if isinstance(partition, UnformattedPartition):
+                continue
+            if partition.name not in ["boot", "swap", "root", "type"]:
+                mount_points.append({'path': "/" + partition.name,
+                                     'partition': getattr(p_map, partition.name),
+                                     'dump': '1',
+                                     'pass_num': '2',
+                                     })
         fstab_lines = []
         for mount_point in mount_points:
             partition = mount_point['partition']
