@@ -117,7 +117,6 @@ class MountAdditional(Task):
             if partition.name not in ["boot", "swap", "root"]:
                 partitions.append(partition.name)
         for partition_name in sorted(partitions, key=len, reverse=False):
-            print partition_name
             partition = getattr(p_map, partition_name)
             os.makedirs(os.path.join(info.root, partition.name))
             if partition.mountopts is None:
