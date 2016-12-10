@@ -54,8 +54,8 @@ class MSDOSPartitionMap(AbstractPartitionMap):
         self.partitions.append(self.root)
 
         # Raise exception while trying to create additional partitions
-	# as its hard to calculate the actual size of the extended partition ATM
-	# And anyhow - we should go with GPT...
+        # as its hard to calculate the actual size of the extended partition ATM
+        # And anyhow - we should go with GPT...
         for partition in data:
             if partition not in ["boot", "swap", "root", "type"]:
                 raise PartitionError("If you want to have additional partitions please use GPT partition scheme")

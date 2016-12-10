@@ -67,8 +67,8 @@ class GPTPartitionMap(AbstractPartitionMap):
         for partition in data:
             if partition not in ["boot", "swap", "root", "type"] and not None:
                 part_tmp = GPTPartition(Sectors(data[partition]['size'], sector_size),
-                                 data[partition]['filesystem'], data[partition].get('format_command', None),
-                                 data[partition].get('mountopts', None), partition, last_partition())
+                                        data[partition]['filesystem'], data[partition].get('format_command', None),
+                                        data[partition].get('mountopts', None), partition, last_partition())
                 part_tmp.pad_start += partition_gap
                 part_tmp.size -= partition_gap
                 setattr(self, partition, part_tmp)
