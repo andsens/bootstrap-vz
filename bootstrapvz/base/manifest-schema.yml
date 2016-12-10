@@ -164,6 +164,10 @@ definitions:
         items: {type: string}
         minItems: 1
         type: array
+      mountopts:
+        items: {type: string}
+        minItems: 1
+        type: array
       size: {$ref: '#/definitions/bytes'}
     required: [size, filesystem]
     additionalProperties: false
