@@ -153,7 +153,7 @@ definitions:
     properties:
       root: {$ref: '#/definitions/partition'}
       type: {enum: [none]}
-    required: [root]
+    required: [type, root]
     additionalProperties: false
   partition:
     type: object
@@ -178,7 +178,7 @@ definitions:
           size: {$ref: '#/definitions/bytes'}
         required: [size]
       type: {enum: [msdos, gpt]}
-    required: [root]
+    required: [type, root]
     additionalProperties: false
   path:
     type: string
