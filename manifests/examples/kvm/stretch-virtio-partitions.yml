@@ -8,7 +8,7 @@ provider:
 bootstrapper:
   workspace: /target
 system:
-  release: jessie
+  release: stretch
   architecture: amd64
   bootloader: grub
   charmap: UTF-8
@@ -18,6 +18,11 @@ volume:
   backing: raw
   partitions:
     type: gpt
+    boot:
+      filesystem: ext2
+      size: 1GiB
+    swap:
+      size: 128MiB
     root:
       filesystem: ext4
       size: 8GiB
