@@ -38,6 +38,7 @@ class GetCredentials(Task):
 
         def env_key(key):
             return ('aws-' + key).upper().replace('-', '_')
+
         if all(getenv(env_key(key)) is not None for key in keys):
             for key in keys:
                 creds[key] = getenv(env_key(key))
@@ -45,6 +46,7 @@ class GetCredentials(Task):
 
         def provider_key(key):
             return key.replace('-', '_')
+
         import boto.provider
         provider = boto.provider.Provider('aws')
         if all(getattr(provider, provider_key(key)) is not None for key in keys):

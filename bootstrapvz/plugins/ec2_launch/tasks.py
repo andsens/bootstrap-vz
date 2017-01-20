@@ -48,20 +48,21 @@ class PrintPublicIPAddress(Task):
     @classmethod
     def run(cls, info):
         ec2 = info._ec2
+        conn = info._ec2['connection']
         logger = logging.getLogger(__name__)
         filename = info.manifest.plugins['ec2_launch']['print_public_ip']
         if not filename:
             filename = '/dev/null'
         f = open(filename, 'w')
 
-        def instance_has_ip():
-            ec2['instance'].update()
-            return ec2['instance']['PublicIpAddress']
-
-        if waituntil(instance_has_ip, timeout=120, interval=5):
-            logger.info('******* EC2 IP ADDRESS: %s *******' % ec2['instance']['PublicIpAddress'])
-            f.write(ec2['instance']['PublicIpAddress'])
-        else:
+        try:
+            waiter = conn.get_waiter('instance_status_ok')
+            waiter.wait(InstanceIds=[info._ec2['instance']['InstanceId']],
+                       Filters=[{'Name': 'instance-state-name', 'Values': ['running']}])
+            info._ec2['instance'] = conn.describe_instances(InstanceIds=[info._ec2['instance']['InstanceId']])['Reservations'][0]['Instances'][0]
+            logger.info('******* EC2 IP ADDRESS: %s *******' % info._ec2['instance']['PublicIpAddress'] )
+            f.write(info._ec2['instance']['PublicIpAddress'])
+        except:
             logger.error('Could not get IP address for the instance')
             f.write('')
 
