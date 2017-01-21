@@ -1,7 +1,7 @@
+import logging
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 from bootstrapvz.providers.ec2.tasks import ami
-import logging
 
 
 # TODO: Merge with the method available in wip-integration-tests branch
@@ -29,7 +29,7 @@ class LaunchEC2Instance(Task):
                                SecurityGroupIds=info.manifest.plugins['ec2_launch'].get('security_group_ids'),
                                KeyName=info.manifest.plugins['ec2_launch'].get('ssh_key'),
                                InstanceType=info.manifest.plugins['ec2_launch'].get('instance_type',
-                                                                                     'm3.medium'))
+                                                                                    'm3.medium'))
         info._ec2['instance'] = r['Instances'][0]
 
         if 'tags' in info.manifest.plugins['ec2_launch']:
@@ -47,7 +47,6 @@ class PrintPublicIPAddress(Task):
 
     @classmethod
     def run(cls, info):
-        ec2 = info._ec2
         conn = info._ec2['connection']
         logger = logging.getLogger(__name__)
         filename = info.manifest.plugins['ec2_launch']['print_public_ip']
@@ -58,9 +57,9 @@ class PrintPublicIPAddress(Task):
         try:
             waiter = conn.get_waiter('instance_status_ok')
             waiter.wait(InstanceIds=[info._ec2['instance']['InstanceId']],
-                       Filters=[{'Name': 'instance-state-name', 'Values': ['running']}])
+                        Filters=[{'Name': 'instance-state-name', 'Values': ['running']}])
             info._ec2['instance'] = conn.describe_instances(InstanceIds=[info._ec2['instance']['InstanceId']])['Reservations'][0]['Instances'][0]
-            logger.info('******* EC2 IP ADDRESS: %s *******' % info._ec2['instance']['PublicIpAddress'] )
+            logger.info('******* EC2 IP ADDRESS: %s *******' % info._ec2['instance']['PublicIpAddress'])
             f.write(info._ec2['instance']['PublicIpAddress'])
         except:
             logger.error('Could not get IP address for the instance')
