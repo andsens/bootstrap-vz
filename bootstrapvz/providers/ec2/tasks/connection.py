@@ -38,6 +38,7 @@ class GetCredentials(Task):
 
         def env_key(key):
             return ('aws-' + key).upper().replace('-', '_')
+
         if all(getenv(env_key(key)) is not None for key in keys):
             for key in keys:
                 creds[key] = getenv(env_key(key))
@@ -45,6 +46,7 @@ class GetCredentials(Task):
 
         def provider_key(key):
             return key.replace('-', '_')
+
         import boto.provider
         provider = boto.provider.Provider('aws')
         if all(getattr(provider, provider_key(key)) is not None for key in keys):
@@ -64,7 +66,7 @@ class Connect(Task):
 
     @classmethod
     def run(cls, info):
-        from boto.ec2 import connect_to_region
+        import boto3
         connect_args = {
             'aws_access_key_id': info.credentials['access-key'],
             'aws_secret_access_key': info.credentials['secret-key']
@@ -73,4 +75,7 @@ class Connect(Task):
         if 'security-token' in info.credentials:
             connect_args['security_token'] = info.credentials['security-token']
 
-        info._ec2['connection'] = connect_to_region(info._ec2['region'], **connect_args)
+        info._ec2['connection'] = boto3.Session(info._ec2['region'],
+                                                info.credentials['access-key'],
+                                                info.credentials['secret-key'])
+        info._ec2['connection'] = boto3.client('ec2', region_name=info._ec2['region'])

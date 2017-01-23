@@ -1,7 +1,7 @@
+import logging
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 from bootstrapvz.providers.ec2.tasks import ami
-import logging
 
 
 # TODO: Merge with the method available in wip-integration-tests branch
@@ -23,19 +23,21 @@ class LaunchEC2Instance(Task):
     @classmethod
     def run(cls, info):
         conn = info._ec2['connection']
-        r = conn.run_instances(info._ec2['image'],
-                               security_group_ids=info.manifest.plugins['ec2_launch'].get('security_group_ids'),
-                               key_name=info.manifest.plugins['ec2_launch'].get('ssh_key'),
-                               instance_type=info.manifest.plugins['ec2_launch'].get('instance_type',
-                                                                                     'm3.medium'))
-        info._ec2['instance'] = r.instances[0]
+        r = conn.run_instances(ImageId=info._ec2['image']['ImageId'],
+                               MinCount=1,
+                               MaxCount=1,
+                               SecurityGroupIds=info.manifest.plugins['ec2_launch'].get('security_group_ids'),
+                               KeyName=info.manifest.plugins['ec2_launch'].get('ssh_key'),
+                               InstanceType=info.manifest.plugins['ec2_launch'].get('instance_type',
+                                                                                    'm3.medium'))
+        info._ec2['instance'] = r['Instances'][0]
 
         if 'tags' in info.manifest.plugins['ec2_launch']:
-            def apply_format(v):
-                return v.format(**info.manifest_vars)
-            tags = info.manifest.plugins['ec2_launch']['tags']
-            r = {k: apply_format(v) for k, v in tags.items()}
-            conn.create_tags([info._ec2['instance'].id], r)
+            raw_tags = info.manifest.plugins['ec2_launch']['tags']
+            formatted_tags = {k: v.format(**info.manifest_vars) for k, v in raw_tags.items()}
+            tags = [{'Key': k, 'Value': v} for k, v in formatted_tags.items()]
+            conn.create_tags(Resources=[info._ec2['instance']['InstanceId']],
+                             Tags=tags)
 
 
 class PrintPublicIPAddress(Task):
@@ -45,21 +47,21 @@ class PrintPublicIPAddress(Task):
 
     @classmethod
     def run(cls, info):
-        ec2 = info._ec2
+        conn = info._ec2['connection']
         logger = logging.getLogger(__name__)
         filename = info.manifest.plugins['ec2_launch']['print_public_ip']
         if not filename:
             filename = '/dev/null'
         f = open(filename, 'w')
 
-        def instance_has_ip():
-            ec2['instance'].update()
-            return ec2['instance'].ip_address
-
-        if waituntil(instance_has_ip, timeout=120, interval=5):
-            logger.info('******* EC2 IP ADDRESS: %s *******' % ec2['instance'].ip_address)
-            f.write(ec2['instance'].ip_address)
-        else:
+        try:
+            waiter = conn.get_waiter('instance_status_ok')
+            waiter.wait(InstanceIds=[info._ec2['instance']['InstanceId']],
+                        Filters=[{'Name': 'instance-state-name', 'Values': ['running']}])
+            info._ec2['instance'] = conn.describe_instances(InstanceIds=[info._ec2['instance']['InstanceId']])['Reservations'][0]['Instances'][0]
+            logger.info('******* EC2 IP ADDRESS: %s *******' % info._ec2['instance']['PublicIpAddress'])
+            f.write(info._ec2['instance']['PublicIpAddress'])
+        except:
             logger.error('Could not get IP address for the instance')
             f.write('')
 

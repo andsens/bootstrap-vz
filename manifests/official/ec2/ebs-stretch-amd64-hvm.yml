@@ -2,7 +2,7 @@
 name: debian-{system.release}-{system.architecture}-{provider.virtualization}-{%Y}-{%m}-{%d}-{%H}{%M}-ebs
 tags:
   Name: "Stretch 9.0 alpha"
-  Debian: "9.0~{%Y}{%m}{%d}"
+  Debian: "9.0~{%Y}{%m}{%d}{%H}{%M}"
 provider:
   name: ec2
   virtualization: hvm
