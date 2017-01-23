@@ -124,7 +124,7 @@ AUTOINSTALL="yes"
 
 
 class InstallENANetworking(Task):
-    description = '***** Installing ENA networking kernel driver using DKMS'
+    description = 'Installing ENA networking kernel driver using DKMS'
     phase = phases.system_modification
     successors = [kernel.UpdateInitramfs]
 
