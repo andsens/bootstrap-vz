@@ -1,0 +1,11 @@
+[Unit]
+Description=Expand the root partition and filesystem on boot
+After=local-fs.target
+Wants=local-fs.target
+
+[Service]
+ExecStart=/usr/bin/expand-root.sh DEVICE PARTITION FILESYSTEM
+Type=oneshot
+
+[Install]
+WantedBy=multi-user.target

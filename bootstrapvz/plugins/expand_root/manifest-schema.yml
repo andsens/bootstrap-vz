@@ -1,0 +1,24 @@
+---
+$schema: http://json-schema.org/draft-04/schema#
+title: Expand root plugin manifest
+type: object
+properties:
+  plugins:
+    type: object
+    properties:
+      expand_root:
+        type: object
+        properties:
+          filesystem_type:
+            enum:
+            - ext2
+            - ext3
+            - ext4
+            - xfs
+          root_device: {type: string}
+          root_partition: {type: integer}
+        required:
+        - filesystem_type
+        - root_device
+        - root_partition
+        additionalProperties: false

@@ -26,16 +26,20 @@ packages:
       - deb http://packages.cloud.google.com/apt cloud-sdk-{system.release} main
       - deb http://packages.cloud.google.com/apt google-cloud-compute-{system.release} main
   install:
-    - cloud-initramfs-growroot
-    - cloud-utils
     - google-cloud-sdk
     - google-compute-engine-{system.release}
     - google-compute-engine-init-{system.release}
     - google-config-{system.release}
+    - man
+    - net-tools
     - python-crcmod
     - screen
     - vim
 plugins:
+  expand_root:
+    filesystem_type: ext4
+    root_device: /dev/sda
+    root_partition: 1
   google_cloud_repo:
     cleanup_bootstrap_key: true
     enable_keyring_repo: true

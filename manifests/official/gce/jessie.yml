@@ -26,8 +26,6 @@ packages:
       - deb http://packages.cloud.google.com/apt cloud-sdk-{system.release} main
       - deb http://packages.cloud.google.com/apt google-cloud-compute-{system.release} main
   install:
-    - cloud-initramfs-growroot
-    - cloud-utils
     - google-cloud-sdk
     - google-compute-engine-{system.release}
     - google-compute-engine-init-{system.release}
@@ -41,12 +39,11 @@ packages:
     - package: python-crcmod
       pin: release n=jessie-backports
       pin-priority: 500
-    # cloud-utils in backports has a fixed version of growpart to allow root disk expansion on disks > 2TB.
-    backport-cloud-utils:
-    - package: cloud-utils
-      pin: release n=jessie-backports
-      pin-priority: 500
 plugins:
+  expand_root:
+    filesystem_type: ext4
+    root_device: /dev/sda
+    root_partition: 1
   google_cloud_repo:
     cleanup_bootstrap_key: true
     enable_keyring_repo: true
