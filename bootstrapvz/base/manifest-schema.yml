@@ -174,10 +174,8 @@ definitions:
   partition_table:
     type: object
     patternProperties:
-      ^(?!type|boot|root|swap).*: {$ref: '#/definitions/partition'}
+      ^(?!type|swap).*: {$ref: '#/definitions/partition'}
     properties:
-      boot: {$ref: '#/definitions/partition'}
-      root: {$ref: '#/definitions/partition'}
       swap:
         type: object
         properties:
