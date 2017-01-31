@@ -109,15 +109,14 @@ class MountAdditional(Task):
         import os
         from bootstrapvz.base.fs.partitions.unformatted import UnformattedPartition
         p_map = info.volume.partition_map
-        partitions = []
-        #  we need to get rid of UnformattedPartition and sort the list of additional partitons in order to mount them correctly
-        for partition in info.volume.partition_map.partitions:
-            if isinstance(partition, UnformattedPartition):
-                continue
-            if partition.name not in ["boot", "swap", "root"]:
-                partitions.append(partition.name)
-        for partition_name in sorted(partitions, key=len, reverse=False):
-            partition = getattr(p_map, partition_name)
+        partitions = p_map.partitions;
+        is_additional = lambda partition: (
+            not isinstance(partition, UnformattedPartition)
+            and partition.name not in ["boot", "swap", "root"]
+        )
+        name_length = lambda partition: len(partition.name)
+        for partition in sorted(filter(is_additional, partitions), key=name_length):
+            partition = getattr(p_map, partition.name)
             os.makedirs(os.path.join(info.root, partition.name))
             if partition.mountopts is None:
                 p_map.root.add_mount(getattr(p_map, partition.name), partition.name)
@@ -193,6 +192,7 @@ class FStab(Task):
         import os.path
         from bootstrapvz.base.fs.partitions.unformatted import UnformattedPartition
         p_map = info.volume.partition_map
+        partitions = p_map.partitions;
         mount_points = [{'path': '/',
                          'partition': p_map.root,
                          'dump': '1',
@@ -210,15 +210,18 @@ class FStab(Task):
                                  'dump': '1',
                                  'pass_num': '0',
                                  })
-        for partition in info.volume.partition_map.partitions:
-            if isinstance(partition, UnformattedPartition):
-                continue
-            if partition.name not in ["boot", "swap", "root", "type"]:
-                mount_points.append({'path': "/" + partition.name,
-                                     'partition': getattr(p_map, partition.name),
-                                     'dump': '1',
-                                     'pass_num': '2',
-                                     })
+
+        is_additional = lambda partition: (
+            not isinstance(partition, UnformattedPartition)
+            and partition.name not in ["boot", "swap", "root", "type"]
+        )
+        name_length = lambda partition: len(partition.name)
+        for partition in sorted(filter(is_additional, partitions), key=name_length):
+            mount_points.append({'path': "/" + partition.name,
+                                 'partition': getattr(p_map, partition.name),
+                                 'dump': '1',
+                                 'pass_num': '2',
+                                 })
         fstab_lines = []
         for mount_point in mount_points:
             partition = mount_point['partition']
