@@ -302,7 +302,7 @@ boot, root and swap.
    -  ``{fs}``: The filesystem of the partition.
    -  ``{device_path}``: The device path of the partition.
    -  ``{size}``: The size of the partition.
-   -  ``mount_opts``: Options to mount the partition with. This optional
+   -  ``{mount_opts}``: Options to mount the partition with. This optional
       setting overwrites the default option list bootstrap-vz would 
       normally use to mount the partiton (defaults). The List is specified
       as a string array where each option/argument is an item in that array.
@@ -315,13 +315,16 @@ boot, root and swap.
    The default command used by boostrap-vz is
    ``['mkfs.{fs}', '{device_path}']``.
 
-   -  ``boot``: Configuration of the boot partition. The three
-      settings equal those of the root partition.
+   -  ``boot``: Configuration of the boot partition. All settings equal 
+      those of the root partition.
       ``optional``
    -  ``swap``: Configuration of the swap partition. Since the swap
       partition has its own filesystem you can only specify the size for
       this partition.
       ``optional``
+   -  ``additional_path``: Configuration of additional partitions. (e.g. /var/tmp)
+      All settings equal those of the root partition.
+
 
 Example:
 
