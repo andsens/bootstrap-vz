@@ -109,7 +109,7 @@ class MountAdditional(Task):
         import os
         from bootstrapvz.base.fs.partitions.unformatted import UnformattedPartition
         p_map = info.volume.partition_map
-        partitions = p_map.partitions;
+        partitions = p_map.partitions
         is_additional = lambda partition: (
             not isinstance(partition, UnformattedPartition)
             and partition.name not in ["boot", "swap", "root"]
@@ -192,7 +192,7 @@ class FStab(Task):
         import os.path
         from bootstrapvz.base.fs.partitions.unformatted import UnformattedPartition
         p_map = info.volume.partition_map
-        partitions = p_map.partitions;
+        partitions = p_map.partitions
         mount_points = [{'path': '/',
                          'partition': p_map.root,
                          'dump': '1',
