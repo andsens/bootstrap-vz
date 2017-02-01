@@ -108,14 +108,16 @@ class MountAdditional(Task):
     def run(cls, info):
         import os
         from bootstrapvz.base.fs.partitions.unformatted import UnformattedPartition
+
+        def is_additional(partition):
+            return (not isinstance(partition, UnformattedPartition) and
+                    partition.name not in ["boot", "swap", "root"])
+
         p_map = info.volume.partition_map
         partitions = p_map.partitions
-        is_additional = lambda partition: (
-            not isinstance(partition, UnformattedPartition)
-            and partition.name not in ["boot", "swap", "root"]
-        )
-        name_length = lambda partition: len(partition.name)
-        for partition in sorted(filter(is_additional, partitions), key=name_length):
+        for partition in sorted(
+                filter(is_additional, partitions),
+                key=lambda partition: len(partition.name)):
             partition = getattr(p_map, partition.name)
             os.makedirs(os.path.join(info.root, partition.name))
             if partition.mountopts is None:
@@ -191,6 +193,11 @@ class FStab(Task):
     def run(cls, info):
         import os.path
         from bootstrapvz.base.fs.partitions.unformatted import UnformattedPartition
+
+        def is_additional(partition):
+            return (not isinstance(partition, UnformattedPartition) and
+                    partition.name not in ["boot", "swap", "root", "type"])
+
         p_map = info.volume.partition_map
         partitions = p_map.partitions
         mount_points = [{'path': '/',
@@ -211,12 +218,9 @@ class FStab(Task):
                                  'pass_num': '0',
                                  })
 
-        is_additional = lambda partition: (
-            not isinstance(partition, UnformattedPartition)
-            and partition.name not in ["boot", "swap", "root", "type"]
-        )
-        name_length = lambda partition: len(partition.name)
-        for partition in sorted(filter(is_additional, partitions), key=name_length):
+        for partition in sorted(
+                filter(is_additional, partitions),
+                key=lambda partition: len(partition.name)):
             mount_points.append({'path': "/" + partition.name,
                                  'partition': getattr(p_map, partition.name),
                                  'dump': '1',
