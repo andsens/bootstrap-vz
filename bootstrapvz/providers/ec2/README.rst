@@ -130,9 +130,9 @@ Example:
 Dependencies
 ------------
 
-To communicate with the AWS API `boto <https://github.com/boto/boto>`__
-is required (version 2.14.0 or higher) you can install boto with
-``pip install boto`` (on wheezy, the packaged version is too low). S3
+To communicate with the AWS API `boto3 <https://github.com/boto/boto>`__
+is required you can install boto with
+``pip install boto3`` (on wheezy, the packaged version is too low). S3
 images are chopped up and uploaded using
 `euca2ools <https://github.com/eucalyptus/euca2ools>`__ (install with
 ``apt-get install euca2ools``).
