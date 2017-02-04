@@ -196,7 +196,7 @@ class FStab(Task):
 
         def is_additional(partition):
             return (not isinstance(partition, UnformattedPartition) and
-                    partition.name not in ["boot", "swap", "root", "type"])
+                    partition.name not in ["boot", "swap", "root"])
 
         p_map = info.volume.partition_map
         partitions = p_map.partitions
