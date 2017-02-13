@@ -21,6 +21,7 @@ Settings
    ``optional``
 -  ``metadata_sources``: A string that sets the
    `datasources <http://cloudinit.readthedocs.org/en/latest/topics/datasources.html>`__
-   that cloud-init should try fetching metadata from. The source is
+   that cloud-init should try fetching metadata from (corresponds to
+   debconf-set-selections values). The source is
    automatically set when using the ec2 provider.
    ``optional``
