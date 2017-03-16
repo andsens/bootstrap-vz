@@ -23,7 +23,7 @@ class CheckPublicKeyFile(Task):
                 msg = 'Could not find public key at %s' % pubkey
                 info.manifest.validation_error(msg, ['plugins', 'admin_user', 'pubkey'])
 
-            ret, _, stderr = log_call('ssh-keygen -l -f ' + abs_pubkey)
+            ret, _, stderr = log_call(['ssh-keygen', '-l', '-f', abs_pubkey])
             if ret != 0:
                 msg = 'Invalid public key file at %s' % pubkey
                 info.manifest.validation_error(msg, ['plugins', 'admin_user', 'pubkey'])
