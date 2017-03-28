@@ -59,7 +59,7 @@ class EnableRootLogin(Task):
         sshdconfig_path = os.path.join(info.root, 'etc/ssh/sshd_config')
         if os.path.exists(sshdconfig_path):
             from bootstrapvz.common.tools import sed_i
-            sed_i(sshdconfig_path, '^PermitRootLogin .*', 'PermitRootLogin yes')
+            sed_i(sshdconfig_path, '^#?PermitRootLogin .*', 'PermitRootLogin yes')
         else:
             import logging
             logging.getLogger(__name__).warn('The OpenSSH server has not been installed, '
@@ -75,7 +75,7 @@ class DisableRootLogin(Task):
         sshdconfig_path = os.path.join(info.root, 'etc/ssh/sshd_config')
         if os.path.exists(sshdconfig_path):
             from bootstrapvz.common.tools import sed_i
-            sed_i(sshdconfig_path, '^PermitRootLogin .*', 'PermitRootLogin no')
+            sed_i(sshdconfig_path, '^#?PermitRootLogin .*', 'PermitRootLogin no')
         else:
             import logging
             logging.getLogger(__name__).warn('The OpenSSH server has not been installed, '
