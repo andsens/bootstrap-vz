@@ -1,7 +1,7 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
+from bootstrapvz.common.tasks import apt
 from bootstrapvz.common.tasks import initd
-from bootstrapvz.common.tasks import packages
 from bootstrapvz.common.tools import log_check_call
 from bootstrapvz.common.tools import rel_path
 from bootstrapvz.common.tools import sed_i
@@ -14,7 +14,7 @@ ASSETS_DIR = rel_path(__file__, 'assets')
 class InstallGrowpart(Task):
     description = 'Adding necessary packages for growpart.'
     phase = phases.preparation
-    successors = [packages.AddManifestPackages]
+    predecessors = [apt.AddBackports]
 
     @classmethod
     def run(cls, info):
