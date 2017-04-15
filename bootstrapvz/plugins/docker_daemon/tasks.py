@@ -14,7 +14,7 @@ ASSETS_DIR = rel_path(__file__, 'assets')
 
 class AddDockerDeps(Task):
     description = 'Add packages for docker deps'
-    phase = phases.package_installation
+    phase = phases.preparation
     DOCKER_DEPS = ['aufs-tools', 'btrfs-tools', 'git', 'iptables',
                    'procps', 'xz-utils', 'ca-certificates']
 

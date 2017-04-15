@@ -22,8 +22,7 @@ class CheckGuestAdditionsPath(Task):
 
 class AddGuestAdditionsPackages(Task):
     description = 'Adding packages to support Guest Additions installation'
-    phase = phases.package_installation
-    successors = [InstallPackages]
+    phase = phases.preparation
 
     @classmethod
     def run(cls, info):

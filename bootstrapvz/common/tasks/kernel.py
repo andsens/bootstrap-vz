@@ -6,8 +6,7 @@ import logging
 
 class AddDKMSPackages(Task):
     description = 'Adding DKMS and kernel header packages'
-    phase = phases.package_installation
-    successors = [packages.InstallPackages]
+    phase = phases.preparation
 
     @classmethod
     def run(cls, info):
