@@ -312,7 +312,7 @@ boot, root and swap.
    -  ``noexec``
    -  ``journal_ioprio=3``
 
-   The default command used by boostrap-vz is
+   The default command used by bootstrap-vz is
    ``['mkfs.{fs}', '{device_path}']``.
 
    -  ``boot``: Configuration of the boot partition. All settings equal 

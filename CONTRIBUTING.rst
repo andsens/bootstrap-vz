@@ -82,7 +82,7 @@ Roll complexity into which tasks are added to the tasklist
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 If a ``run()`` function checks whether it should do any work or simply be
 skipped, consider doing that check in ``resolve_tasks()`` instead and
-avoid adding that task alltogether. This allows people looking at the
+avoid adding that task altogether. This allows people looking at the
 tasklist in the logfile to determine what work has been performed.
 
 If a task says it will modify a file but then bails , a developer may get
