@@ -119,7 +119,7 @@ automatically forwarded through an SSH tunnel).
 self explanatory (remote machine address, SSH port, login name and path to
 private SSH key file).
 
-``server_bin`` refers to the `aboved mentioned <#bootstrap-vz-remote>`__
+``server_bin`` refers to the `abovementioned <#bootstrap-vz-remote>`__
 bootstrap-vz-server executable. This is the command bootstrap-vz executes
 on the remote machine to start the RPC server.
 

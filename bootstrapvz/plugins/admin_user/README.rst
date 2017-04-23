@@ -4,6 +4,7 @@ Admin user
 This plugin creates a user with passwordless sudo privileges. It also
 disables the SSH root login. There are three ways to grant access to
 the admin user:
+
 -  Use the EC2 public key (EC2 machines only)
 -  Set a password for the user
 -  Provide a SSH public key to allow remote SSH login

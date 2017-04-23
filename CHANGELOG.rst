@@ -123,7 +123,7 @@ Stephen A. Zarkos:
     * Azure: Change Wheezy image to use single partition
     * Azure: Update WALinuxAgent to use 2.0.14
     * Azure: Make sure we can override grub.ConfigureGrub for Azure images
-    * Azure: Add console=tty0 to see kernel/boot messsages on local console
+    * Azure: Add console=tty0 to see kernel/boot messages on local console
     * Azure: Set serial port speed to 115200
     * Azure: Fix error with applying azure/assets/udev.diff
 
@@ -191,7 +191,7 @@ Anders Ingemann (work started 2014-08-31, merged on 2015-04-25):
     * Take @ssgelm's advice in #155 and copy the mount table -- df warnings no more
     * Generally deny installing grub on squeeze (too much of a hassle to get working, PRs welcome)
     * Add 1 sector gap between partitions on GPT
-    * Add new task: DeterminKernelVersion, this can potentially fix a lot of small problems
+    * Add new task: DetermineKernelVersion, this can potentially fix a lot of small problems
     * Disable getty processes on jessie through logind config
     * Partition volumes by sectors instead of bytes
       This allows for finer grained control over the partition sizes and gaps
