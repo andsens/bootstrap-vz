@@ -33,12 +33,12 @@ def resolve_tasks(taskset, manifest):
             taskset.add(tasks.apt.AptGzipIndexes)
         if apt.get('autoremove_suggests', False):
             taskset.add(tasks.apt.AptAutoremoveSuggests)
+    if 'dpkg' in manifest.plugins['minimize_size']:
         filter_tasks = [tasks.dpkg.CreateDpkgCfg,
                         tasks.dpkg.InitializeBootstrapFilterList,
                         tasks.dpkg.CreateBootstrapFilterScripts,
                         tasks.dpkg.DeleteBootstrapFilterScripts,
                         ]
-    if 'dpkg' in manifest.plugins['minimize_size']:
         dpkg = manifest.plugins['minimize_size']['dpkg']
         if 'locales' in dpkg:
             taskset.update(filter_tasks)
