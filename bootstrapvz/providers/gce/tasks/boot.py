@@ -12,3 +12,7 @@ class ConfigureGrub(Task):
     def run(cls, info):
         info.grub_config['GRUB_CMDLINE_LINUX'].append('console=ttyS0,38400n8')
         info.grub_config['GRUB_CMDLINE_LINUX'].append('elevator=noop')
+        # Enable SCSI block multiqueue on Stretch.
+        from bootstrapvz.common.releases import stretch
+        if info.manifest.release >= stretch:
+            info.grub_config['GRUB_CMDLINE_LINUX'].append('scsi_mod.use_blk_mq=Y')
