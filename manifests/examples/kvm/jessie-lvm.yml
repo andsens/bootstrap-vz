@@ -1,0 +1,26 @@
+---
+name: debian-lvm-example
+provider:
+  name: kvm
+bootstrapper:
+  workspace: /target
+system:
+  release: jessie
+  architecture: amd64
+  bootloader: grub
+  charmap: UTF-8
+  locale: en_US
+  timezone: UTC
+volume:
+  backing: lvm
+  logicalvolume: lvtest
+  volumegroup: vgtest
+  partitions:
+    type: gpt
+    root:
+      filesystem: ext4
+      size: 1GB
+packages: {}
+plugins:
+  root_password:
+    password: test

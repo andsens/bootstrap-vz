@@ -1,6 +1,6 @@
 from bootstrapvz.common import task_groups
 import tasks.packages
-from bootstrapvz.common.tasks import image, loopback, initd, ssh
+from bootstrapvz.common.tasks import image, loopback, initd, ssh, logicalvolume
 
 
 def validate_manifest(data, validator, error):
@@ -12,14 +12,20 @@ def resolve_tasks(taskset, manifest):
     taskset.update(task_groups.get_standard_groups(manifest))
 
     taskset.update([tasks.packages.DefaultPackages,
-                    loopback.AddRequiredCommands,
-                    loopback.Create,
                     initd.InstallInitScripts,
                     ssh.AddOpenSSHPackage,
                     ssh.ShredHostkeys,
                     ssh.AddSSHKeyGeneration,
-                    image.MoveImage,
                     ])
+    if manifest.volume.get('logicalvolume', []):
+        taskset.update([logicalvolume.AddRequiredCommands,
+                        logicalvolume.Create,
+                        ])
+    else:
+        taskset.update([loopback.AddRequiredCommands,
+                        loopback.Create,
+                        image.MoveImage,
+                        ])
 
     if manifest.provider.get('virtio', []):
         from tasks import virtio
@@ -28,3 +34,4 @@ def resolve_tasks(taskset, manifest):
 
 def resolve_rollback_tasks(taskset, manifest, completed, counter_task):
     taskset.update(task_groups.get_standard_rollback_tasks(completed))
+    counter_task(taskset, logicalvolume.Create, logicalvolume.Delete)
