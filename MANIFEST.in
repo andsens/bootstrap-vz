@@ -1,5 +1,7 @@
 include LICENSE
 include manifests/*
-recursive-include bootstrapvz assets/*
 recursive-include bootstrapvz *.json
 recursive-include bootstrapvz *.yml
+recursive-include bootstrapvz/common/assets *
+recursive-include bootstrapvz/providers/*/assets *
+recursive-include bootstrapvz/plugins/*/assets *
