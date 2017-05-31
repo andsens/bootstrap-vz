@@ -15,7 +15,7 @@ class LoopbackVolume(Volume):
         log_check_call(['truncate', size_opt, self.image_path])
 
     def _before_attach(self, e):
-        [self.loop_device_path] = log_check_call(['losetup', '--show', '--find', self.image_path])
+        [self.loop_device_path] = log_check_call(['losetup', '--show', '--find', '--partscan', self.image_path])
         self.device_path = self.loop_device_path
 
     def _before_detach(self, e):
