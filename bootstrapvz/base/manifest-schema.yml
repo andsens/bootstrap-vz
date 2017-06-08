@@ -132,6 +132,12 @@ properties:
     additionalProperties: false
   volume:
     type: object
+    oneOf:
+        - $ref: '#/definitions/standardvolume'
+        - $ref: '#/definitions/logicalvolume'
+definitions:
+  standardvolume:
+    type: object
     properties:
       backing: {type: string}
       partitions:
@@ -141,7 +147,20 @@ properties:
           - $ref: '#/definitions/partition_table'
     required: [partitions]
     additionalProperties: false
-definitions:
+  logicalvolume:
+    type: object
+    properties:
+      backing:
+        enum: [lvm]
+      volumegroup : {type: string}
+      logicalvolume: {type: string}
+      partitions:
+        type: object
+        oneOf:
+          - $ref: '#/definitions/no_partitions'
+          - $ref: '#/definitions/partition_table'
+    required: [partitions]
+    additionalProperties: false
   absolute_path:
     type: string
     pattern: ^/[^\0]+$
