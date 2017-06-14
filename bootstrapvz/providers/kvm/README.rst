@@ -6,7 +6,7 @@ virtual images for Linux Kernel-based Virtual Machines. It supports the
 installation of `virtio kernel
 modules <http://www.linux-kvm.org/page/Virtio>`__ (paravirtualized
 drivers for IO operations).
-It also supports creating an image with LVM as a disk backend.
+It also supports creating an image with LVM and qcow2 as a disk backend.
 
 Manifest settings
 -----------------

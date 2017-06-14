@@ -26,6 +26,7 @@ def load_volume(data, bootloader):
     from bootstrapvz.common.fs.virtualmachinedisk import VirtualMachineDisk
     from bootstrapvz.common.fs.folder import Folder
     from bootstrapvz.common.fs.logicalvolume import LogicalVolume
+    from bootstrapvz.common.fs.qcow2volume import Qcow2Volume
     volume_backing = {'raw': LoopbackVolume,
                       's3':  LoopbackVolume,
                       'vdi': VirtualDiskImage,
@@ -33,7 +34,8 @@ def load_volume(data, bootloader):
                       'vmdk': VirtualMachineDisk,
                       'ebs': EBSVolume,
                       'folder': Folder,
-                      'lvm': LogicalVolume
+                      'lvm': LogicalVolume,
+                      'qcow2': Qcow2Volume
                       }.get(data['backing'])
 
     # Instantiate the partition map
