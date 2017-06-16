@@ -1,0 +1,24 @@
+---
+name: debian-qcow2-example
+provider:
+  name: kvm
+bootstrapper:
+  workspace: /target
+system:
+  release: jessie
+  architecture: amd64
+  bootloader: grub
+  charmap: UTF-8
+  locale: en_US
+  timezone: UTC
+volume:
+  backing: qcow2
+  partitions:
+    type: gpt
+    root:
+      filesystem: ext4
+      size: 1GB
+packages: {}
+plugins:
+  root_password:
+    password: test

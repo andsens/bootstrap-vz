@@ -276,7 +276,7 @@ boot, root and swap.
 
 -  ``backing``: Specifies the volume backing. This setting is very
    provider specific.
-   Valid values: ``ebs``, ``s3``, ``vmdk``, ``vdi``, ``raw``
+   Valid values: ``ebs``, ``s3``, ``vmdk``, ``vdi``, ``raw``, ``qcow2``, ``lvm``
    ``required``
 -  ``partitions``: A map of the partitions that should be created on
    the volume.

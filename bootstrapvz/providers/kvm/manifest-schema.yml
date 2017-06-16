@@ -32,7 +32,8 @@ properties:
     properties:
       backing:
         type: string
-        enum: 
+        enum:
+        - qcow2
         - raw
         - lvm
       logicalvolume: {type: string}
