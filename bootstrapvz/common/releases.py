@@ -31,7 +31,8 @@ class _ReleaseAlias(_Release):
         return self.alias
 
 
-sid = _Release('sid', 10)
+sid = _Release('sid', 11)
+buster = _Release('buster', 10)
 stretch = _Release('stretch', 9)
 jessie = _Release('jessie', 8)
 wheezy = _Release('wheezy', 7)
@@ -48,9 +49,9 @@ rex = _Release('rex', 1.2)
 buzz = _Release('buzz', 1.1)
 
 unstable = _ReleaseAlias('unstable', sid)
-testing = _ReleaseAlias('testing', stretch)
-stable = _ReleaseAlias('stable', jessie)
-oldstable = _ReleaseAlias('oldstable', wheezy)
+testing = _ReleaseAlias('testing', buster)
+stable = _ReleaseAlias('stable', stretch)
+oldstable = _ReleaseAlias('oldstable', jessie)
 
 
 def get_release(release_name):

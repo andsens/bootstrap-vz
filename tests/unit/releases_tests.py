@@ -28,9 +28,9 @@ def test_not_identity():
 
 
 def test_alias():
-    assert releases.oldstable == releases.wheezy
-    assert releases.stable == releases.jessie
-    assert releases.testing == releases.stretch
+    assert releases.oldstable == releases.jessie
+    assert releases.stable == releases.stretch
+    assert releases.testing == releases.buster
     assert releases.unstable == releases.sid
 
 

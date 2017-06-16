@@ -83,7 +83,7 @@ class AddBackports(Task):
             msg = ('{system.release}-backports target already exists').format(**info.manifest_vars)
             logging.getLogger(__name__).info(msg)
         elif info.manifest.release == testing:
-            logging.getLogger(__name__).info('There are no backports for stretch/testing')
+            logging.getLogger(__name__).info('There are no backports for testing')
         elif info.manifest.release == unstable:
             logging.getLogger(__name__).info('There are no backports for sid/unstable')
         else:
