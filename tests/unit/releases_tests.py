@@ -23,8 +23,15 @@ def test_identity():
 
 
 def test_not_identity():
-    assert releases.wheezy is not releases.stable
-    assert releases.stable is not releases.jessie
+    # "==" tests equality "is" tests identity
+    assert releases.stretch == releases.stable
+    assert releases.stretch is not releases.stable
+
+    assert releases.stable is releases.stable
+    assert releases.stretch is releases.stretch
+
+    assert releases.jessie != releases.stable
+    assert releases.jessie is not releases.stable
 
 
 def test_alias():
