@@ -12,6 +12,19 @@ properties:
           assets: {$ref: '#/definitions/absolute_path'}
           enable_agent: {type: boolean}
           manifest: {$ref: '#/definitions/absolute_path'}
+          install_modules:
+            type: array
+            minItems: 1              
+            items:
+              type: array
+              items:
+                name: 
+                  anyOf: 
+                  - pattern: ^[^/]+(/[^/]+)?$ 
+                version: 
+                  type: number
+              required: [name]               
+              minItems: 1
         minProperties: 1
         additionalProperties: false
 definitions:
