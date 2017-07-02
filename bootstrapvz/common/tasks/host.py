@@ -10,13 +10,15 @@ class CheckExternalCommands(Task):
     @classmethod
     def run(cls, info):
         import re
+        import os
         import logging
         from distutils.spawn import find_executable
         missing_packages = []
         log = logging.getLogger(__name__)
         for command, package in info.host_dependencies.items():
             log.debug('Checking availability of ' + command)
-            if find_executable(command) is None:
+            path = find_executable(command)
+            if path is None or not os.access(path, os.X_OK):
                 if re.match('^https?:\/\/', package):
                     msg = ('The command `{command}\' is not available, '
                            'you can download the software at `{package}\'.'
