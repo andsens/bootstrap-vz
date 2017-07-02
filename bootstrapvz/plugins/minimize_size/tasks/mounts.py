@@ -21,6 +21,7 @@ class AddFolderMounts(Task):
             os.mkdir(temp_path)
 
             full_path = os.path.join(info.root, folder)
+            os.chmod(temp_path, os.stat(full_path).st_mode)
             info.volume.partition_map.root.add_mount(temp_path, full_path, ['--bind'])
 
 
