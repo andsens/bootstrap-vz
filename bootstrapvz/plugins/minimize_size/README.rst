@@ -15,16 +15,20 @@ footprint:
    deallocate unused sectors on the volume. On an unpartitioned volume
    this will be done for the entire volume, while it will only happen on
    the root partition for partitioned volumes.
--  Use
-   `vmware-vdiskmanager <https://www.vmware.com/support/ws45/doc/disks_vdiskmanager_eg_ws.html>`__
-   to shrink the real volume size (only applicable when using vmdk
-   backing). The tool is part of the `VMWare
-   Workstation <https://my.vmware.com/web/vmware/info/slug/desktop_end_user_computing/vmware_workstation/10_0>`__
-   package.
+-  Shrink the real volume size. Supported tools are:
+
+   -  `vmware-vdiskmanager <https://www.vmware.com/support/ws45/doc/disks_vdiskmanager_eg_ws.html>`__
+      (only applicable when using vmdk backing). The tool is part of the
+      `VMWare Workstation <https://my.vmware.com/web/vmware/info/slug/desktop_end_user_computing/vmware_workstation/10_0>`__
+      package.
+   -  `qemu-img` (only applicaple when using vmdk or vdi backing). This
+      tool is part of the `QEMU emulator <https://www.qemu.org/>`__.
+
 -  Tell apt to only download specific language files. See the
    `apt.conf manpage <http://manpages.debian.org/cgi-bin/man.cgi?query=apt.conf>`__
    for more details ("Languages" in the "Acquire group" section).
 -  Configure debootstrap and dpkg to filter out specific paths when installing packages
+
 
 Settings
 ~~~~~~~~
@@ -35,8 +39,13 @@ Settings
    Default: false
    ``optional``
 -  ``shrink``: Whether the volume should be shrunk. This setting works
-   best in conjunction with the zerofree tool.
-   Valid values: true, false
+   best in conjunction with the zerofree tool. Valid values:
+
+   -  false: Do not shrink.
+   -  ``vmware-vdiskmanager`` or true: Shrink using the `vmware-vdiskmanager`
+      utility.
+   -  ``qemu-img``: Shrink using the `qemu-img` utility.
+
    Default: false
    ``optional``
 -  ``apt``: Apt specific configurations. ``optional``

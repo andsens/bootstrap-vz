@@ -19,7 +19,7 @@ class AddRequiredZeroFreeCommand(Task):
 
 
 class AddRequiredVDiskManagerCommand(Task):
-    description = 'Adding command required for reducing volume size'
+    description = 'Adding vmware-vdiskmanager command required for reducing volume size'
     phase = phases.validation
     successors = [host.CheckExternalCommands]
 
@@ -27,6 +27,16 @@ class AddRequiredVDiskManagerCommand(Task):
     def run(cls, info):
         link = 'https://my.vmware.com/web/vmware/info/slug/desktop_end_user_computing/vmware_workstation/10_0'
         info.host_dependencies['vmware-vdiskmanager'] = link
+
+
+class AddRequiredQemuImgCommand(Task):
+    description = 'Adding qemu-img command required for reducing volume size'
+    phase = phases.validation
+    successors = [host.CheckExternalCommands]
+
+    @classmethod
+    def run(cls, info):
+        info.host_dependencies['qemu-img'] = 'qemu-img'
 
 
 class Zerofree(Task):
@@ -40,8 +50,8 @@ class Zerofree(Task):
         log_check_call(['zerofree', info.volume.partition_map.root.device_path])
 
 
-class ShrinkVolume(Task):
-    description = 'Shrinking the volume'
+class ShrinkVolumeWithVDiskManager(Task):
+    description = 'Shrinking the volume with vmware-vdiskmanager'
     phase = phases.volume_unmounting
     predecessors = [volume.Detach]
 
@@ -50,3 +60,16 @@ class ShrinkVolume(Task):
         perm = os.stat(info.volume.image_path).st_mode & 0777
         log_check_call(['/usr/bin/vmware-vdiskmanager', '-k', info.volume.image_path])
         os.chmod(info.volume.image_path, perm)
+
+
+class ShrinkVolumeWithQemuImg(Task):
+    description = 'Shrinking the volume with qemu-img'
+    phase = phases.volume_unmounting
+    predecessors = [volume.Detach]
+
+    @classmethod
+    def run(cls, info):
+        tmp_name = os.path.join(info.workspace, 'shrinked.' + info.volume.extension)
+        log_check_call(
+            ['qemu-img', 'convert', '-O', info.volume.extension, info.volume.image_path, tmp_name])
+        os.rename(tmp_name, info.volume.image_path)

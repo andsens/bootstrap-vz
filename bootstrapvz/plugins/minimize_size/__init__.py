@@ -5,12 +5,29 @@ import tasks.dpkg
 from bootstrapvz.common.tasks import locale
 
 
+def get_shrink_type(plugins):
+    """Gets the type of shrinking process requested by the user, taking into account backward compatibility
+    values
+
+    :param dict plugins: the part of the manifest related to plugins
+    :return: None (if none selected), "vmware-vdiskmanager" or "qemu-img" (tool to be used)"""
+    shrink_type = plugins['minimize_size'].get('shrink')
+    if shrink_type is True:
+        shrink_type = 'vmware-vdiskmanager'
+    elif shrink_type is False:
+        shrink_type = None
+    return shrink_type
+
+
 def validate_manifest(data, validator, error):
     from bootstrapvz.common.tools import rel_path
     validator(data, rel_path(__file__, 'manifest-schema.yml'))
 
-    if data['plugins']['minimize_size'].get('shrink', False) and data['volume']['backing'] != 'vmdk':
-        error('Can only shrink vmdk images', ['plugins', 'minimize_size', 'shrink'])
+    shrink_type = get_shrink_type(data['plugins'])
+    if shrink_type == 'vmware-vdiskmanager' and data['volume']['backing'] != 'vmdk':
+        error('Can only shrink vmdk images with vmware-vdiskmanager', ['plugins', 'minimize_size', 'shrink'])
+    if shrink_type == 'qemu-img' and data['volume']['backing'] not in ('vmdk', 'vdi'):
+        error('Can only shrink vmdk and vdi images with qemu-img', ['plugins', 'minimize_size', 'shrink'])
 
 
 def resolve_tasks(taskset, manifest):
@@ -20,9 +37,12 @@ def resolve_tasks(taskset, manifest):
     if manifest.plugins['minimize_size'].get('zerofree', False):
         taskset.add(tasks.shrink.AddRequiredZeroFreeCommand)
         taskset.add(tasks.shrink.Zerofree)
-    if manifest.plugins['minimize_size'].get('shrink', False):
+    if get_shrink_type(manifest.plugins) == 'vmware-vdiskmanager':
         taskset.add(tasks.shrink.AddRequiredVDiskManagerCommand)
-        taskset.add(tasks.shrink.ShrinkVolume)
+        taskset.add(tasks.shrink.ShrinkVolumeWithVDiskManager)
+    if get_shrink_type(manifest.plugins) == 'qemu-img':
+        taskset.add(tasks.shrink.AddRequiredQemuImgCommand)
+        taskset.add(tasks.shrink.ShrinkVolumeWithQemuImg)
     if 'apt' in manifest.plugins['minimize_size']:
         apt = manifest.plugins['minimize_size']['apt']
         if apt.get('autoclean', False):
