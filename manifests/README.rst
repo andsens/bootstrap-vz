@@ -206,8 +206,8 @@ variety of sources.
    default apt sources. For example ``contrib`` or ``non-free``
    ``optional``
    Default: ``['main']``
--  ``trusted-keys``: List of paths to ``.gpg`` keyrings that should
-   be added to the aptitude keyring of trusted signatures for
+-  ``trusted-keys``: List of paths (relative to the manifest) to ``.gpg`` keyrings
+   that should be added to the aptitude keyring of trusted signatures for
    repositories.
    ``optional``
 -  ``apt.conf.d``: A map of ``apt.conf(5)`` configuration snippets.
@@ -303,7 +303,7 @@ boot, root and swap.
    -  ``{device_path}``: The device path of the partition.
    -  ``{size}``: The size of the partition.
    -  ``{mount_opts}``: Options to mount the partition with. This optional
-      setting overwrites the default option list bootstrap-vz would 
+      setting overwrites the default option list bootstrap-vz would
       normally use to mount the partiton (defaults). The List is specified
       as a string array where each option/argument is an item in that array.
       ``optional`` Here some examples:
@@ -315,7 +315,7 @@ boot, root and swap.
    The default command used by bootstrap-vz is
    ``['mkfs.{fs}', '{device_path}']``.
 
-   -  ``boot``: Configuration of the boot partition. All settings equal 
+   -  ``boot``: Configuration of the boot partition. All settings equal
       those of the root partition.
       ``optional``
    -  ``swap``: Configuration of the swap partition. Since the swap

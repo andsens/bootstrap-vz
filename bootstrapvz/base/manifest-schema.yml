@@ -121,7 +121,7 @@ properties:
       trusted-keys:
         type: array
         items:
-          $ref: '#/definitions/absolute_path'
+          $ref: '#/definitions/path'
         minItems: 1
       include-source-type: {type: boolean}
     additionalProperties: false

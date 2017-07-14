@@ -1,6 +1,7 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 from bootstrapvz.common.tools import log_check_call
+from bootstrapvz.common.tools import rel_path
 import locale
 import logging
 import os
@@ -14,7 +15,8 @@ class ValidateTrustedKeys(Task):
     def run(cls, info):
         from bootstrapvz.common.tools import log_call
 
-        for i, key_path in enumerate(info.manifest.packages.get('trusted-keys', {})):
+        for i, rel_key_path in enumerate(info.manifest.packages.get('trusted-keys', {})):
+            key_path = rel_path(info.manifest.path, rel_key_path)
             if not os.path.isfile(key_path):
                 info.manifest.validation_error('File not found: {}'.format(key_path),
                                                ['packages', 'trusted-keys', i])
@@ -108,7 +110,8 @@ class InstallTrustedKeys(Task):
     @classmethod
     def run(cls, info):
         from shutil import copy
-        for key_path in info.manifest.packages['trusted-keys']:
+        for rel_key_path in info.manifest.packages['trusted-keys']:
+            key_path = rel_path(info.manifest.path, rel_key_path)
             key_name = os.path.basename(key_path)
             destination = os.path.join(info.root, 'etc/apt/trusted.gpg.d', key_name)
             copy(key_path, destination)
