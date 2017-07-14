@@ -14,6 +14,7 @@ class AddRequiredCommands(Task):
     def run(cls, info):
         info.host_dependencies['ansible'] = 'ansible'
 
+
 class CheckPlaybookPath(Task):
     description = 'Checking whether the playbook path exist'
     phase = phases.validation
@@ -56,9 +57,9 @@ class RunAnsiblePlaybook(Task):
             conn = '{} ansible_connection=chroot'.format(info.root)
             content = ""
 
-            if 'hosts' in info.manifest.plugins['ansible']['hosts']:
-                for host in info.manifest.plugins['ansible']['hosts']:
-                    content += '[{}]\n{}\n'.format(host, conn)
+            if 'groups' in info.manifest.plugins['ansible']:
+                for group in info.manifest.plugins['ansible']['groups']:
+                    content += '[{}]\n{}\n'.format(group, conn)
             else:
                 content = conn
 

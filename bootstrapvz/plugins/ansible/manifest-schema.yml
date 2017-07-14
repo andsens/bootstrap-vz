@@ -22,7 +22,7 @@ properties:
             type: array
             flag: {type: string}
             minItems: 1
-          hosts:
+          groups:
             type: array
             host: {type: string}
             minItems: 1
