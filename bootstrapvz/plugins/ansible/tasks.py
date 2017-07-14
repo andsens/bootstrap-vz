@@ -1,5 +1,6 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
+from bootstrapvz.common.tools import rel_path
 import os
 
 
@@ -10,7 +11,7 @@ class CheckPlaybookPath(Task):
     @classmethod
     def run(cls, info):
         from bootstrapvz.common.exceptions import TaskError
-        playbook = info.manifest.plugins['ansible']['playbook']
+        playbook = rel_path(info.manifest.path, info.manifest.plugins['ansible']['playbook'])
         if not os.path.exists(playbook):
             msg = 'The playbook file {playbook} does not exist.'.format(playbook=playbook)
             raise TaskError(msg)
@@ -29,7 +30,7 @@ class AddPackages(Task):
 
 
 class RunAnsiblePlaybook(Task):
-    description = 'Running ansible playbooks'
+    description = 'Running ansible playbook'
     phase = phases.user_modification
 
     @classmethod
@@ -37,8 +38,7 @@ class RunAnsiblePlaybook(Task):
         from bootstrapvz.common.tools import log_check_call
 
         # Extract playbook and directory
-        playbook = info.manifest.plugins['ansible']['playbook']
-        playbook_dir = os.path.dirname(os.path.realpath(playbook))
+        playbook = rel_path(info.manifest.path, info.manifest.plugins['ansible']['playbook'])
 
         # Check for hosts
         hosts = None
@@ -77,7 +77,7 @@ class RunAnsiblePlaybook(Task):
             handle.write(content)
 
         # build the ansible command
-        cmd = ['ansible-playbook', '-i', inventory, os.path.basename(playbook)]
+        cmd = ['ansible-playbook', '-i', inventory, playbook]
         if extra_vars:
             tmp_cmd = ['--extra-vars', '\"{}\"'.format(extra_vars)]
             cmd.extend(tmp_cmd)
@@ -92,5 +92,5 @@ class RunAnsiblePlaybook(Task):
             cmd.extend(opt_flags)
 
         # Run and remove the inventory file
-        log_check_call(cmd, cwd=playbook_dir)
+        log_check_call(cmd)
         os.remove(inventory)

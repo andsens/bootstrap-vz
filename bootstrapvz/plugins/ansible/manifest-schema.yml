@@ -20,10 +20,8 @@ properties:
             type: array
             host: {type: string}
             minItems: 1
-          playbook: {$ref: '#/definitions/absolute_path'}
+          playbook:
+            type: string
+            pattern: ^[^\0]+$
         required: [playbook]
         additionalProperties: false
-definitions:
-  absolute_path:
-    pattern: ^/[^\0]+$
-    type: string
