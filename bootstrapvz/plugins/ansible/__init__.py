@@ -7,6 +7,8 @@ def validate_manifest(data, validator, error):
 
 
 def resolve_tasks(taskset, manifest):
-    taskset.add(tasks.AddPackages)
-    taskset.add(tasks.CheckPlaybookPath)
-    taskset.add(tasks.RunAnsiblePlaybook)
+    taskset.update([tasks.AddPackages,
+                    tasks.AddRequiredCommands,
+                    tasks.CheckPlaybookPath,
+                    tasks.RunAnsiblePlaybook,
+                    ])

@@ -1,8 +1,18 @@
 from bootstrapvz.base import Task
+from bootstrapvz.common.tasks import host
 from bootstrapvz.common import phases
 from bootstrapvz.common.tools import rel_path
 import os
 
+
+class AddRequiredCommands(Task):
+    description = 'Adding commands required for provisioning with ansible'
+    phase = phases.validation
+    successors = [host.CheckExternalCommands]
+
+    @classmethod
+    def run(cls, info):
+        info.host_dependencies['ansible'] = 'ansible'
 
 class CheckPlaybookPath(Task):
     description = 'Checking whether the playbook path exist'
