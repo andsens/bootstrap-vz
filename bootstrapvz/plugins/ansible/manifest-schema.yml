@@ -10,8 +10,14 @@ properties:
         type: object
         properties:
           extra_vars: {type: string}
-          tags: {type: string}
-          skip_tags: {type: string}
+          tags:
+            type: array
+            flag: {type: string}
+            minItems: 1
+          skip_tags:
+            type: array
+            flag: {type: string}
+            minItems: 1
           opt_flags:
             type: array
             flag: {type: string}

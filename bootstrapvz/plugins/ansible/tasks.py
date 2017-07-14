@@ -50,36 +50,14 @@ class RunAnsiblePlaybook(Task):
         # Extract playbook and directory
         playbook = rel_path(info.manifest.path, info.manifest.plugins['ansible']['playbook'])
 
-        # Check for hosts
-        hosts = None
-        if 'hosts' in info.manifest.plugins['ansible']:
-            hosts = info.manifest.plugins['ansible']['hosts']
-
-        # Check for extra vars
-        extra_vars = None
-        if 'extra_vars' in info.manifest.plugins['ansible']:
-            extra_vars = info.manifest.plugins['ansible']['extra_vars']
-
-        tags = None
-        if 'tags' in info.manifest.plugins['ansible']:
-            tags = info.manifest.plugins['ansible']['tags']
-
-        skip_tags = None
-        if 'skip_tags' in info.manifest.plugins['ansible']:
-            skip_tags = info.manifest.plugins['ansible']['skip_tags']
-
-        opt_flags = None
-        if 'opt_flags' in info.manifest.plugins['ansible']:
-            opt_flags = info.manifest.plugins['ansible']['opt_flags']
-
         # build the inventory file
         inventory = os.path.join(info.root, 'tmp/bootstrap-inventory')
         with open(inventory, 'w') as handle:
             conn = '{} ansible_connection=chroot'.format(info.root)
             content = ""
 
-            if hosts:
-                for host in hosts:
+            if 'hosts' in info.manifest.plugins['ansible']['hosts']:
+                for host in info.manifest.plugins['ansible']['hosts']:
                     content += '[{}]\n{}\n'.format(host, conn)
             else:
                 content = conn
@@ -88,18 +66,18 @@ class RunAnsiblePlaybook(Task):
 
         # build the ansible command
         cmd = ['ansible-playbook', '-i', inventory, playbook]
-        if extra_vars:
-            tmp_cmd = ['--extra-vars', '\"{}\"'.format(extra_vars)]
+        if 'extra_vars' in info.manifest.plugins['ansible']:
+            tmp_cmd = ['--extra-vars', '\"{}\"'.format(info.manifest.plugins['ansible']['extra_vars'])]
             cmd.extend(tmp_cmd)
-        if tags:
-            tmp_cmd = ['--tags={}'.format(tags)]
+        if 'tags' in info.manifest.plugins['ansible']:
+            tmp_cmd = ['--tags={}'.format(','.join(info.manifest.plugins['ansible']['tags']))]
             cmd.extend(tmp_cmd)
-        if skip_tags:
-            tmp_cmd = ['--skip_tags={}'.format(skip_tags)]
+        if 'skip_tags' in info.manifest.plugins['ansible']:
+            tmp_cmd = ['--skip-tags={}'.format(','.join(info.manifest.plugins['ansible']['skip_tags']))]
             cmd.extend(tmp_cmd)
-        if opt_flags:
+        if 'opt_flags' in info.manifest.plugins['ansible']:
             # Should probably do proper validation on these, but I don't think it should be used very often.
-            cmd.extend(opt_flags)
+            cmd.extend(info.manifest.plugins['ansible']['opt_flags'])
 
         # Run and remove the inventory file
         log_check_call(cmd)
