@@ -3,6 +3,7 @@ from bootstrapvz.common.tasks import host
 from bootstrapvz.common import phases
 from bootstrapvz.common.tools import rel_path
 import os
+import json
 
 
 class AddRequiredCommands(Task):
@@ -68,14 +69,11 @@ class RunAnsiblePlaybook(Task):
         # build the ansible command
         cmd = ['ansible-playbook', '-i', inventory, playbook]
         if 'extra_vars' in info.manifest.plugins['ansible']:
-            tmp_cmd = ['--extra-vars', '\"{}\"'.format(info.manifest.plugins['ansible']['extra_vars'])]
-            cmd.extend(tmp_cmd)
+            cmd.extend(['--extra-vars', json.dumps(info.manifest.plugins['ansible']['extra_vars'])])
         if 'tags' in info.manifest.plugins['ansible']:
-            tmp_cmd = ['--tags={}'.format(','.join(info.manifest.plugins['ansible']['tags']))]
-            cmd.extend(tmp_cmd)
+            cmd.extend(['--tags', ','.join(info.manifest.plugins['ansible']['tags'])])
         if 'skip_tags' in info.manifest.plugins['ansible']:
-            tmp_cmd = ['--skip-tags={}'.format(','.join(info.manifest.plugins['ansible']['skip_tags']))]
-            cmd.extend(tmp_cmd)
+            cmd.extend(['--skip-tags' , ','.join(info.manifest.plugins['ansible']['skip_tags'])])
         if 'opt_flags' in info.manifest.plugins['ansible']:
             # Should probably do proper validation on these, but I don't think it should be used very often.
             cmd.extend(info.manifest.plugins['ansible']['opt_flags'])

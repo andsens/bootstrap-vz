@@ -9,18 +9,20 @@ properties:
       ansible:
         type: object
         properties:
-          extra_vars: {type: string}
+          extra_vars:
+            type: object
+            minItems: 1
           tags:
             type: array
-            flag: {type: string}
+            items: {type: string}
             minItems: 1
           skip_tags:
             type: array
-            flag: {type: string}
+            items: {type: string}
             minItems: 1
           opt_flags:
             type: array
-            flag: {type: string}
+            items: {type: string}
             minItems: 1
           groups:
             type: array
