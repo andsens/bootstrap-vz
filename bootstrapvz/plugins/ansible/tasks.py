@@ -73,7 +73,7 @@ class RunAnsiblePlaybook(Task):
         if 'tags' in info.manifest.plugins['ansible']:
             cmd.extend(['--tags', ','.join(info.manifest.plugins['ansible']['tags'])])
         if 'skip_tags' in info.manifest.plugins['ansible']:
-            cmd.extend(['--skip-tags' , ','.join(info.manifest.plugins['ansible']['skip_tags'])])
+            cmd.extend(['--skip-tags', ','.join(info.manifest.plugins['ansible']['skip_tags'])])
         if 'opt_flags' in info.manifest.plugins['ansible']:
             # Should probably do proper validation on these, but I don't think it should be used very often.
             cmd.extend(info.manifest.plugins['ansible']['opt_flags'])
