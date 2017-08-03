@@ -21,6 +21,10 @@ setting. Not all settings support this though, to see whether embedding
 a manifest variable in a setting is possible, look for the
 ``manifest vars`` label.
 
+To insert a literal ``{foo}``, eg. in a shell command where you may want
+to use the expression ``${foo}``, use double braces instead, ie.
+``{{foo}}``.
+
 Sections
 --------
 
