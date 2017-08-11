@@ -1,6 +1,7 @@
 import os
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
+from bootstrapvz.common.tasks import apt
 from bootstrapvz.common.exceptions import TaskError
 from bootstrapvz.common.releases import jessie, wheezy
 from bootstrapvz.common.tools import sed_i, log_check_call, rel_path
@@ -59,6 +60,7 @@ class CheckManifestPath(Task):
 class InstallPuppetlabsPC1ReleaseKey(Task):
     description = 'Install puppetlabs PC1 Release key into the keyring'
     phase = phases.package_installation
+    successors = [apt.WriteSources]
 
     @classmethod
     def run(cls, info):
