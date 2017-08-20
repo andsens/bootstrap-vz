@@ -108,9 +108,10 @@ class MountAdditional(Task):
     def run(cls, info):
         import os
         from bootstrapvz.base.fs.partitions.unformatted import UnformattedPartition
+        from bootstrapvz.base.fs.partitions.single import SinglePartition
 
         def is_additional(partition):
-            return (not isinstance(partition, UnformattedPartition) and
+            return (not isinstance(partition, (UnformattedPartition, SinglePartition)) and
                     partition.name not in ["boot", "swap", "root"])
 
         p_map = info.volume.partition_map
@@ -193,9 +194,10 @@ class FStab(Task):
     def run(cls, info):
         import os.path
         from bootstrapvz.base.fs.partitions.unformatted import UnformattedPartition
+        from bootstrapvz.base.fs.partitions.single import SinglePartition
 
         def is_additional(partition):
-            return (not isinstance(partition, UnformattedPartition) and
+            return (not isinstance(partition, (UnformattedPartition, SinglePartition)) and
                     partition.name not in ["boot", "swap", "root"])
 
         p_map = info.volume.partition_map
