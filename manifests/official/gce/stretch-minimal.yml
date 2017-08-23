@@ -23,11 +23,11 @@ packages:
   include-source-type: true
   sources:
     google-cloud:
-      - deb http://packages.cloud.google.com/apt google-cloud-compute-{system.release} main
+      - deb http://packages.cloud.google.com/apt google-compute-engine-{system.release}-stable main
   install:
-    - google-compute-engine-{system.release}
-    - google-compute-engine-init-{system.release}
-    - google-config-{system.release}
+    - google-compute-engine
+    - python-google-compute-engine
+    - python3-google-compute-engine
 plugins:
   google_cloud_repo:
     cleanup_bootstrap_key: true

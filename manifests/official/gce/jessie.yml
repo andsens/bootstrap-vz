@@ -24,13 +24,13 @@ packages:
   sources:
     google-cloud:
       - deb http://packages.cloud.google.com/apt cloud-sdk-{system.release} main
-      - deb http://packages.cloud.google.com/apt google-cloud-compute-{system.release} main
+      - deb http://packages.cloud.google.com/apt google-compute-engine-{system.release}-stable main
   install:
     - file
     - google-cloud-sdk
-    - google-compute-engine-{system.release}
-    - google-compute-engine-init-{system.release}
-    - google-config-{system.release}
+    - google-compute-engine
+    - python-google-compute-engine
+    - python3-google-compute-engine
     - python-crcmod
     - screen
     - vim
