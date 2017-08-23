@@ -23,7 +23,7 @@ class AMIName(Task):
 
         images = info._ec2['connection'].describe_images(Owners=['self'])['Images']
         for image in images:
-            if ami_name == image['Name']:
+            if  'Name' in image and ami_name == image['Name']:
                 msg = 'An image by the name {ami_name} already exists.'.format(ami_name=ami_name)
                 raise TaskError(msg)
         info._ec2['ami_name'] = ami_name
