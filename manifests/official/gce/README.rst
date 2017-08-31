@@ -22,6 +22,10 @@ jessie-minimal and stretch-minimal:
 
 The only additions are the necessary google-compute-engine, python-google-compute-engine, and python3-google-compute-engine packages. This image is not published on GCE however the manifest is provided here for those wishing a minimal GCE Debian image.
 
+buster and buster-minimal:
+
+Buster is for testing only, it should not be used for production images and may break at any time.
+
 Deprecated manifests:
 
 Debian 7 Wheezy and Backports Debian 7 Wheezy are deprecated images on GCE and are no longer supported. These manifests are provided here for historic purposes.
