@@ -1,0 +1,37 @@
+---
+name: disk
+provider:
+  name: gce
+  description: Debian {system.release} {system.architecture}
+bootstrapper:
+  workspace: /target
+system:
+  release: buster
+  architecture: amd64
+  bootloader: grub
+  charmap: UTF-8
+  locale: en_US
+  timezone: UTC
+volume:
+  backing: raw
+  partitions:
+    type: msdos
+    root:
+      filesystem: ext4
+      size: 10GiB
+packages:
+  include-source-type: true
+  sources:
+    google-cloud:
+      - deb http://packages.cloud.google.com/apt google-compute-engine-{system.release}-stable main
+  install:
+    - google-compute-engine
+    - python-google-compute-engine
+    - python3-google-compute-engine
+plugins:
+  google_cloud_repo:
+    cleanup_bootstrap_key: true
+    enable_keyring_repo: true
+  ntp:
+    servers:
+    - metadata.google.internal

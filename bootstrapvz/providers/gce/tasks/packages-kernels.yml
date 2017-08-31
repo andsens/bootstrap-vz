@@ -6,5 +6,7 @@ jessie:
   amd64: linux-image-amd64
 stretch:
   amd64: linux-image-amd64
+buster:
+  amd64: linux-image-amd64
 sid:
   amd64: linux-image-amd64
