@@ -1,0 +1,45 @@
+---
+name: debian-{system.release}-{system.architecture}-{%Y}{%m}{%d}
+provider:
+  name: kvm
+  virtio_modules:
+  - virtio_pci
+  - virtio_blk
+bootstrapper:
+  workspace: /target
+system:
+  release: stretch
+  architecture: amd64
+  bootloader: grub
+  charmap: UTF-8
+  locale: en_US
+  timezone: UTC
+volume:
+  backing: raw
+  partitions:
+    type: msdos
+    root:
+      filesystem: ext4
+      size: 10GiB
+packages: 
+  install_standard: true
+  mirror: http://httpredir.debian.org/debian
+  install:
+    # required to be pre-installed for proper puppet functioning of 
+    #  puppetlabs-apt, it is also the primary puppet module
+    - lsb-release
+plugins:
+  # It is advisable to avoid running things as root, use a sudo account instead
+  admin_user:
+    username: administrator 
+    password: something
+  # puppet plugin
+  puppet:
+    # The assets path MUST be ABSOLUTE on your project. 
+    assets: /your/absolute/path/to/etc/puppetlabs
+    install_modules:
+      - [puppetlabs-accounts]
+      - [puppetlabs-apt]
+      - [puppetlabs-concat, 3.0.0]
+      - [puppetlabs-stdlib]
+      - [puppetlabs-apache, 1.11.0]

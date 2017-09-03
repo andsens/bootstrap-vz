@@ -7,8 +7,8 @@ manifest inside the chroot. You can also have it copy your puppet
 configuration into the image so it is readily available once the image
 is booted.
 
-Rationale and use case
-~~~~~~~~~~~~~~~~~~~~~~
+Rationale and use case in a masterless setup
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You want to use this plugin when you wish to create an image and to be able to
 manage that image with Puppet. You have a Puppet 4 setup in mind and thus you 
@@ -17,9 +17,34 @@ You want it to almost contain everything you need to get it up and running
 This plugin does just that!
 While you're at it, throw in some modules from the forge as well!
 Want to include your own modules? Include them as assets!
+
+This is primarily useful when you have a very limited collection of nodes you 
+wish to manage with puppet without to having to set up an entire puppet infra-
+structure. This allows you thus to work "masterless". 
+
+You can use this to bootstrap any kind of appliance, like a puppet master!
  
-For now this plugin is only compatible with Debian versions Wheezy and Jessie.
-These are also the distributions supported by puppetlabs.
+For now this plugin is only compatible with Debian versions Wheezy, Jessie and 
+Stretch. These are Debian distributions supported by puppetlabs.
+
+About Master/agent setups
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you wish to use this plugin in an infrastructure where a puppet master is 
+present, you should evaluate what your setup is. In a puppet OSS server setup 
+it can be useful to just use the plugin without any manifests, assets or 
+modules included. 
+In a puppet PE environment you will probably not need this plugin since the PE 
+server console gives you an URL that installs the agent corresponding to your 
+PE server. 
+
+About Puppet 5
+~~~~~~~~~~~~~~
+
+Although Puppet 5 is available for some time, there is still heavy development 
+going on in that version. This module does NOT support the installation of this
+version at this time. If you think this should be the case, please open up an 
+issue on `<https://github.com/NeatNerdPrime/bootstrap-vz/>`.
 
 Settings
 ~~~~~~~~
@@ -49,10 +74,6 @@ General:
 
 - This plugin only installs the PC1 package for now, needs to be extended to 
   be able to install the package of choice
-- The puppetlabs agent is only available to i386 and amd64 architectures. ARM 
-  is not available from repository at this time. If you need to have the agent 
-  on ARM, you need to build the agent yourself, and install them through the 
-  ``packages`` section of the bootstrap-vz manifest
 
 Manifests:
 
