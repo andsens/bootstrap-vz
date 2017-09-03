@@ -3,11 +3,12 @@ from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 from bootstrapvz.common.tasks import apt
 from bootstrapvz.common.exceptions import TaskError
-from bootstrapvz.common.releases import jessie, wheezy
+from bootstrapvz.common.releases import jessie, wheezy, stretch
 from bootstrapvz.common.tools import sed_i, log_check_call, rel_path
 from __builtin__ import str
 
 
+ASSETS_DIR_STRETCH = rel_path(__file__, 'assets/gpg-keyrings-PC1/stretch')
 ASSETS_DIR_JESSIE = rel_path(__file__, 'assets/gpg-keyrings-PC1/jessie')
 ASSETS_DIR_WHEEZY = rel_path(__file__, 'assets/gpg-keyrings-PC1/wheezy')
 
@@ -19,7 +20,7 @@ class CheckRequestedDebianRelease(Task):
     @classmethod
     def run(cls, info):
         from bootstrapvz.common.exceptions import TaskError
-        if not info.manifest.release == (jessie or wheezy):
+        if info.manifest.release not in (jessie, wheezy, stretch):
             msg = 'Debian {info.manifest.release} is not (yet) available in the Puppetlabs.com APT repository.'
             raise TaskError(msg)
 
@@ -65,6 +66,8 @@ class InstallPuppetlabsPC1ReleaseKey(Task):
     @classmethod
     def run(cls, info):
         from shutil import copy
+        if (info.manifest.release == stretch):
+            key_path = os.path.join(ASSETS_DIR_STRETCH, 'puppetlabs-pc1-keyring.gpg')
         if (info.manifest.release == jessie):
             key_path = os.path.join(ASSETS_DIR_JESSIE, 'puppetlabs-pc1-keyring.gpg')
         if (info.manifest.release == wheezy):
@@ -79,6 +82,8 @@ class AddPuppetlabsPC1SourcesList(Task):
 
     @classmethod
     def run(cls, info):
+        if (info.manifest.release == stretch):
+            info.source_lists.add('puppetlabs', 'deb http://apt.puppetlabs.com stretch PC1')
         if (info.manifest.release == jessie):
             info.source_lists.add('puppetlabs', 'deb http://apt.puppetlabs.com jessie PC1')
         if (info.manifest.release == wheezy):
