@@ -16,6 +16,7 @@ Settings
    (e.g. globbing will work).
    In addition to the manifest variables ``{root}`` is also available.
    It points at the root of the image volume.
+   ``chroot {root}`` should be used for the command to run in the images' environment.
    ``required``
    ``manifest vars``
 
@@ -29,4 +30,4 @@ Create an empty `index.html` in `/var/www` and delete all locales except english
   commands:
     commands:
       - [touch, '{root}/var/www/index.html']
-      - ['rm -rf /usr/share/locale/[^en]*']
+      - ['chroot {root} rm -rf /usr/share/locale/[^en]*']
