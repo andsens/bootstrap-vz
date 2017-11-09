@@ -14,7 +14,7 @@ class Image(object):
         self.container.create()
         try:
             self.container.start()
-        except:
+        except Exception:
             self.container.destroy()
             raise
         return self.container
