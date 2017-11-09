@@ -86,7 +86,6 @@ def resolve_tasks(taskset, manifest):
         taskset.add(tasks.network.EnableDHCPCDDNS)
 
     if manifest.release >= jessie:
-        taskset.add(tasks.tuning.SetCloudInitMountOptions)
         taskset.add(tasks.packages.AddWorkaroundGrowpart)
         taskset.add(initd.AdjustGrowpartWorkaround)
         if manifest.system['bootloader'] == 'grub':

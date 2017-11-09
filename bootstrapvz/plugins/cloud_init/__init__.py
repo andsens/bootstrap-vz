@@ -1,3 +1,6 @@
+from bootstrapvz.common.tools import rel_path
+
+assets = rel_path(__file__, 'assets')
 
 
 def validate_manifest(data, validator, error):
@@ -11,10 +14,14 @@ def resolve_tasks(taskset, manifest):
     from bootstrapvz.common.tasks import apt
     from bootstrapvz.common.tasks import initd
     from bootstrapvz.common.tasks import ssh
-
     from bootstrapvz.common.releases import wheezy
+    from bootstrapvz.common.releases import jessie
+
     if manifest.release == wheezy:
         taskset.add(apt.AddBackports)
+
+    if manifest.release >= jessie:
+        taskset.add(tasks.SetCloudInitMountOptions)
 
     taskset.update([tasks.SetMetadataSource,
                     tasks.AddCloudInitPackages,

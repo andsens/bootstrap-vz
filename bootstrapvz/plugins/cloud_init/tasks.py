@@ -3,8 +3,10 @@ from bootstrapvz.common import phases
 from bootstrapvz.common.tools import log_check_call
 from bootstrapvz.common.tasks import apt
 from bootstrapvz.common.tasks import locale
+from . import assets
+from shutil import copy
 import logging
-import os.path
+import os
 
 
 class AddCloudInitPackages(Task):
@@ -121,3 +123,15 @@ class EnableModules(Task):
                     if int(entry['position']) == int(count):
                         print(" - %s" % entry['module'])
                     print line,
+
+
+class SetCloudInitMountOptions(Task):
+    description = 'Setting cloud-init default mount options'
+    phase = phases.system_modification
+
+    @classmethod
+    def run(cls, info):
+        cloud_init_src = os.path.join(assets, 'cloud-init/debian_cloud.cfg')
+        cloud_init_dst = os.path.join(info.root, 'etc/cloud/cloud.cfg.d/01_debian_cloud.cfg')
+        copy(cloud_init_src, cloud_init_dst)
+        os.chmod(cloud_init_dst, 0644)
