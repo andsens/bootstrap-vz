@@ -5,14 +5,14 @@ Changelog
 ----------
 Hugo Antoniio Sepulveda Manriquez:
     * Updated puppet plugin module:
-		* Installs Puppetlabs 4 PC1 agent software from apt.puppetlabs.com
-		* Enables you to install modules from forge.puppetlabs.com in the image
-		
-	* Important limitations
-		* Only works for Wheezy and Jessie for now.
-		* If you need puppet 3, just add 'puppet' packages provider list.
-		* modules: When installing from forge, it assumes 'install --force'
-		* modules: When installing from forge, It assumes master version on forge 	  
+        * Installs Puppetlabs 4 PC1 agent software from apt.puppetlabs.com
+        * Enables you to install modules from forge.puppetlabs.com in the image
+
+    * Important limitations
+        * Only works for Wheezy and Jessie for now.
+        * If you need puppet 3, just add 'puppet' packages provider list.
+        * modules: When installing from forge, it assumes 'install --force'
+        * modules: When installing from forge, It assumes master version on forge
 
 2016-06-04
 ----------
