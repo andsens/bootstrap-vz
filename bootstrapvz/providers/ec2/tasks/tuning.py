@@ -1,6 +1,7 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 from . import assets
+from shutil import copy
 import os
 
 
