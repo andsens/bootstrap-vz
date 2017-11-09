@@ -3,7 +3,6 @@ import tasks.apt
 import tasks.boot
 import tasks.configuration
 import tasks.image
-import tasks.host
 import tasks.packages
 from bootstrapvz.common.tasks import apt, boot, image, loopback, initd
 from bootstrapvz.common.tasks import ssh, volume, grub
@@ -22,7 +21,6 @@ def resolve_tasks(taskset, manifest):
                     loopback.Create,
                     tasks.packages.DefaultPackages,
                     tasks.configuration.GatherReleaseInformation,
-                    tasks.host.DisableIPv6,
                     tasks.boot.ConfigureGrub,
                     initd.InstallInitScripts,
                     boot.BlackListModules,
