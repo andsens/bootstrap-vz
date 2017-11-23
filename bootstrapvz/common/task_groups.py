@@ -96,7 +96,10 @@ ssh_group = [ssh.AddOpenSSHPackage,
 
 
 def get_network_group(manifest):
-    if manifest.bootstrapper.get('variant', None) == 'minbase':
+    if (
+       manifest.bootstrapper.get('variant', None) == 'minbase' and
+       'netbase' not in manifest.bootstrapper.get('include_packages', [])
+       ):
         # minbase has no networking
         return []
     group = [network.ConfigureNetworkIF,
