@@ -84,6 +84,9 @@ properties:
       mirror:
         type: string
         format: uri
+      security:
+        type: string
+        format: uri
       preferences:
         type: object
         patternProperties:
