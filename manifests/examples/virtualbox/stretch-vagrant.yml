@@ -28,3 +28,5 @@ volume:
 packages: {}
 plugins:
   vagrant: {}
+  root_password:
+    password-crypted: $6$MU3jLtZHS$UHdibqwOJrZw5yI7cqzG.AnzWqOVD9krryd3Y/SgXDSHUEMsaT7iAiQHhuCpjN4Q0tEssbJYoy4H1QFxOY3Tc/
