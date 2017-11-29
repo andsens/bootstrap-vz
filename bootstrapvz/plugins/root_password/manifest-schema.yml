@@ -13,6 +13,5 @@ properties:
           - required: [password-crypted]
         properties:
           password: {type: string}
-        properties:
           password-crypted: {type: string}
         additionalProperties: false
