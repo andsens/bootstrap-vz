@@ -200,6 +200,9 @@ variety of sources.
 -  ``mirror``: The default aptitude mirror.
    ``optional``
    Default: ``http://deb.debian.org/debian/``
+-  ``security``: The default security mirror.
+   ``optional``
+   Default:  ``http://security.debian.org/``
 -  ``sources``: A map of additional sources that should be added to
    the aptitude sources list. The key becomes the filename in
    ``/etc/apt/sources.list.d/`` (with ``.list`` appended to it), except
@@ -243,6 +246,7 @@ Example:
         - puppet
       install_standard: true
       mirror: http://cloudfront.debian.net/debian
+      security: http://security.debian.org/
       sources:
         puppet:
           - deb http://apt.puppetlabs.com wheezy main dependencies
