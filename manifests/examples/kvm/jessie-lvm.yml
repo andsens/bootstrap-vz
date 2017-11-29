@@ -20,7 +20,8 @@ volume:
     root:
       filesystem: ext4
       size: 1GB
-packages: {}
+packages:
+  security: http://security.debian.org/
 plugins:
   root_password:
     password: test
