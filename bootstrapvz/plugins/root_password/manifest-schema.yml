@@ -8,7 +8,10 @@ properties:
     properties:
       root_password:
         type: object
+        oneOf:
+          - required: [password]
+          - required: [password-crypted]
         properties:
           password: {type: string}
-        required: [password]
+          password-crypted: {type: string}
         additionalProperties: false
