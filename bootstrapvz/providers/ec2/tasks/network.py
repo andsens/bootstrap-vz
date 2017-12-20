@@ -90,7 +90,7 @@ class InstallEnhancedNetworking(Task):
         from bootstrapvz.common.releases import stretch
         if info.manifest.release >= stretch:
             version = '4.2.1'
-            drivers_url = 'https://downloadmirror.intel.com/18700/eng/ixgbevf-4.2.1.tar.gz'
+            drivers_url = 'https://downloadmirror.intel.com/27160/eng/ixgbevf-4.2.1.tar.gz'
         else:
             version = '3.2.2'
             drivers_url = 'https://downloadmirror.intel.com/26561/eng/ixgbevf-3.2.2.tar.gz'
