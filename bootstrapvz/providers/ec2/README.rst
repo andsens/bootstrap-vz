@@ -20,8 +20,10 @@ Manifest settings
 Credentials
 ~~~~~~~~~~~
 
-The AWS credentials can be configured in two ways: Via the manifest or
-through environment variables. To bootstrap S3 backed instances you will
+The AWS credentials can be configured via the manifest or through
+environment variables. If using EBS backing, credentials can not be included to
+allow `boto3 <http://boto3.readthedocs.io/en/latest/guide/configuration.html>`__
+to discover it's credentials. To bootstrap S3 backed instances you will
 need a user certificate and a private key in addition to the access key
 and secret key, which are needed for bootstraping EBS backed instances.
 
@@ -31,11 +33,11 @@ under the ``provider`` section.
 -  ``access-key``: AWS access-key.
    May also be supplied via the environment variable
    ``$AWS_ACCESS_KEY``
-   ``required for EBS & S3 backing``
+   ``required for S3 backing``
 -  ``secret-key``: AWS secret-key.
    May also be supplied via the environment variable
    ``$AWS_SECRET_KEY``
-   ``required for EBS & S3 backing``
+   ``required for S3 backing``
 -  ``certificate``: Path to the AWS user certificate. Used for
    uploading the image to an S3 bucket.
    May also be supplied via the environment variable
@@ -61,6 +63,24 @@ Example:
       credentials:
         access-key: AFAKEACCESSKEYFORAWS
         secret-key: thes3cr3tkeyf0ryourawsaccount/FS4d8Qdva
+
+Profile
+~~~~~~~
+A profile from the `boto3 shared credentials files <http://boto3.readthedocs.io/en/latest/guide/configuration.html#shared-credentials-file>`__
+can be declared rather than needing to enter credentials into the
+manifest.
+
+-  ``profile``: AWS configuration profile.
+
+Example:
+
+.. code-block:: yaml
+
+    ---
+    provider:
+      name: ec2
+      credentials:
+        profile: Default
 
 Virtualization
 ~~~~~~~~~~~~~~

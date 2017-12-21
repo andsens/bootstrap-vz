@@ -47,13 +47,20 @@ class GetCredentials(Task):
         def provider_key(key):
             return key.replace('-', '_')
 
-        import boto.provider
-        provider = boto.provider.Provider('aws')
+        provider_args = {
+            'profile_name': manifest.provider.get('profile', None)}
+
+        from boto3 import Session
+        if provider_args.get('profile_name', None):
+            if provider_args.get('profile_name') not in Session().available_profiles:
+                raise RuntimeError((
+                    'Profile specified was not found: {}'.format(provider_args.get('profile_name'))))
+        provider = Session(**provider_args).get_credentials().get_frozen_credentials()
         if all(getattr(provider, provider_key(key)) is not None for key in keys):
             for key in keys:
                 creds[key] = getattr(provider, provider_key(key))
-            if hasattr(provider, 'security_token'):
-                creds['security-token'] = provider.security_token
+            if hasattr(provider, 'token'):
+                creds['security-token'] = provider.token
             return creds
         raise RuntimeError(('No ec2 credentials found, they must all be specified '
                             'exclusively via environment variables or through the manifest.'))
@@ -72,10 +79,6 @@ class Connect(Task):
             'aws_secret_access_key': info.credentials['secret-key']
         }
 
-        if 'security-token' in info.credentials:
-            connect_args['security_token'] = info.credentials['security-token']
+        connect_args['aws_session_token'] = info.credentials.get('security-token', None)
 
-        info._ec2['connection'] = boto3.Session(info._ec2['region'],
-                                                info.credentials['access-key'],
-                                                info.credentials['secret-key'])
-        info._ec2['connection'] = boto3.client('ec2', region_name=info._ec2['region'])
+        info._ec2['connection'] = boto3.client('ec2', region_name=info._ec2['region'], **connect_args)
