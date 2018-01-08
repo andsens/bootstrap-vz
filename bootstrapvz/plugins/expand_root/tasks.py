@@ -38,7 +38,7 @@ class InstallExpandRootScripts(Task):
         expand_root_service = os.path.join(ASSETS_DIR, 'expand-root.service')
 
         expand_root_script_dest = os.path.join(info.root, 'usr/bin/expand-root.sh')
-        expand_root_service_dest = os.path.join(info.root, 'lib/systemd/system/expand-root.service')
+        expand_root_service_dest = os.path.join(info.root, 'etc/systemd/system/expand-root.service')
 
         filesystem_type = info.manifest.plugins['expand_root'].get('filesystem_type')
         root_device = info.manifest.plugins['expand_root'].get('root_device')
