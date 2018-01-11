@@ -1,0 +1,36 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          ssh-generate-hostkeys
+# Required-Start:    $local_fs $syslog
+# Required-Stop:
+# X-Start-Before:    ssh
+# Default-Start:     2 3 4 5
+# Default-Stop:
+# Short-Description: Generate ssh host keys if they do not exist
+# Description:       Generate ssh host keys if they do not exist.
+#                    This is part of bootstrap-vz: http://github.com/andsens/bootstrap-vz
+#                    See https://github.com/andsens/bootstrap-vz/blob/master/LICENSE for
+#                    legal notices and disclaimers.
+### END INIT INFO
+
+set -e
+
+DAEMON=/usr/local/sbin/ssh-generate-hostkeys
+
+[ -x "$DAEMON" ] || exit 0
+
+. /lib/lsb/init-functions
+
+case "$1" in
+  start)
+    $DAEMON
+    exit $?
+    ;;
+  stop|restart|reload|force-reload|status)
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|force-reload|status}" >&2
+    exit 1
+esac
+
+exit 0

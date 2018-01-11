@@ -1,0 +1,19 @@
+#!/bin/sh
+
+set -eu
+
+prog="$(basename $0)"
+logger="logger -t ${prog}"
+
+# Output the public keys to the console.
+# This allows user to get host keys securely through console log.
+
+echo "-----BEGIN SSH HOST KEY FINGERPRINTS-----" | ${logger}
+for key in ecdsa ed25519 rsa; do
+    keyfile="/etc/ssh/ssh_host_${key}_key"
+    if [ ! -f "${keyfile}" ]; then
+        /usr/bin/ssh-keygen -f "${keyfile}"  -t "${key}" -C 'host' -N ''
+    fi
+    /usr/bin/ssh-keygen -l -f "${keyfile}.pub" | ${logger}
+done
+echo "------END SSH HOST KEY FINGERPRINTS------" | ${logger}
