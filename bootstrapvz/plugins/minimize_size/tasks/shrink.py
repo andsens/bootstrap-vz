@@ -8,18 +8,25 @@ from bootstrapvz.common.tools import log_check_call
 import os
 
 
-class AddRequiredCommands(Task):
-    description = 'Adding commands required for reducing volume size'
+class AddRequiredZeroFreeCommand(Task):
+    description = 'Adding command required for zero-ing volume'
     phase = phases.validation
     successors = [host.CheckExternalCommands]
 
     @classmethod
     def run(cls, info):
-        if info.manifest.plugins['minimize_size'].get('zerofree', False):
-            info.host_dependencies['zerofree'] = 'zerofree'
-        if info.manifest.plugins['minimize_size'].get('shrink', False):
-            link = 'https://my.vmware.com/web/vmware/info/slug/desktop_end_user_computing/vmware_workstation/10_0'
-            info.host_dependencies['vmware-vdiskmanager'] = link
+        info.host_dependencies['zerofree'] = 'zerofree'
+
+
+class AddRequiredVDiskManagerCommand(Task):
+    description = 'Adding command required for reducing volume size'
+    phase = phases.validation
+    successors = [host.CheckExternalCommands]
+
+    @classmethod
+    def run(cls, info):
+        link = 'https://my.vmware.com/web/vmware/info/slug/desktop_end_user_computing/vmware_workstation/10_0'
+        info.host_dependencies['vmware-vdiskmanager'] = link
 
 
 class Zerofree(Task):

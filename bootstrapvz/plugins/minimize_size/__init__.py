@@ -18,10 +18,10 @@ def resolve_tasks(taskset, manifest):
                     tasks.mounts.RemoveFolderMounts,
                     ])
     if manifest.plugins['minimize_size'].get('zerofree', False):
-        taskset.add(tasks.shrink.AddRequiredCommands)
+        taskset.add(tasks.shrink.AddRequiredZeroFreeCommand)
         taskset.add(tasks.shrink.Zerofree)
     if manifest.plugins['minimize_size'].get('shrink', False):
-        taskset.add(tasks.shrink.AddRequiredCommands)
+        taskset.add(tasks.shrink.AddRequiredVDiskManagerCommand)
         taskset.add(tasks.shrink.ShrinkVolume)
     if 'apt' in manifest.plugins['minimize_size']:
         apt = manifest.plugins['minimize_size']['apt']
