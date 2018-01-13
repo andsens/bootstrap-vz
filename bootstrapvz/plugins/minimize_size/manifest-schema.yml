@@ -6,7 +6,9 @@ properties:
       minimize_size:
         properties:
           shrink:
-            type: boolean
+            anyOf:
+              - type: boolean
+              - enum: [vmware-vdiskmanager, qemu-img]
           zerofree:
             type: boolean
           apt:
