@@ -8,7 +8,15 @@ class Create(Task):
 
     @classmethod
     def run(cls, info):
-        info.volume.create(info._ec2['connection'], info._ec2['host']['availabilityZone'])
+        tags = []
+
+        # Setting up tags on the EBS volume
+        if 'tags' in info.manifest.data:
+            raw_tags = info.manifest.data['tags']
+            formatted_tags = {k: v.format(**info.manifest_vars) for k, v in raw_tags.items()}
+            tags = [{'Key': k, 'Value': v} for k, v in formatted_tags.items()]
+
+        info.volume.create(info._ec2['connection'], info._ec2['host']['availabilityZone'], tags)
 
 
 class Attach(Task):

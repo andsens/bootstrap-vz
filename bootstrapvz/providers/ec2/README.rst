@@ -169,6 +169,31 @@ Example:
       region: us-west-1
 
 
+Tags
+~~~~
+
+EBS volumes, snapshots and AMIs are tagged using AWS resource tags
+with the tag names and values defined in the manifest. Tags can be used to
+categorize AWS resources, e.g. by purpose or environment. They can also be
+used to limit access to resources using `IAM policies`__.
+
+__ https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_ec2_ebs-owner.html
+
+Example:
+
+.. code-block:: yaml
+
+    ---
+    tags:
+      Name: "Stretch 9.0 alpha"
+      Debian: "9.0~{%Y}{%m}{%d}{%H}{%M}"
+      Role: "test"
+
+Restrictions on tag names and values are defined in `EC2 docs`__.
+
+__ https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#tag-restrictions
+
+
 Dependencies
 ------------
 
