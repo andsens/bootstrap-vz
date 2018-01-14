@@ -35,7 +35,7 @@ def get_standard_groups(manifest):
     group.extend(security_group)
     group.extend(get_locale_group(manifest))
     group.extend(get_bootloader_group(manifest))
-    group.extend(cleanup_group)
+    group.extend(get_cleanup_group(manifest))
     return group
 
 
@@ -200,9 +200,17 @@ def get_fs_specific_group(manifest):
     return list(group)
 
 
-cleanup_group = [cleanup.ClearMOTD,
-                 cleanup.CleanTMP,
-                 ]
+def get_cleanup_group(manifest):
+    from bootstrapvz.common.releases import jessie
+
+    group = [cleanup.ClearMOTD,
+             cleanup.CleanTMP,
+             ]
+
+    if manifest.release >= jessie:
+        group.append(cleanup.ClearMachineId)
+
+    return group
 
 
 rollback_map = {workspace.CreateWorkspace:  workspace.DeleteWorkspace,

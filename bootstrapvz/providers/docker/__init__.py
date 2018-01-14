@@ -21,7 +21,7 @@ def resolve_tasks(taskset, manifest):
     taskset.update(task_groups.get_apt_group(manifest))
     taskset.update(task_groups.get_locale_group(manifest))
     taskset.update(task_groups.security_group)
-    taskset.update(task_groups.cleanup_group)
+    taskset.update(task_groups.get_cleanup_group(manifest))
 
     # Let the autostart of daemons by apt remain disabled
     taskset.discard(apt.EnableDaemonAutostart)
