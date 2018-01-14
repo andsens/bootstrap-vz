@@ -29,8 +29,14 @@ class AddSSHKeyGeneration(Task):
             log_check_call(['chroot', info.root,
                             'dpkg-query', '-W', 'openssh-server'])
             from bootstrapvz.common.releases import squeeze
+            from bootstrapvz.common.releases import wheezy
+            from bootstrapvz.common.releases import jessie
             if info.manifest.release == squeeze:
                 install['generate-ssh-hostkeys'] = os.path.join(init_scripts_dir, 'squeeze/generate-ssh-hostkeys')
+            elif info.manifest.release == wheezy:
+                install['generate-ssh-hostkeys'] = os.path.join(init_scripts_dir, 'wheezy/generate-ssh-hostkeys')
+            elif info.manifest.release == jessie:
+                install['generate-ssh-hostkeys'] = os.path.join(init_scripts_dir, 'jessie/generate-ssh-hostkeys')
             else:
                 install['generate-ssh-hostkeys'] = os.path.join(init_scripts_dir, 'generate-ssh-hostkeys')
         except CalledProcessError:
@@ -105,6 +111,10 @@ class ShredHostkeys(Task):
         from bootstrapvz.common.releases import wheezy
         if info.manifest.release >= wheezy:
             ssh_hostkeys.append('ssh_host_ecdsa_key')
+
+        from bootstrapvz.common.releases import jessie
+        if info.manifest.release >= jessie:
+            ssh_hostkeys.append('ssh_host_ed25519_key')
 
         private = [os.path.join(info.root, 'etc/ssh', name) for name in ssh_hostkeys]
         public = [path + '.pub' for path in private]
