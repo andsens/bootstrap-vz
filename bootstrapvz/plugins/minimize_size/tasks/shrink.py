@@ -69,7 +69,7 @@ class ShrinkVolumeWithQemuImg(Task):
 
     @classmethod
     def run(cls, info):
-        tmp_name = os.path.join(info.workspace, 'shrinked.' + info.volume.extension)
+        tmp_name = os.path.join(info.workspace, 'shrunk.' + info.volume.extension)
         log_check_call(
             ['qemu-img', 'convert', '-O', info.volume.extension, info.volume.image_path, tmp_name])
         os.rename(tmp_name, info.volume.image_path)
