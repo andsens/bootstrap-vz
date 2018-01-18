@@ -238,7 +238,7 @@ class SetGrubTerminalToConsole(Task):
     @classmethod
     def run(cls, info):
         # See issue #245 for more details
-        info.grub_config['TERMINAL'] = 'console'
+        info.grub_config['GRUB_TERMINAL'] = 'console'
 
 
 class SetGrubConsolOutputDeviceToSerial(Task):
@@ -249,7 +249,8 @@ class SetGrubConsolOutputDeviceToSerial(Task):
     @classmethod
     def run(cls, info):
         # See issue #245 for more details
-        info.grub_config['GRUB_CMDLINE_LINUX_DEFAULT'].append('console=ttyS0')
+        info.grub_config['GRUB_CMDLINE_LINUX'].append('console=ttyS0')
+        info.grub_config['GRUB_CMDLINE_LINUX'].append('earlyprintk=ttyS0')
 
 
 class RemoveGrubTimeout(Task):
