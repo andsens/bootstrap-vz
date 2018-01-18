@@ -45,17 +45,11 @@ class AddSSHKeyGeneration(Task):
                 ssh_keygen_host_service = os.path.join(systemd_dir, 'ssh-generate-hostkeys.service')
                 ssh_keygen_host_service_dest = os.path.join(info.root, 'etc/systemd/system/ssh-generate-hostkeys.service')
 
-                ssh_keygen_host_initscript = os.path.join(init_scripts_dir, 'generate-ssh-hostkeys')
-                ssh_keygen_host_initscript_dest = os.path.join(info.root, 'etc/init.d/generate-ssh-hostkeys')
-
                 ssh_keygen_host_script = os.path.join(assets, 'ssh-generate-hostkeys')
                 ssh_keygen_host_script_dest = os.path.join(info.root, 'usr/local/sbin/ssh-generate-hostkeys')
 
                 # Copy files over
                 shutil.copy(ssh_keygen_host_service, ssh_keygen_host_service_dest)
-
-                shutil.copy(ssh_keygen_host_initscript, ssh_keygen_host_initscript_dest)
-                os.chmod(ssh_keygen_host_initscript_dest, 0755)
 
                 shutil.copy(ssh_keygen_host_script, ssh_keygen_host_script_dest)
                 os.chmod(ssh_keygen_host_script_dest, 0750)
