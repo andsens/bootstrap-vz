@@ -4,6 +4,7 @@ from ..tools import log_check_call
 import os.path
 from . import assets
 import initd
+import shutil
 
 
 class AddOpenSSHPackage(Task):
@@ -23,6 +24,7 @@ class AddSSHKeyGeneration(Task):
     @classmethod
     def run(cls, info):
         init_scripts_dir = os.path.join(assets, 'init.d')
+        systemd_dir = os.path.join(assets, 'systemd')
         install = info.initd['install']
         from subprocess import CalledProcessError
         try:
@@ -38,7 +40,23 @@ class AddSSHKeyGeneration(Task):
             elif info.manifest.release == jessie:
                 install['generate-ssh-hostkeys'] = os.path.join(init_scripts_dir, 'jessie/generate-ssh-hostkeys')
             else:
-                install['generate-ssh-hostkeys'] = os.path.join(init_scripts_dir, 'generate-ssh-hostkeys')
+                install['ssh-generate-hostkeys'] = os.path.join(init_scripts_dir, 'ssh-generate-hostkeys')
+
+                ssh_keygen_host_service = os.path.join(systemd_dir, 'ssh-generate-hostkeys.service')
+                ssh_keygen_host_service_dest = os.path.join(info.root, 'etc/systemd/system/ssh-generate-hostkeys.service')
+
+                ssh_keygen_host_script = os.path.join(assets, 'ssh-generate-hostkeys')
+                ssh_keygen_host_script_dest = os.path.join(info.root, 'usr/local/sbin/ssh-generate-hostkeys')
+
+                # Copy files over
+                shutil.copy(ssh_keygen_host_service, ssh_keygen_host_service_dest)
+
+                shutil.copy(ssh_keygen_host_script, ssh_keygen_host_script_dest)
+                os.chmod(ssh_keygen_host_script_dest, 0750)
+
+                # Enable systemd service
+                log_check_call(['chroot', info.root, 'systemctl', 'enable', 'ssh-generate-hostkeys.service'])
+
         except CalledProcessError:
             import logging
             logging.getLogger(__name__).warn('The OpenSSH server has not been installed, '

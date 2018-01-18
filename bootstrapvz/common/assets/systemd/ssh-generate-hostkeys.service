@@ -1,0 +1,13 @@
+[Unit]
+Description=OpenBSD Secure Shell server Host Key Generation
+ConditionFileNotEmpty=|!/etc/ssh/ssh_host_ecdsa_key
+ConditionFileNotEmpty=|!/etc/ssh/ssh_host_ed25519_key
+ConditionFileNotEmpty=|!/etc/ssh/ssh_host_rsa_key
+Before=ssh.service
+
+[Service]
+ExecStart=/usr/local/sbin/ssh-generate-hostkeys
+Type=oneshot
+
+[Install]
+WantedBy=multi-user.target
