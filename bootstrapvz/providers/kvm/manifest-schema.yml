@@ -18,6 +18,11 @@ properties:
           - virtio_net
           - virtio_ring
         minItems: 1
+      console:
+        type: string
+        enum:
+        - serial
+        - virtual
   system:
     type: object
     properties:
