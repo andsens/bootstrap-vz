@@ -1,12 +1,16 @@
 #!/bin/sh
+# This file was created by bootstrap-vz.
+# See https://github.com/andsens/bootstrap-vz/blob/master/LICENSE for
+# legal notices and disclaimers.
+
+# Generate ssh host keys if they do not exist.
+# Output the public keys to the console. This allows user to get host
+# keys securely through console log.
 
 set -eu
 
 prog="$(basename $0)"
 logger="logger -t ${prog}"
-
-# Output the public keys to the console.
-# This allows user to get host keys securely through console log.
 
 echo "-----BEGIN SSH HOST KEY FINGERPRINTS-----" | ${logger}
 for key in ecdsa ed25519 rsa; do

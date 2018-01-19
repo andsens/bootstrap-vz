@@ -17,6 +17,10 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#    This file was created by bootstrap-vz.
+#    See https://github.com/andsens/bootstrap-vz/blob/master/LICENSE for
+#    legal notices and disclaimers.
+
 # the fudge factor. if its within this many 512 byte sectors, dont bother
 FUDGE=${GROWPART_FUDGE:-$((20*1024))}
 TEMP_D=""

@@ -1,4 +1,7 @@
 #!/bin/bash
+# This file was created by bootstrap-vz.
+# See https://github.com/andsens/bootstrap-vz/blob/master/LICENSE for
+# legal notices and disclaimers.
 
 function uname {
   if [[ $1 == '-r' ]]; then

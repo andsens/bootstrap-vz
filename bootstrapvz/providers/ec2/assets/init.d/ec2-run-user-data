@@ -1,13 +1,17 @@
 #!/bin/bash
 ### BEGIN INIT INFO
-# Provides:       ec2-run-user-data
-# Required-Start: ec2-get-credentials
-# Required-Stop:  
-# Should-Start:   
-# Should-Stop:    
-# Default-Start:  2 3 4 5
-# Default-Stop:   
-# Description:    Run instance user-data if it looks like a script.
+# Provides:          ec2-run-user-data
+# Required-Start:    ec2-get-credentials
+# Required-Stop:
+# Should-Start:
+# Should-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:
+# Description-Short: Run instance user-data if it looks like a script
+# Description:       Run instance user-data if it looks like a script.
+#                    This file was created by bootstrap-vz.
+#                    See https://github.com/andsens/bootstrap-vz/blob/master/LICENSE for
+#                    legal notices and disclaimers.
 ### END INIT INFO
 #
 # Only retrieves and runs the user-data script once per instance.  If

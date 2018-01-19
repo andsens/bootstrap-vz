@@ -1,3 +1,7 @@
+# This file was created by bootstrap-vz.
+# See https://github.com/andsens/bootstrap-vz/blob/master/LICENSE for
+# legal notices and disclaimers.
+
 # Docker Upstart and SysVinit configuration file
 
 # Customize location of Docker binary (especially for development testing).

@@ -13,6 +13,10 @@
 # specific language governing permissions and limitations under the
 # License.
 
+# This file was created by bootstrap-vz.
+# See https://github.com/andsens/bootstrap-vz/blob/master/LICENSE for
+# legal notices and disclaimers.
+
 ACTION=="add", SUBSYSTEM=="net", KERNEL=="eth*", IMPORT{program}="/bin/sleep 1"
 SUBSYSTEM=="net", RUN+="/etc/sysconfig/network-scripts/ec2net.hotplug"
 

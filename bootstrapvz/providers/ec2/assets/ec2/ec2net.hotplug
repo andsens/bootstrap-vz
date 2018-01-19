@@ -15,6 +15,10 @@
 # specific language governing permissions and limitations under the
 # License.
 
+# This file was created by bootstrap-vz.
+# See https://github.com/andsens/bootstrap-vz/blob/master/LICENSE for
+# legal notices and disclaimers.
+
 # During init and before the network service is started, metadata is not
 # available. Exit without attempting to configure the elastic interface.
 if [ `/sbin/runlevel | /usr/bin/cut -d\  -f2` -ne 5 ]; then
