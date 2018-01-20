@@ -1,3 +1,7 @@
+# This file was created by bootstrap-vz.
+# See https://github.com/andsens/bootstrap-vz/blob/master/LICENSE for
+# legal notices and disclaimers.
+
 # Since Docker users using "RUN apt-get update && apt-get install -y ..." in
 # their Dockerfiles don't go delete the lists files afterwards, we want them to
 # be as small as possible on-disk, so we explicitly request "gz" versions and

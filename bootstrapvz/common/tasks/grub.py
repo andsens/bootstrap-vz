@@ -198,7 +198,11 @@ class WriteGrubConfig(Task):
 
     @classmethod
     def run(cls, info):
-        grub_config_contents = ''
+        grub_config_contents = """# This file was created by bootstrap-vz.
+# See https://github.com/andsens/bootstrap-vz/blob/master/LICENSE for
+# legal notices and disclaimers.
+
+"""
         for key, value in info.grub_config.items():
             if isinstance(value, str):
                 grub_config_contents += '{}="{}"\n'.format(key, value)

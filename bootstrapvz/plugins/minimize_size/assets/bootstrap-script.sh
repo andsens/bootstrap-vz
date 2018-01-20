@@ -1,4 +1,7 @@
 #!/bin/sh
+# This file was created by bootstrap-vz.
+# See https://github.com/andsens/bootstrap-vz/blob/master/LICENSE for
+# legal notices and disclaimers.
 
 # This script does not override anything defined in /usr/share/debootstrap/scripts
 # Instead we use it to redefine extract_dpkg_deb_data(), so that we may exclude

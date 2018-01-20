@@ -1,4 +1,8 @@
 #!/bin/bash
+# This file was created by bootstrap-vz.
+# See https://github.com/andsens/bootstrap-vz/blob/master/LICENSE for
+# legal notices and disclaimers.
+
 # Expands a partition and filesystem using growpart and an appropriate
 # filesystem tool for live filesystem expansion. Takes three arguments:
 # DEVICE, such as "/dev/sda"

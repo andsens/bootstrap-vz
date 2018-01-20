@@ -1,3 +1,7 @@
+# This file was created by bootstrap-vz.
+# See https://github.com/andsens/bootstrap-vz/blob/master/LICENSE for
+# legal notices and disclaimers.
+
 [Unit]
 Description=OpenBSD Secure Shell server Host Key Generation
 ConditionFileNotEmpty=|!/etc/ssh/ssh_host_ecdsa_key

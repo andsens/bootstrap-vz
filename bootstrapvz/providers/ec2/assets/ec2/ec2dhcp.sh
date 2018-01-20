@@ -15,6 +15,10 @@
 # specific language governing permissions and limitations under the
 # License.
 
+# This file was created by bootstrap-vz.
+# See https://github.com/andsens/bootstrap-vz/blob/master/LICENSE for
+# legal notices and disclaimers.
+
 INTERFACE="${interface}"
 PREFIX="${new_prefix}"
 . /etc/sysconfig/network-scripts/ec2net-functions

@@ -1,3 +1,7 @@
+# This file was created by bootstrap-vz.
+# See https://github.com/andsens/bootstrap-vz/blob/master/LICENSE for
+# legal notices and disclaimers.
+
 # Since for most Docker users, package installs happen in "docker build" steps,
 # they essentially become individual layers due to the way Docker handles
 # layering, especially using CoW filesystems.  What this means for us is that

@@ -12,6 +12,10 @@
 #  self-sufficient containers from any application. The same container that a
 #  developer builds and tests on a laptop can run at scale, in production, on
 #  VMs, bare metal, OpenStack clusters, public clouds and more.
+#
+#  This file was created by bootstrap-vz.
+#  See https://github.com/andsens/bootstrap-vz/blob/master/LICENSE for
+#  legal notices and disclaimers.
 ### END INIT INFO
 
 export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin

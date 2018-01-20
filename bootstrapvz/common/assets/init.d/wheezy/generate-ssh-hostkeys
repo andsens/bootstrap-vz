@@ -1,13 +1,17 @@
 #!/bin/sh
 ### BEGIN INIT INFO
-# Provides:       generate-ssh-hostkeys
-# Required-Start: $local_fs
-# Required-Stop:  
-# Should-Start:   
-# Should-Stop:    
-# Default-Start:  S
-# Default-Stop:   
-# Description:    Generate ssh host keys if they do not exist
+# Provides:          generate-ssh-hostkeys
+# Required-Start:    $local_fs
+# Required-Stop:
+# Should-Start:
+# Should-Stop:
+# Default-Start:     S
+# Default-Stop:
+# Description-Short: Generate ssh host keys if they do not exist
+# Description:       Generate ssh host keys if they do not exist.
+#                    This file was created by bootstrap-vz.
+#                    See https://github.com/andsens/bootstrap-vz/blob/master/LICENSE for
+#                    legal notices and disclaimers.
 ### END INIT INFO
 
 prog=$(basename $0)

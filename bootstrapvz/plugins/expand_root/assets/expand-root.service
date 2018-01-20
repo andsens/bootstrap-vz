@@ -1,3 +1,7 @@
+# This file was created by bootstrap-vz.
+# See https://github.com/andsens/bootstrap-vz/blob/master/LICENSE for
+# legal notices and disclaimers.
+
 [Unit]
 Description=Expand the root partition and filesystem on boot
 After=local-fs.target
