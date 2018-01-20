@@ -8,7 +8,7 @@ After=local-fs.target
 Wants=local-fs.target
 
 [Service]
-ExecStart=/usr/bin/expand-root.sh DEVICE PARTITION FILESYSTEM
+ExecStart=/usr/local/sbin/expand-root DEVICE PARTITION FILESYSTEM
 Type=oneshot
 
 [Install]

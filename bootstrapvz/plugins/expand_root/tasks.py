@@ -34,10 +34,10 @@ class InstallExpandRootScripts(Task):
 
     @classmethod
     def run(cls, info):
-        expand_root_script = os.path.join(ASSETS_DIR, 'expand-root.sh')
+        expand_root_script = os.path.join(ASSETS_DIR, 'expand-root')
         expand_root_service = os.path.join(ASSETS_DIR, 'expand-root.service')
 
-        expand_root_script_dest = os.path.join(info.root, 'usr/bin/expand-root.sh')
+        expand_root_script_dest = os.path.join(info.root, 'usr/local/sbin/expand-root')
         expand_root_service_dest = os.path.join(info.root, 'etc/systemd/system/expand-root.service')
 
         filesystem_type = info.manifest.plugins['expand_root'].get('filesystem_type')
@@ -49,10 +49,10 @@ class InstallExpandRootScripts(Task):
         os.chmod(expand_root_script_dest, 0750)
         shutil.copy(expand_root_service, expand_root_service_dest)
 
-        # Expand out options into expand-root.sh script.
+        # Expand out options into expand-root script.
         opts = '%s %s %s' % (root_device, root_partition, filesystem_type)
-        sed_i(expand_root_service_dest, r'^ExecStart=/usr/bin/expand-root.sh.*$',
-              'ExecStart=/usr/bin/expand-root.sh %s' % opts)
+        sed_i(expand_root_service_dest, r'^ExecStart=/usr/local/sbin/expand-root.*$',
+              'ExecStart=/usr/local/sbin/expand-root %s' % opts)
 
         # Enable systemd service
         log_check_call(['chroot', info.root,  'systemctl', 'enable', 'expand-root.service'])
