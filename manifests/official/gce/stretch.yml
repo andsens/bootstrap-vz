@@ -46,7 +46,7 @@ plugins:
     enable_keyring_repo: true
   ntp:
     servers:
-    - metadata.google.internal
+      - metadata.google.internal
   unattended_upgrades:
     download_interval: 1
     update_interval: 1

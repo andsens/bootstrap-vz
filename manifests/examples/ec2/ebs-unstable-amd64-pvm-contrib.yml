@@ -26,9 +26,9 @@ volume:
 packages:
   mirror: http://cloudfront.debian.net/debian
   components:
-  - main
-  - contrib
-  - non-free
+    - main
+    - contrib
+    - non-free
 plugins:
   cloud_init:
     metadata_sources: Ec2

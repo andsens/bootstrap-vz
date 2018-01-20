@@ -34,4 +34,4 @@ plugins:
     enable_keyring_repo: true
   ntp:
     servers:
-    - metadata.google.internal
+      - metadata.google.internal

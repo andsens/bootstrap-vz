@@ -34,21 +34,21 @@ packages:
     - vim
   preferences:
     backport-kernel:
-    - package: linux-image-* initramfs-tools
-      pin: release n=wheezy-backports
-      pin-priority: 500
+      - package: linux-image-* initramfs-tools
+        pin: release n=wheezy-backports
+        pin-priority: 500
     backport-ssh:
-    - package: init-system-helpers openssh-sftp-server openssh-client openssh-server
-      pin: release n=wheezy-backports
-      pin-priority: 500
+      - package: init-system-helpers openssh-sftp-server openssh-client openssh-server
+        pin: release n=wheezy-backports
+        pin-priority: 500
     backport-growroot:
-    - package: cloud-initramfs-growroot
-      pin: release n=wheezy-backports
-      pin-priority: 500
+      - package: cloud-initramfs-growroot
+        pin: release n=wheezy-backports
+        pin-priority: 500
 plugins:
   google_cloud_repo:
-    cleanup_bootstrap_key: True
-    enable_keyring_repo: True
+    cleanup_bootstrap_key: true
+    enable_keyring_repo: true
   ntp:
     servers:
-    - metadata.google.internal
+      - metadata.google.internal
