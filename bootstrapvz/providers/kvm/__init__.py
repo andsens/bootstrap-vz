@@ -1,5 +1,6 @@
 from bootstrapvz.common import task_groups
 import tasks.packages
+import tasks.boot
 from bootstrapvz.common.tasks import image, loopback, initd, ssh, logicalvolume
 
 
@@ -30,6 +31,16 @@ def resolve_tasks(taskset, manifest):
     if manifest.provider.get('virtio', []):
         from tasks import virtio
         taskset.update([virtio.VirtIO])
+
+    if manifest.provider.get('console', False):
+        if manifest.provider['console'] == 'virtual':
+            taskset.update([tasks.boot.SetGrubConsolOutputDeviceToVirtual])
+
+            from bootstrapvz.common.releases import jessie
+            if manifest.release >= jessie:
+                taskset.update([tasks.boot.SetGrubConsolOutputDeviceToVirtual,
+                                tasks.boot.SetSystemdTTYVTDisallocate,
+                                ])
 
 
 def resolve_rollback_tasks(taskset, manifest, completed, counter_task):
