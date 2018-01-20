@@ -6,6 +6,7 @@ from bootstrapvz.common.tasks import grub
 class AddVirtualConsoleGrubOutputDevice(Task):
     description = 'Adding `tty0\' as output device for grub'
     phase = phases.system_modification
+    predecessors = [grub.SetGrubConsolOutputDeviceToSerial]
     successors = [grub.WriteGrubConfig]
 
     @classmethod
