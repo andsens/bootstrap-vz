@@ -34,8 +34,8 @@ packages:
     - vim
 plugins:
   google_cloud_repo:
-    cleanup_bootstrap_key: True
-    enable_keyring_repo: True
+    cleanup_bootstrap_key: true
+    enable_keyring_repo: true
   ntp:
     servers:
-    - metadata.google.internal
+      - metadata.google.internal

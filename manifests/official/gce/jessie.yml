@@ -37,9 +37,9 @@ packages:
   preferences:
     # python-crcmod in backports has a compiled version needed for Google Cloud Storage.
     backport-python-crcmod:
-    - package: python-crcmod
-      pin: release n=jessie-backports
-      pin-priority: 500
+      - package: python-crcmod
+        pin: release n=jessie-backports
+        pin-priority: 500
 plugins:
   expand_root:
     filesystem_type: ext4
@@ -50,7 +50,7 @@ plugins:
     enable_keyring_repo: true
   ntp:
     servers:
-    - metadata.google.internal
+      - metadata.google.internal
   unattended_upgrades:
     download_interval: 1
     update_interval: 1

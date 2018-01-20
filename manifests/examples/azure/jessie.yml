@@ -23,10 +23,10 @@ volume:
       size: 10GiB
 packages:
   components:
-  - main
-  - contrib
-  - non-free
+    - main
+    - contrib
+    - non-free
 plugins:
   ntp:
     servers:
-    - time.windows.com
+      - time.windows.com

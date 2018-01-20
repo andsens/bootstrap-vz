@@ -23,15 +23,15 @@ volume:
       size: 10GiB
 packages:
   components:
-  - main
-  - contrib
-  - non-free
+    - main
+    - contrib
+    - non-free
   preferences:
     backport-kernel:
-    - package: linux-image-* initramfs-tools
-      pin: release n=wheezy-backports
-      pin-priority: 500
+      - package: linux-image-* initramfs-tools
+        pin: release n=wheezy-backports
+        pin-priority: 500
 plugins:
   ntp:
     servers:
-    - time.windows.com
+      - time.windows.com

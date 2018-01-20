@@ -33,7 +33,7 @@ packages:
 plugins:
   cloud_init:
     disable_modules:
-    - landscape
-    - byobu
-    - ssh-import-id
+      - landscape
+      - byobu
+      - ssh-import-id
     username: admin
