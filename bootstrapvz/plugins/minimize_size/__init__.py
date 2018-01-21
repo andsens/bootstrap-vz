@@ -26,8 +26,8 @@ def validate_manifest(data, validator, error):
     shrink_type = get_shrink_type(data['plugins'])
     if shrink_type == 'vmware-vdiskmanager' and data['volume']['backing'] != 'vmdk':
         error('Can only shrink vmdk images with vmware-vdiskmanager', ['plugins', 'minimize_size', 'shrink'])
-    if shrink_type == 'qemu-img' and data['volume']['backing'] not in ('vmdk', 'vdi'):
-        error('Can only shrink vmdk and vdi images with qemu-img', ['plugins', 'minimize_size', 'shrink'])
+    if shrink_type == 'qemu-img' and data['volume']['backing'] not in ('vmdk', 'vdi', 'raw', 'qcow2'):
+        error('Can only shrink vmdk, vdi, raw and qcow2 images with qemu-img', ['plugins', 'minimize_size', 'shrink'])
 
 
 def resolve_tasks(taskset, manifest):

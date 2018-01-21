@@ -21,7 +21,7 @@ footprint:
       (only applicable when using vmdk backing). The tool is part of the
       `VMWare Workstation <https://my.vmware.com/web/vmware/info/slug/desktop_end_user_computing/vmware_workstation/10_0>`__
       package.
-   -  `qemu-img` (only applicaple when using vmdk or vdi backing). This
+   -  `qemu-img` (only applicaple when using vmdk, vdi, raw or qcow2 backing). This
       tool is part of the `QEMU emulator <https://www.qemu.org/>`__.
 
 -  Tell apt to only download specific language files. See the
