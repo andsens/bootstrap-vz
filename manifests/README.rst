@@ -297,6 +297,7 @@ boot, root and swap.
    -  ``size``: The size of the partition. Valid values: Any
       datasize specification up to TB (e.g. 5KiB, 1MB, 6TB).
       ``required``
+   -  ``mode``: Set the mode bits of the mount point, e.g. '1777' for /tmp
    -  ``filesystem``: The filesystem of the partition. When choosing
       ``xfs``, the ``xfsprogs`` package will need to be installed.
       Valid values: ``ext2``, ``ext3``, ``ext4``, ``xfs``
