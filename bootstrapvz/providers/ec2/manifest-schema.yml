@@ -24,6 +24,9 @@ properties:
         enum:
           - none
           - simple
+      amzn-driver-version:
+        type: string
+        pattern: "^([0-9]+\\.?){3}$"
     required: [description, virtualization]
   system:
     type: object
