@@ -10,11 +10,7 @@ properties:
         type: string
         enum: [amd64]
       release:
-        not:
-          type: string
-          enum:
-          - squeeze
-          - oldstable
+        type: string
   plugins:
     type: object
     properties:

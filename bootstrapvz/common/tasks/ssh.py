@@ -30,12 +30,9 @@ class AddSSHKeyGeneration(Task):
         try:
             log_check_call(['chroot', info.root,
                             'dpkg-query', '-W', 'openssh-server'])
-            from bootstrapvz.common.releases import squeeze
             from bootstrapvz.common.releases import wheezy
             from bootstrapvz.common.releases import jessie
-            if info.manifest.release == squeeze:
-                install['generate-ssh-hostkeys'] = os.path.join(init_scripts_dir, 'squeeze/generate-ssh-hostkeys')
-            elif info.manifest.release == wheezy:
+            if info.manifest.release == wheezy:
                 install['generate-ssh-hostkeys'] = os.path.join(init_scripts_dir, 'wheezy/generate-ssh-hostkeys')
             elif info.manifest.release == jessie:
                 install['generate-ssh-hostkeys'] = os.path.join(init_scripts_dir, 'jessie/generate-ssh-hostkeys')
