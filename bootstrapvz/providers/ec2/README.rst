@@ -124,6 +124,28 @@ Example:
       virtualization: hvm
       enhanced_networking: simple
 
+Amazon Drivers
+~~~~~~~~~~~~~~
+
+Define the version for the Amazon Elastic Network
+Adapter (ENA) driver.
+Read more about this on the `Amazon Drivers git repo`__.
+
+__ https://github.com/amzn/amzn-drivers
+
+-  ``amzn-driver-version``: Default: master
+   Valid values: ``master``, ``#.#.#``
+   ``optional``
+
+Example:
+
+.. code-block:: yaml
+
+    ---
+    provider:
+      name: ec2
+      amzn-driver-version: 1.5.0
+
 Image
 ~~~~~
 
