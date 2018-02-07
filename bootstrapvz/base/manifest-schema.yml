@@ -191,6 +191,7 @@ definitions:
         minItems: 1
         type: array
       size: {$ref: '#/definitions/bytes'}
+      mode: {type: string}
     required: [size, filesystem]
     additionalProperties: false
   partition_table:
