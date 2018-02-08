@@ -15,11 +15,11 @@ def validate_manifest(data, validator, error):
     from bootstrapvz.common.tools import rel_path
     validator(data, rel_path(__file__, 'manifest-schema.yml'))
 
-    from bootstrapvz.common.releases import get_release, squeeze
+    from bootstrapvz.common.releases import get_release, wheezy
     release = get_release(data['system']['release'])
 
-    if release < squeeze:
-        error('Only Debian squeeze and later is supported', ['system', 'release'])
+    if release < wheezy:
+        error('Only Debian wheezy and later is supported', ['system', 'release'])
 
     # Check the bootloader/partitioning configuration.
     # Doing this via the schema is a pain and does not output a useful error message.
@@ -27,9 +27,6 @@ def validate_manifest(data, validator, error):
 
         if data['volume']['partitions']['type'] == 'none':
             error('Grub cannot boot from unpartitioned disks', ['system', 'bootloader'])
-
-        if release == squeeze:
-            error('Grub installation on squeeze is not supported', ['system', 'bootloader'])
 
     # Check the provided apt.conf(5) options
     if 'packages' in data:

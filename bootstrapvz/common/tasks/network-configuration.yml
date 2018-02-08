@@ -1,10 +1,5 @@
 ---
 # This is a mapping of Debian release codenames to NIC configurations
-squeeze: |
-  auto lo
-  iface lo inet loopback
-  auto eth0
-  iface eth0 inet dhcp
 wheezy: |
   auto eth0
   iface eth0 inet dhcp

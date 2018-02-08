@@ -151,7 +151,7 @@ system and does not fit under any other section.
    Valid values: Any locale mentioned in ``/etc/locale.gen``
    ``required``
 -  ``release``: Defines which debian release should be bootstrapped.
-   Valid values: ``squeeze``, ``wheezy``, ``jessie``, ``sid``,
+   Valid values: ``wheezy``, ``jessie``, ``stretch``, ``sid``,
    ``oldstable``, ``stable``, ``testing``, ``unstable``
    ``required``
 -  ``timezone``: Timezone of the system.
