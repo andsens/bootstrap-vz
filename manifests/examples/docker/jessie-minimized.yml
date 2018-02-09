@@ -4,7 +4,7 @@ provider:
   name: docker
   labels:
     summary: Debian {system.release} {system.architecture}
-    description: >
+    description: >-
       Minimized version of Debian jessie
       without any manpages, additional documentation
       or other language files.
