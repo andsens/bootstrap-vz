@@ -36,6 +36,9 @@ properties:
       variant:
         type: string
         enum: [minbase]
+      keyring: {type: string}
+      no-check-gpg: {type: boolean}
+      force-check-gpg: {type: boolean}
     required: [workspace]
     additionalProperties: false
   system:

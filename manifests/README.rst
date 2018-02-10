@@ -74,8 +74,7 @@ Example:
 Bootstrapper
 ~~~~~~~~~~~~
 
-This section concerns the bootstrapper itself and its behavior. There
-are 4 possible settings:
+This section concerns the bootstrapper itself and its behavior.
 
 -  ``workspace``: Path to where the bootstrapper should place images
    and intermediate files. Any volumes will be mounted under that path.
@@ -108,6 +107,19 @@ are 4 possible settings:
    is ``minbase`` and should only be used in conjunction with the
    Docker provider. Not specifying this option will result in a normal
    Debian variant being bootstrapped.
+-  ``keyring``: path to keyring to check Release files against
+   ``optional``
+   Default: ``false``
+-  ``no-check-gpg``: avoid checking Release file signatures
+   ``optional``
+   Valid values: ``true, false``
+   Default: ``false``
+-  ``force-check-gpg``: force checking Release file signatures
+   (also disables automatic fallback to HTTPS in case
+   of a missing keyring), aborting otherwise
+   ``optional``
+   Valid values: ``true, false``
+   Default: ``false``
 
 
 Example:

@@ -23,6 +23,17 @@ def get_bootstrap_args(info):
     options = ['--arch=' + arch]
     if 'variant' in info.manifest.bootstrapper:
         options.append('--variant=' + info.manifest.bootstrapper['variant'])
+    if info.manifest.bootstrapper.get('keyring', ''):
+        options.append('--keyring=' + info.manifest.bootstrapper['keyring'])
+    if info.manifest.bootstrapper.get('no-check-gpg', False) is True:
+        options.append('--no-check-gpg')
+    if info.manifest.bootstrapper.get('force-check-gpg', False) is True:
+        from bootstrapvz.common.releases import stretch
+        if info.manifest.release >= stretch:
+            options.append('--force-check-gpg')
+        else:
+            from bootstrapvz.common.exceptions import ManifestError
+            raise ManifestError('force-check-gpg is only support in Stretch and newer releases')
     if len(info.include_packages) > 0:
         options.append('--include=' + ','.join(info.include_packages))
     if len(info.exclude_packages) > 0:
