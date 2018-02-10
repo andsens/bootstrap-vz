@@ -2,7 +2,7 @@ import tasks.mounts
 import tasks.shrink
 import tasks.apt
 import tasks.dpkg
-from bootstrapvz.common.tasks import locale
+from bootstrapvz.common.tasks import dpkg, locale
 
 
 def get_shrink_type(plugins):
@@ -54,20 +54,20 @@ def resolve_tasks(taskset, manifest):
         if apt.get('autoremove_suggests', False):
             taskset.add(tasks.apt.AptAutoremoveSuggests)
     if 'dpkg' in manifest.plugins['minimize_size']:
-        filter_tasks = [tasks.dpkg.CreateDpkgCfg,
+        filter_tasks = [dpkg.CreateDpkgCfg,
                         tasks.dpkg.InitializeBootstrapFilterList,
                         tasks.dpkg.CreateBootstrapFilterScripts,
                         tasks.dpkg.DeleteBootstrapFilterScripts,
                         ]
-        dpkg = manifest.plugins['minimize_size']['dpkg']
-        if 'locales' in dpkg:
+        msdpkg = manifest.plugins['minimize_size']['dpkg']
+        if 'locales' in msdpkg:
             taskset.update(filter_tasks)
             taskset.add(tasks.dpkg.FilterLocales)
             # If no locales are selected, we don't need the locale package
-            if len(dpkg['locales']) == 0:
+            if msdpkg['locales']:
                 taskset.discard(locale.LocaleBootstrapPackage)
                 taskset.discard(locale.GenerateLocale)
-        if dpkg.get('exclude_docs', False):
+        if msdpkg.get('exclude_docs', False):
             taskset.update(filter_tasks)
             taskset.add(tasks.dpkg.ExcludeDocs)
 

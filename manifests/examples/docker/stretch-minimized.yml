@@ -1,0 +1,47 @@
+---
+name: debian-min-{system.release}-{system.architecture}:latest
+provider:
+  name: docker
+  labels:
+    name: debian-min-{system.release}-{system.architecture}-{%Y}.{%m}.{%d}
+    summary: Debian minimized {system.release} {system.architecture}
+    description: >-
+      Minimized version of Debian {system.release}
+      without any manpages, additional documentation.
+      Built on: {%Y}.{%m}.{%d}
+    distribution-scope: public
+  dockerfile:
+    - CMD /bin/bash
+bootstrapper:
+  workspace: /target
+  variant: minbase
+system:
+  release: stretch
+  architecture: amd64
+  bootloader: none
+  charmap: UTF-8
+  locale: en_US
+  timezone: UTC
+volume:
+  backing: folder
+  partitions:
+    type: none
+    root:
+      filesystem: ext4
+      size: 1GiB
+plugins:
+  minimize_size:
+    # This plugin is used to help implement some of the modifications from Moby's debootstrap
+    # https://github.com/moby/moby/blob/e2e5d4bc9da5ba17bb2822909611f8300fdd80f0/contrib/mkimage/debootstrap
+    apt:
+      # https://github.com/moby/moby/blob/e2e5d4bc9da5ba17bb2822909611f8300fdd80f0/contrib/mkimage/debootstrap#L107
+      autoclean: true
+      # https://github.com/moby/moby/blob/e2e5d4bc9da5ba17bb2822909611f8300fdd80f0/contrib/mkimage/debootstrap#L132
+      languages: [none]
+      # https://github.com/moby/moby/blob/e2e5d4bc9da5ba17bb2822909611f8300fdd80f0/contrib/mkimage/debootstrap#L142
+      gzip_indexes: true
+      # https://github.com/moby/moby/blob/e2e5d4bc9da5ba17bb2822909611f8300fdd80f0/contrib/mkimage/debootstrap#L157
+      autoremove_suggests: true
+    dpkg:  # dpkg is required for the Docker provider
+      locales: []
+      exclude_docs: true
