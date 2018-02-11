@@ -88,7 +88,7 @@ def inline_replace(file_path, pattern, subst):
 
 def load_json(path):
     import json
-    from minify_json import json_minify
+    from json_minify import json_minify
     with open(path) as stream:
         return json.loads(json_minify(stream.read(), False))
 
