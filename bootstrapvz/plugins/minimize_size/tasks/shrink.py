@@ -70,6 +70,10 @@ class ShrinkVolumeWithQemuImg(Task):
     @classmethod
     def run(cls, info):
         tmp_name = os.path.join(info.workspace, 'shrunk.' + info.volume.extension)
-        log_check_call(
-            ['qemu-img', 'convert', '-O', info.volume.extension, info.volume.image_path, tmp_name])
+        shrink_cmd = ['qemu-img', 'convert', '-O', info.volume.extension, info.volume.image_path, tmp_name]
+        # Compress QCOW2 image when shrinking
+        if info.volume.extension == 'qcow2':
+            # '-c' indicates that target image must be compressed (qcow format only)
+            shrink_cmd.insert(4, '-c')
+        log_check_call(shrink_cmd)
         os.rename(tmp_name, info.volume.image_path)
