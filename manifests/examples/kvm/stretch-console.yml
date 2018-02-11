@@ -2,10 +2,10 @@
 name: debian-{system.release}-{system.architecture}-{%Y}{%m}{%d}
 provider:
   name: kvm
-  virtio_modules:
+  virtio:
     - virtio_blk
     - virtio_net
-    - virtio_rng
+    - virtio_ring
   console: virtual
 bootstrapper:
   workspace: /target
