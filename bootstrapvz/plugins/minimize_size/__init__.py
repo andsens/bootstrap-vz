@@ -16,6 +16,8 @@ def get_shrink_type(plugins):
         shrink_type = 'vmware-vdiskmanager'
     elif shrink_type is False:
         shrink_type = None
+    elif shrink_type == 'qemu-img-no-compression':
+        shrink_type = 'qemu-img'
     return shrink_type
 
 

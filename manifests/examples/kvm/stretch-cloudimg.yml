@@ -1,0 +1,48 @@
+---
+name: debian-{system.release}-{system.architecture}-{%Y}{%m}{%d}
+provider:
+  name: kvm
+  virtio:
+    - virtio
+    - virtio_pci
+    - virtio_balloon
+    - virtio_blk
+    - virtio_net
+    - virtio_ring
+  console: virtual
+bootstrapper:
+  workspace: /target
+system:
+  release: stretch
+  architecture: amd64
+  bootloader: grub
+  charmap: UTF-8
+  locale: en_US
+  timezone: UTC
+packages:
+  components:
+    - main
+    - contrib
+    - non-free
+  install_standard: true
+  install:
+    - task-ssh-server
+    - cloud-init
+    - cloud-utils
+volume:
+  backing: qcow2
+  partitions:
+    type: msdos
+    root:
+      filesystem: ext4
+      size: 2GiB
+      mountopts:
+        - defaults
+        - noatime
+        - errors=remount-ro
+plugins:
+  minimize_size:
+    zerofree: true
+    shrink: qemu-img
+    apt:
+      autoclean: true
