@@ -15,7 +15,7 @@ def main():
     # load the build servers file
     build_servers = load_data(opts['--servers'])
     # Pick a build server
-    from build_servers import pick_build_server
+    from .build_servers import pick_build_server
     preferences = {}
     if opts['--name'] is not None:
         preferences['name'] = opts['--name']

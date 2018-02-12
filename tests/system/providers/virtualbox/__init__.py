@@ -21,7 +21,7 @@ def boot_image(manifest, build_server, bootstrap_info):
         finally:
             build_server.delete(bootstrap_info.volume.image_path)
 
-    from image import VirtualBoxImage
+    from .image import VirtualBoxImage
     image = VirtualBoxImage(image_path)
 
     import hashlib
@@ -41,7 +41,7 @@ def boot_image(manifest, build_server, bootstrap_info):
 
 @contextmanager
 def run_instance(image, instance_name, manifest):
-    from instance import VirtualBoxInstance
+    from .instance import VirtualBoxInstance
     instance = VirtualBoxInstance(image, instance_name,
                                   manifest.system['architecture'], manifest.release)
     try:

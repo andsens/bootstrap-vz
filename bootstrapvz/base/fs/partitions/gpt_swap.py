@@ -1,5 +1,5 @@
 from bootstrapvz.common.tools import log_check_call
-from gpt import GPTPartition
+from .gpt import GPTPartition
 
 
 class GPTSwapPartition(GPTPartition):

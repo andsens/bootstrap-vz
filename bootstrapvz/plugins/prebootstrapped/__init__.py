@@ -1,4 +1,4 @@
-import tasks
+from . import tasks
 from bootstrapvz.providers.ec2.tasks import ebs
 from bootstrapvz.plugins.minimize_size.tasks import dpkg
 from bootstrapvz.providers.virtualbox.tasks import guest_additions

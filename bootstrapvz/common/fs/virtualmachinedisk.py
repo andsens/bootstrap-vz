@@ -1,4 +1,4 @@
-from qemuvolume import QEMUVolume
+from .qemuvolume import QEMUVolume
 
 
 class VirtualMachineDisk(QEMUVolume):

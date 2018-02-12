@@ -1,7 +1,7 @@
 
 
 def resolve_tasks(taskset, manifest):
-    import tasks
+    from . import tasks
     from bootstrapvz.common.tasks import apt
     from bootstrapvz.common.releases import wheezy
     if manifest.release == wheezy:

@@ -6,6 +6,6 @@ def validate_manifest(data, validator, error):
 
 
 def resolve_tasks(taskset, manifest):
-    import tasks
+    from . import tasks
     taskset.add(tasks.AddUnattendedUpgradesPackage)
     taskset.add(tasks.EnablePeriodicUpgrades)

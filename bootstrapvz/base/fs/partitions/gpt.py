@@ -1,5 +1,5 @@
 from bootstrapvz.common.tools import log_check_call
-from base import BasePartition
+from .base import BasePartition
 
 
 class GPTPartition(BasePartition):

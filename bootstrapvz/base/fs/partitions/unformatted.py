@@ -1,4 +1,4 @@
-from base import BasePartition
+from .base import BasePartition
 
 
 class UnformattedPartition(BasePartition):

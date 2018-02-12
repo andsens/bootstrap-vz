@@ -18,7 +18,7 @@ def setup_logging():
     root = logging.getLogger()
     root.setLevel(logging.NOTSET)
 
-    from log import LogForwarder
+    from .log import LogForwarder
     log_forwarder = LogForwarder()
     root.addHandler(log_forwarder)
 

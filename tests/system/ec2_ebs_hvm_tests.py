@@ -1,5 +1,5 @@
-from manifests import merge_manifest_data
-from tools import boot_manifest
+from .manifests import merge_manifest_data
+from .tools import boot_manifest
 
 partials = {'ebs_hvm': '''
 provider:

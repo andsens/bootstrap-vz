@@ -1,5 +1,5 @@
-from manifests import merge_manifest_data
-from tools import boot_manifest
+from .manifests import merge_manifest_data
+from .tools import boot_manifest
 import random
 
 s3_bucket_name = '{id:x}'.format(id=random.randrange(16 ** 16))

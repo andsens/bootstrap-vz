@@ -1,8 +1,8 @@
-import tasks.mounts
-import tasks.shrink
-import tasks.apt
-import tasks.dpkg
-from bootstrapvz.common.tasks import dpkg, locale
+from . import tasks.mounts
+from . import tasks.shrink
+from . import tasks.apt
+from . import tasks.dpkg
+from bootstrapvz.common.tasks import locale
 
 
 def get_shrink_type(plugins):

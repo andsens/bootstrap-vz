@@ -2,7 +2,7 @@ from abc import ABCMeta
 from bootstrapvz.common.fsm_proxy import FSMProxy
 from bootstrapvz.common.tools import log_check_call
 from .exceptions import VolumeError
-from partitionmaps.none import NoPartitions
+from .partitionmaps.none import NoPartitions
 
 
 class Volume(FSMProxy):

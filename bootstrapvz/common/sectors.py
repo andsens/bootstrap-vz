@@ -1,5 +1,5 @@
-from exceptions import UnitError
-from bytes import Bytes
+from .exceptions import UnitError
+from .bytes import Bytes
 
 
 def onlysectors(msg):

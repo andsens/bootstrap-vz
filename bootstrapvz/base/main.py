@@ -19,7 +19,7 @@ def main():
     setup_loggers(opts)
 
     # Load the manifest
-    from manifest import Manifest
+    from .manifest import Manifest
     manifest = Manifest(path=opts['MANIFEST'])
 
     # Everything has been set up, begin the bootstrapping process
@@ -62,7 +62,7 @@ def setup_loggers(opts):
     root = logging.getLogger()
     root.setLevel(logging.NOTSET)
 
-    import log
+    from . import log
     # Log to file unless --log is a single dash
     if opts['--log'] != '-':
         import os.path
@@ -95,15 +95,15 @@ def run(manifest, debug=False, pause_on_error=False, dry_run=False):
 
     log = logging.getLogger(__name__)
     # Get the tasklist
-    from tasklist import load_tasks
-    from tasklist import TaskList
+    from .tasklist import load_tasks
+    from .tasklist import TaskList
     log.info('Generating tasklist')
     tasks = load_tasks('resolve_tasks', manifest)
     tasklist = TaskList(tasks)
     # 'resolve_tasks' is the name of the function to call on the provider and plugins
 
     # Create the bootstrap information object that'll be used throughout the bootstrapping process
-    from bootstrapinfo import BootstrapInformation
+    from .bootstrapinfo import BootstrapInformation
     bootstrap_info = BootstrapInformation(manifest=manifest, debug=debug)
 
     try:

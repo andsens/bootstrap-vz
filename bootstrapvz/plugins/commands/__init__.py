@@ -6,5 +6,5 @@ def validate_manifest(data, validator, error):
 
 
 def resolve_tasks(taskset, manifest):
-    from tasks import ImageExecuteCommand
+    from .tasks import ImageExecuteCommand
     taskset.add(ImageExecuteCommand)

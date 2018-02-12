@@ -1,5 +1,5 @@
-from manifests import merge_manifest_data
-from tools import boot_manifest
+from .manifests import merge_manifest_data
+from .tools import boot_manifest
 
 partials = {'vdi': '{provider: {name: virtualbox}, volume: {backing: vdi}}',
             'vmdk': '{provider: {name: virtualbox}, volume: {backing: vmdk}}',

@@ -1,4 +1,4 @@
-import tasks
+from . import tasks
 
 
 def validate_manifest(data, validator, error):

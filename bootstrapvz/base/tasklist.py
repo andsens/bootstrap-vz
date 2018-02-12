@@ -158,7 +158,7 @@ def get_all_tasks(loaded_modules):
 
     # lambda function to check whether a class is a task (excluding the superclass Task)
     def is_task(obj):
-        from task import Task
+        from .task import Task
         return issubclass(obj, Task) and obj is not Task
     return filter(is_task, classes)  # Only return classes that are tasks
 

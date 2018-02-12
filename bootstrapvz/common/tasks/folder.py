@@ -1,7 +1,7 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
-import volume
-import workspace
+from . import volume
+from . import workspace
 
 
 class Create(Task):

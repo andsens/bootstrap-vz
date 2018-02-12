@@ -1,4 +1,4 @@
-from build_server import BuildServer
+from .build_server import BuildServer
 from bootstrapvz.common.tools import log_check_call
 from contextlib import contextmanager
 import logging
@@ -21,7 +21,7 @@ class RemoteBuildServer(BuildServer):
         with self.spawn_server() as forwards:
             args = {'listen_port': forwards['local_callback_port'],
                     'remote_port': forwards['remote_callback_port']}
-            from callback import CallbackServer
+            from .callback import CallbackServer
             with CallbackServer(**args) as callback_server:
                 with connect_pyro('localhost', forwards['local_server_port']) as connection:
                     connection.set_callback_server(callback_server)

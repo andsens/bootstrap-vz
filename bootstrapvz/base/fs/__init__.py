@@ -10,9 +10,9 @@ def load_volume(data, bootloader):
     :rtype: Volume
     """
     # Map valid partition maps in the manifest and their corresponding classes
-    from partitionmaps.gpt import GPTPartitionMap
-    from partitionmaps.msdos import MSDOSPartitionMap
-    from partitionmaps.none import NoPartitions
+    from .partitionmaps.gpt import GPTPartitionMap
+    from .partitionmaps.msdos import MSDOSPartitionMap
+    from .partitionmaps.none import NoPartitions
     partition_map = {'none': NoPartitions,
                      'gpt': GPTPartitionMap,
                      'msdos': MSDOSPartitionMap,

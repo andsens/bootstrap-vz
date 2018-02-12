@@ -1,4 +1,4 @@
-from abstract import AbstractPartition
+from .abstract import AbstractPartition
 import os.path
 from bootstrapvz.common.tools import log_check_call
 

@@ -1,4 +1,4 @@
-from abstract import AbstractPartitionMap
+from .abstract import AbstractPartitionMap
 from ..partitions.gpt import GPTPartition
 from ..partitions.gpt_swap import GPTSwapPartition
 from bootstrapvz.common.tools import log_check_call

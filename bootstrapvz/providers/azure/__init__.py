@@ -1,6 +1,6 @@
 from bootstrapvz.common import task_groups
-import tasks.packages
-import tasks.boot
+from . import tasks.packages
+from . import tasks.boot
 from bootstrapvz.common.tasks import image
 from bootstrapvz.common.tasks import loopback
 from bootstrapvz.common.tasks import initd

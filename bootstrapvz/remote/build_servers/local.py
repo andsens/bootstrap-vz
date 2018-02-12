@@ -1,4 +1,4 @@
-from build_server import BuildServer
+from .build_server import BuildServer
 from contextlib import contextmanager
 
 

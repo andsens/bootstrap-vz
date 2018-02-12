@@ -1,4 +1,4 @@
-from qemuvolume import QEMUVolume
+from .qemuvolume import QEMUVolume
 from ..tools import log_check_call
 
 

@@ -1,8 +1,8 @@
 from bootstrapvz.base import Task
 from .. import phases
 from ..tools import log_check_call
-import filesystem
-import kernel
+from . import filesystem
+from . import kernel
 from bootstrapvz.base.fs import partitionmaps
 import os
 

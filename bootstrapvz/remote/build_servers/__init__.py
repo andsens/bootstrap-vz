@@ -26,10 +26,10 @@ def pick_build_server(build_servers, manifest, preferences={}):
         if not matches(name, settings):
             continue
         if settings['type'] == 'local':
-            from local import LocalBuildServer
+            from .local import LocalBuildServer
             return LocalBuildServer(name, settings)
         else:
-            from remote import RemoteBuildServer
+            from .remote import RemoteBuildServer
             return RemoteBuildServer(name, settings)
     raise Exception('Unable to find a build server that matches your preferences.')
 

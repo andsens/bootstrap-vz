@@ -1,4 +1,4 @@
-from loopbackvolume import LoopbackVolume
+from .loopbackvolume import LoopbackVolume
 from bootstrapvz.base.fs.exceptions import VolumeError
 from ..tools import log_check_call
 from . import get_partitions

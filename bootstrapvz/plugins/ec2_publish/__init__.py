@@ -4,7 +4,7 @@ def validate_manifest(data, validator, error):
 
 
 def resolve_tasks(taskset, manifest):
-    import tasks
+    from . import tasks
     taskset.add(tasks.CopyAmiToRegions)
     if 'manifest_url' in manifest.plugins['ec2_publish']:
         taskset.add(tasks.PublishAmiManifest)

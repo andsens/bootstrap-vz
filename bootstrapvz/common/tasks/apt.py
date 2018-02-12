@@ -2,7 +2,7 @@ from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 from bootstrapvz.common.tools import log_check_call
 from bootstrapvz.common.tools import rel_path
-import locale
+from . import locale
 import logging
 import os
 

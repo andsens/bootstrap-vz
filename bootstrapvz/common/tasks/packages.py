@@ -1,6 +1,6 @@
 from bootstrapvz.base import Task
 from .. import phases
-import apt
+from . import apt
 from ..tools import log_check_call
 
 

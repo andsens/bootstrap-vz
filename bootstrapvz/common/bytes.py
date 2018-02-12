@@ -1,4 +1,4 @@
-from exceptions import UnitError
+from .exceptions import UnitError
 
 
 def onlybytes(msg):

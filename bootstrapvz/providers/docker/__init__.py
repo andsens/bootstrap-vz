@@ -1,9 +1,9 @@
 from bootstrapvz.common import task_groups
 from bootstrapvz.common.tasks import apt, dpkg, folder, filesystem
 from bootstrapvz.common.tools import rel_path
-import tasks.commands
-import tasks.image
-import tasks.settings
+from . import tasks.commands
+from . import tasks.image
+from . import tasks.settings
 
 
 def validate_manifest(data, validator, error):

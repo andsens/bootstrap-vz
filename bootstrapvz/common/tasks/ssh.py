@@ -3,7 +3,7 @@ from .. import phases
 from ..tools import log_check_call
 import os.path
 from . import assets
-import initd
+from . import initd
 import shutil
 
 

@@ -1,6 +1,6 @@
 from bootstrapvz.common import task_groups
-import tasks.packages
-import tasks.boot
+from . import tasks.packages
+from . import tasks.boot
 from bootstrapvz.common.tasks import image, loopback, initd, ssh, logicalvolume
 
 
@@ -29,7 +29,7 @@ def resolve_tasks(taskset, manifest):
                         ])
 
     if manifest.provider.get('virtio', []):
-        from tasks import virtio
+        from .tasks import virtio
         taskset.update([virtio.VirtIO])
 
     if manifest.provider.get('console', False):

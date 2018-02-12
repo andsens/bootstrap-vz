@@ -4,7 +4,7 @@ def validate_manifest(data, validator, error):
 
 
 def resolve_tasks(taskset, manifest):
-    import tasks
+    from . import tasks
     taskset.add(tasks.LaunchEC2Instance)
     if 'print_public_ip' in manifest.plugins['ec2_launch']:
         taskset.add(tasks.PrintPublicIPAddress)

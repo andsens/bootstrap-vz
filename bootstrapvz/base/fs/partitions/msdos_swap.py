@@ -1,5 +1,5 @@
 from bootstrapvz.common.tools import log_check_call
-from msdos import MSDOSPartition
+from .msdos import MSDOSPartition
 
 
 class MSDOSSwapPartition(MSDOSPartition):

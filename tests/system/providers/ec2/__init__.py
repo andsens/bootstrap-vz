@@ -41,10 +41,10 @@ def boot_image(manifest, build_server, bootstrap_info, instance_type=None):
                                  aws_secret_access_key=credentials['secret-key'])
 
     if manifest.volume['backing'] == 'ebs':
-        from images import EBSImage
+        from .images import EBSImage
         image = EBSImage(bootstrap_info._ec2['image'], ec2_connection)
     if manifest.volume['backing'] == 's3':
-        from images import S3Image
+        from .images import S3Image
         image = S3Image(bootstrap_info._ec2['image'], ec2_connection)
 
     try:

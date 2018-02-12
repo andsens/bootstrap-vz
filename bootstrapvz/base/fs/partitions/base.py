@@ -1,5 +1,5 @@
 import os
-from abstract import AbstractPartition
+from .abstract import AbstractPartition
 from bootstrapvz.common.sectors import Sectors
 
 

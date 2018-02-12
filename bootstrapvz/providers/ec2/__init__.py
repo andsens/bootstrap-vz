@@ -1,14 +1,14 @@
 from bootstrapvz.common import task_groups
-import tasks.packages
-import tasks.connection
-import tasks.host
-import tasks.ami
-import tasks.ebs
-import tasks.filesystem
-import tasks.boot
-import tasks.network
-import tasks.initd
-import tasks.tuning
+from . import tasks.packages
+from . import tasks.connection
+from . import tasks.host
+from . import tasks.ami
+from . import tasks.ebs
+from . import tasks.filesystem
+from . import tasks.boot
+from . import tasks.network
+from . import tasks.initd
+from . import tasks.tuning
 from bootstrapvz.common.tasks import apt, boot, filesystem, grub, initd
 from bootstrapvz.common.tasks import kernel, loopback, volume
 from bootstrapvz.common.tools import rel_path

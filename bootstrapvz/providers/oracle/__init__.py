@@ -1,9 +1,9 @@
 from bootstrapvz.common import task_groups
 from bootstrapvz.common.tasks import image, loopback, ssh, volume
-import tasks.api
-import tasks.image
-import tasks.network
-import tasks.packages
+from . import tasks.api
+from . import tasks.image
+from . import tasks.network
+from . import tasks.packages
 
 
 def validate_manifest(data, validator, error):

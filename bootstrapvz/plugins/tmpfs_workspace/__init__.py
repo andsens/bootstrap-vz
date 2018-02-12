@@ -1,5 +1,5 @@
 from bootstrapvz.common.tasks.workspace import CreateWorkspace, DeleteWorkspace
-from tasks import CreateTmpFsWorkspace, MountTmpFsWorkspace, UnmountTmpFsWorkspace, DeleteTmpFsWorkspace
+from .tasks import CreateTmpFsWorkspace, MountTmpFsWorkspace, UnmountTmpFsWorkspace, DeleteTmpFsWorkspace
 
 
 def resolve_tasks(taskset, manifest):

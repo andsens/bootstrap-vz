@@ -1,9 +1,9 @@
 from bootstrapvz.common import task_groups
-import tasks.apt
-import tasks.boot
-import tasks.configuration
-import tasks.image
-import tasks.packages
+from . import tasks.apt
+from . import tasks.boot
+from . import tasks.configuration
+from . import tasks.image
+from . import tasks.packages
 from bootstrapvz.common.tasks import apt, boot, image, loopback, initd
 from bootstrapvz.common.tasks import ssh, volume, grub
 
