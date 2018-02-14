@@ -1,21 +1,10 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
-from bootstrapvz.common.tasks import bootstrap
-from bootstrapvz.common.tasks import workspace
+from bootstrapvz.common.tasks import bootstrap, dpkg, workspace
 from bootstrapvz.common.tools import sed_i
 import os
 import shutil
 from . import assets
-
-
-class CreateDpkgCfg(Task):
-    description = 'Creating /etc/dpkg/dpkg.cfg.d before bootstrapping'
-    phase = phases.os_installation
-    successors = [bootstrap.Bootstrap]
-
-    @classmethod
-    def run(cls, info):
-        os.makedirs(os.path.join(info.root, 'etc/dpkg/dpkg.cfg.d'))
 
 
 class InitializeBootstrapFilterList(Task):
@@ -68,7 +57,7 @@ class CreateBootstrapFilterScripts(Task):
 class FilterLocales(Task):
     description = 'Configuring dpkg and debootstrap to only include specific locales/manpages when installing packages'
     phase = phases.os_installation
-    predecessors = [CreateDpkgCfg]
+    predecessors = [dpkg.CreateDpkgCfg]
     successors = [CreateBootstrapFilterScripts]
     # Snatched from:
     # https://github.com/docker/docker/blob/1d775a54cc67e27f755c7338c3ee938498e845d7/contrib/mkimage/debootstrap
@@ -122,7 +111,7 @@ class FilterLocales(Task):
 class ExcludeDocs(Task):
     description = 'Configuring dpkg and debootstrap to not install additional documentation for packages'
     phase = phases.os_installation
-    predecessors = [CreateDpkgCfg]
+    predecessors = [dpkg.CreateDpkgCfg]
     successors = [CreateBootstrapFilterScripts]
 
     @classmethod

@@ -1,8 +1,9 @@
 from bootstrapvz.common import task_groups
-from bootstrapvz.common.tasks import apt, folder, filesystem
+from bootstrapvz.common.tasks import apt, dpkg, folder, filesystem
 from bootstrapvz.common.tools import rel_path
 import tasks.commands
 import tasks.image
+import tasks.settings
 
 
 def validate_manifest(data, validator, error):
@@ -12,7 +13,8 @@ def validate_manifest(data, validator, error):
 
 def resolve_tasks(taskset, manifest):
     taskset.update(task_groups.get_base_group(manifest))
-    taskset.update([folder.Create,
+    taskset.update([dpkg.CreateDpkgCfg,
+                    folder.Create,
                     filesystem.CopyMountTable,
                     filesystem.RemoveMountTable,
                     folder.Delete,
@@ -29,6 +31,9 @@ def resolve_tasks(taskset, manifest):
     taskset.update([tasks.commands.AddRequiredCommands,
                     tasks.image.CreateDockerfileEntry,
                     tasks.image.CreateImage,
+                    tasks.settings.DpkgUnsafeIo,
+                    tasks.settings.AutoRemoveKernel,
+                    tasks.settings.SystemdContainer
                     ])
     if 'labels' in manifest.provider:
         taskset.add(tasks.image.PopulateLabels)
