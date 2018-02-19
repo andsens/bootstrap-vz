@@ -23,5 +23,5 @@ def resolve_tasks(taskset, manifest):
     taskset.add(tasks.AddDockerBinary)
     taskset.add(tasks.AddDockerInit)
     taskset.add(tasks.EnableMemoryCgroup)
-    if len(manifest.plugins['docker_daemon'].get('pull_images', [])) > 0:
+    if manifest.plugins['docker_daemon'].get('pull_images', []):
         taskset.add(tasks.PullDockerImages)

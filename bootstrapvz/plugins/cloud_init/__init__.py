@@ -30,7 +30,7 @@ def resolve_tasks(taskset, manifest):
     options = manifest.plugins['cloud_init']
     if 'username' in options:
         taskset.add(tasks.SetUsername)
-    if 'groups' in options and len(options['groups']):
+    if 'groups' in options and options['groups']:
         taskset.add(tasks.SetGroups)
     if 'enable_modules' in options:
         taskset.add(tasks.EnableModules)

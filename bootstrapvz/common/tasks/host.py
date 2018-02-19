@@ -30,6 +30,6 @@ class CheckExternalCommands(Task):
                            'it is located in the package `{package}\'.'
                            .format(command=command, package=package))
                 missing_packages.append(msg)
-        if len(missing_packages) > 0:
+        if missing_packages:
             msg = '\n'.join(missing_packages)
             raise TaskError(msg)
