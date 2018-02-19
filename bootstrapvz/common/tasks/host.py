@@ -12,6 +12,8 @@ class CheckExternalCommands(Task):
         import re
         import os
         import logging
+        # https://github.com/PyCQA/pylint/issues/73
+        # pylint: disable=no-name-in-module,import-error,useless-suppression
         from distutils.spawn import find_executable
         missing_packages = []
         log = logging.getLogger(__name__)
