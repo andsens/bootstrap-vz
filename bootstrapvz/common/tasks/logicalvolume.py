@@ -12,7 +12,7 @@ class AddRequiredCommands(Task):
     @classmethod
     def run(cls, info):
         from bootstrapvz.common.fs.logicalvolume import LogicalVolume
-        if type(info.volume) is LogicalVolume:
+        if isinstance(info.volume, LogicalVolume):
             info.host_dependencies['lvcreate'] = 'lvm2'
             info.host_dependencies['losetup'] = 'mount'
 
