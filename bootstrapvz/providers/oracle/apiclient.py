@@ -5,7 +5,7 @@ import requests
 from bootstrapvz.common.bytes import Bytes
 
 
-class OracleStorageAPIClient:
+class OracleStorageAPIClient(object):
     def __init__(self, username, password, identity_domain, container):
         self.username = username
         self.password = password
