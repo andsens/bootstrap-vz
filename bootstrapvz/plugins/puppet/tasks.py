@@ -19,7 +19,6 @@ class CheckRequestedDebianRelease(Task):
 
     @classmethod
     def run(cls, info):
-        from bootstrapvz.common.exceptions import TaskError
         if info.manifest.release not in (jessie, wheezy, stretch):
             msg = 'Debian {info.manifest.release} is not (yet) available in the Puppetlabs.com APT repository.'
             raise TaskError(msg)
@@ -32,7 +31,6 @@ class CheckAssetsPath(Task):
 
     @classmethod
     def run(cls, info):
-        from bootstrapvz.common.exceptions import TaskError
         assets = info.manifest.plugins['puppet']['assets']
         if not os.path.exists(assets):
             msg = 'The assets directory {assets} does not exist.'.format(assets=assets)

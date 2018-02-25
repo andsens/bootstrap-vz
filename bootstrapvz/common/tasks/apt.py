@@ -141,7 +141,6 @@ class WriteSources(Task):
     @classmethod
     def run(cls, info):
         if not info.source_lists.target_exists(info.manifest.system['release']):
-            import logging
             log = logging.getLogger(__name__)
             log.warn('No default target has been specified in the sources list, '
                      'installing packages may fail')
