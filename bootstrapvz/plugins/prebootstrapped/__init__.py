@@ -10,6 +10,7 @@ from bootstrapvz.common.tasks import apt
 from bootstrapvz.common.tasks import bootstrap
 from bootstrapvz.common.tasks import filesystem
 from bootstrapvz.common.tasks import partitioning
+import bootstrapvz.common.tasks.dpkg
 
 
 def validate_manifest(data, validator, error):
@@ -31,7 +32,7 @@ def resolve_tasks(taskset, manifest):
 
                   apt.DisableDaemonAutostart,
                   dpkg.InitializeBootstrapFilterList,
-                  dpkg.CreateDpkgCfg,
+                  bootstrapvz.common.tasks.dpkg.CreateDpkgCfg,
                   dpkg.CreateBootstrapFilterScripts,
                   dpkg.FilterLocales,
                   dpkg.ExcludeDocs,

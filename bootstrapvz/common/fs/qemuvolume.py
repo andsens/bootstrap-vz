@@ -9,7 +9,12 @@ class QEMUVolume(LoopbackVolume):
     def _before_create(self, e):
         self.image_path = e.image_path
         vol_size = str(self.size.bytes.get_qty_in('MiB')) + 'M'
-        log_check_call(['qemu-img', 'create', '-f', self.qemu_format, self.image_path, vol_size])
+        log_check_call([
+                       'qemu-img',
+                       'create', '-f',
+                       self.qemu_format,  # pylint: disable=no-member
+                       self.image_path,
+                       vol_size])
 
     def _check_nbd_module(self):
         from bootstrapvz.base.fs.partitionmaps.none import NoPartitions

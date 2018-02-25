@@ -16,8 +16,9 @@ class CheckAptProxy(Task):
         proxy_url = 'http://{address}:{port}'.format(address=proxy_address, port=proxy_port)
         try:
             urllib2.urlopen(proxy_url, timeout=5)
-        except Exception as e:
+        except urllib2.URLError as e:
             # Default response from `apt-cacher-ng`
+            # pylint: disable=no-member
             if isinstance(e, urllib2.HTTPError) and e.code in [404, 406] and e.msg == 'Usage Information':
                 pass
             else:

@@ -69,6 +69,7 @@ class Server(object):
     @Pyro4.expose
     def ping(self):
         if hasattr(self, 'connection_timeout'):
+            # pylint: disable=no-member
             self.connection_timeout.cancel()
             del self.connection_timeout
         return 'pong'
