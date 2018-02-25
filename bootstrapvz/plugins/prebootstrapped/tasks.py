@@ -103,10 +103,10 @@ class CreateFromFolder(Task):
         info.volume.fsm.current = 'attached'
 
 
-def set_fs_states(volume):
-        volume.fsm.current = 'detached'
+def set_fs_states(vol):
+        vol.fsm.current = 'detached'
 
-        p_map = volume.partition_map
+        p_map = vol.partition_map
         from bootstrapvz.base.fs.partitionmaps.none import NoPartitions
         if not isinstance(p_map, NoPartitions):
             p_map.fsm.current = 'unmapped'

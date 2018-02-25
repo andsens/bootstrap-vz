@@ -134,6 +134,5 @@ class ShredHostkeys(Task):
         private = [os.path.join(info.root, 'etc/ssh', name) for name in ssh_hostkeys]
         public = [path + '.pub' for path in private]
 
-        from ..tools import log_check_call
         log_check_call(['shred', '--remove'] + [key for key in private + public
                                                 if os.path.isfile(key)])

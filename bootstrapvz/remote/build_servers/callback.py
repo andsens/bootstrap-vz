@@ -31,7 +31,6 @@ class CallbackServer(object):
     def handle_log(self, pickled_record):
         import pickle
         record = pickle.loads(pickled_record)
-        log = logging.getLogger()
         record.extra = getattr(record, 'extra', {})
         record.extra['source'] = 'remote'
         log.handle(record)
