@@ -22,7 +22,7 @@ class CallbackServer(object):
         self.thread.start()
         return self
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, exception_type, exception_value, traceback):
         log.debug('Shutting down callback server')
         self.daemon.shutdown()
         self.thread.join()

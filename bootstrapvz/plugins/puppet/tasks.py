@@ -5,7 +5,6 @@ from bootstrapvz.common.tasks import apt
 from bootstrapvz.common.exceptions import TaskError
 from bootstrapvz.common.releases import jessie, wheezy, stretch
 from bootstrapvz.common.tools import sed_i, log_check_call, rel_path
-from __builtin__ import str
 
 
 ASSETS_DIR_STRETCH = rel_path(__file__, 'assets/gpg-keyrings-PC1/stretch')
