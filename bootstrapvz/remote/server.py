@@ -115,7 +115,7 @@ class Server(object):
             try:
                 bootstrap_info = run(manifest, debug=debug, dry_run=dry_run)
                 queue.put(bootstrap_info)
-            except (Exception, KeyboardInterrupt) as e:
+            except (Exception, KeyboardInterrupt) as e:  # pylint: disable=broad-except
                 queue.put(e)
 
         from multiprocessing import Queue

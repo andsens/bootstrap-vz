@@ -32,7 +32,7 @@ enable=W0401,W0403,W0404,W0406,W0611,W0614
 # Disable the message, report, category or checker with the given id(s). You
 # can either give multiple identifier separated by comma (,) or put this option
 # multiple time.
-disable=W0511,C0111,I0011,I0020,R0201,R0801,E0632,E1121,E1601,E1608,W0102,W0106,W0108,W0110,W0201,W0212,W0311,W0402,W0612,W0613,W0621,W0640,W0703,W1201,W1202,W1401,C0103,C0301,C0325,C0326,C0330,C0411,R0401,R0914,R1710
+disable=W0511,C0111,I0011,I0020,R0201,R0801,E0632,E1121,E1601,E1608,W0102,W0106,W0108,W0110,W0201,W0212,W0311,W0402,W0612,W0613,W0621,W0640,W1201,W1202,W1401,C0103,C0301,C0325,C0326,C0330,C0411,R0401,R0914,R1710
 # W0511 fixme
 # C0111 mssing-docstring
 # I0011 locally-disabled
@@ -56,7 +56,6 @@ disable=W0511,C0111,I0011,I0020,R0201,R0801,E0632,E1121,E1601,E1608,W0102,W0106,
 # W0613(unused-argument)
 # W0621(redefined-outer-name)
 # W0640(cell-var-from-loop)
-# W0703(broad-except)
 # W1201(logging-not-lazy)
 # W1202(logging-format-interpolation)
 # W1401(anomalous-backslash-in-string)

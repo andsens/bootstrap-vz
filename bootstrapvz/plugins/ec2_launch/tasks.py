@@ -61,7 +61,7 @@ class PrintPublicIPAddress(Task):
             info._ec2['instance'] = conn.describe_instances(InstanceIds=[info._ec2['instance']['InstanceId']])['Reservations'][0]['Instances'][0]
             logger.info('******* EC2 IP ADDRESS: %s *******' % info._ec2['instance']['PublicIpAddress'])
             f.write(info._ec2['instance']['PublicIpAddress'])
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             logger.error('Could not get IP address for the instance')
             f.write('')
 
