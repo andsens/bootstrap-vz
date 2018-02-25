@@ -1,8 +1,7 @@
 from bootstrapvz.common import task_groups
-from . import tasks.packages
-from . import tasks.boot
 from bootstrapvz.common.tasks import image
 from bootstrapvz.common.tasks import loopback
+from .tasks import packages, boot
 
 
 def validate_manifest(data, validator, error):
@@ -13,8 +12,8 @@ def validate_manifest(data, validator, error):
 def resolve_tasks(taskset, manifest):
     taskset.update(task_groups.get_standard_groups(manifest))
 
-    taskset.update([tasks.packages.DefaultPackages,
-                    tasks.boot.AddVirtualConsoleGrubOutputDevice,
+    taskset.update([packages.DefaultPackages,
+                    boot.AddVirtualConsoleGrubOutputDevice,
                     loopback.AddRequiredCommands,
                     loopback.Create,
                     image.MoveImage,

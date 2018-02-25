@@ -1,8 +1,6 @@
-from . import tasks.mounts
-from . import tasks.shrink
-from . import tasks.apt
-from . import tasks.dpkg
 from bootstrapvz.common.tasks import locale
+from .tasks import mounts, shrink, apt, dpkg
+import bootstrapvz.common.tasks.dpkg
 
 
 def get_shrink_type(plugins):
@@ -33,47 +31,47 @@ def validate_manifest(data, validator, error):
 
 
 def resolve_tasks(taskset, manifest):
-    taskset.update([tasks.mounts.AddFolderMounts,
-                    tasks.mounts.RemoveFolderMounts,
+    taskset.update([mounts.AddFolderMounts,
+                    mounts.RemoveFolderMounts,
                     ])
     if manifest.plugins['minimize_size'].get('zerofree', False):
-        taskset.add(tasks.shrink.AddRequiredZeroFreeCommand)
-        taskset.add(tasks.shrink.Zerofree)
+        taskset.add(shrink.AddRequiredZeroFreeCommand)
+        taskset.add(shrink.Zerofree)
     if get_shrink_type(manifest.plugins) == 'vmware-vdiskmanager':
-        taskset.add(tasks.shrink.AddRequiredVDiskManagerCommand)
-        taskset.add(tasks.shrink.ShrinkVolumeWithVDiskManager)
+        taskset.add(shrink.AddRequiredVDiskManagerCommand)
+        taskset.add(shrink.ShrinkVolumeWithVDiskManager)
     if get_shrink_type(manifest.plugins) == 'qemu-img':
-        taskset.add(tasks.shrink.AddRequiredQemuImgCommand)
-        taskset.add(tasks.shrink.ShrinkVolumeWithQemuImg)
+        taskset.add(shrink.AddRequiredQemuImgCommand)
+        taskset.add(shrink.ShrinkVolumeWithQemuImg)
     if 'apt' in manifest.plugins['minimize_size']:
-        apt = manifest.plugins['minimize_size']['apt']
-        if apt.get('autoclean', False):
-            taskset.add(tasks.apt.AutomateAptClean)
-        if 'languages' in apt:
-            taskset.add(tasks.apt.FilterTranslationFiles)
-        if apt.get('gzip_indexes', False):
-            taskset.add(tasks.apt.AptGzipIndexes)
-        if apt.get('autoremove_suggests', False):
-            taskset.add(tasks.apt.AptAutoremoveSuggests)
+        msapt = manifest.plugins['minimize_size']['apt']
+        if msapt.get('autoclean', False):
+            taskset.add(apt.AutomateAptClean)
+        if 'languages' in msapt:
+            taskset.add(apt.FilterTranslationFiles)
+        if msapt.get('gzip_indexes', False):
+            taskset.add(apt.AptGzipIndexes)
+        if msapt.get('autoremove_suggests', False):
+            taskset.add(apt.AptAutoremoveSuggests)
     if 'dpkg' in manifest.plugins['minimize_size']:
-        filter_tasks = [dpkg.CreateDpkgCfg,
-                        tasks.dpkg.InitializeBootstrapFilterList,
-                        tasks.dpkg.CreateBootstrapFilterScripts,
-                        tasks.dpkg.DeleteBootstrapFilterScripts,
+        filter_tasks = [bootstrapvz.common.tasks.dpkg.CreateDpkgCfg,
+                        dpkg.InitializeBootstrapFilterList,
+                        dpkg.CreateBootstrapFilterScripts,
+                        dpkg.DeleteBootstrapFilterScripts,
                         ]
         msdpkg = manifest.plugins['minimize_size']['dpkg']
         if 'locales' in msdpkg:
             taskset.update(filter_tasks)
-            taskset.add(tasks.dpkg.FilterLocales)
+            taskset.add(dpkg.FilterLocales)
             # If no locales are selected, we don't need the locale package
             if msdpkg['locales']:
                 taskset.discard(locale.LocaleBootstrapPackage)
                 taskset.discard(locale.GenerateLocale)
         if msdpkg.get('exclude_docs', False):
             taskset.update(filter_tasks)
-            taskset.add(tasks.dpkg.ExcludeDocs)
+            taskset.add(dpkg.ExcludeDocs)
 
 
 def resolve_rollback_tasks(taskset, manifest, completed, counter_task):
-    counter_task(taskset, tasks.mounts.AddFolderMounts, tasks.mounts.RemoveFolderMounts)
-    counter_task(taskset, tasks.dpkg.CreateBootstrapFilterScripts, tasks.dpkg.DeleteBootstrapFilterScripts)
+    counter_task(taskset, mounts.AddFolderMounts, mounts.RemoveFolderMounts)
+    counter_task(taskset, dpkg.CreateBootstrapFilterScripts, dpkg.DeleteBootstrapFilterScripts)

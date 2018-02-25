@@ -1,9 +1,7 @@
 from bootstrapvz.common import task_groups
 from bootstrapvz.common.tasks import apt, dpkg, folder, filesystem
 from bootstrapvz.common.tools import rel_path
-from . import tasks.commands
-from . import tasks.image
-from . import tasks.settings
+from .tasks import commands, image, settings
 
 
 def validate_manifest(data, validator, error):
@@ -28,17 +26,17 @@ def resolve_tasks(taskset, manifest):
     # Let the autostart of daemons by apt remain disabled
     taskset.discard(apt.EnableDaemonAutostart)
 
-    taskset.update([tasks.commands.AddRequiredCommands,
-                    tasks.image.CreateDockerfileEntry,
-                    tasks.image.CreateImage,
-                    tasks.settings.DpkgUnsafeIo,
-                    tasks.settings.AutoRemoveKernel,
-                    tasks.settings.SystemdContainer
+    taskset.update([commands.AddRequiredCommands,
+                    image.CreateDockerfileEntry,
+                    image.CreateImage,
+                    settings.DpkgUnsafeIo,
+                    settings.AutoRemoveKernel,
+                    settings.SystemdContainer
                     ])
     if 'labels' in manifest.provider:
-        taskset.add(tasks.image.PopulateLabels)
+        taskset.add(image.PopulateLabels)
     if 'dockerfile' in manifest.provider:
-        taskset.add(tasks.image.AppendManifestDockerfile)
+        taskset.add(image.AppendManifestDockerfile)
 
 
 def resolve_rollback_tasks(taskset, manifest, completed, counter_task):
