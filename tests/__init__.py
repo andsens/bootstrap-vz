@@ -4,6 +4,6 @@
 def recursive_glob(path, pattern):
     import fnmatch
     import os
-    for path, dirnames, filenames in os.walk(path):
+    for root, dirnames, filenames in os.walk(path):
         for filename in fnmatch.filter(filenames, pattern):
-            yield os.path.join(path, filename)
+            yield os.path.join(root, filename)

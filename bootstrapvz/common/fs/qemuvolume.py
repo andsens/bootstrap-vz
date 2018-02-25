@@ -62,8 +62,8 @@ class QEMUVolume(LoopbackVolume):
     def _module_param(self, module, param):
         import os.path
         param_path = os.path.join('/sys/module', module, 'parameters', param)
-        with open(param_path) as param:
-            return param.read().strip()
+        with open(param_path) as param_file:
+            return param_file.read().strip()
 
     # From http://lists.gnu.org/archive/html/qemu-devel/2011-11/msg02201.html
     # Apparently it's not in the current qemu-nbd shipped with wheezy
