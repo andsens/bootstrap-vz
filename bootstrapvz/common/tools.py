@@ -22,7 +22,7 @@ def log_call(command, stdin=None, env=None, shell=False, cwd=None):
 
     command_log = realpath(command[0]).replace('/', '.')
     log = logging.getLogger(__name__ + command_log)
-    if type(command) is list:
+    if isinstance(command, list):
         log.debug('Executing: {command}'.format(command=' '.join(command)))
     else:
         log.debug('Executing: {command}'.format(command=command))

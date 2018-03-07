@@ -21,7 +21,7 @@ class GPTPartitionMap(AbstractPartitionMap):
 
         # Returns the last partition unless there is none
         def last_partition():
-            return self.partitions[-1] if len(self.partitions) > 0 else None
+            return self.partitions[-1] if self.partitions else None
 
         if bootloader == 'grub':
             # If we are using the grub bootloader we need to create an unformatted partition

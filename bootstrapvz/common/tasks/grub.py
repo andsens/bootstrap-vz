@@ -211,7 +211,7 @@ class WriteGrubConfig(Task):
             elif isinstance(value, bool):
                 grub_config_contents += '{}="{}"\n'.format(key, str(value).lower())
             elif isinstance(value, list):
-                if len(value) > 0:
+                if value:
                     args_list = ' '.join(map(str, value))
                     grub_config_contents += '{}="{}"\n'.format(key, args_list)
             elif value is not None:

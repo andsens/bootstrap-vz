@@ -34,9 +34,9 @@ def get_bootstrap_args(info):
         else:
             from bootstrapvz.common.exceptions import ManifestError
             raise ManifestError('force-check-gpg is only support in Stretch and newer releases')
-    if len(info.include_packages) > 0:
+    if info.include_packages:
         options.append('--include=' + ','.join(info.include_packages))
-    if len(info.exclude_packages) > 0:
+    if info.exclude_packages:
         options.append('--exclude=' + ','.join(info.exclude_packages))
     mirror = info.manifest.bootstrapper.get('mirror', info.apt_mirror)
     arguments = [info.manifest.system['release'], info.root, mirror]
