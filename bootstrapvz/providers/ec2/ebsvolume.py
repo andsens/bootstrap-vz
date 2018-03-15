@@ -4,18 +4,26 @@ from bootstrapvz.base.fs.exceptions import VolumeError
 
 class EBSVolume(Volume):
 
-    def create(self, conn, zone, tags=[]):
-        self.fsm.create(connection=conn, zone=zone, tags=tags)
+    def create(self, conn, zone, tags=[], encrypted=False, kms_key_id=None):
+        self.fsm.create(connection=conn, zone=zone, tags=tags, encrypted=encrypted, kms_key_id=kms_key_id)
 
     def _before_create(self, e):
         self.conn = e.connection
         zone = e.zone
         tags = e.tags
         size = self.size.bytes.get_qty_in('GiB')
-        self.volume = self.conn.create_volume(Size=size,
-                                              AvailabilityZone=zone,
-                                              VolumeType='gp2',
-                                              TagSpecifications=[{'ResourceType': 'volume', 'Tags': tags}])
+
+        params = dict(Size=size,
+                      AvailabilityZone=zone,
+                      VolumeType='gp2',
+                      TagSpecifications=[{'ResourceType': 'volume', 'Tags': tags}],
+                      Encrypted=e.encrypted)
+
+        if e.encrypted and e.kms_key_id:
+            params['KmsKeyId'] = e.kms_key_id
+
+        self.volume = self.conn.create_volume(**params)
+
         self.vol_id = self.volume['VolumeId']
         waiter = self.conn.get_waiter('volume_available')
         waiter.wait(VolumeIds=[self.vol_id],
