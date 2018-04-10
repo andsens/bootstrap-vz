@@ -39,5 +39,5 @@ class SetSystemdTTYVTDisallocate(Task):
         src = os.path.join(assets, 'noclear.conf')
         dst_dir = os.path.join(info.root, 'etc/systemd/system/getty@tty1.service.d')
         dst = os.path.join(dst_dir, 'noclear.conf')
-        os.mkdir(dst_dir, 0755)
+        os.mkdir(dst_dir, 0o755)
         copy(src, dst)

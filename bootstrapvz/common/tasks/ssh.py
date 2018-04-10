@@ -49,7 +49,7 @@ class AddSSHKeyGeneration(Task):
                 shutil.copy(ssh_keygen_host_service, ssh_keygen_host_service_dest)
 
                 shutil.copy(ssh_keygen_host_script, ssh_keygen_host_script_dest)
-                os.chmod(ssh_keygen_host_script_dest, 0750)
+                os.chmod(ssh_keygen_host_script_dest, 0o750)
 
                 # Enable systemd service
                 log_check_call(['chroot', info.root, 'systemctl', 'enable', 'ssh-generate-hostkeys.service'])

@@ -56,8 +56,8 @@ class InstallNetworkingUDevHotplugAndDHCPSubinterface(Task):
              os.path.join(script_dst, 'udev/rules.d/53-ec2-network-interfaces.rules'))
         os.chmod(os.path.join(script_dst, 'udev/rules.d/53-ec2-network-interfaces.rules'), rwxr_xr_x)
 
-        os.mkdir(os.path.join(script_dst, 'sysconfig'), 0755)
-        os.mkdir(os.path.join(script_dst, 'sysconfig/network-scripts'), 0755)
+        os.mkdir(os.path.join(script_dst, 'sysconfig'), 0o755)
+        os.mkdir(os.path.join(script_dst, 'sysconfig/network-scripts'), 0o755)
         copy(os.path.join(script_src, 'ec2net.hotplug'),
              os.path.join(script_dst, 'sysconfig/network-scripts/ec2net.hotplug'))
         os.chmod(os.path.join(script_dst, 'sysconfig/network-scripts/ec2net.hotplug'), rwxr_xr_x)

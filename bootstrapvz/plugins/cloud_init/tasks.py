@@ -136,4 +136,4 @@ class SetCloudInitMountOptions(Task):
         cloud_init_src = os.path.join(assets, 'cloud-init/debian_cloud.cfg')
         cloud_init_dst = os.path.join(info.root, 'etc/cloud/cloud.cfg.d/01_debian_cloud.cfg')
         copy(cloud_init_src, cloud_init_dst)
-        os.chmod(cloud_init_dst, 0644)
+        os.chmod(cloud_init_dst, 0o644)

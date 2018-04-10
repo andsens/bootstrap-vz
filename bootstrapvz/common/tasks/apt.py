@@ -180,12 +180,12 @@ class DisableDaemonAutostart(Task):
         with open(rc_policy_path, 'w') as rc_policy:
             rc_policy.write(('#!/bin/sh\n'
                              'exit 101'))
-        os.chmod(rc_policy_path, 0755)
+        os.chmod(rc_policy_path, 0o755)
         initictl_path = os.path.join(info.root, 'sbin/initctl')
         with open(initictl_path, 'w') as initctl:
             initctl.write(('#!/bin/sh\n'
                            'exit 0'))
-        os.chmod(initictl_path, 0755)
+        os.chmod(initictl_path, 0o755)
 
 
 class AptUpdate(Task):

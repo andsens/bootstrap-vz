@@ -14,7 +14,7 @@ class TuneSystem(Task):
         sysctl_src = os.path.join(assets, 'sysctl.d/tuning.conf')
         sysctl_dst = os.path.join(info.root, 'etc/sysctl.d/01_ec2.conf')
         copy(sysctl_src, sysctl_dst)
-        os.chmod(sysctl_dst, 0644)
+        os.chmod(sysctl_dst, 0o644)
 
 
 class BlackListModules(Task):
