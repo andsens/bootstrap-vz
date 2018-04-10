@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 from bootstrapvz.common.tools import log_check_call
@@ -98,7 +100,7 @@ class DisableModules(Task):
         import fileinput
         for line in fileinput.input(files=cloud_cfg, inplace=True):
             if not regex.match(line):
-                print line,
+                print(line, end=' ')
 
 
 class EnableModules(Task):
@@ -122,7 +124,7 @@ class EnableModules(Task):
                         count = count + 1
                     if int(entry['position']) == int(count):
                         print(" - %s" % entry['module'])
-                    print line,
+                    print(line, end=' ')
 
 
 class SetCloudInitMountOptions(Task):

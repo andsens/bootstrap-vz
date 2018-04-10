@@ -2,6 +2,8 @@ from .manifests import merge_manifest_data
 from .tools import boot_manifest
 import random
 
+# pylint: disable=print-statement
+
 s3_bucket_name = '{id:x}'.format(id=random.randrange(16 ** 16))
 partials = {'s3_pvm': '''
 provider:

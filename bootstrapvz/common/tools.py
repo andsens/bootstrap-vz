@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 
 
@@ -82,7 +83,7 @@ def inline_replace(file_path, pattern, subst):
     for line in fileinput.input(files=file_path, inplace=True):
         (replacement, count) = re.subn(pattern, subst, line)
         replacement_count += count
-        print replacement,
+        print(replacement, end=' ')
     return replacement_count
 
 

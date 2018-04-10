@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 
@@ -27,6 +29,6 @@ class SetNtpServers(Task):
             # Will write all the specified servers on the first match, then supress all other default servers
             if re.match(debian_ntp_server, line):
                 while servers:
-                    print 'server {server_address} iburst'.format(server_address=servers.pop(0))
+                    print('server {server_address} iburst'.format(server_address=servers.pop(0)))
             else:
-                print line,
+                print(line, end=' ')

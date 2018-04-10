@@ -26,4 +26,4 @@ def test_stable():
     custom_partials = [partials['docker']]
     manifest_data = merge_manifest_data(std_partials, custom_partials)
     with boot_manifest(manifest_data) as instance:
-        print('\n'.join(instance.run(['echo', 'test'])))
+        print('\n'.join(instance.run(['echo', 'test'])))  # pylint: disable=print-statement
