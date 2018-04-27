@@ -1,7 +1,8 @@
+import os.path
+
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 from bootstrapvz.common.tasks import kernel
-import os.path
 
 
 class InstallDHCPCD(Task):
@@ -89,8 +90,8 @@ class InstallEnhancedNetworking(Task):
     def run(cls, info):
         from bootstrapvz.common.releases import stretch
         if info.manifest.release >= stretch:
-            version = '4.2.1'
-            drivers_url = 'https://downloadmirror.intel.com/27160/eng/ixgbevf-4.2.1.tar.gz'
+            version = '4.3.4'
+            drivers_url = 'https://downloadmirror.intel.com/18700/eng/ixgbevf-4.3.4.tar.gz'
         else:
             version = '3.2.2'
             drivers_url = 'https://downloadmirror.intel.com/26561/eng/ixgbevf-3.2.2.tar.gz'
