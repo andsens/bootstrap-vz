@@ -8,7 +8,7 @@ properties:
     properties:
       name:
         type: string
-        enum: [virtualbox]
+        enum: [virtualbox, kvm]
   system:
     required: [hostname]
   volume:
@@ -16,11 +16,15 @@ properties:
     properties:
       backing:
         type: string
-        enum: [vmdk]
+        enum: [vmdk, qcow2]
     required: [backing]
   plugins:
     type: object
     properties:
       vagrant:
         type: object
+        properties:
+          provider:
+            type: string
+            enum: [virtualbox, libvirt]
         additionalProperties: false

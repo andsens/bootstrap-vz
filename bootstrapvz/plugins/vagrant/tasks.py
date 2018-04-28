@@ -4,6 +4,7 @@ from bootstrapvz.common.tasks import workspace
 from bootstrapvz.common.tools import rel_path
 import os
 import shutil
+import json
 
 assets = rel_path(__file__, 'assets')
 
@@ -128,17 +129,28 @@ class PackageBox(Task):
         from bootstrapvz.common.tools import sed_i
         sed_i(vagrantfile, '\\[MAC_ADDRESS\\]', mac_address)
 
-        metadata_source = os.path.join(assets, 'metadata.json')
-        metadata = os.path.join(info._vagrant['folder'], 'metadata.json')
-        shutil.copy(metadata_source, metadata)
+        vagrant_provider = info.manifest.plugins['vagrant'].get('provider', 'virtualbox')
+        metadata = {'provider': vagrant_provider}
+
+        if vagrant_provider == 'libvirt':
+            metadata['format'] = info.manifest.volume['backing']
+            virtual_size = info.volume.size.bytes.get_qty_in('G')
+            metadata['virtual_size'] = virtual_size
+
+        metadata_file = os.path.join(info._vagrant['folder'], 'metadata.json')
+        with open(metadata_file, 'w') as f:
+            json.dump(metadata, f)
 
         from bootstrapvz.common.tools import log_check_call
-        disk_name = 'box-disk1.' + info.volume.extension
+        if vagrant_provider == 'libvirt':
+            disk_name = 'box.img'
+        else:
+            disk_name = 'box-disk1.' + info.volume.extension
+            ovf_path = os.path.join(info._vagrant['folder'], 'box.ovf')
+            cls.write_ovf(info, ovf_path, mac_address, disk_name)
+
         disk_link = os.path.join(info._vagrant['folder'], disk_name)
         log_check_call(['ln', '-s', info.volume.image_path, disk_link])
-
-        ovf_path = os.path.join(info._vagrant['folder'], 'box.ovf')
-        cls.write_ovf(info, ovf_path, mac_address, disk_name)
 
         box_files = os.listdir(info._vagrant['folder'])
         log_check_call(['tar', '--create', '--gzip', '--dereference',
