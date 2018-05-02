@@ -6,6 +6,11 @@ from bootstrapvz.common.tools import rel_path
 
 def validate_manifest(data, validator, error):
     validator(data, rel_path(__file__, 'manifest-schema.yml'))
+    vagrant_provider = data['plugins']['vagrant'].get('provider', 'virtualbox')
+    if vagrant_provider == 'virtualbox' and data['volume']['backing'] != 'vmdk':
+        error('Virtualbox vagrant boxes support vmdk images only', ['plugins', 'vagrant', 'provider'])
+    if vagrant_provider == 'libvirt' and data['volume']['backing'] != 'qcow2':
+        error('Libvirt vagrant boxes support qcow2 images only', ['plugins', 'vagrant', 'provider'])
 
 
 def resolve_tasks(taskset, manifest):
