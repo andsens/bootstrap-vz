@@ -115,6 +115,7 @@ class InstallTrustedKeys(Task):
             key_name = os.path.basename(key_path)
             destination = os.path.join(info.root, 'etc/apt/trusted.gpg.d', key_name)
             copy(key_path, destination)
+            os.chmod(destination, 0o644)
 
 
 class WriteConfiguration(Task):
