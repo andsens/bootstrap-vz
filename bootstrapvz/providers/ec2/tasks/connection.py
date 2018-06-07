@@ -1,6 +1,6 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
-import host
+from . import host
 
 
 class SilenceBotoDebug(Task):

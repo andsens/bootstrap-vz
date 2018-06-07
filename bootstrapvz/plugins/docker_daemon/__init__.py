@@ -1,5 +1,5 @@
 from bootstrapvz.common.tools import rel_path
-import tasks
+from . import tasks
 from bootstrapvz.common.tasks import apt
 from bootstrapvz.common.releases import wheezy
 

@@ -112,7 +112,7 @@ class AdminUserPublicKey(Task):
 
         # Create the ssh dir if nobody has created it yet
         if not os.path.exists(ssh_dir_abs):
-            os.mkdir(ssh_dir_abs, 0700)
+            os.mkdir(ssh_dir_abs, 0o700)
 
         # Create (or append to) the authorized keys file (and chmod u=rw,go=)
         import stat

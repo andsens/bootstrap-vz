@@ -22,8 +22,7 @@ class PackageList(object):
             """
             if self.target is None:
                 return self.name
-            else:
-                return self.name + '/' + self.target
+            return self.name + '/' + self.target
 
     class Local(object):
         """A local package
@@ -66,7 +65,7 @@ class PackageList(object):
         :raises PackageError: When a package of the same name but with a different target has already been added.
         :raises PackageError: When the specified target release could not be found.
         """
-        from exceptions import PackageError
+        from .exceptions import PackageError
         name = name.format(**self.manifest_vars)
         if target is not None:
             target = target.format(**self.manifest_vars)

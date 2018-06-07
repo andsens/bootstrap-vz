@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 
 
@@ -67,7 +68,7 @@ def log_call(command, stdin=None, env=None, shell=False, cwd=None):
 def sed_i(file_path, pattern, subst, expected_replacements=1):
     replacement_count = inline_replace(file_path, pattern, subst)
     if replacement_count != expected_replacements:
-        from exceptions import UnexpectedNumMatchesError
+        from .exceptions import UnexpectedNumMatchesError
         msg = ('There were {real} instead of {expected} matches for '
                'the expression `{exp}\' in the file `{path}\''
                .format(real=replacement_count, expected=expected_replacements,
@@ -82,7 +83,7 @@ def inline_replace(file_path, pattern, subst):
     for line in fileinput.input(files=file_path, inplace=True):
         (replacement, count) = re.subn(pattern, subst, line)
         replacement_count += count
-        print replacement,
+        print(replacement, end=' ')
     return replacement_count
 
 
@@ -136,5 +137,4 @@ def copy_tree(from_path, to_path):
 
 
 def rel_path(base, path):
-    import os.path
     return os.path.normpath(os.path.join(os.path.dirname(base), path))

@@ -1,16 +1,10 @@
 from bootstrapvz.common import task_groups
-import tasks.packages
-import tasks.connection
-import tasks.host
-import tasks.ami
-import tasks.ebs
-import tasks.filesystem
-import tasks.boot
-import tasks.network
-import tasks.initd
-import tasks.tuning
-from bootstrapvz.common.tasks import apt, boot, filesystem, grub, initd
-from bootstrapvz.common.tasks import kernel, loopback, volume
+from .tasks import packages, connection, host, ami, ebs, filesystem, boot, network, initd, tuning
+import bootstrapvz.common.tasks.boot
+import bootstrapvz.common.tasks.filesystem
+import bootstrapvz.common.tasks.grub
+import bootstrapvz.common.tasks.initd
+from bootstrapvz.common.tasks import apt, kernel, loopback, volume
 from bootstrapvz.common.tools import rel_path
 
 
@@ -57,94 +51,94 @@ def resolve_tasks(taskset, manifest):
     taskset.update(task_groups.get_standard_groups(manifest))
     taskset.update(task_groups.ssh_group)
 
-    taskset.update([tasks.host.AddExternalCommands,
-                    tasks.packages.DefaultPackages,
-                    tasks.connection.SilenceBotoDebug,
-                    tasks.connection.GetCredentials,
-                    tasks.ami.AMIName,
-                    tasks.connection.Connect,
+    taskset.update([host.AddExternalCommands,
+                    packages.DefaultPackages,
+                    connection.SilenceBotoDebug,
+                    connection.GetCredentials,
+                    ami.AMIName,
+                    connection.Connect,
 
-                    tasks.tuning.TuneSystem,
-                    tasks.tuning.BlackListModules,
-                    boot.BlackListModules,
-                    boot.DisableGetTTYs,
-                    tasks.boot.AddXenGrubConsoleOutputDevice,
-                    grub.WriteGrubConfig,
-                    tasks.boot.UpdateGrubConfig,
-                    initd.AddExpandRoot,
-                    initd.RemoveHWClock,
-                    initd.InstallInitScripts,
-                    tasks.ami.RegisterAMI,
+                    tuning.TuneSystem,
+                    tuning.BlackListModules,
+                    bootstrapvz.common.tasks.boot.BlackListModules,
+                    bootstrapvz.common.tasks.boot.DisableGetTTYs,
+                    boot.AddXenGrubConsoleOutputDevice,
+                    bootstrapvz.common.tasks.grub.WriteGrubConfig,
+                    boot.UpdateGrubConfig,
+                    bootstrapvz.common.tasks.initd.AddExpandRoot,
+                    bootstrapvz.common.tasks.initd.RemoveHWClock,
+                    bootstrapvz.common.tasks.initd.InstallInitScripts,
+                    ami.RegisterAMI,
                     ])
 
     if manifest.release > wheezy:
-        taskset.add(tasks.network.InstallNetworkingUDevHotplugAndDHCPSubinterface)
+        taskset.add(network.InstallNetworkingUDevHotplugAndDHCPSubinterface)
 
     if manifest.release <= wheezy:
         # The default DHCP client `isc-dhcp' doesn't work properly on wheezy and earlier
-        taskset.add(tasks.network.InstallDHCPCD)
-        taskset.add(tasks.network.EnableDHCPCDDNS)
+        taskset.add(network.InstallDHCPCD)
+        taskset.add(network.EnableDHCPCDDNS)
 
     if manifest.release >= jessie:
-        taskset.add(tasks.packages.AddWorkaroundGrowpart)
-        taskset.add(initd.AdjustGrowpartWorkaround)
+        taskset.add(packages.AddWorkaroundGrowpart)
+        taskset.add(bootstrapvz.common.tasks.initd.AdjustGrowpartWorkaround)
         if manifest.system['bootloader'] == 'grub':
-            taskset.add(grub.EnableSystemd)
+            taskset.add(bootstrapvz.common.tasks.grub.EnableSystemd)
         if manifest.release <= stable:
             taskset.add(apt.AddBackports)
 
     if manifest.provider.get('install_init_scripts', True):
-        taskset.add(tasks.initd.AddEC2InitScripts)
+        taskset.add(initd.AddEC2InitScripts)
 
     if manifest.volume['partitions']['type'] != 'none':
-        taskset.add(initd.AdjustExpandRootScript)
+        taskset.add(bootstrapvz.common.tasks.initd.AdjustExpandRootScript)
 
     if manifest.system['bootloader'] == 'pvgrub':
-        taskset.add(grub.AddGrubPackage)
-        taskset.update([grub.AddGrubPackage,
-                        grub.InitGrubConfig,
-                        grub.SetGrubTerminalToConsole,
-                        grub.SetGrubConsolOutputDeviceToSerial,
-                        grub.RemoveGrubTimeout,
-                        grub.DisableGrubRecovery,
-                        tasks.boot.CreatePVGrubCustomRule,
-                        tasks.boot.ConfigurePVGrub,
-                        grub.WriteGrubConfig,
-                        tasks.boot.UpdateGrubConfig,
-                        tasks.boot.LinkGrubConfig])
+        taskset.add(bootstrapvz.common.tasks.grub.AddGrubPackage)
+        taskset.update([bootstrapvz.common.tasks.grub.AddGrubPackage,
+                        bootstrapvz.common.tasks.grub.InitGrubConfig,
+                        bootstrapvz.common.tasks.grub.SetGrubTerminalToConsole,
+                        bootstrapvz.common.tasks.grub.SetGrubConsolOutputDeviceToSerial,
+                        bootstrapvz.common.tasks.grub.RemoveGrubTimeout,
+                        bootstrapvz.common.tasks.grub.DisableGrubRecovery,
+                        boot.CreatePVGrubCustomRule,
+                        boot.ConfigurePVGrub,
+                        bootstrapvz.common.tasks.grub.WriteGrubConfig,
+                        boot.UpdateGrubConfig,
+                        boot.LinkGrubConfig])
 
     if manifest.volume['backing'].lower() == 'ebs':
-        taskset.update([tasks.host.GetInstanceMetadata,
-                        tasks.ebs.Create,
-                        tasks.ebs.Snapshot,
+        taskset.update([host.GetInstanceMetadata,
+                        ebs.Create,
+                        ebs.Snapshot,
                         ])
-        taskset.add(tasks.ebs.Attach)
+        taskset.add(ebs.Attach)
         taskset.discard(volume.Attach)
 
     if manifest.volume['backing'].lower() == 's3':
         taskset.update([loopback.AddRequiredCommands,
-                        tasks.host.SetRegion,
+                        host.SetRegion,
                         loopback.Create,
-                        tasks.filesystem.S3FStab,
-                        tasks.ami.BundleImage,
-                        tasks.ami.UploadImage,
-                        tasks.ami.RemoveBundle,
+                        filesystem.S3FStab,
+                        ami.BundleImage,
+                        ami.UploadImage,
+                        ami.RemoveBundle,
                         ])
-        taskset.discard(filesystem.FStab)
+        taskset.discard(bootstrapvz.common.tasks.filesystem.FStab)
 
     if manifest.provider.get('enhanced_networking', None) == 'simple':
         taskset.update([kernel.AddDKMSPackages,
-                        tasks.network.InstallEnhancedNetworking,
-                        tasks.network.InstallENANetworking,
+                        network.InstallEnhancedNetworking,
+                        network.InstallENANetworking,
                         kernel.UpdateInitramfs])
 
-    taskset.update([filesystem.Format,
+    taskset.update([bootstrapvz.common.tasks.filesystem.Format,
                     volume.Delete,
                     ])
 
 
 def resolve_rollback_tasks(taskset, manifest, completed, counter_task):
     taskset.update(task_groups.get_standard_rollback_tasks(completed))
-    counter_task(taskset, tasks.ebs.Create, volume.Delete)
-    counter_task(taskset, tasks.ebs.Attach, volume.Detach)
-    counter_task(taskset, tasks.ami.BundleImage, tasks.ami.RemoveBundle)
+    counter_task(taskset, ebs.Create, volume.Delete)
+    counter_task(taskset, ebs.Attach, volume.Detach)
+    counter_task(taskset, ami.BundleImage, ami.RemoveBundle)

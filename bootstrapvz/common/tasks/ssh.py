@@ -3,7 +3,7 @@ from .. import phases
 from ..tools import log_check_call
 import os.path
 from . import assets
-import initd
+from . import initd
 import shutil
 
 
@@ -49,7 +49,7 @@ class AddSSHKeyGeneration(Task):
                 shutil.copy(ssh_keygen_host_service, ssh_keygen_host_service_dest)
 
                 shutil.copy(ssh_keygen_host_script, ssh_keygen_host_script_dest)
-                os.chmod(ssh_keygen_host_script_dest, 0750)
+                os.chmod(ssh_keygen_host_script_dest, 0o750)
 
                 # Enable systemd service
                 log_check_call(['chroot', info.root, 'systemctl', 'enable', 'ssh-generate-hostkeys.service'])
@@ -134,6 +134,5 @@ class ShredHostkeys(Task):
         private = [os.path.join(info.root, 'etc/ssh', name) for name in ssh_hostkeys]
         public = [path + '.pub' for path in private]
 
-        from ..tools import log_check_call
         log_check_call(['shred', '--remove'] + [key for key in private + public
                                                 if os.path.isfile(key)])

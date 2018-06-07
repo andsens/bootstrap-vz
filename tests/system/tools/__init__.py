@@ -75,7 +75,7 @@ def read_from_socket(socket_path, termination_string, timeout, read_timeout=0.5)
                             raise Exception(e)
                         continue_select = False
             if default_timer() - start > timeout:
-                from exceptions import SocketReadTimeout
+                from .exceptions import SocketReadTimeout
                 msg = ('Reading from socket `{path}\' timed out after {seconds} seconds.\n'
                        'Here is the output so far:\n{output}'
                        .format(path=socket_path, seconds=timeout, output=output))

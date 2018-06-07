@@ -48,7 +48,7 @@ def boot_image(manifest, build_server, bootstrap_info):
                 build_server.remote_command(['sudo', 'docker', 'rmi',
                                              bootstrap_info._docker['image_id']])
 
-        from image import Image
+        from .image import Image
         with Image(image_id, docker_env) as container:
             yield container
     finally:

@@ -18,7 +18,7 @@ def setup_logging():
     root = logging.getLogger()
     root.setLevel(logging.NOTSET)
 
-    from log import LogForwarder
+    from .log import LogForwarder
     log_forwarder = LogForwarder()
     root.addHandler(log_forwarder)
 
@@ -69,6 +69,7 @@ class Server(object):
     @Pyro4.expose
     def ping(self):
         if hasattr(self, 'connection_timeout'):
+            # pylint: disable=no-member
             self.connection_timeout.cancel()
             del self.connection_timeout
         return 'pong'
@@ -114,7 +115,7 @@ class Server(object):
             try:
                 bootstrap_info = run(manifest, debug=debug, dry_run=dry_run)
                 queue.put(bootstrap_info)
-            except (Exception, KeyboardInterrupt) as e:
+            except (Exception, KeyboardInterrupt) as e:  # pylint: disable=broad-except
                 queue.put(e)
 
         from multiprocessing import Queue

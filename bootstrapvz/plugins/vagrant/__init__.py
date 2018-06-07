@@ -1,4 +1,4 @@
-import tasks
+from . import tasks
 from bootstrapvz.common import task_groups
 from bootstrapvz.common.tasks import image, ssh, volume
 from bootstrapvz.common.tools import rel_path

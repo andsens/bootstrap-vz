@@ -1,6 +1,6 @@
 from bootstrapvz.base import Task
 from .. import phases
-import apt
+from . import apt
 from ..tools import log_check_call
 
 
@@ -41,7 +41,6 @@ class InstallPackages(Task):
     @classmethod
     def install_remote(cls, info, remote_packages):
         import os
-        from ..tools import log_check_call
         from subprocess import CalledProcessError
         try:
             env = os.environ.copy()

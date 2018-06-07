@@ -48,7 +48,7 @@ class CreateBootstrapFilterScripts(Task):
         include_list = '\n'.join(map(lambda p: '.' + p, filter_lists['include']))
         sed_i(filter_script, r'EXCLUDE_PATTERN', exclude_list)
         sed_i(filter_script, r'INCLUDE_PATHS', include_list)
-        os.chmod(filter_script, 0755)
+        os.chmod(filter_script, 0o755)
 
         info.bootstrap_script = bootstrap_script
         info._minimize_size['filter_script'] = filter_script

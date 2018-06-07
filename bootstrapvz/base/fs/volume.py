@@ -2,7 +2,7 @@ from abc import ABCMeta
 from bootstrapvz.common.fsm_proxy import FSMProxy
 from bootstrapvz.common.tools import log_check_call
 from .exceptions import VolumeError
-from partitionmaps.none import NoPartitions
+from .partitionmaps.none import NoPartitions
 
 
 class Volume(FSMProxy):
@@ -82,7 +82,9 @@ class Volume(FSMProxy):
         :raises VolumeError: When a free block device cannot be found.
         """
         import os.path
+        import string
         from bootstrapvz.common.fs import get_partitions
+
         # Fetch information from /proc/partitions
         proc_partitions = get_partitions()
         device_name = os.path.basename(self.device_path)
@@ -104,8 +106,7 @@ class Volume(FSMProxy):
                          major=device_partition['major'],
                          minor=device_partition['minor'],
                          start_sec=start_sector))
-        import string
-        import os.path
+
         # Figure out the device letter and path
         for letter in string.ascii_lowercase:
             dev_name = 'vd' + letter

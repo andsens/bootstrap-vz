@@ -1,5 +1,5 @@
 import os
-from abstract import AbstractPartition
+from .abstract import AbstractPartition
 from bootstrapvz.common.sectors import Sectors
 
 
@@ -52,9 +52,8 @@ class BasePartition(AbstractPartition):
         if self.previous is None:
             # Partitions are 1 indexed
             return 1
-        else:
-            # Recursive call to the previous partition, walking up the chain...
-            return self.previous.get_index() + 1
+        # Recursive call to the previous partition, walking up the chain...
+        return self.previous.get_index() + 1
 
     def get_start(self):
         """Gets the starting byte of this partition
@@ -64,8 +63,7 @@ class BasePartition(AbstractPartition):
         """
         if self.previous is None:
             return Sectors(0, self.size.sector_size)
-        else:
-            return self.previous.get_end()
+        return self.previous.get_end()
 
     def map(self, device_path):
         """Maps the partition to a device_path

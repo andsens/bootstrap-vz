@@ -1,9 +1,7 @@
+import bootstrapvz.common.tasks.image
 from bootstrapvz.common import task_groups
-from bootstrapvz.common.tasks import image, loopback, ssh, volume
-import tasks.api
-import tasks.image
-import tasks.network
-import tasks.packages
+from bootstrapvz.common.tasks import loopback, ssh, volume
+from .tasks import api, image, network, packages
 
 
 def validate_manifest(data, validator, error):
@@ -26,20 +24,20 @@ def resolve_tasks(taskset, manifest):
 
     taskset.update([loopback.AddRequiredCommands,
                     loopback.Create,
-                    image.MoveImage,
+                    bootstrapvz.common.tasks.image.MoveImage,
                     ssh.DisableRootLogin,
                     volume.Delete,
-                    tasks.image.CreateImageTarball,
-                    tasks.network.InstallDHCPCD,
-                    tasks.packages.DefaultPackages,
+                    image.CreateImageTarball,
+                    network.InstallDHCPCD,
+                    packages.DefaultPackages,
                     ])
 
     if 'credentials' in manifest.provider:
-        taskset.add(tasks.api.Connect)
-        taskset.add(tasks.image.UploadImageTarball)
+        taskset.add(api.Connect)
+        taskset.add(image.UploadImageTarball)
         if manifest.provider.get('verify', False):
-            taskset.add(tasks.image.DownloadImageTarball)
-            taskset.add(tasks.image.CompareImageTarballs)
+            taskset.add(image.DownloadImageTarball)
+            taskset.add(image.CompareImageTarballs)
 
 
 def resolve_rollback_tasks(taskset, manifest, completed, counter_task):

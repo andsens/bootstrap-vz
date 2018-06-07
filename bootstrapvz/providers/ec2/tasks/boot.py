@@ -44,7 +44,7 @@ class CreatePVGrubCustomRule(Task):
         script_src = os.path.join(assets, 'grub.d/40_custom')
         script_dst = os.path.join(info.root, 'etc/grub.d/40_custom')
         copy(script_src, script_dst)
-        os.chmod(script_dst, 0755)
+        os.chmod(script_dst, 0o755)
 
         from bootstrapvz.base.fs.partitionmaps.none import NoPartitions
         if not isinstance(info.volume.partition_map, NoPartitions):

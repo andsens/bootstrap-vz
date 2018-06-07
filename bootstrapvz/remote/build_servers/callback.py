@@ -22,7 +22,7 @@ class CallbackServer(object):
         self.thread.start()
         return self
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, exception_type, exception_value, traceback):
         log.debug('Shutting down callback server')
         self.daemon.shutdown()
         self.thread.join()
@@ -31,7 +31,6 @@ class CallbackServer(object):
     def handle_log(self, pickled_record):
         import pickle
         record = pickle.loads(pickled_record)
-        log = logging.getLogger()
         record.extra = getattr(record, 'extra', {})
         record.extra['source'] = 'remote'
         log.handle(record)

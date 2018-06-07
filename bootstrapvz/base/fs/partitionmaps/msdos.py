@@ -1,4 +1,4 @@
-from abstract import AbstractPartitionMap
+from .abstract import AbstractPartitionMap
 from ..exceptions import PartitionError
 from ..partitions.msdos import MSDOSPartition
 from ..partitions.msdos_swap import MSDOSSwapPartition

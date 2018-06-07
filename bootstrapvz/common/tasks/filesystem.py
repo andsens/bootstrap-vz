@@ -1,9 +1,9 @@
 from bootstrapvz.base import Task
 from .. import phases
 from ..tools import log_check_call
-import bootstrap
-import host
-import volume
+from . import bootstrap
+from . import host
+from . import volume
 
 
 class AddRequiredCommands(Task):

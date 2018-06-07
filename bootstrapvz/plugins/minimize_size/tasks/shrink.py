@@ -57,7 +57,7 @@ class ShrinkVolumeWithVDiskManager(Task):
 
     @classmethod
     def run(cls, info):
-        perm = os.stat(info.volume.image_path).st_mode & 0777
+        perm = os.stat(info.volume.image_path).st_mode & 0o777
         log_check_call(['/usr/bin/vmware-vdiskmanager', '-k', info.volume.image_path])
         os.chmod(info.volume.image_path, perm)
 

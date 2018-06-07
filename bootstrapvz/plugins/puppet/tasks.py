@@ -5,7 +5,6 @@ from bootstrapvz.common.tasks import apt
 from bootstrapvz.common.exceptions import TaskError
 from bootstrapvz.common.releases import jessie, wheezy, stretch
 from bootstrapvz.common.tools import sed_i, log_check_call, rel_path
-from __builtin__ import str
 
 
 ASSETS_DIR_STRETCH = rel_path(__file__, 'assets/gpg-keyrings-PC1/stretch')
@@ -19,7 +18,6 @@ class CheckRequestedDebianRelease(Task):
 
     @classmethod
     def run(cls, info):
-        from bootstrapvz.common.exceptions import TaskError
         if info.manifest.release not in (jessie, wheezy, stretch):
             msg = 'Debian {info.manifest.release} is not (yet) available in the Puppetlabs.com APT repository.'
             raise TaskError(msg)
@@ -32,7 +30,6 @@ class CheckAssetsPath(Task):
 
     @classmethod
     def run(cls, info):
-        from bootstrapvz.common.exceptions import TaskError
         assets = info.manifest.plugins['puppet']['assets']
         if not os.path.exists(assets):
             msg = 'The assets directory {assets} does not exist.'.format(assets=assets)

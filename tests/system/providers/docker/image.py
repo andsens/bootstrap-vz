@@ -23,7 +23,7 @@ class Image(object):
         try:
             self.container.stop()
             self.container.destroy()
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except
             log.exception(e)
 
 

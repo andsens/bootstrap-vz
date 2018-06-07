@@ -16,4 +16,4 @@ class Connect(Task):
             container=info.manifest.provider['container'],
         )
         # Try to fetch the token, so it will fail early if the credentials are wrong
-        info._oracle['client'].auth_token
+        info._oracle['client'].auth_token  # pylint: disable=pointless-statement

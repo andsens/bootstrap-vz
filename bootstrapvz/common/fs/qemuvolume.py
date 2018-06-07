@@ -1,4 +1,4 @@
-from loopbackvolume import LoopbackVolume
+from .loopbackvolume import LoopbackVolume
 from bootstrapvz.base.fs.exceptions import VolumeError
 from ..tools import log_check_call
 from . import get_partitions
@@ -9,7 +9,12 @@ class QEMUVolume(LoopbackVolume):
     def _before_create(self, e):
         self.image_path = e.image_path
         vol_size = str(self.size.bytes.get_qty_in('MiB')) + 'M'
-        log_check_call(['qemu-img', 'create', '-f', self.qemu_format, self.image_path, vol_size])
+        log_check_call([
+                       'qemu-img',
+                       'create', '-f',
+                       self.qemu_format,  # pylint: disable=no-member
+                       self.image_path,
+                       vol_size])
 
     def _check_nbd_module(self):
         from bootstrapvz.base.fs.partitionmaps.none import NoPartitions
@@ -62,8 +67,8 @@ class QEMUVolume(LoopbackVolume):
     def _module_param(self, module, param):
         import os.path
         param_path = os.path.join('/sys/module', module, 'parameters', param)
-        with open(param_path) as param:
-            return param.read().strip()
+        with open(param_path) as param_file:
+            return param_file.read().strip()
 
     # From http://lists.gnu.org/archive/html/qemu-devel/2011-11/msg02201.html
     # Apparently it's not in the current qemu-nbd shipped with wheezy

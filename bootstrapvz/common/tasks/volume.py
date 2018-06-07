@@ -1,6 +1,6 @@
 from bootstrapvz.base import Task
 from .. import phases
-import workspace
+from . import workspace
 
 
 class Attach(Task):

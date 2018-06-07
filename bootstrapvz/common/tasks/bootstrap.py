@@ -1,7 +1,7 @@
 from bootstrapvz.base import Task
 from .. import phases
 from ..exceptions import TaskError
-import host
+from . import host
 import logging
 import os.path
 log = logging.getLogger(__name__)

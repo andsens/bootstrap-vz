@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 from bootstrapvz.common.tools import log_check_call
@@ -98,7 +100,7 @@ class DisableModules(Task):
         import fileinput
         for line in fileinput.input(files=cloud_cfg, inplace=True):
             if not regex.match(line):
-                print line,
+                print(line, end=' ')
 
 
 class EnableModules(Task):
@@ -122,7 +124,7 @@ class EnableModules(Task):
                         count = count + 1
                     if int(entry['position']) == int(count):
                         print(" - %s" % entry['module'])
-                    print line,
+                    print(line, end=' ')
 
 
 class SetCloudInitMountOptions(Task):
@@ -134,4 +136,4 @@ class SetCloudInitMountOptions(Task):
         cloud_init_src = os.path.join(assets, 'cloud-init/debian_cloud.cfg')
         cloud_init_dst = os.path.join(info.root, 'etc/cloud/cloud.cfg.d/01_debian_cloud.cfg')
         copy(cloud_init_src, cloud_init_dst)
-        os.chmod(cloud_init_dst, 0644)
+        os.chmod(cloud_init_dst, 0o644)

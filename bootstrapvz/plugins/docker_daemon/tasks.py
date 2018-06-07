@@ -38,7 +38,7 @@ class AddDockerBinary(Task):
             docker_url += 'latest'
         bin_docker = os.path.join(info.root, 'usr/bin/docker')
         log_check_call(['wget', '-O', bin_docker, docker_url])
-        os.chmod(bin_docker, 0755)
+        os.chmod(bin_docker, 0o755)
 
 
 class AddDockerInit(Task):

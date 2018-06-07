@@ -2,7 +2,7 @@ from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 from bootstrapvz.common.tools import log_check_call
 from bootstrapvz.common.tools import rel_path
-import locale
+from . import locale
 import logging
 import os
 
@@ -142,7 +142,6 @@ class WriteSources(Task):
     @classmethod
     def run(cls, info):
         if not info.source_lists.target_exists(info.manifest.system['release']):
-            import logging
             log = logging.getLogger(__name__)
             log.warn('No default target has been specified in the sources list, '
                      'installing packages may fail')
@@ -182,12 +181,12 @@ class DisableDaemonAutostart(Task):
         with open(rc_policy_path, 'w') as rc_policy:
             rc_policy.write(('#!/bin/sh\n'
                              'exit 101'))
-        os.chmod(rc_policy_path, 0755)
+        os.chmod(rc_policy_path, 0o755)
         initictl_path = os.path.join(info.root, 'sbin/initctl')
         with open(initictl_path, 'w') as initctl:
             initctl.write(('#!/bin/sh\n'
                            'exit 0'))
-        os.chmod(initictl_path, 0755)
+        os.chmod(initictl_path, 0o755)
 
 
 class AptUpdate(Task):

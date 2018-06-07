@@ -1,7 +1,7 @@
 from bootstrapvz.base import Task
 from bootstrapvz.common import phases
-import host
-import volume
+from . import host
+from . import volume
 
 
 class AddRequiredCommands(Task):

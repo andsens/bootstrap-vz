@@ -5,7 +5,7 @@ def validate_manifest(data, validator, error):
 
 def resolve_tasks(taskset, manifest):
     import logging
-    import tasks
+    from . import tasks
     from bootstrapvz.common.tasks import ssh
 
     from bootstrapvz.common.releases import jessie

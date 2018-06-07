@@ -117,7 +117,7 @@ class AbstractPartition(FSMProxy):
         :param list opts: Any options that should be passed to the mount command
         """
         # Create a new mount object, mount it if the partition is mounted and put it in the mounts dict
-        from mount import Mount
+        from .mount import Mount
         mount = Mount(source, destination, opts)
         if self.fsm.current == 'mounted':
             mount.mount(self.mount_dir)

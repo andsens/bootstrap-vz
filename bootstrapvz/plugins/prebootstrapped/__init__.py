@@ -1,4 +1,4 @@
-import tasks
+from . import tasks
 from bootstrapvz.providers.ec2.tasks import ebs
 from bootstrapvz.plugins.minimize_size.tasks import dpkg
 from bootstrapvz.providers.virtualbox.tasks import guest_additions
@@ -10,6 +10,7 @@ from bootstrapvz.common.tasks import apt
 from bootstrapvz.common.tasks import bootstrap
 from bootstrapvz.common.tasks import filesystem
 from bootstrapvz.common.tasks import partitioning
+import bootstrapvz.common.tasks.dpkg
 
 
 def validate_manifest(data, validator, error):
@@ -31,7 +32,7 @@ def resolve_tasks(taskset, manifest):
 
                   apt.DisableDaemonAutostart,
                   dpkg.InitializeBootstrapFilterList,
-                  dpkg.CreateDpkgCfg,
+                  bootstrapvz.common.tasks.dpkg.CreateDpkgCfg,
                   dpkg.CreateBootstrapFilterScripts,
                   dpkg.FilterLocales,
                   dpkg.ExcludeDocs,

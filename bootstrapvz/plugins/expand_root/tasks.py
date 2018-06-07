@@ -46,7 +46,7 @@ class InstallExpandRootScripts(Task):
 
         # Copy files over
         shutil.copy(expand_root_script, expand_root_script_dest)
-        os.chmod(expand_root_script_dest, 0750)
+        os.chmod(expand_root_script_dest, 0o750)
         shutil.copy(expand_root_service, expand_root_service_dest)
 
         # Expand out options into expand-root script.

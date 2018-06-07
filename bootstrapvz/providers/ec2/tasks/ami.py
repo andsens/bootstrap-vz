@@ -2,9 +2,9 @@ from bootstrapvz.base import Task
 from bootstrapvz.common import phases
 from bootstrapvz.common.exceptions import TaskError
 from bootstrapvz.common.tools import log_check_call, rel_path
-from ebs import Snapshot
+from .ebs import Snapshot
 from bootstrapvz.common.tasks import workspace
-import connection
+from . import connection
 from . import assets
 import os.path
 

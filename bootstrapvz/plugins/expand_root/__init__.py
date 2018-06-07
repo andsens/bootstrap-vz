@@ -1,4 +1,4 @@
-import tasks
+from . import tasks
 from bootstrapvz.common.tools import rel_path
 
 
