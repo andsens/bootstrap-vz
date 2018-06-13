@@ -220,6 +220,7 @@ variety of sources.
    ``/etc/apt/sources.list.d/`` (with ``.list`` appended to it), except
    for ``main``, which designates ``/etc/apt/sources.list``.
    The value is an array with each entry being a line.
+   Note: To use HTTPS-based repos, you need to add "apt-transport-https" and "ca-certificates" to include_packages (`issue #476 <https://github.com/andsens/bootstrap-vz/issues/476>`__).
    ``optional``
 -  ``components``: A list of components that should be added to the
    default apt sources. For example ``contrib`` or ``non-free``
