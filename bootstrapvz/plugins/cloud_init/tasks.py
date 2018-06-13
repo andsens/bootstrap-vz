@@ -100,7 +100,7 @@ class DisableModules(Task):
         import fileinput
         for line in fileinput.input(files=cloud_cfg, inplace=True):
             if not regex.match(line):
-                print(line, end=' ')
+                print(line, end='')
 
 
 class EnableModules(Task):
@@ -124,7 +124,7 @@ class EnableModules(Task):
                         count = count + 1
                     if int(entry['position']) == int(count):
                         print(" - %s" % entry['module'])
-                    print(line, end=' ')
+                    print(line, end='')
 
 
 class SetCloudInitMountOptions(Task):

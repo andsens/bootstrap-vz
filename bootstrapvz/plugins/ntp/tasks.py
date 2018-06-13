@@ -31,4 +31,4 @@ class SetNtpServers(Task):
                 while servers:
                     print('server {server_address} iburst'.format(server_address=servers.pop(0)))
             else:
-                print(line, end=' ')
+                print(line, end='')
