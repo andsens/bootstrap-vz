@@ -89,9 +89,12 @@ class InstallEnhancedNetworking(Task):
     @classmethod
     def run(cls, info):
         from bootstrapvz.common.releases import stretch
+        # It appears the latest version will always get a prefix of 18700.
+        # Once a new version is released, the url int prefix will change (no redirects)
+        # to something above the 2nd most recent release. You've been warned.
         if info.manifest.release >= stretch:
             version = '4.3.4'
-            drivers_url = 'https://downloadmirror.intel.com/18700/eng/ixgbevf-4.3.4.tar.gz'
+            drivers_url = 'https://downloadmirror.intel.com/27874/eng/ixgbevf-4.3.4.tar.gz'
         else:
             version = '3.2.2'
             drivers_url = 'https://downloadmirror.intel.com/26561/eng/ixgbevf-3.2.2.tar.gz'
