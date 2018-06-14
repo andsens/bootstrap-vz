@@ -26,7 +26,7 @@ def validate_manifest(data, validator, error):
     bootloader = data['system']['bootloader']
     virtualization = data['provider']['virtualization']
     encrypted = data['provider'].get('encrypted', False)
-    kms_key_id = data['provider'].get('kms_key_id')
+    kms_key_id = data['provider'].get('kms_key_id', None)
     backing = data['volume']['backing']
     partition_type = data['volume']['partitions']['type']
     enhanced_networking = data['provider']['enhanced_networking'] if 'enhanced_networking' in data['provider'] else None
