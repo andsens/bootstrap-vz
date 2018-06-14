@@ -25,6 +25,8 @@ def validate_manifest(data, validator, error):
 
     bootloader = data['system']['bootloader']
     virtualization = data['provider']['virtualization']
+    encrypted = data['provider'].get('encrypted', False)
+    kms_key_id = data['provider'].get('kms_key_id', None)
     backing = data['volume']['backing']
     partition_type = data['volume']['partitions']['type']
     enhanced_networking = data['provider']['enhanced_networking'] if 'enhanced_networking' in data['provider'] else None
@@ -37,6 +39,12 @@ def validate_manifest(data, validator, error):
 
     if backing == 's3' and partition_type != 'none':
             error('S3 backed AMIs currently only work with unpartitioned volumes', ['system', 'bootloader'])
+
+    if backing != 'ebs' and encrypted:
+            error('Encryption is supported only on EBS volumes')
+
+    if encrypted is False and kms_key_id is not None:
+            error('KMS Key Id can be set only when encryption is enabled')
 
     if enhanced_networking == 'simple' and virtualization != 'hvm':
             error('Enhanced networking only works with HVM virtualization', ['provider', 'virtualization'])

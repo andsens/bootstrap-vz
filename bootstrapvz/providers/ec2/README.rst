@@ -146,6 +146,30 @@ Example:
       name: ec2
       amzn-driver-version: 1.5.0
 
+Encrypted volumes
+~~~~~~~~~~~~~~~~~
+
+Encrypted AMIs that can be used to launch instances with encrypted boot volume
+are supported. Defining encryption key is optional and EC2 uses default
+encryption key if one is not set. Encryption works only with EBS volumes.
+
+- ``encrypted:``: Default: False
+  Valid values: ``True``, ``False``
+  ``optional``
+- ``kms_key_id:``: Default: EC2 default EBS encryption key
+  Valid values: arn of the KMS key
+  ``optional``
+
+Example:
+
+.. code-block:: yaml
+
+    ---
+    provider:
+      name: ec2
+      encrypted: True
+      kms_key_id: arn:aws:kms:us-east-1:1234567890:key/00000000-0000-0000-0000-000000000000
+
 Image
 ~~~~~
 
