@@ -72,5 +72,6 @@ class EBSVolume(Volume):
         self.snap_id = snapshot['SnapshotId']
         waiter = self.conn.get_waiter('snapshot_completed')
         waiter.wait(SnapshotIds=[self.snap_id],
-                    Filters=[{'Name': 'status', 'Values': ['completed']}])
+                    Filters=[{'Name': 'status', 'Values': ['completed']}],
+                    WaiterConfig={'Delay': 15, 'MaxAttempts': 120})
         return self.snap_id
