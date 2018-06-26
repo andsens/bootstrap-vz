@@ -134,7 +134,7 @@ Amazon EC2 EBS backed AMI
     user@host:~$ sudo -i # become root
     root@host:~# git clone https://github.com/andsens/bootstrap-vz.git # Clone the repo
     root@host:~# apt-get install debootstrap python-pip # Install dependencies from aptitude
-    root@host:~# pip install termcolor jsonschema fysom docopt pyyaml boto3 # Install python dependencies
+    root@host:~# pip install termcolor jsonschema fysom docopt pyyaml boto3 json_minify # Install python dependencies
     root@host:~# bootstrap-vz/bootstrap-vz bootstrap-vz/manifests/official/ec2/ebs-jessie-amd64-hvm.yml
 
 To bootstrap S3 backed AMIs, bootstrap-vz will also need the
