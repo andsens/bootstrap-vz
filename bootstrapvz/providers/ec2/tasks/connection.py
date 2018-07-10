@@ -55,8 +55,10 @@ class GetCredentials(Task):
             if provider_args.get('profile_name') not in Session().available_profiles:
                 raise RuntimeError((
                     'Profile specified was not found: {}'.format(provider_args.get('profile_name'))))
-        provider = Session(**provider_args).get_credentials().get_frozen_credentials()
-        if all(getattr(provider, provider_key(key)) is not None for key in keys):
+        provider = Session(**provider_args).get_credentials()
+        if provider is not None:
+            provider = provider.get_frozen_credentials()
+        if all(getattr(provider, provider_key(key), None) is not None for key in keys):
             for key in keys:
                 creds[key] = getattr(provider, provider_key(key))
             if hasattr(provider, 'token'):
