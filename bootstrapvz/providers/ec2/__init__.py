@@ -65,14 +65,10 @@ def resolve_tasks(taskset, manifest):
                     connection.GetCredentials,
                     ami.AMIName,
                     connection.Connect,
-
                     tuning.TuneSystem,
                     tuning.BlackListModules,
                     bootstrapvz.common.tasks.boot.BlackListModules,
                     bootstrapvz.common.tasks.boot.DisableGetTTYs,
-                    boot.AddXenGrubConsoleOutputDevice,
-                    bootstrapvz.common.tasks.grub.WriteGrubConfig,
-                    boot.UpdateGrubConfig,
                     bootstrapvz.common.tasks.initd.AddExpandRoot,
                     bootstrapvz.common.tasks.initd.RemoveHWClock,
                     bootstrapvz.common.tasks.initd.InstallInitScripts,
@@ -100,6 +96,11 @@ def resolve_tasks(taskset, manifest):
 
     if manifest.volume['partitions']['type'] != 'none':
         taskset.add(bootstrapvz.common.tasks.initd.AdjustExpandRootScript)
+
+    if manifest.system['bootloader'] in ('grub', 'pvgrub'):
+        taskset.update([boot.AddXenGrubConsoleOutputDevice,
+                        bootstrapvz.common.tasks.grub.WriteGrubConfig,
+                        boot.UpdateGrubConfig])
 
     if manifest.system['bootloader'] == 'pvgrub':
         taskset.add(bootstrapvz.common.tasks.grub.AddGrubPackage)
