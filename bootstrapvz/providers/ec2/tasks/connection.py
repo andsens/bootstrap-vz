@@ -12,6 +12,7 @@ class SilenceBotoDebug(Task):
         # Regardless of of loglevel, we don't want boto debug stuff, it's very noisy
         import logging
         logging.getLogger('boto').setLevel(logging.INFO)
+        logging.getLogger('boto3').setLevel(logging.INFO)
 
 
 class GetCredentials(Task):
