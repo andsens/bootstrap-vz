@@ -13,14 +13,18 @@ class EBSVolume(Volume):
         tags = e.tags
         size = self.size.bytes.get_qty_in('GiB')
 
-        params = dict(Size=size,
-                      AvailabilityZone=zone,
-                      VolumeType='gp2',
-                      TagSpecifications=[{'ResourceType': 'volume', 'Tags': tags}],
-                      Encrypted=e.encrypted)
+        params = {
+            'Size': size,
+            'AvailabilityZone': zone,
+            'VolumeType': 'gp2',
+        }
+        if len(tags) > 0:
+            params['TagSpecifications'] = [{'ResourceType': 'volume', 'Tags': tags}]
 
-        if e.encrypted and e.kms_key_id:
-            params['KmsKeyId'] = e.kms_key_id
+        if e.encrypted:
+            params['Encrypted'] = e.encrypted
+            if e.kms_key_id:
+                params['KmsKeyId'] = e.kms_key_id
 
         self.volume = self.conn.create_volume(**params)
 
