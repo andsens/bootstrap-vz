@@ -2,6 +2,7 @@ from bootstrapvz.base import Task
 from bootstrapvz.common.tasks import host
 from bootstrapvz.common import phases
 from bootstrapvz.common.tools import rel_path
+from bootstrapvz.common.tools import log_check_call
 import os
 import json
 
@@ -47,8 +48,6 @@ class RunAnsiblePlaybook(Task):
 
     @classmethod
     def run(cls, info):
-        from bootstrapvz.common.tools import log_check_call
-
         # Extract playbook and directory
         playbook = rel_path(info.manifest.path, info.manifest.plugins['ansible']['playbook'])
 
@@ -81,3 +80,20 @@ class RunAnsiblePlaybook(Task):
         # Run and remove the inventory file
         log_check_call(cmd)
         os.remove(inventory)
+
+
+class RemoveAnsibleSSHUserDir(Task):
+    description = 'Removing .ansible directory'
+    phase = phases.user_modification
+    predecessors = [RunAnsiblePlaybook]
+
+    @classmethod
+    def run(cls, info):
+        ssh_user = info.manifest.plugins['ansible']['extra_vars']['ansible_ssh_user']
+        # os.path.expanduser does not work in a chroot,
+        # so we use sh instead
+        [ssh_user_home] = log_check_call(['chroot', info.root, 'sh', '-c', 'echo ~' + ssh_user])
+        from shutil import rmtree
+        # [1:] to remove the leading slash from e.g. /home/ansible
+        ansible_dir_path = os.path.join(info.root, ssh_user_home[1:], '.ansible')
+        rmtree(ansible_dir_path)

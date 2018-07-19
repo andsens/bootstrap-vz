@@ -12,3 +12,6 @@ def resolve_tasks(taskset, manifest):
                     tasks.CheckPlaybookPath,
                     tasks.RunAnsiblePlaybook,
                     ])
+
+    if manifest.plugins['ansible'].get('extra_vars', {}).get('ansible_ssh_user', False):
+        taskset.add(tasks.RemoveAnsibleSSHUserDir)
