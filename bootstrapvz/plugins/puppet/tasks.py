@@ -147,7 +147,7 @@ class ApplyPuppetManifest(Task):
         log_check_call(['chroot', info.root, 'puppet', 'apply', '--verbose', '--debug', manifest_path])
         os.remove(manifest_dst)
         hosts_path = os.path.join(info.root, 'etc/hosts')
-        sed_i(hosts_path, '127.0.0.1\\s*{hostname}\n?'.format(hostname=hostname), '')
+        sed_i(hosts_path, r'127.0.0.1\s*{hostname}\n?'.format(hostname=hostname), '')
 
 
 class EnableAgent(Task):
