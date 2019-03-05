@@ -35,19 +35,19 @@ def validate_manifest(data, validator, error):
         error('Paravirtualized AMIs only support pvgrub as a bootloader', ['system', 'bootloader'])
 
     if backing != 'ebs' and virtualization == 'hvm':
-            error('HVM AMIs currently only work when they are EBS backed', ['volume', 'backing'])
+        error('HVM AMIs currently only work when they are EBS backed', ['volume', 'backing'])
 
     if backing == 's3' and partition_type != 'none':
-            error('S3 backed AMIs currently only work with unpartitioned volumes', ['system', 'bootloader'])
+        error('S3 backed AMIs currently only work with unpartitioned volumes', ['system', 'bootloader'])
 
     if backing != 'ebs' and encrypted:
-            error('Encryption is supported only on EBS volumes')
+        error('Encryption is supported only on EBS volumes')
 
     if encrypted is False and kms_key_id is not None:
-            error('KMS Key Id can be set only when encryption is enabled')
+        error('KMS Key Id can be set only when encryption is enabled')
 
     if enhanced_networking == 'simple' and virtualization != 'hvm':
-            error('Enhanced networking only works with HVM virtualization', ['provider', 'virtualization'])
+        error('Enhanced networking only works with HVM virtualization', ['provider', 'virtualization'])
 
 
 def resolve_tasks(taskset, manifest):

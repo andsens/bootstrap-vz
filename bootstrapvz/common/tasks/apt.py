@@ -100,7 +100,7 @@ class AddManifestPreferences(Task):
     @classmethod
     def run(cls, info):
         for name, preferences in info.manifest.packages['preferences'].iteritems():
-                            info.preference_lists.add(name, preferences)
+            info.preference_lists.add(name, preferences)
 
 
 class InstallTrustedKeys(Task):
