@@ -69,9 +69,9 @@ class AbstractPartitionMap(FSMProxy):
             # Ask kpartx how the partitions will be mapped before actually attaching them.
             mappings = log_check_call(['kpartx', '-l', volume.device_path])
             import re
-            regexp = re.compile('^(?P<name>.+[^\d](?P<p_idx>\d+)) : '
-                                '(?P<start_blk>\d) (?P<num_blks>\d+) '
-                                '{device_path} (?P<blk_offset>\d+)$'
+            regexp = re.compile(r'^(?P<name>.+[^\d](?P<p_idx>\d+)) : '
+                                r'(?P<start_blk>\d) (?P<num_blks>\d+) '
+                                r'{device_path} (?P<blk_offset>\d+)$'
                                 .format(device_path=volume.device_path))
             log_check_call(['kpartx', '-as', volume.device_path])
 

@@ -21,7 +21,7 @@ class CheckExternalCommands(Task):
             log.debug('Checking availability of ' + command)
             path = find_executable(command)
             if path is None or not os.access(path, os.X_OK):
-                if re.match('^https?:\/\/', package):
+                if re.match(r'^https?:\/\/', package):
                     msg = ('The command `{command}\' is not available, '
                            'you can download the software at `{package}\'.'
                            .format(command=command, package=package))

@@ -3,7 +3,7 @@ from contextlib import contextmanager
 
 def get_partitions():
     import re
-    regexp = re.compile('^ *(?P<major>\d+) *(?P<minor>\d+) *(?P<num_blks>\d+) (?P<dev_name>\S+)$')
+    regexp = re.compile(r'^ *(?P<major>\d+) *(?P<minor>\d+) *(?P<num_blks>\d+) (?P<dev_name>\S+)$')
     matches = {}
     path = '/proc/partitions'
     with open(path) as partitions:

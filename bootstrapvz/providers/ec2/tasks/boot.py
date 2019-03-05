@@ -53,7 +53,7 @@ class CreatePVGrubCustomRule(Task):
             grub_device = 'GRUB_DEVICE=/dev/xvda' + str(root_idx)
             sed_i(script_dst, '^GRUB_DEVICE=/dev/xvda$', grub_device)
             grub_root = '\troot (hd0,{idx})'.format(idx=root_idx - 1)
-            sed_i(script_dst, '^\troot \(hd0\)$', grub_root)
+            sed_i(script_dst, '^\troot \\(hd0\\)$', grub_root)
 
         if info.manifest.volume['backing'] == 's3':
             from bootstrapvz.common.tools import sed_i

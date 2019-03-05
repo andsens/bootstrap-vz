@@ -104,20 +104,20 @@ class CreateFromFolder(Task):
 
 
 def set_fs_states(vol):
-        vol.fsm.current = 'detached'
+    vol.fsm.current = 'detached'
 
-        p_map = vol.partition_map
-        from bootstrapvz.base.fs.partitionmaps.none import NoPartitions
-        if not isinstance(p_map, NoPartitions):
-            p_map.fsm.current = 'unmapped'
+    p_map = vol.partition_map
+    from bootstrapvz.base.fs.partitionmaps.none import NoPartitions
+    if not isinstance(p_map, NoPartitions):
+        p_map.fsm.current = 'unmapped'
 
-        from bootstrapvz.base.fs.partitions.unformatted import UnformattedPartition
-        from bootstrapvz.base.fs.partitions.single import SinglePartition
-        for partition in p_map.partitions:
-            if isinstance(partition, UnformattedPartition):
-                partition.fsm.current = 'unmapped'
-                continue
-            if isinstance(partition, SinglePartition):
-                partition.fsm.current = 'formatted'
-                continue
-            partition.fsm.current = 'unmapped_fmt'
+    from bootstrapvz.base.fs.partitions.unformatted import UnformattedPartition
+    from bootstrapvz.base.fs.partitions.single import SinglePartition
+    for partition in p_map.partitions:
+        if isinstance(partition, UnformattedPartition):
+            partition.fsm.current = 'unmapped'
+            continue
+        if isinstance(partition, SinglePartition):
+            partition.fsm.current = 'formatted'
+            continue
+        partition.fsm.current = 'unmapped_fmt'

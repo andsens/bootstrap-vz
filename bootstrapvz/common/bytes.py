@@ -29,7 +29,7 @@ class Bytes(object):
     @staticmethod
     def parse(qty_str):
         import re
-        regex = re.compile('^(?P<qty>\d+)(?P<unit>[KMGT]i?B|B)$')
+        regex = re.compile(r'^(?P<qty>\d+)(?P<unit>[KMGT]i?B|B)$')
         parsed = regex.match(qty_str)
         if parsed is None:
             raise UnitError('Unable to parse ' + qty_str)

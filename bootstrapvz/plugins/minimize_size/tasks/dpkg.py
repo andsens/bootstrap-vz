@@ -44,7 +44,7 @@ class CreateBootstrapFilterScripts(Task):
         # The pattern matching when excluding is needed in order to filter
         # everything below e.g. /usr/share/locale but not the folder itself
         filter_lists = info._minimize_size['bootstrap_filter']
-        exclude_list = '\|'.join(map(lambda p: '.' + p + '.\+', filter_lists['exclude']))
+        exclude_list = r'\|'.join(map(lambda p: '.' + p + r'.\+', filter_lists['exclude']))
         include_list = '\n'.join(map(lambda p: '.' + p, filter_lists['include']))
         sed_i(filter_script, r'EXCLUDE_PATTERN', exclude_list)
         sed_i(filter_script, r'INCLUDE_PATHS', include_list)

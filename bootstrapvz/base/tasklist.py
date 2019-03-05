@@ -189,7 +189,7 @@ def get_all_classes(path=None, prefix='', excludes=[]):
         for class_name, obj in classes:
             # We only want classes that are defined in the module, and not imported ones
             if obj.__module__ == module_name:
-                    yield obj
+                yield obj
 
 
 def check_ordering(task):

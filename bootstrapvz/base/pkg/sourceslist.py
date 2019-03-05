@@ -56,11 +56,11 @@ class Source(object):
         # The format is taken from `man sources.list`
         # or: http://manpages.debian.org/cgi-bin/man.cgi?sektion=5&query=sources.list&apropos=0&manpath=sid&locale=en
         import re
-        regexp = re.compile('^(?P<type>deb|deb-src)\s+'
-                            '(\[\s*(?P<options>.+\S)?\s*\]\s+)?'
-                            '(?P<uri>\S+)\s+'
-                            '(?P<distribution>\S+)'
-                            '(\s+(?P<components>.+\S))?\s*$')
+        regexp = re.compile(r'^(?P<type>deb|deb-src)\s+'
+                            r'(\[\s*(?P<options>.+\S)?\s*\]\s+)?'
+                            r'(?P<uri>\S+)\s+'
+                            r'(?P<distribution>\S+)'
+                            r'(\s+(?P<components>.+\S))?\s*$')
         match = regexp.match(line).groupdict()
         if match is None:
             from .exceptions import SourceError

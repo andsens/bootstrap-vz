@@ -23,7 +23,7 @@ def prepare_bootstrap(manifest, build_server):
                 bucket.delete_key(item.key)
             s3_connection.delete_bucket(manifest.image['bucket'])
     else:
-            yield
+        yield
 
 
 @contextmanager

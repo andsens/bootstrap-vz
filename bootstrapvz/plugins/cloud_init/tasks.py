@@ -51,8 +51,8 @@ class SetGroups(Task):
         from bootstrapvz.common.tools import sed_i
         cloud_cfg = os.path.join(info.root, 'etc/cloud/cloud.cfg')
         groups = info.manifest.plugins['cloud_init']['groups']
-        search = ('^     groups: \[adm, audio, cdrom, dialout, floppy, video,'
-                  ' plugdev, dip\]$')
+        search = (r'^     groups: \[adm, audio, cdrom, dialout, floppy, video,'
+                  r' plugdev, dip\]$')
         replace = ('     groups: [adm, audio, cdrom, dialout, floppy, video,'
                    ' plugdev, dip, {groups}]').format(groups=', '.join(groups))
         sed_i(cloud_cfg, search, replace)
@@ -92,7 +92,7 @@ class DisableModules(Task):
             if patterns != "":
                 patterns = patterns + "|" + pattern
             else:
-                patterns = "^\s+-\s+(" + pattern
+                patterns = r"^\s+-\s+(" + pattern
         patterns = patterns + ")$"
         regex = re.compile(patterns)
 
