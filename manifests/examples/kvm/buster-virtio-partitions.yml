@@ -1,0 +1,47 @@
+---
+name: debian-{system.release}-{system.architecture}-{%Y}{%m}{%d}
+provider:
+  name: kvm
+  virtio:
+    - virtio_pci
+    - virtio_blk
+bootstrapper:
+  workspace: /target
+system:
+  release: stretch
+  architecture: amd64
+  bootloader: grub
+  charmap: UTF-8
+  locale: en_US
+  timezone: UTC
+volume:
+  backing: raw
+  partitions:
+    type: gpt
+    boot:
+      filesystem: ext2
+      size: 1GiB
+    swap:
+      size: 128MiB
+    root:
+      filesystem: ext4
+      size: 8GiB
+    tmp:
+      mountopts:
+        - nodev
+        - noexec
+        - nosuid
+        - journal_ioprio=3
+      filesystem: ext4
+      size: 1GiB
+      mode: '1777'
+    var:
+      filesystem: ext4
+      size: 1GiB
+    var/tmp:
+      filesystem: ext4
+      size: 1GiB
+
+plugins:
+  root_password:
+    password: test
