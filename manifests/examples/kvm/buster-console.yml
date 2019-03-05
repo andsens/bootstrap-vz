@@ -1,0 +1,29 @@
+---
+name: debian-{system.release}-{system.architecture}-{%Y}{%m}{%d}
+provider:
+  name: kvm
+  virtio:
+    - virtio_blk
+    - virtio_net
+    - virtio_ring
+  console: virtual
+bootstrapper:
+  workspace: /target
+system:
+  release: stretch
+  architecture: amd64
+  bootloader: grub
+  charmap: UTF-8
+  locale: en_US
+  timezone: UTC
+volume:
+  backing: raw
+  partitions:
+    type: msdos
+    root:
+      filesystem: ext4
+      size: 2GiB
+      mountopts:
+        - defaults
+        - noatime
+        - errors=remount-ro
