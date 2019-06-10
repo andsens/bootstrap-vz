@@ -1,18 +1,5 @@
-bootstrap-vz is looking for a new home
-======================================
-
-bootstrap-vz is looking for a new home.
-The reason is that I am simply not using bootstrap-vz myself very much lately,
-so any bugfixes or improvements are currently introduced via PRs only.
-
-If you are willing to take over the project and have a track record with the
-Debian community or with the development of software like bootstrap-vz,
-kindly let me know by opening an issue that includes some references.
-There is a considerable amount of people using the software daily,
-and I would love seeing my work being continued.
-I will be happy to answer any questions regarding the code future maintainers
-might have, now and also in the coming years, so nothing will just be dumped in
-your lap :-)
+bootstrap-vz is no longer maintained
+====================================
 
 bootstrap-vz
 ============
